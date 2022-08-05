@@ -1,0 +1,146 @@
+{
+  "main": {
+    "id": "654835352da675e0",
+    "type": "split",
+    "children": [
+      {
+        "id": "13bb413ad96c8881",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "Sociology/Paper 1/Other Imp Topics.md",
+            "mode": "source",
+            "backlinks": true,
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "3e07818f66369182",
+    "type": "split",
+    "children": [
+      {
+        "id": "280992b595d97b8d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8ac7585ea10a8106",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "14e2afbccb58fcee",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": true,
+                "explainSearch": true,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "9906a0674e23968e",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "437852c2768e1d8b",
+    "type": "split",
+    "children": [
+      {
+        "id": "b498463462145297",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "88ba671d124db152",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Sociology/Paper 1/Other Imp Topics.md",
+                "collapseAll": true,
+                "extraContext": true,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": false
+              }
+            }
+          },
+          {
+            "id": "95384ff3be13410d",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "fc8f8463ca4fc201",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Sociology/Paper 1/Other Imp Topics.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "17e97ce4a44f90c5",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Sociology/Paper 1/Other Imp Topics.md"
+              }
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "13bb413ad96c8881",
+  "lastOpenFiles": [
+    "Sociology/Paper 1/03 Research Methods and Analysis.md",
+    "Sociology/Ext Pdfs/Sociology Index.pdf",
+    "Sociology/Ext Pdfs/Syed Hamza Miya - Marriage Program.pdf",
+    "SITrust/Urdu.md",
+    "SITrust/Our Program.md",
+    "SITrust/Marriage.md",
+    "X tra Readings/Untitled/001Xtra/10 Judgements that changed India - Zia Mody.md",
+    "X tra Readings/Untitled/001Xtra/Internal link.md",
+    "Sociology/Paper 1/02 Sociology as Science.md",
+    "Sociology/Resource List.md"
+  ]
+}
