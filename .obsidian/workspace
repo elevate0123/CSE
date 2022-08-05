@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "Sociology/Paper 1/Git Sample.md",
+            "file": "Sociology/Paper 1/Other Imp Topics.md",
             "mode": "source",
             "backlinks": true,
             "source": false
@@ -78,7 +78,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Sociology/Paper 1/Git Sample.md",
+                "file": "Sociology/Paper 1/Other Imp Topics.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -106,7 +106,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Sociology/Paper 1/Git Sample.md",
+                "file": "Sociology/Paper 1/Other Imp Topics.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -118,7 +118,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Sociology/Paper 1/Git Sample.md"
+                "file": "Sociology/Paper 1/Other Imp Topics.md"
               }
             }
           }
@@ -132,8 +132,8 @@
   },
   "active": "13bb413ad96c8881",
   "lastOpenFiles": [
-    "Sociology/Paper 1/Other Imp Topics.md",
     "Sociology/Paper 1/Git Sample.md",
+    "Sociology/Paper 1/Other Imp Topics.md",
     "Sociology/Paper 1/03 Research Methods and Analysis.md",
     "Sociology/Ext Pdfs/Sociology Index.pdf",
     "Sociology/Ext Pdfs/Syed Hamza Miya - Marriage Program.pdf",
