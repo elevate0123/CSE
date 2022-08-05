@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "Sociology/Paper 1/Git Sample.md",
+            "file": "Sociology/Paper 1/02 Sociology as Science.md",
             "mode": "source",
             "backlinks": true,
             "source": false
@@ -78,7 +78,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Sociology/Paper 1/Git Sample.md",
+                "file": "Sociology/Paper 1/02 Sociology as Science.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -106,7 +106,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Sociology/Paper 1/Git Sample.md",
+                "file": "Sociology/Paper 1/02 Sociology as Science.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -118,7 +118,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Sociology/Paper 1/Git Sample.md"
+                "file": "Sociology/Paper 1/02 Sociology as Science.md"
               }
             }
           },
@@ -135,12 +135,13 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
-  "active": "13bb413ad96c8881",
+  "active": "568dfb42ab0ec3e8",
   "lastOpenFiles": [
-    "Sociology/Paper 1/04 4 Talcott Parsons.md",
     "Sociology/Paper 1/Git Sample.md",
+    "Sociology/Paper 1/04 4 Talcott Parsons.md",
     "Sociology/Paper 1/Other Imp Topics.md",
     "Sociology/Paper 1/03 Research Methods and Analysis.md",
     "Sociology/Ext Pdfs/Sociology Index.pdf",
