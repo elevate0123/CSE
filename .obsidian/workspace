@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "Sociology/Paper 1/Other Imp Topics.md",
+            "file": "Sociology/Paper 1/Git Sample.md",
             "mode": "source",
             "backlinks": true,
             "source": false
@@ -78,7 +78,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Sociology/Paper 1/Other Imp Topics.md",
+                "file": "Sociology/Paper 1/Git Sample.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -106,7 +106,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Sociology/Paper 1/Other Imp Topics.md",
+                "file": "Sociology/Paper 1/Git Sample.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -118,7 +118,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Sociology/Paper 1/Other Imp Topics.md"
+                "file": "Sociology/Paper 1/Git Sample.md"
               }
             }
           }
@@ -132,6 +132,7 @@
   },
   "active": "13bb413ad96c8881",
   "lastOpenFiles": [
+    "Sociology/Paper 1/04 4 Talcott Parsons.md",
     "Sociology/Paper 1/Git Sample.md",
     "Sociology/Paper 1/Other Imp Topics.md",
     "Sociology/Paper 1/03 Research Methods and Analysis.md",
@@ -140,7 +141,6 @@
     "SITrust/Urdu.md",
     "SITrust/Our Program.md",
     "SITrust/Marriage.md",
-    "X tra Readings/Untitled/001Xtra/10 Judgements that changed India - Zia Mody.md",
-    "X tra Readings/Untitled/001Xtra/Internal link.md"
+    "X tra Readings/Untitled/001Xtra/10 Judgements that changed India - Zia Mody.md"
   ]
 }
