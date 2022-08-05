@@ -6,7 +6,10 @@ Yes or No
 Good going
 But Plugin is not working
 Still not working?
-/git
+
+
+After installing GCM and Git, it is working fine.
+All right, so we are set to go.
 
 
 

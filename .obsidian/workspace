@@ -121,14 +121,21 @@
                 "file": "Sociology/Paper 1/Git Sample.md"
               }
             }
+          },
+          {
+            "id": "568dfb42ab0ec3e8",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {}
+            }
           }
         ],
-        "currentTab": 3
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "active": "13bb413ad96c8881",
   "lastOpenFiles": [
