@@ -6,7 +6,7 @@
 ## For Note Making
 1. Nitin Sangwan (Overall)
 2. Pankaj Rasgania (General)
-3. Neha Bhosle (Only a few good pointers/thinkers, *very selectively*)
+3. Neha Bhosle (Only a few good pointers/thinkers, **very  very selectively**)
 4. PYQs (for alignment)
 5. Akshat Kaushal (only for P2)
 6. BK Nagla

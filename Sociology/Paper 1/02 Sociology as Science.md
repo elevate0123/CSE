@@ -22,7 +22,7 @@ tags:
 ### Science
 Science is a `systematic` *body* of **knowledge**.
 
- /git
+ 
 
 
 

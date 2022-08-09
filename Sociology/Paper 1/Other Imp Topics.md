@@ -1,3 +1,15 @@
+---
+aliases: [miscellaneous, other]
+
+tags:
+  - cultural_reproduction
+  - social_capital
+  - cultural_lag
+  - labelling_theory
+  - ethnocentrism
+---
+
+***
 # Other important topics
 ***
 
