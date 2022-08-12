@@ -1,4 +1,6 @@
 [
   "obsidian-style-settings",
-  "obsidian-git"
+  "obsidian-git",
+  "obsidian-pandoc",
+  "obsidian-spaced-repetition"
 ]

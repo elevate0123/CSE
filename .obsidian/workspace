@@ -129,6 +129,14 @@
               "type": "git-view",
               "state": {}
             }
+          },
+          {
+            "id": "44e7a04f7bcf7cbc",
+            "type": "leaf",
+            "state": {
+              "type": "review-queue-list-view",
+              "state": {}
+            }
           }
         ],
         "currentTab": 4
@@ -138,7 +146,7 @@
     "width": 300,
     "collapsed": true
   },
-  "active": "13bb413ad96c8881",
+  "active": "44e7a04f7bcf7cbc",
   "lastOpenFiles": [
     "Sociology/Paper 1/03 Research Methods and Analysis.md",
     "Sociology/Paper 1/04 2 Karl Marx.md",

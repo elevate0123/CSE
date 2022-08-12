@@ -96,7 +96,7 @@ SM in Socio - To give concrete shapes to the Sociological concepts so that they 
 6. Habermas - Sci is Presumptive
 7. Paul Feyerbend - Epistemological Anarchism 
 
-
+/commi
 
 ***
 
