@@ -13,4 +13,3 @@ tags:
 [[Sociology Index#-- Paper 01]]
 
 
-/commi

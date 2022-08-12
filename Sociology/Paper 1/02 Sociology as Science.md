@@ -22,9 +22,83 @@ tags:
 ### Science
 Science is a `systematic` *body* of **knowledge**.
 
- 
+### Science
+ Science is a systematic organized body of knowledge wherein conclusions are drawn from interrelated facts
+ Science is use of systematic methods of empirical investigation, analysis of data, theoretical thinking, and the logical assessment of arguments to develop a body of knowledge about a particular subject matter
+
+#### Goal of Science - 
+1. Explain why something happens
+2. Make generalizations
+3. Predict or specify the future events
+
+#### Characteristics/Features of Science - 
+1. It is rooted in empiricism
+2. Self reflective and corrective, as its conclusions are open to scepticism. Questioning everything is the nature of Science
+3. Rational in nature
+4. Based on Objective research methods
+5. Based on Facts and not speculations
+6. Universal in application across time and space
 
 
+#### Sociology as Science SaS
+
+Early Social scientists - True knowledge can be gained through sensory perception. Socio is also empirical in approach
+
+Comte - Social Physics
+Herbert Spencer - Organismic Analogy ~ Darwinism Evolutionary Biology
+ED - Social facts = natural facts
+Social statics, Social dynamics, Mechanical equilibrium
+
+Socio has inter-subjective reality, disciplines basic concepts have a universal meaning eg family, religion
+
+ED - Meaning of Social facts remains the same as natural facts. Indirect experimentation to prove empirical validity of socio theories
+Weber - Objectivity is possible through methods like Verstehen and Ideal types
+
+#### Limitations SaS
+1. Difficulty of being empirical, inductive and universal in applications
+2. Controlled & Repeated experimentation isn't possible in Sociology 
+3. Difficulty in testing the results
+4. Human interactions cannot be quantified so Socio cannot be objective
+5. Weber - Social Actions must be understood in terms of meanings that man attaches to them, So there can be no objective science of society
+6. Carl Jung - Subjective things like pain, beauty, happiness cannot be measured by Sci methods, so methodology  should be discipline specific
+
+
+
+##### Natural Sciences own Limitations
+Vagueness, Unpredictability, problems of testability.
+Karl Popper - Science is not a body of knowledge, but a method of approaching
+
+Socio & Science share features - Perspectives, subject matter, method of study, etc
+
+### Scientific Method
+SM - Systematic, rational, objective set of steps to explore the truth or new knowledge or for investigating phenomena or correcting and integrating previous knowledge 
+SM ~ Is related with Discovery of Laws
+
+George Lundberg - SM consists of 3 basic steps - Systematic observation, classification, data interpretation
+SM in Socio - To give concrete shapes to the Sociological concepts so that they are understood in the same way by different people. Ensures that Sociology as a body of knowledge is systematised and is given a definite shape
+
+#### SM Elements Characteristics
+1. Perspectives and Problem Definition - 
+2. Hypothesis Formulation - 
+3. Information gathering using research methods & building causal explanations -
+4. Interpretations of results, analysis, comparison, classification - 
+5. Theory Building - 
+
+
+
+
+#### SM Criticism
+1. Karl Popper, The Logic of Scientific Discovery - Sci+SM face problem of Demarcation (what is Scientific and what is not, is subjective at times) Scientific principles are based on Probability and not Finality
+2. Social life cannot be Laboratorized - Controlled experimentation isn't possible, to establish Cause & Effect relationship, so not discovery of Fixed Universal Laws
+3. Value judgements of researcher, so there cannot be Objective facts as outcome
+4. Adorno - Sci is suffocating and kills creativity. It becomes the new Religion, blind faith in it negates human freedom which is an integral part of soc sci
+5. JF Feyerbend - SM restricts choices of researcher, socio research should be free & liberating
+6. Habermas - Sci is Presumptive
+7. Paul Feyerbend - Epistemological Anarchism 
+
+
+
+***
 
 Immanuel Kant: There are two sources of knowledge – Philosophy (deals with statement of values) and Science (deals with statement of facts). There is a logical gap between scientific conclusion and philosophical conclusion. They are qualitatively different.
 Neo-Kantian (followers of Kant): Science is nomothetic (tendency to generalize) and philosophy is ideographic (tendency to specify).
@@ -43,7 +117,7 @@ Epistemology interpretivist | empiricist
 Human nature voluntarism | determinism
 Methodology ideographic | nomothetic
 
-
+***
 ## Major theoretical strands of research methodology
 ***
 
