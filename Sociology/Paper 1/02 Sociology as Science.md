@@ -16,7 +16,7 @@ tags:
 ***
 #Socio/Science 
 
-## Science, scientific method and critique
+## Science & Sociology as Science SaS 
 ***
 
 ### Science
@@ -70,6 +70,9 @@ Karl Popper - Science is not a body of knowledge, but a method of approaching
 
 Socio & Science share features - Perspectives, subject matter, method of study, etc
 
+## Scientific method and critique
+***
+
 ### Scientific Method
 SM - Systematic, rational, objective set of steps to explore the truth or new knowledge or for investigating phenomena or correcting and integrating previous knowledge 
 SM ~ Is related with Discovery of Laws
@@ -96,7 +99,7 @@ SM in Socio - To give concrete shapes to the Sociological concepts so that they 
 6. Habermas - Sci is Presumptive
 7. Paul Feyerbend - Epistemological Anarchism 
 
-/commi
+
 
 ***
 
@@ -121,11 +124,14 @@ Methodology ideographic | nomothetic
 ## Major theoretical strands of research methodology
 ***
 
+RM is a wider term given to the entire process of Research which included specific approach, ideology, RM, research design, data, assumption and logics used in the process
 
+Socio research guided by researchers conception of relation between man and society
 
-
-
-
+Socio Approaches ---> 
+Micro and Macro
+Positivist and Interpretivists
+Functional-Conflict and Ethnomethodology - Symbolic Interactionism
 
 
 
@@ -133,9 +139,66 @@ Methodology ideographic | nomothetic
 ## Positivism and its critique
 ***
 
+#### First Questions - 
+1. Subject matter of Sociology
+2. Methodology to be adopted
+
+Influenced by the prevailing atmosphere of rationalism and science, earlier Socios followed a similar line for the new subject to be scientific and objective in terms
+
+Saint Simon, August Comte, ED, Herbert Spencer laid the foundation of Positivistic theory
+Society is predictable as it is governed by certain fixed laws. They believed that application of methods based on natural sciences will lead to the Positive Science of Society and evolution of society follows invariable laws. 
+
+Laws of society, true knowledge, causal relationship
+
+Positivism is the approach that employs principles and methods similar to those in natural sciences
+Saint Simon - Positivism was rooted in a science of society which is analogous to natural sciences
+Comte - Socio is the last & the most sophisticated of all the sciences as t deals with all aspects of humanity and society. Social Dynamics - social change and Social Statics - equilibrium and stability of Social System
+
+#### 4 methods of study -
+1. Observation
+2. Experimentation 
+3. Historical
+4. Comparative
+
+### Dimensions of Positivism -
+1. Empiricism & Direct Observation
+2. Use of SM
+3. Experimentation & Theory Building
+4. Cause & Effect
 
 
+### Positivism Features -
+1. Emphasis on behaviour that can be directly observed. Feelings and meanings which cannot be directly observed are not seemed to be important
+2. Emphasis on understanding External realities, and not internals like meanings and motives.
+3. ED - Study of Social Facts as these can be seen objectively
+4. Discovery of Cause-Effect relationship while studying phenomena
+5. Use of SM similar to Natural sciences. ED used statistical techniques for suicide study
+6. Focus was on Empiricism and rejected commonsensical speculation
+7. Formulation of grand theories and universality of laws & principles was prime motive
+8. Predictability of Social events based on existing knowledge and theory was essential. Comte - Law of social organisation to predict future events
+9. Used Deductive approaches - Generalise - Nomothetic
+10. Sociological knowledge should be Testable. True Knowledge is the one which can be tested
 
+Human Behaviour & working of society is predictable and so it can be quantified in concrete terms. Positivists make deterministic and predictive statements about the social factors
+
+### Criticism - Inherent Limitations
+1. Phenomenologists Peter Berger - Facts never fall from sky, but develop in a particular context
+2. Inductive approach would be more helpful as it is difficult to collect facts about abstract phenomena
+3. Adorno - Positivism is driven by -ve Dialectics
+4. Adorno - Social life exists in layers, but Positivists only focus on 1/2 layers
+5. Weber - Contextual study helps, because human behaviour & state of mind is subjective
+6. Weber - Socio is a science till it is concerned with meaningful study of social action it a value neutral fashion
+7. Positivists explanations are difficult to test
+8. Over emphasized on Universalism which isn't possible
+9. Anthony Giddens - Actions have multiple interpretations in Sociology & only 1 in Sciences
+10. Possible fallouts of over emphasis on Positivism - Scientific Marxism - Fascism, Scientific Racial Explanations 
+11. Fundamental misunderstanding of social reality. Weber - Study social action & not social facts. Alfred Schulz - Human construct their world through common sense, ethical values, etc. 
+12. Positivism is a Pseudo-Scientific discipline
+13. Critical Theorist Habermas - P loses sight of the actors reducing them to passive entities determined by natural forces. Empirical Anarchism - Socio for Humanist approach & not Positivist approach
+14. Ritzer - Sociology is a multi pragmatic science in its own sense
+
+
+However, Positivist freed social sciences from the clutches of religion and speculative philosophy, thus laying a solid foundation of a systematic study of society
 
 
 
@@ -143,6 +206,19 @@ Methodology ideographic | nomothetic
 
 ## Fact value and objectivity
 ***
+#### Concept
+An abstraction representing objects/phenomena. Proxies of objects. Eg - Family, Caste, Kinships, etc
+Concepts should be unambiguous, precise and agreed upon by all so as to clarify researchers thinking. Concepts are abstract so must be operationalised. Eg - Social status concept operationalised by indicators like occupation, income
+
+### Fact
+Latin word - Factum - Something made or done
+
+
+/commi
+
+### Value
+
+### Objectivity
 
 
 

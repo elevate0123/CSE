@@ -1,6 +1,12 @@
 [
   "obsidian-style-settings",
   "obsidian-git",
+  "obsidian-spaced-repetition",
+  "table-editor-obsidian",
+  "obsidian-mind-map",
+  "cm-editor-syntax-highlight-obsidian",
+  "obsidian-outliner",
   "obsidian-pandoc",
-  "obsidian-spaced-repetition"
+  "tag-wrangler",
+  "obsidian-reading-time"
 ]
