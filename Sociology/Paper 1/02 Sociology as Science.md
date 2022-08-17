@@ -46,12 +46,12 @@ Early Social scientists - True knowledge can be gained through sensory perceptio
 
 Comte - Social Physics
 Herbert Spencer - Organismic Analogy ~ Darwinism Evolutionary Biology
-ED - Social facts = natural facts
+#ED ED - Social facts = natural facts
 Social statics, Social dynamics, Mechanical equilibrium
 
 Socio has inter-subjective reality, disciplines basic concepts have a universal meaning eg family, religion
 
-ED - Meaning of Social facts remains the same as natural facts. Indirect experimentation to prove empirical validity of socio theories
+#ED - Meaning of Social facts remains the same as natural facts. Indirect experimentation to prove empirical validity of socio theories
 Weber - Objectivity is possible through methods like Verstehen and Ideal types
 
 #### Limitations SaS
@@ -66,7 +66,7 @@ Weber - Objectivity is possible through methods like Verstehen and Ideal types
 
 ##### Natural Sciences own Limitations
 Vagueness, Unpredictability, problems of testability.
-Karl Popper - Science is not a body of knowledge, but a method of approaching
+Karl #Popper - Science is not a body of knowledge, but a method of approaching
 
 Socio & Science share features - Perspectives, subject matter, method of study, etc
 
@@ -91,24 +91,24 @@ SM in Socio - To give concrete shapes to the Sociological concepts so that they 
 
 
 #### SM Criticism
-1. Karl Popper, The Logic of Scientific Discovery - Sci+SM face problem of Demarcation (what is Scientific and what is not, is subjective at times) Scientific principles are based on Probability and not Finality
+1. Karl #Popper, The Logic of Scientific Discovery - Sci+SM face problem of Demarcation (what is Scientific and what is not, is subjective at times) Scientific principles are based on Probability and not Finality
 2. Social life cannot be Laboratorized - Controlled experimentation isn't possible, to establish Cause & Effect relationship, so not discovery of Fixed Universal Laws
 3. Value judgements of researcher, so there cannot be Objective facts as outcome
-4. Adorno - Sci is suffocating and kills creativity. It becomes the new Religion, blind faith in it negates human freedom which is an integral part of soc sci
-5. JF Feyerbend - SM restricts choices of researcher, socio research should be free & liberating
-6. Habermas - Sci is Presumptive
-7. Paul Feyerbend - Epistemological Anarchism 
+4. #Adorno - Sci is suffocating and kills creativity. It becomes the new Religion, blind faith in it negates human freedom which is an integral part of soc sci
+5. JF #Feyerbend - SM restricts choices of researcher, socio research should be free & liberating
+6. #Habermas - Sci is Presumptive
+7. Paul #Feyerbend - Epistemological Anarchism 
 
 
 
 ***
 
-Immanuel Kant: There are two sources of knowledge – Philosophy (deals with statement of values) and Science (deals with statement of facts). There is a logical gap between scientific conclusion and philosophical conclusion. They are qualitatively different.
+Immanuel #Kant: There are two sources of knowledge – Philosophy (deals with statement of values) and Science (deals with statement of facts). There is a logical gap between scientific conclusion and philosophical conclusion. They are qualitatively different.
 Neo-Kantian (followers of Kant): Science is nomothetic (tendency to generalize) and philosophy is ideographic (tendency to specify).
 Radcliffe-Brown: Sociology is nomothetic.
-Max Weber: Sociology is neither nomothetic nor ideographic. It is subjective understanding of objective reality
+Max #Weber: Sociology is neither nomothetic nor ideographic. It is subjective understanding of objective reality
 
-Giddens puts it, sociology is a scientific endeavour according to this definition, as it involves systematic methods of empirical investigation, analysis of data and assessment of theories in light of evidence and logical argument
+#Giddens puts it, sociology is a scientific endeavour according to this definition, as it involves systematic methods of empirical investigation, analysis of data and assessment of theories in light of evidence and logical argument
 
 There are four sets of postulates which social scientists apply to their disciplines which determines the degree of science involved. These are:  
 Ontological | Epistemological | Human Nature | Methodological
@@ -151,8 +151,8 @@ Society is predictable as it is governed by certain fixed laws. They believed th
 Laws of society, true knowledge, causal relationship
 
 Positivism is the approach that employs principles and methods similar to those in natural sciences
-Saint Simon - Positivism was rooted in a science of society which is analogous to natural sciences
-Comte - Socio is the last & the most sophisticated of all the sciences as t deals with all aspects of humanity and society. Social Dynamics - social change and Social Statics - equilibrium and stability of Social System
+Saint #Simon - Positivism was rooted in a science of society which is analogous to natural sciences
+#Comte - Socio is the last & the most sophisticated of all the sciences as t deals with all aspects of humanity and society. Social Dynamics - social change and Social Statics - equilibrium and stability of Social System
 
 #### 4 methods of study -
 1. Observation
@@ -170,32 +170,32 @@ Comte - Socio is the last & the most sophisticated of all the sciences as t deal
 ### Positivism Features -
 1. Emphasis on behaviour that can be directly observed. Feelings and meanings which cannot be directly observed are not seemed to be important
 2. Emphasis on understanding External realities, and not internals like meanings and motives.
-3. ED - Study of Social Facts as these can be seen objectively
+3. #ED - Study of Social Facts as these can be seen objectively
 4. Discovery of Cause-Effect relationship while studying phenomena
-5. Use of SM similar to Natural sciences. ED used statistical techniques for suicide study
+5. Use of SM similar to Natural sciences. #ED used statistical techniques for suicide study
 6. Focus was on Empiricism and rejected commonsensical speculation
 7. Formulation of grand theories and universality of laws & principles was prime motive
-8. Predictability of Social events based on existing knowledge and theory was essential. Comte - Law of social organisation to predict future events
+8. Predictability of Social events based on existing knowledge and theory was essential. #Comte - Law of social organisation to predict future events
 9. Used Deductive approaches - Generalise - Nomothetic
 10. Sociological knowledge should be Testable. True Knowledge is the one which can be tested
 
 Human Behaviour & working of society is predictable and so it can be quantified in concrete terms. Positivists make deterministic and predictive statements about the social factors
 
 ### Criticism - Inherent Limitations
-1. Phenomenologists Peter Berger - Facts never fall from sky, but develop in a particular context
+1. Phenomenologists Peter #Berger - Facts never fall from sky, but develop in a particular context
 2. Inductive approach would be more helpful as it is difficult to collect facts about abstract phenomena
-3. Adorno - Positivism is driven by -ve Dialectics
-4. Adorno - Social life exists in layers, but Positivists only focus on 1/2 layers
-5. Weber - Contextual study helps, because human behaviour & state of mind is subjective
-6. Weber - Socio is a science till it is concerned with meaningful study of social action it a value neutral fashion
+3. #Adorno - Positivism is driven by -ve Dialectics
+4. #Adorno - Social life exists in layers, but Positivists only focus on 1/2 layers
+5. #Weber - Contextual study helps, because human behaviour & state of mind is subjective
+6. #Weber - Socio is a science till it is concerned with meaningful study of social action it a value neutral fashion
 7. Positivists explanations are difficult to test
 8. Over emphasized on Universalism which isn't possible
-9. Anthony Giddens - Actions have multiple interpretations in Sociology & only 1 in Sciences
+9. Anthony #Giddens - Actions have multiple interpretations in Sociology & only 1 in Sciences
 10. Possible fallouts of over emphasis on Positivism - Scientific Marxism - Fascism, Scientific Racial Explanations 
-11. Fundamental misunderstanding of social reality. Weber - Study social action & not social facts. Alfred Schulz - Human construct their world through common sense, ethical values, etc. 
+11. Fundamental misunderstanding of social reality. #Weber - Study social action & not social facts. Alfred #Schulz - Human construct their world through common sense, ethical values, etc. 
 12. Positivism is a Pseudo-Scientific discipline
-13. Critical Theorist Habermas - P loses sight of the actors reducing them to passive entities determined by natural forces. Empirical Anarchism - Socio for Humanist approach & not Positivist approach
-14. Ritzer - Sociology is a multi pragmatic science in its own sense
+13. Critical Theorist #Habermas - P loses sight of the actors reducing them to passive entities determined by natural forces. Empirical Anarchism - Socio for Humanist approach & not Positivist approach
+14. #Ritzer - Sociology is a multi pragmatic science in its own sense
 
 
 However, Positivist freed social sciences from the clutches of religion and speculative philosophy, thus laying a solid foundation of a systematic study of society
@@ -207,14 +207,14 @@ However, Positivist freed social sciences from the clutches of religion and spec
 ## Fact value and objectivity
 ***
 #### Concept
-An abstraction representing objects/phenomena. Proxies of objects. Eg - Family, Caste, Kinships, etc
-Concepts should be unambiguous, precise and agreed upon by all so as to clarify researchers thinking. Concepts are abstract so must be operationalised. Eg - Social status concept operationalised by indicators like occupation, income
+An abstraction representing objects/phenomena. Proxies of objects. #Eg - Family, Caste, Kinships, etc
+Concepts should be unambiguous, precise and agreed upon by all so as to clarify researchers thinking. Concepts are abstract so must be operationalised. #Eg - Social status concept operationalised by indicators like occupation, income
 
 ### Fact
 Latin word - Factum - Something made or done
 
 
-/commi
+
 
 ### Value
 

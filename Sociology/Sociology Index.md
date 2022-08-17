@@ -23,7 +23,7 @@ Intro
 	
 Social Thinkers	4 #thinker
 	1 [[04 2 Karl Marx]] Marx #km #marx
-	2 ED #ed 
+	2 ED #ED 
 	3 Weber #weber #mw #max 
 	4 Parson [[04 4 Talcott Parsons|Talcott Parsons]] #parsons #tp
 	5 Merton #merton #rkm
@@ -31,7 +31,7 @@ Social Thinkers	4 #thinker
 	
 Stratification	5	Stratification #stratif 
 	
-Work Econ	6	Work Econ #econ 
+Work Econ	6	[[06 Work and Economic Life]] Work Econ #econ 
 	
 Politics	7	Politics #politics 
 	
@@ -74,7 +74,7 @@ Social Change (Section C)
 2. Government Schemes #schemes 
 3. Statistics, Data-Facts, Datasets #stats #dataset 
 4. Quotes #quote
-5. Recent Examples #eg
+5. Recent Examples #Eg
 6. Topper Scripts #script 
 7. [[PYQs Pointers]] PYQ Pointers #PYQ #modelanswer 
 8. 

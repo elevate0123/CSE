@@ -8,7 +8,7 @@ tags:
   - scheme
   - judgement
   - example
-  - eg 
+  - Eg 
 ---
 
 ***

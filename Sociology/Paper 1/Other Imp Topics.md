@@ -87,3 +87,18 @@ Dysfunctions of ethnocentrism:
 
 ***
 
+
+
+***
+## Zettelkasten and Sociology!
+
+Paul Otlet, the Belgian pioneer of documentation, worked according to a “monographic principle” (one card, one idea): the idea was to atomize books into conceptual units, which could then be linked through a universal classification.Otlet, _Traité de documentation_, 2015 [1934], pp. 256, 286.  
+
+ 
+> [!NOTE] German Socio & Zettelkasten
+>
+==**Niklas Luhmann, a very prolific German sociologist, used a _Zettelkasten_ (card box): a huge set of cards serving as a writing partner, prompting him with suggestions thanks to the methodical interrelation of cards according to shared themes.Luhmann, “Kommunikation mit Zettelkästen,” 1992.**==
+ 
+ More recently, Andy Matuschak has written about [“evergreen notes”](https://notes.andymatuschak.org/Evergreen_notes): cards which help develop insight, because they are atomic, concept-oriented and, most importantly, densely linked. And if you read Gordon Brander, well, [“all you need is links”](https://subconscious.substack.com/p/all-you-need-is-links): they are immensely expressive and so they can do almost anything—keywords, hierarchies, comments, recommendation, semantics, topic modeling, etc.
+ ***
+ 
