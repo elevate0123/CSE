@@ -5,16 +5,19 @@ tags:
   - science
   - humanities
   - Socio/Science 
-  - positivist
+  - Positivists
   - nonpositivist
   - strands
   - methodology
+sr-due: 2022-08-21
+sr-interval: 3
+sr-ease: 250
 ---
 
 ***
 # Unit 2 Sociology as Science
 ***
-#Socio/Science 
+#Socio/Science #review 
 
 ## Science & Sociology as Science SaS 
 ***
@@ -65,8 +68,8 @@ Weber - Objectivity is possible through methods like Verstehen and Ideal types
 
 
 ##### Natural Sciences own Limitations
-Vagueness, Unpredictability, problems of testability.
-Karl #Popper - Science is not a body of knowledge, but a method of approaching
+1. Vagueness, Unpredictability, problems of testability.
+2. Karl #Popper - Science is not a body of knowledge, but a method of approaching
 
 Socio & Science share features - Perspectives, subject matter, method of study, etc
 
@@ -212,13 +215,71 @@ Concepts should be unambiguous, precise and agreed upon by all so as to clarify 
 
 ### Fact
 Latin word - Factum - Something made or done
+An empirically verifiable observation that can be agreed upon as real, definite, incontrovertible, and having its own existence 
+Remain same in e very conditions for all observers
+- Objective facts - Subject matter of Natural Sciences
+- Social Facts - Sociology
+#ED - To make Sociology a science, attention should be paid only on factual analysis and not subjective interpretation and individual perceptions
 
+Criticism -
+1. No agreement on which Social Facts are universal. #Eg - Capitalism as a social fact in any social system may be viewed differently
+2. Difficulty in defining and concretising social facts, because their meanings change with the changing context
+Therefore, Sociology cannot be based on facts alone, as human consciousness is intangible and cannot be measured against dry factual standards
 
+#### Theory
+Observed facts are systematised and their relation is expressed into a set of general statements that account for the causal relations between the observed facts
+It is a general statement, established, tested and supported by evidence
 
+##### Socio & Theory
+Positivists stand for predictability of future events as an essential part of Sociology
+Interpretivists consider theory building in Socio as a futile task
 
 ### Value
+Subjective disposition arising out of experience, bias, preferences, beliefs. Can be personal, cultural, temporal, and situation specific. They may change over a period of time
+Values represent what one believes, and may not represent actual reality
+#Functionalists - Values are of society, and not individuals & are a medium of social control
+Values are associated with ideological thinking & may be at diverging ends
+#Positivists - For objective evaluation, keep personal values aside
+Non positivists accorded Values their due significance, as it is not possible to avoid them totally
 
-### Objectivity
+#### Fact - Value Distinction / Dichotomy
+
+#Remaining 
+
+
+### Objectivity ~ Value Freedom ~ Core of Positivism
+An approach in which the attitude of an investigator is detached, unprejudiced, value free and free from biases. 
+Values are the basis of biases and subjectivity, as they flow from preconceived notions like caste, gender, religion, etc.
+Robert Bierstedt - Objectivity means that conclusions arrived at as a result of inquiry, investigation independent of race, creed, colour predisposition of the investigator
+Objectivity presupposes value neutrality and predictability about outcome
+
+#### Objectivity in Methodology 
+Objectivity in research can be improved by various #SM like double blind, Verstehen, enlarging samples, expanding research
+Reflexivity - Viewing ones own work from an outsiders perspective for an objective evaluation
+
+Biases | Research Stage | Eg
+------------ | ------------ | -------
+Personal Preferences | Choice of Topic | Problem definition
+Subjectivity in methods | Collection of Facts | Primary/Secondary methods
+Personal Biases | Interpretation of Facts | Coloured by personal biases, Caste, Race
+View Points | Formulation of Theory | Durkheimian - Marxian opposites
+Choice of Tools | Testing | Subjectivity as no controlled environment
+
+
+Proponents of Objectivity - Refrain from Questions of what ought to be, instead focus on explaining what is
+
+Humans have consciousness so complete Objectivity is neither achievable nor desirable 
+#Dilthey - Facts based approach explores only 1 dimension and ignores cultural-ideological dimensions
+A particular social problem can be understood only within a particular context and ignoring the context may lead to faulty understanding of the problem
+Post Positivist Elvin #Gouldner - Value neutrality is an Elusive goal in Sociology, as there are multi-layered truths
+#Giddens - Structure is seen as object & social action as value laden, both are 2 sides of the same coin and cannot exist independently 
+Contemporary Researchers - Give due weight to objectivity, buy recognize futility of doing away with the value influence completely
+
+Objectivity is neither an end in itself nor a fixed principle, it undergoes changes
+
+***`Objectivity ~= Value Neutrality`***
+One can accept the prevailing ideas of society and still remain objective in ones approach
+
 
 
 
@@ -227,6 +288,32 @@ Latin word - Factum - Something made or done
 
 ## Non - positivist methodologies
 ***
+/commi
+
+
+
+
+### Interpretivist Sociology
+
+
+
+### Phenomenology ~ European
+Study of Phenomenon in society
+Gabriella Farina - Phenomenology is neither a doctrine, nor a philosophical experience, but is merely a style of thought and method by which the investigator can have different experiences and results each time
+Subject matter of natural sciences and social sciences is fundamentally different as man has consciousness and material things don't. Meanings don't have their own independent existence and are created and reconstructed by the actors in their course of social interaction. 
+Social World is full of meanings and there is no objective reality which lies beyond the meaning of individual
+Alfred Schutz - The Phenomenology of Social World, based on works of Edmund Husserl
+
+
+
+
+### Symbolic Interactionism
+
+
+
+
+### Ethnomethodology
+
 
 
 

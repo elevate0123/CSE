@@ -22,10 +22,10 @@ Intro
 	3	[[03 Research Methods and Analysis|Research Methods]] Research Methods #research #methods
 	
 Social Thinkers	4 #thinker
-	1 [[04 2 Karl Marx]] Marx #km #marx
+	1 [[04 2 Karl Marx]] Marx #km #Marx
 	2 ED #ED 
 	3 Weber #weber #mw #max 
-	4 Parson [[04 4 Talcott Parsons|Talcott Parsons]] #parsons #tp
+	4 Parson [[04 4 Talcott Parsons|Talcott Parsons]] #Parsons #tp
 	5 Merton #merton #rkm
 	6 Mead #mead #hm 
 	

@@ -4,7 +4,7 @@ aliases: [Karl Marx, Marx]
 tags:
   - km
   - karlmarx
-  - marx 
+  - Marx 
 ---
 
 ***
