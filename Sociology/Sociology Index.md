@@ -22,14 +22,14 @@ Intro
 	3	[[03 Research Methods and Analysis|Research Methods]] Research Methods #research #methods
 	
 Social Thinkers	4 #thinker
-	1 [[04 2 Karl Marx]] Marx #km #Marx
+	1 [[04 2 Karl Marx]] Marx #Marx #Marx
 	2 ED #ED 
-	3 Weber #weber #mw #max 
+	3 Weber #weber #Weber #Weber 
 	4 Parson [[04 4 Talcott Parsons|Talcott Parsons]] #Parsons #tp
 	5 Merton #merton #rkm
 	6 Mead #mead #hm 
 	
-Stratification	5	Stratification #stratif 
+Stratification	5	Stratification #Stratification 
 	
 Work Econ	6	[[06 Work and Economic Life]] Work Econ #econ 
 	

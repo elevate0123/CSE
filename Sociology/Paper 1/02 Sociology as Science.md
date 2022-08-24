@@ -47,23 +47,23 @@ Science is a `systematic` *body* of **knowledge**.
 
 Early Social scientists - True knowledge can be gained through sensory perception. Socio is also empirical in approach
 
-Comte - Social Physics
-Herbert Spencer - Organismic Analogy ~ Darwinism Evolutionary Biology
-#ED ED - Social facts = natural facts
+#Comte - Social Physics
+Herbert #Spencer - Organismic Analogy ~ Darwinism Evolutionary Biology
+#ED  - Social facts = natural facts
 Social statics, Social dynamics, Mechanical equilibrium
 
 Socio has inter-subjective reality, disciplines basic concepts have a universal meaning eg family, religion
 
-#ED - Meaning of Social facts remains the same as natural facts. Indirect experimentation to prove empirical validity of socio theories
-Weber - Objectivity is possible through methods like Verstehen and Ideal types
+#ED Meaning of Social facts remains the same as natural facts. Indirect experimentation to prove empirical validity of socio theories
+#Weber - Objectivity is possible through methods like Verstehen and Ideal types
 
 #### Limitations SaS
 1. Difficulty of being empirical, inductive and universal in applications
 2. Controlled & Repeated experimentation isn't possible in Sociology 
 3. Difficulty in testing the results
 4. Human interactions cannot be quantified so Socio cannot be objective
-5. Weber - Social Actions must be understood in terms of meanings that man attaches to them, So there can be no objective science of society
-6. Carl Jung - Subjective things like pain, beauty, happiness cannot be measured by Sci methods, so methodology  should be discipline specific
+5. #Weber - Social Actions must be understood in terms of meanings that man attaches to them, So there can be no objective science of society
+6. Carl #Jung - Subjective things like pain, beauty, happiness cannot be measured by Sci methods, so methodology  should be discipline specific
 
 
 
@@ -77,7 +77,7 @@ Socio & Science share features - Perspectives, subject matter, method of study, 
 ***
 
 ### Scientific Method
-SM - Systematic, rational, objective set of steps to explore the truth or new knowledge or for investigating phenomena or correcting and integrating previous knowledge 
+#SM - Systematic, rational, objective set of steps to explore the truth or new knowledge or for investigating phenomena or correcting and integrating previous knowledge 
 SM ~ Is related with Discovery of Laws
 
 George Lundberg - SM consists of 3 basic steps - Systematic observation, classification, data interpretation
@@ -127,7 +127,7 @@ Methodology ideographic | nomothetic
 ## Major theoretical strands of research methodology
 ***
 
-RM is a wider term given to the entire process of Research which included specific approach, ideology, RM, research design, data, assumption and logics used in the process
+#RM is a wider term given to the entire process of Research which included specific approach, ideology, RM, research design, data, assumption and logics used in the process
 
 Socio research guided by researchers conception of relation between man and society
 
@@ -175,7 +175,7 @@ Saint #Simon - Positivism was rooted in a science of society which is analogous 
 2. Emphasis on understanding External realities, and not internals like meanings and motives.
 3. #ED - Study of Social Facts as these can be seen objectively
 4. Discovery of Cause-Effect relationship while studying phenomena
-5. Use of SM similar to Natural sciences. #ED used statistical techniques for suicide study
+5. Use of #SM similar to Natural sciences. #ED used statistical techniques for suicide study
 6. Focus was on Empiricism and rejected commonsensical speculation
 7. Formulation of grand theories and universality of laws & principles was prime motive
 8. Predictability of Social events based on existing knowledge and theory was essential. #Comte - Law of social organisation to predict future events
@@ -288,7 +288,7 @@ One can accept the prevailing ideas of society and still remain objective in one
 
 ## Non - positivist methodologies
 ***
-/commi
+
 
 
 
@@ -299,10 +299,10 @@ One can accept the prevailing ideas of society and still remain objective in one
 
 ### Phenomenology ~ European
 Study of Phenomenon in society
-Gabriella Farina - Phenomenology is neither a doctrine, nor a philosophical experience, but is merely a style of thought and method by which the investigator can have different experiences and results each time
+Gabriella #Farina - Phenomenology is neither a doctrine, nor a philosophical experience, but is merely a style of thought and method by which the investigator can have different experiences and results each time
 Subject matter of natural sciences and social sciences is fundamentally different as man has consciousness and material things don't. Meanings don't have their own independent existence and are created and reconstructed by the actors in their course of social interaction. 
 Social World is full of meanings and there is no objective reality which lies beyond the meaning of individual
-Alfred Schutz - The Phenomenology of Social World, based on works of Edmund Husserl
+Alfred #Schutz - The Phenomenology of Social World, based on works of Edmund Husserl
 
 
 

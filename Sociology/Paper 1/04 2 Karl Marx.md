@@ -2,8 +2,8 @@
 aliases: [Karl Marx, Marx]
 
 tags:
-  - km
-  - karlmarx
+  - Marx
+  - Marx
   - Marx 
 ---
 
