@@ -30,12 +30,23 @@ Industrialization & Modernisation together led to the formation of new disciplin
 Work - Carrying of tasks requiring the expenditure of physical and mental efforts, with the objective of production of goods and services catering to human needs. 
 Economic Sociology - Work is an activity which results in paid employment, reward or contract
 
+## Need of Work in Society
+***
+
 ### Importance of Work in modern societies -
 1. Source of Income & Living - Money Market
 2. Breaks monotony of domestic life
 3. Gives identity to a person, as in Industrial societies, a person is known by the work carried out
 4. Provides opportunity to build Social Capital
 5. Directs human energy in constructive way to acquire skills
+
+### Social Significance of Work
+1. Money - Economic need
+2. Activity level - Experiment & experience Skills
+3. Variety - Breaks monotony
+4. Temporal Structure - Proved sense of direction on a daily basis
+5. Social Contracts - Friendship
+
 
 Work > Employment
 
@@ -123,6 +134,10 @@ Man now controlled Nature
 
 #Remaining 
 
+
+## Relation between Work & Economy
+***
+
 ### Social Determinants of Economic Development
 Uneven economic development of various societies prove that economic development depends on various Social factors. #Weber proves this relation in Protestant Ethics & Spirit of Capitalism #PESC 
 #Goldthorpe - Middle Class is not only about Wealth, but also about values & lifestyle
@@ -148,34 +163,19 @@ In case of #IndianSociety, lack of Economic development due to -
 ### Industrialisation & Social Change
 Industrialisation - Shift from animate (humans/animals) to inanimate (coal, electricity) source of power, Rise of factories & use of machinery in production of goods
 This phase was termed as Industrial Revolution #IR by Arnold #Toynbee 
+Overall transformation of some societies & so some regions emerged more prosperous than others, Skewed Prosperity!
 
 #### Social Changes due to IR
-1. Occupational Shifts
-2. Achievement based Division of Labour
-3. High DoL & Opportunity for Mobility
-4. Changing Power Relations
-5. New forms of Conflicts
-6. Demand for Skilled Jobs & Educational Changes
-7. Changing Family Structure
-8. Revolution & Marxian Thoughts 
+1. Occupational Shifts - Agriculture to Industry
+2. Achievement based Division of Labour - Communal-family DoL gave way to Scientific Division of Labour
+3. High DoL & Opportunity for Mobility - Increased stratification/specialisation
+4. Changing Power Relations - Decline of estates and rise of Capitalism. Land no longer remained central, industry & trade emerged as new sources of power
+5. New forms of Conflicts - Trade unionism, Labour mobilisation - New modes of class struggle
+6. Demand for Skilled Jobs & Educational Changes - Education as agent of Social change & facilitator of skill development
+7. Changing Family Structure - Mobile & Nuclear family
+8. Revolution & Marxian Thoughts - Industrialisation & Capitalism lead to real change - arrival of Socialism
+9. Misc. - More Jobs, more prosperity, better standard of life. 
 
-
-
-/commi
-
-
-## Need of Work in Society
-***
-1. A
-2. B
-3. C
-
-
-
-
-
-## Relation between Work & Economy
-***
 
 
 
@@ -183,6 +183,47 @@ This phase was termed as Industrial Revolution #IR by Arnold #Toynbee
 
 ## Formal & Informal Work in Society
 ***
+
+#Amitai Etzioni - Our society is an organisational society
+Organisations are social units with specific objective & goals to achieve unlike family, friends
+Rise in DoL -> Rise in various types of organisations
+
+
+### Formal Organisation of Work
+Worker is governed by formal rules & regulations
+
+#### Characteristics -
+1. Legal status
+2. High DoL
+3. Permanent Work
+4. Primacy of structure
+5. Rules & Regulations
+
+### Informal Organisation of Work ~ Unorganised sector
+Workers are governed by directions (often whims & fancies) of employer
+
+#### Characteristics -
+1. Low skilled
+2. Easy entry
+3. Low paid employment
+4. Lacks social security
+5. Immigrant Labour
+
+
+#### 4 Theoretical Strands explaining existence of Informal Sector
+1. Dualist School - Informal sector comprises of only a few marginal activities. Informal workers are excluded from modern economic activities
+	1. Imbalance between population & economic growth rate
+	2. Mismatch between peoples skills & structure of modern economic opportunities
+2. Structuralist School - Views informal sector as subordinated economic activity. It is an essential feature of a Globalised free market system
+3. Legalist School - Informal sector is made up of small entrepreneurs who choose to operate informally to avoid costs and registration
+4. Voluntarist School - Informal entrepreneurs deliberately seek to avoid regulations & taxation but do not blame Bureaucratic process, but do so based on cost-benefit analysis 
+
+
+
+
+
+### Labour & Society
+
 
 
 
