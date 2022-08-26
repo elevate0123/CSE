@@ -58,4 +58,4 @@ Any technique can be used for quantitative as well as qualitative method, but so
 
 
 
-
+/commi
