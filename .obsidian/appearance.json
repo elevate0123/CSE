@@ -1,7 +1,8 @@
 {
   "translucency": false,
   "theme": "obsidian",
-  "baseFontSize": 16,
-  "cssTheme": "Deep Work",
-  "textFontFamily": "Trebuchet MS"
+  "baseFontSize": 17,
+  "cssTheme": "Things",
+  "textFontFamily": "Trebuchet MS",
+  "accentColor": "#5cbce6"
 }

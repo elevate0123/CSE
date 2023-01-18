@@ -1,0 +1,167 @@
+{
+  "main": {
+    "id": "654835352da675e0",
+    "type": "split",
+    "children": [
+      {
+        "id": "f97ba87bd14bcfc2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "714437fd6a07242c",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "4 Sociology/Paper 1/010 Social Change in Modern Society.md",
+                "mode": "source",
+                "backlinks": true,
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "3e07818f66369182",
+    "type": "split",
+    "children": [
+      {
+        "id": "280992b595d97b8d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8ac7585ea10a8106",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "14e2afbccb58fcee",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "tag:#Hobbhouse",
+                "matchingCase": false,
+                "explainSearch": true,
+                "collapseAll": true,
+                "extraContext": true,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "9906a0674e23968e",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "437852c2768e1d8b",
+    "type": "split",
+    "children": [
+      {
+        "id": "b498463462145297",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "88ba671d124db152",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "4 Sociology/Paper 1/010 Social Change in Modern Society.md",
+                "collapseAll": false,
+                "extraContext": true,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": false
+              }
+            }
+          },
+          {
+            "id": "95384ff3be13410d",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "fc8f8463ca4fc201",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "4 Sociology/Paper 1/010 Social Change in Modern Society.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "17e97ce4a44f90c5",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "4 Sociology/Paper 1/010 Social Change in Modern Society.md"
+              }
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 370.5,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "obsidian-extract-pdf-highlights:PDF Highlights": false,
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "markdown-importer:Open format converter": false,
+      "audio-recorder:Start/stop recording": false,
+      "workspaces:Manage workspace layouts": false
+    }
+  },
+  "active": "8ac7585ea10a8106",
+  "lastOpenFiles": [
+    "SITrust/Surah Muzzammil Canvas.canvas",
+    "SITrust/Milad - Work Ethics.md",
+    "SITrust/Milad Letter.md",
+    "SITrust/Our Program.md",
+    "4 Sociology/Paper 1/08 Religion and Society.md",
+    "4 Sociology/Paper 1/010 Social Change in Modern Society.md",
+    "4 Sociology/Paper 1/06 Work and Economic Life.md",
+    "4 Sociology/Paper 1/Git Sample.md",
+    "4 Sociology/Paper 1/Untitled mindmap.md",
+    "4 Sociology/Paper 1/Miscellaneous.md"
+  ]
+}

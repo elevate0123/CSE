@@ -1,12 +1,13 @@
 [
   "obsidian-style-settings",
   "obsidian-git",
-  "obsidian-spaced-repetition",
-  "table-editor-obsidian",
   "obsidian-mind-map",
   "cm-editor-syntax-highlight-obsidian",
   "obsidian-outliner",
   "obsidian-pandoc",
   "tag-wrangler",
-  "obsidian-reading-time"
+  "obsidian-reading-time",
+  "better-word-count",
+  "obsidian-extract-pdf-highlights",
+  "obsidian-dictionary-plugin"
 ]

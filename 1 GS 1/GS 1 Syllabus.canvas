@@ -1,0 +1,21 @@
+{
+	"nodes":[
+		{"id":"1c7eff3f0cd64efd","x":-280,"y":-300,"width":250,"height":60,"color":"4","type":"text","text":"GS 1 Syllabus"},
+		{"id":"990135f8ccaa6899","x":-780,"y":-180,"width":250,"height":60,"type":"text","text":"Art Culture"},
+		{"id":"193778cfd75a4d66","x":-464,"y":-180,"width":250,"height":60,"type":"text","text":"Geography"},
+		{"id":"9e5c253c9e399484","x":-155,"y":-180,"width":250,"height":60,"type":"text","text":"Post Independence "},
+		{"id":"ea75e85412798e2c","x":160,"y":-180,"width":250,"height":60,"type":"text","text":"Modern History"},
+		{"id":"574c9750a0172515","x":-780,"y":80,"width":252,"height":400,"type":"file","file":"1 GS 1/Art Culture.md"},
+		{"id":"5598ee4a539d2add","x":-466,"y":80,"width":252,"height":400,"type":"file","file":"1 GS 1/Geography.md"},
+		{"id":"078a0c9b19499065","x":-165,"y":86,"width":260,"height":400,"type":"file","file":"1 GS 1/Post Independence.md"}
+	],
+	"edges":[
+		{"id":"8902cd8b2e729dba","fromNode":"990135f8ccaa6899","fromSide":"bottom","toNode":"574c9750a0172515","toSide":"top"},
+		{"id":"0915d9f6c3dc3ada","fromNode":"193778cfd75a4d66","fromSide":"bottom","toNode":"5598ee4a539d2add","toSide":"top"},
+		{"id":"6c95dccae13dcbd8","fromNode":"1c7eff3f0cd64efd","fromSide":"left","toNode":"990135f8ccaa6899","toSide":"top"},
+		{"id":"4c25d69da9447dcc","fromNode":"1c7eff3f0cd64efd","fromSide":"right","toNode":"ea75e85412798e2c","toSide":"top"},
+		{"id":"a8976183fa8affe1","fromNode":"1c7eff3f0cd64efd","fromSide":"bottom","toNode":"9e5c253c9e399484","toSide":"top"},
+		{"id":"e3c670b3fe85487d","fromNode":"1c7eff3f0cd64efd","fromSide":"bottom","toNode":"193778cfd75a4d66","toSide":"top"},
+		{"id":"547f16b9daed0926","fromNode":"9e5c253c9e399484","fromSide":"bottom","toNode":"078a0c9b19499065","toSide":"top"}
+	]
+}

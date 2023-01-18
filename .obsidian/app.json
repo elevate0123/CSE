@@ -1,16 +1,15 @@
 {
   "legacyEditor": false,
   "livePreview": true,
-  "showLineNumber": true,
+  "showLineNumber": false,
   "pdfExportSettings": {
-    "pageSize": "A4",
+    "pageSize": "Legal",
     "landscape": false,
     "margin": "0",
-    "downscalePercent": 100
+    "downscalePercent": 91
   },
   "strictLineBreaks": false,
   "spellcheckLanguages": [
-    "en-US",
     "en-GB"
   ],
   "attachmentFolderPath": "./",
@@ -21,6 +20,6 @@
   "alwaysUpdateLinks": true,
   "newFileLocation": "current",
   "communityThemeSortOrder": "download",
-  "trashOption": "system",
+  "trashOption": "local",
   "rightToLeft": false
 }
