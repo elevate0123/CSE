@@ -71,12 +71,15 @@ Adapted from the Biological evolution theory. #Comte #Tylor #Spencer #Marx #ED #
 		3. Reflective Thought
 		4. Critical Thought
 		5. Modern Science
-   dcds
+6. #Spencer Social Darwinist. 
+   d
 	1. 
+	2. 
 - 
+/commi
 
-
-2. Spencer - 
+1. Spencer - 
+2. 
 
 
 ## Agents of Social Change
