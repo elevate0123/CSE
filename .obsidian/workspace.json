@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "f97ba87bd14bcfc2",
+        "id": "41d23bb7fa8ce6fc",
         "type": "tabs",
         "children": [
           {
-            "id": "714437fd6a07242c",
+            "id": "01c0d9949ea9130f",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -49,7 +49,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#Hobbhouse",
+                "query": "tag:#Comte",
                 "matchingCase": false,
                 "explainSearch": true,
                 "collapseAll": true,
@@ -151,17 +151,17 @@
       "workspaces:Manage workspace layouts": false
     }
   },
-  "active": "8ac7585ea10a8106",
+  "active": "01c0d9949ea9130f",
   "lastOpenFiles": [
+    "SITrust/Surah Aale Imraan SITrust.canvas",
     "SITrust/Surah Muzzammil Canvas.canvas",
+    "4 Sociology/Paper 1/010 Social Change in Modern Society.md",
+    "4 Sociology/Paper 1/Other Imp Topics.md",
+    "4 Sociology/Paper 1/Miscellaneous.md",
+    "4 Sociology/Paper 1/Git Sample.md",
+    "4 Sociology/Paper 1/08 Religion and Society.md",
     "SITrust/Milad - Work Ethics.md",
     "SITrust/Milad Letter.md",
-    "SITrust/Our Program.md",
-    "4 Sociology/Paper 1/08 Religion and Society.md",
-    "4 Sociology/Paper 1/010 Social Change in Modern Society.md",
-    "4 Sociology/Paper 1/06 Work and Economic Life.md",
-    "4 Sociology/Paper 1/Git Sample.md",
-    "4 Sociology/Paper 1/Untitled mindmap.md",
-    "4 Sociology/Paper 1/Miscellaneous.md"
+    "SITrust/Our Program.md"
   ]
 }

@@ -71,12 +71,13 @@ Adapted from the Biological evolution theory. #Comte #Tylor #Spencer #Marx #ED #
 		3. Reflective Thought
 		4. Critical Thought
 		5. Modern Science
-6. #Spencer Social Darwinist. 
-   d
-	1. 
-	2. 
+6. #Spencer Social Darwinist - Idea of survival of the fittest. Evolution is a twin process of Differentiation & Integration from simple things to complex. Reality is governed by Cosmic Law
+	1. Stages of Evolution of societies - Simple - Compound - Doubly compound - Trebly Compound
+	2. Theory of Evolution from Militant Societies (involved in warfare) to Industrial Societies (based on friendship, altruism, elaborate specialisation, recognition for achievements)
+	3. *Comte* focussed on larger units like family, Spencer on individual. #Comte evolution is in realm of ideas, Intellectual development, while Spencer is in real material world.
+7. #Tonnies Ferdinand 
 - 
-/commi
+
 
 1. Spencer - 
 2. 
