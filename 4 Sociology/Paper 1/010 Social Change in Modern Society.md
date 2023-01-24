@@ -88,4 +88,3 @@ Adapted from the Biological evolution theory. #Comte #Tylor #Spencer #Marx #ED #
 
 ***
 ***
-/commi
