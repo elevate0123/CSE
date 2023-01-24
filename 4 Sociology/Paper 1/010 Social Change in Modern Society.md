@@ -11,6 +11,7 @@ tags:
 ***
 
 
+
 ## Concepts related to Social Change
 
 Social Change - Wilbert #Moore - Significant alteration in structure over time in behaviour patterns & culture, including norms & values
@@ -87,3 +88,4 @@ Adapted from the Biological evolution theory. #Comte #Tylor #Spencer #Marx #ED #
 
 ***
 ***
+/commi
