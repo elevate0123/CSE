@@ -41,11 +41,12 @@ Economic Sociology - Work is an activity which results in paid employment, rewar
 5. Directs human energy in constructive way to acquire skills
 
 ### Social Significance of Work
-1. Money - Economic need
-2. Activity level - Experiment & experience Skills
-3. Variety - Breaks monotony
-4. Temporal Structure - Proved sense of direction on a daily basis
-5. Social Contracts - Friendship
+1. Personal Identity - Work is valued for sense of social (stable) identity. Especially for men, self-esteem is bounded to economic contribution for household
+2. Money - Economic need
+3. Activity level - Experiment & experience Skills
+4. Variety - Breaks monotony
+5. Temporal Structure - Proved sense of direction on a daily basis
+6. Social Contracts - Friendship
 
 
 Work > Employment
@@ -70,9 +71,9 @@ Socially - reflects normative structure of Society in the form of stratified ord
 
 ### Primitive Slave Societies
 Man was overwhelmed by forces of nature, like rains, floods, which determined the social organisation. Forces of production were at lowest level and material density was low. Family was self-sufficient unit of production & consumption
-2 Classes 
-- Masters - Owners of mode of production & Slaves
-- Slaves - often Prisoners of War
+- 2 Classes 
+	- Masters - Owners of mode of production & Slaves
+	- Slaves - often Prisoners of War
 
 #### Features
 1. Major Economic Activity -Hunting & Food gathering
@@ -162,7 +163,7 @@ Uneven economic development of various societies prove that economic development
 8. Urbanisation level
 9. Secularisation
 
-In case of #IndianSociety, lack of Economic development due to -
+Lack of Economic development in #IndianSociety due to -
 1. Caste system rendered society fragmented
 2. Worldly Ascetism - Religious practices Islam Hinduism 
 3. Joint family system focussed on affective aspects & less on liberal enterprising values
@@ -197,7 +198,7 @@ Rise in DoL -> Rise in various types of organisations
 ### Formal Organisation of Work
 Worker is governed by formal rules & regulations
 
-#### Characteristics -
+#### Characteristics
 1. Legal status
 2. High DoL
 3. Permanent Work
@@ -206,15 +207,19 @@ Worker is governed by formal rules & regulations
 
 ### Informal Organisation of Work ~ Unorganised sector
 Workers are governed by directions (often whims & fancies) of employer
+#ILO IO characterised as consisting of units engaged in the production of g&s with the primary objective of generating employment and income to the persons concerned
 
-#### Characteristics -
+#### Characteristics (Keith #Hart coined the term IO)
 1. Low skilled
 2. Easy entry
 3. Low paid employment
 4. Lacks social security
-5. Immigrant Labour
+5. (primarily) Immigrant Labour
 
-#Remaining 
+At macro level - Work is informally organised in traditional societies and formally in modern societies. But Formal & Informal organisations cannot be strictly separated from each other
+
+Peter #Blau Informal structures exists even in formal organisations
+#Meyer & #Rowan Formal rules and practices are often quite distant from the practices actually adopted by the members of the organisation
 
 #### 4 Theoretical Strands explaining existence of Informal Sector
 1. Dualist School - Informal sector comprises of only a few marginal activities. Informal workers are excluded from modern economic activities
@@ -224,8 +229,13 @@ Workers are governed by directions (often whims & fancies) of employer
 3. Legalist School - Informal sector is made up of small entrepreneurs who choose to operate informally to avoid costs and registration
 4. Voluntarist School - Informal entrepreneurs deliberately seek to avoid regulations & taxation but do not blame Bureaucratic process, but do so based on cost-benefit analysis 
 
-#Remaining 
-
+##### Informal in Formal
+Organisation of Work depends on the task to be accomplished. #Eg Mission mode tasks require informal mode as it provides flexibility
+Ad-hoc committees in formal organisations also work in informal ways
+- IOs have their own limitations
+  1.  Some individuals may usurp power and promote vested interests
+  2. Undermine the main goals and principals of organisation
+  3. Ill consequences - Corporate scams, insider trading, collusive bribery
 
 
 ### Labour & Society
@@ -268,7 +278,7 @@ High DoL in factory and workplaces, suitable for mass production. Work process i
 Post Fordism Era - Focus is on customised production, so more flexibility & differentiation of work
 
 Feminist perspective - Labour in society in terms of Female participation
-Ann #Oakley Industrialisation confined womens at home, forced to take role of housewife.
+Ann #Oakley Industrialisation confined women at home, forced to take role of housewife.
 Women participation is increasing but there is Occupational Segregation
 
 Arlie #Hochsild Service industry requires manipulation of emotions. So labour is not just physical labour

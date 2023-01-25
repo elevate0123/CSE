@@ -26,12 +26,12 @@ sr-ease: 250
 Science is a systematic organized body of knowledge wherein conclusions are drawn from interrelated facts
 Science is use of systematic methods of empirical investigation, analysis of data, theoretical thinking, and the logical assessment of arguments to develop a body of knowledge about a particular subject matter
 
-#### Goal of Science - 
+#### Goal of Science 
 1. Explain why something happens
 2. Make generalizations
 3. Predict or specify the future events
 
-#### Characteristics/Features of Science - 
+#### Characteristics/Features of Science
 1. It is rooted in empiricism
 2. Self reflective and corrective, as its conclusions are open to scepticism. Questioning everything is the nature of Science
 3. Rational in nature
@@ -81,7 +81,7 @@ George Lundberg - SM consists of 3 basic steps - Systematic observation, classif
 SM in Socio - To give concrete shapes to the Sociological concepts so that they are understood in the same way by different people. Ensures that Sociology as a body of knowledge is systematised and is given a definite shape
 
 #### SM Elements Characteristics
-1. Perspectives and Problem Definition - 
+1. Perspectives and Problem Definition - #Remaining 
 2. Hypothesis Formulation - 
 3. Information gathering using research methods & building causal explanations -
 4. Interpretations of results, analysis, comparison, classification - 
@@ -139,7 +139,7 @@ Functional-Conflict and Ethnomethodology - Symbolic Interactionism
 ## Positivism and its critique
 ***
 
-#### First Questions - 
+#### First Questions
 1. Subject matter of Sociology
 2. Methodology to be adopted
 
@@ -154,20 +154,20 @@ Positivism is the approach that employs principles and methods similar to those 
 Saint #Simon - Positivism was rooted in a science of society which is analogous to natural sciences
 #Comte - Socio is the last & the most sophisticated of all the sciences as t deals with all aspects of humanity and society. Social Dynamics - social change and Social Statics - equilibrium and stability of Social System
 
-#### 4 methods of study -
+#### 4 methods of study
 1. Observation
 2. Experimentation 
 3. Historical
 4. Comparative
 
-### Dimensions of Positivism -
+### Dimensions of Positivism
 1. Empiricism & Direct Observation
 2. Use of SM
 3. Experimentation & Theory Building
 4. Cause & Effect
 
 
-### Positivism Features -
+### Positivism Features
 1. Emphasis on behaviour that can be directly observed. Feelings and meanings which cannot be directly observed are not seemed to be important
 2. Emphasis on understanding External realities, and not internals like meanings and motives.
 3. #ED - Study of Social Facts as these can be seen objectively
@@ -218,9 +218,9 @@ Remain same in e very conditions for all observers
 - Social Facts - Sociology
 #ED - To make Sociology a science, attention should be paid only on factual analysis and not subjective interpretation and individual perceptions
 
-Criticism -
-1. No agreement on which Social Facts are universal. #Eg - Capitalism as a social fact in any social system may be viewed differently
-2. Difficulty in defining and concretising social facts, because their meanings change with the changing context
+- Criticism
+	1. No agreement on which Social Facts are universal. #Eg - Capitalism as a social fact in any social system may be viewed differently
+	2. Difficulty in defining and concretising social facts, because their meanings change with the changing context
 Therefore, Sociology cannot be based on facts alone, as human consciousness is intangible and cannot be measured against dry factual standards
 
 #### Theory
@@ -285,7 +285,7 @@ One can accept the prevailing ideas of society and still remain objective in one
 
 ## Non - positivist methodologies
 ***
-
+#Remaining 
 
 
 
@@ -306,11 +306,11 @@ Alfred #Schutz - The Phenomenology of Social World, based on works of Edmund Hus
 
 ### Symbolic Interactionism
 
-
+#Remaining 
 
 
 ### Ethnomethodology
-
+#Remaining 
 
 
 
