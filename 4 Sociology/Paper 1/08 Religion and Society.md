@@ -22,7 +22,7 @@ Peter #Mandaville & #Paul James Religion - A relatively-bound system of beliefs,
 
 ### Functions of Religion / Role in maintaining Social Order 
 Can be studied at Individual/Societal level, Latent/Manifest Functions
-
+#Remaining 
 1. Social Change -
 2. Integrative Force -
 3. Social Control -
@@ -44,11 +44,9 @@ Can be studied at Individual/Societal level, Latent/Manifest Functions
 7. Doctrines like Predestination can make individual feel powerless and fatalistic
 
 
-
-
 ## Sociological Theories of Religion
 
-
+#Remaining 
 
 
 
@@ -58,7 +56,7 @@ Can be studied at Individual/Societal level, Latent/Manifest Functions
 
 ## Types of Religious Practices 
 
-++ Animatism
+++ Animatism #Remaining 
 ++ Bongaism
 
 ### Animism ~ Ancestor Worship
@@ -103,7 +101,7 @@ Syncretism /= Pluralism
 
 ### Sects & Cults
 
-
+#Remaining 
 
 
 
@@ -111,6 +109,7 @@ Syncretism /= Pluralism
 
 ## Science v/s Religion
 
+#Remaining 
 
 ### Religion & Science ~ Religion in a Modern Society
 
@@ -126,18 +125,24 @@ Syncretism /= Pluralism
 
 ## Fundamentalism & Communalism
 
+- Definitions
+	- Fundamentalism
+	- Religious Revivalism
+	- Communalism
 
+#Remaining 
 
 
 ### Fundamentalism & Religious Revivalism 
 
 
+#Remaining 
 
 ### Fundamentalism & Communalism
-Both have certain ideological elements in common
-1. Both attack concept of separation of Religion from Politics & State
-2. Oppose concept of equal truth in all Religions & Unity of different religions
-3. Advocate control over education by the followers of the dominant religion
+- Common Ideological elements
+	1. Both attack concept of separation of Religion from Politics & State
+	2. Oppose concept of equal truth in all Religions & Unity of different religions
+	3. Advocate control over education by the followers of the dominant religion
 
 Fundamentalism - Strict adherence to the Religious Doctrine & full opposition of other religions and any Criticism
 Strict adherence to a set of principles with antagonism to other view points
@@ -146,18 +151,17 @@ Karen #Armstrong - Fundamentalism is a part of Modern scene. They believe that t
 Steve #Bruce echoes similar views
 
 
-
-Fundamentalism | Communalism
------------- | ------------ 
-Stresses upon infallibility of scriptures | Strong allegiance to ones own ethnic group rather than society. Can be based upon religion, race, ethnicity
-Pursuit of Political power is important | More protective of its own rights & beliefs, exclusionary in nature
-Tend to separate certain communities from mainstream | Religion based opposition. Ideological & activates during social upheaval
-Aims to establish a normative order by various means, Wars to speeches | Establish Supremacy through hatred & Violence
-As a movement is led by Charismatic leaders | Have a mass psyche, may not form a sustained movement
-Reject all corrupt lifestyles & aim to get rid of such evils from society | No such reformative agenda
-Opposed to Rationalism & Discard equality of all Religions | Nothing as such during peaceful times
-Are usually Reactive in nature & a response to what they consider as a Crisis | Usually emerge when conflicts of interest & sense of insecurity arises
-Promotion of the Original | Antagonism is central here
+\# | Fundamentalism | Communalism
+------------ | ------------ | -------
+1 | Stresses upon infallibility of scriptures | Strong allegiance to ones own ethnic group rather than society. Can be based upon religion, race, ethnicity
+2 | Pursuit of Political power is important | More protective of its own rights & beliefs, exclusionary in nature
+3 | Tend to separate certain communities from mainstream | Religion based opposition. Ideological & activates during social upheaval
+4 | Aims to establish a normative order by various means, Wars to speeches | Establish Supremacy through hatred & Violence
+5 | As a movement is led by Charismatic leaders | Have a mass psyche, may not form a sustained movement
+6 | Reject all corrupt lifestyles & aim to get rid of such evils from society | No such reformative agenda
+7 | Opposed to Rationalism & Discard equality of all Religions | Nothing as such during peaceful times
+8 | Are usually Reactive in nature & a response to what they consider as a Crisis | Usually emerge when conflicts of interest & sense of insecurity arises
+9 | Promotion of the Original | Antagonism is central here
 
 
 1. Communalism is often associated with eruption of violence & riots which may or may not have any particular goals
@@ -165,3 +169,5 @@ Promotion of the Original | Antagonism is central here
 3. Communist leaders may not be Religious leaders. #Eg Maulana Maududi of Jamat Islami - Journalist, Hedgewar of RSS - Physician
 4. Fundamentalists want only 1 religion, while Communalist only want to communalise their own social community
 5. Communalists needs a Binary Opposition (real or created) to mobilise its members
+   
+   **Robert Bellah, American Socio - Private Relgion in moder societies**

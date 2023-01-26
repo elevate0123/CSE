@@ -244,7 +244,7 @@ Labour is a old concept but in modern sense it arrived with the growth of Capita
 Worker (has a choice) /= Labour (without choice, due to lack of work or social exploitation)
 Labour lacks choice due to lack of alternate work or Social #exploitation
 
-#### Labour classification - 
+#### Labour classification
 - Industrial Labour
 - Child L
 - Agriculture L
@@ -252,13 +252,13 @@ Labour lacks choice due to lack of alternate work or Social #exploitation
 - Feminine Labour
 - Formal / Informal L
 
-#### Characteristics of Labour -
+#### Characteristics of Labour 
 1. Marketing of human labour in Industrial societies
 2. High division
 3. Workspaces shifted from home to workplaces
 4. Labour is sold in market and not necessarily be of domestic nature
 
-Labour & Karl Marx
+#### Labour & Karl Marx
 Labour is a process in which both man and nature participate, man starts regulating & controlling the material reaction between himself and nature. (Here L is not limited to only economic activities but all productive actions that transform material aspects of nature with our purpose)
 Objectification of Human purpose - Labour is peculiar to human beings only as animals cannot produce. Labour creates something in reality that previously existed only in human imagination
 Labour is material, as it works with more material aspects of nature
@@ -271,42 +271,40 @@ Workers are forced to sell their labour time to capitalists for survival
 Harry #Braverman - Fordism & automation led to Deskilling of labour force. L lost control over its skills due to specialised production as they learn only a small part of the process thus becoming more dependent on capitalist system
 Michael #Burawoy rejects Marxian idea - Labour Unions have challenged the arbitrary power of management
 
+Robert #Blauner Technology & Alienation - Different forms of tech provide different attitudes to Worker, so varying degree of alienation
+
 #ED DoL is a process of evolutions in society and leads to interdependency which integrates the modern society. In Industrial society, mechanical solidarity is poor, so labour relations & interdependency creates new forms of integration
 
-Fordism & Taylorism
+- Fordism & Taylorism
 High DoL in factory and workplaces, suitable for mass production. Work process is standardised, more defined, less flexible
 Post Fordism Era - Focus is on customised production, so more flexibility & differentiation of work
+Critic - Post Fordism - Neo Fordism - It is nor complete transformation but exaggerated that mass production is replaced by flexible production
 
-Feminist perspective - Labour in society in terms of Female participation
+- Feminist perspective - Labour in society in terms of Female participation
 Ann #Oakley Industrialisation confined women at home, forced to take role of housewife.
 Women participation is increasing but there is Occupational Segregation
+House work has become invisible, as real work is the one which brings direct wages
+Men leave workplace at the end of day, so there is clear work-leisure divide, not the same in case of females
+Paid work brings in money which brings power divide and creates inequality, women are dependent on men for their own and family survival
+
+- Feminization of Labour - Increasing participation of women in labour force
+	1. Reasons - Labour shortage due to WW1, decreased birth rate, mechanisation of domestic tasks, personal desire, economic pressure to sustain
+	2. Changes in Domestic DoL - Male breadwinner model broke, Women mainly responsible for Care stereotypes broken
 
 Arlie #Hochsild Service industry requires manipulation of emotions. So labour is not just physical labour
 Commodification of labour power
+Decline of trade-union movements have eroded the bargaining power of labour in modern world. Flexible production, liberal labour laws, intense global competition have also eroded the bargaining power
+
+#Handy Flexible Labour as now multiple skills are required, Portfolio Workers have a multiple skill portfolio instead of a single specialisation
+Use of IT and tech has increased control and regulation at workplace, making work more mechanical
+
+Globalisation of Labour in post modern times - High mobility, trans-boundary movements, competition leads to cheaper production, degradation of labour
+
+- Gender Inequalities at work
+	1. Occupational Segregation - Masculine & Feminine Work #Eg 5Cs - Clean, cater, care, cashier, clerical
+	2. Concentration in part-time work - to balance W and family obligations
+	3. Wage Gap - Poor rewards, informal work
 
 Rise of service sector due to decline of older factory production
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Remaining 
+Blue Collar manufacturing to White Collar Service
+Technological Determinist - +ve advocates of Tech
