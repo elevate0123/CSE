@@ -126,17 +126,62 @@ Syncretism /= Pluralism
 ## Fundamentalism & Communalism
 
 - Definitions
-	- Fundamentalism
-	- Religious Revivalism
-	- Communalism
-
-#Remaining 
+	- Fundamentalism - A call to return to the fundamentals of faith. Strict adherence to a set of principle with antagonism to other viewpoints
+	- Religious Revivalism - Mass movements based on intense R upheaval. Periodic RR seeks to restore commitment & attachment to R. It is a regular sociological feature of Religious tradition. Revival of R in any form be it institutional attendance, growth of r institutions, Fundamentalism, rise of sects-cults, etc
+	- Communalism -  #Remaining 
 
 
 ### Fundamentalism & Religious Revivalism 
 
+Access to the exact meaning is limited to the privileged few, thus providing them with enormous authority and power #Eg Priests and clergy class
+Forces of drastic social change are important for the emergence of F and it is erected as a defence against new forces of change, modernity and globalisation
+Chaos emerges when there is loss of identity and rootlessness among people, F then provides certitude and restitution of an earlier golden age
 
-#Remaining 
+#### Distinct features of fundamentalism
+1. F stresses on the infallibility of scriptures, accepting it as a literal historical record and God's own words as unambiguous and changeless #Eg Bible, Gita, Granths
+2. All aspects of life are to be governed by the religion as found in central texts and scriptures
+3. Propagate for the religious control over education and go against the separation of religion from politics
+4. Do not believe in equality of other religions
+5. Opposed to reason, rationality, humanism, secularism
+6. Reject all corrupt lifestyles, F movements are not only religious but also for lifestyle #Eg Maududi - Ignorant Muslims, Bhindranwala - Fallen Sikhs Swami Dayanand - corrupt lifestyles
+7. TN #Madan F movements are of collective nature. Often led by charismatic Male leaders #Eg Khomeini of Iran, Bhindranwala for Sikhs
+
+Historical Christian and Muslim power struggles, rise of Islamic fundamentalism in recent times, American aggressions in Iraq, Modernisations etc have led to the reform movements to restore lost glory
+Gabriel #Almond Religious groups in various countries due to various reasons are moving towards fundamentalism
+Recent election victories of Right wing groups in various countries is also seen as rise of fundamentalist forces
+Sometimes they resort to violence #Eg rise of ISIS a global fundamentalist outfit
+
+#### Factors for rise of Fundamentalism #Bruce 
+1. F is for restoration of traditional beliefs because of destruction by modernisation and secularisation
+2. Religions with a single text offers ideological cohesion to mobilise people with common beliefs, so less fundamentalism
+3. Threat perception or presence of a common enemy #Eg Jews after Holocaust
+4. F requires potential charismatic recruiters #Eg Baghdadi for ISIS
+5. Wider political support #Eg Buddhists in Myanmar against Rohingya
+6. Presence of a Centralised religious authority #Eg Khomeini in Iran
+7. Relative deprivation especially by Modernisation
+	Gabriel #Almond Structural factors
+	1. Unemployment
+	2. Radical Social Change
+	3. specific historical chance
+	4. presence of prosecuted ethnic groups
+	   #Eg Iranian Revolution, 1979 as a reaction to US interferences
+
+RR
+
+#Comte Classical evolutionary predicted that in scientific stage, Science will replace Religion
+During Renaissance, religion saw a decline in terms of institutional attendance and beliefs due to scientific temperament. But recent years, revival of religion takes place, showing that religion has not declined
+
+Re-emphasis on role of religion, at different levels
+1. Increased institutional acceptance of religion - Attendance + Construction of new religious places #Eg BAPS Temples in almost 100 countries, increasing activities of sects and cults - ISKCON
+2. Increasing use of religion as a medium - Religion becomes tool for resistance against exploitation. Political parties use religious support to ascend to power #Eg BJP in India, Erdogan in Turkiye
+3. Growth of Invisible / Private religion - #Luckmann R today is invisible as individuals carry it out in their private space and not in institutions
+4. Growth of Civil religion - Robert #Bellah - Civic Religion - Civic symbols and nationalism are accorded same respect as faith in religion
+
+Due to stress, anomie, alienation people want to experience peace in spirituality. Religion has also rationalised itself and focus on moral guidance instead of strict adherence to customs. Increasing communal clashes in West Asia. All these indicates rise in religious fervour
+
+Religion has survived because of the individual & social functions it performs. 
+#Turner , Secret of R survival is - R is not a cognitive system, set of dogmas alone, it is a meaningful experience
+
 
 ### Fundamentalism & Communalism
 - Common Ideological elements
