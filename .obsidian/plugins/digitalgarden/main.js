@@ -4652,11 +4652,12 @@ var Publisher = class {
       yield octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", payload);
     });
   }
-  stripAwayCodeFences(text) {
+  stripAwayCodeFencesAndFrontmatter(text) {
     let textToBeProcessed = text;
     textToBeProcessed = textToBeProcessed.replace(this.excaliDrawRegex, "");
     textToBeProcessed = textToBeProcessed.replace(this.codeBlockRegex, "");
     textToBeProcessed = textToBeProcessed.replace(this.codeFenceRegex, "");
+    textToBeProcessed = textToBeProcessed.replace(this.frontmatterRegex, "");
     return textToBeProcessed;
   }
   removeObsidianComments(text) {
@@ -4762,7 +4763,7 @@ ${frontMatterString}
   addPageTags(baseFrontMatter, newFrontMatter) {
     const publishedFrontMatter = __spreadValues({}, newFrontMatter);
     if (baseFrontMatter) {
-      const tags = (typeof baseFrontMatter["tags"] == "string" ? [baseFrontMatter["tags"]] : baseFrontMatter["tags"]) || [];
+      const tags = (typeof baseFrontMatter["tags"] === "string" ? [baseFrontMatter["tags"]] : baseFrontMatter["tags"]) || [];
       if (baseFrontMatter["dg-home"]) {
         tags.push("gardenEntry");
       }
@@ -4790,8 +4791,8 @@ ${frontMatterString}
   convertLinksToFullPath(text, filePath) {
     return __async(this, null, function* () {
       let convertedText = text;
-      const textToBeProcessed = this.stripAwayCodeFences(text);
-      const linkedFileRegex = /\[\[(.*?)\]\]/g;
+      const textToBeProcessed = this.stripAwayCodeFencesAndFrontmatter(text);
+      const linkedFileRegex = /\[\[(.+?)\]\]/g;
       const linkedFileMatches = textToBeProcessed.match(linkedFileRegex);
       if (linkedFileMatches) {
         for (const linkMatch of linkedFileMatches) {
@@ -4834,7 +4835,7 @@ ${frontMatterString}
       }
       const publishedFiles = yield this.getFilesMarkedForPublishing();
       let transcludedText = text;
-      const transcludedRegex = /!\[\[(.*?)\]\]/g;
+      const transcludedRegex = /!\[\[(.+?)\]\]/g;
       const transclusionMatches = text.match(transcludedRegex);
       let numberOfExcaliDraws = 0;
       if (transclusionMatches) {
