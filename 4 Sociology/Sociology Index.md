@@ -79,7 +79,7 @@ Social Change (Section C)
 7. Statistics, Data-Facts, Datasets #stats #dataset 
 8. Special Modi Jumlebazi
 
-/commi
+
 #focus #work 
 #AfterPrelims
 
