@@ -70,14 +70,21 @@ Social Change (Section C)
 
 ## --> Extras
 
-1. Case Studies #cases
-2. Government Schemes #schemes 
-3. Statistics, Data-Facts, Datasets #stats #dataset 
-4. Quotes #quote
-5. Recent Examples #Eg
-6. Topper Scripts #script 
-7. [[PYQs Pointers]] PYQ Pointers #PYQ #modelanswer 
-8. 
+1. [[PYQs Pointers]] PYQ Pointers #PYQ #modelanswer 
+2. Recent Examples #Eg
+3. Quotes #quote
+4. Case Studies #cases
+5. Topper Scripts #script 
+6. Government Schemes #schemes 
+7. Statistics, Data-Facts, Datasets #stats #dataset 
+8. Special Modi Jumlebazi
+
+/commi
+#focus #work 
+#AfterPrelims
+
+
+
 ***
 ***
 - Great

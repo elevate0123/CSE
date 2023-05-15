@@ -1,0 +1,53 @@
+{
+  "logoType": "default",
+  "logo": {
+    "lucideIcon": "",
+    "imagePath": "",
+    "imageLink": ""
+  },
+  "logoScale": 1.2,
+  "iconColorType": "default",
+  "wordmark": "Obsidian",
+  "customFont": "interfaceFont",
+  "fontSize": "4em",
+  "fontColorType": "default",
+  "fontWeight": 600,
+  "maxResults": 5,
+  "showStarredFiles": false,
+  "showRecentFiles": false,
+  "maxRecentFiles": 5,
+  "storeRecentFile": true,
+  "showPath": true,
+  "selectionHighlight": "default",
+  "showShortcuts": true,
+  "markdownOnly": false,
+  "unresolvedLinks": false,
+  "recentFilesStore": [
+    {
+      "filepath": "4 Sociology/Sociology Index.md",
+      "timestamp": 1684156229231
+    },
+    {
+      "filepath": "4 Sociology/Paper 1/Untitled mindmap.md",
+      "timestamp": 1684156226328
+    },
+    {
+      "filepath": "4 Sociology/Paper 1/010 Social Change in Modern Society.md",
+      "timestamp": 1684156128089
+    },
+    {
+      "filepath": "4 Sociology/Paper 1/Other Imp Topics.md",
+      "timestamp": 1684156121644
+    },
+    {
+      "filepath": "4 Sociology/Paper 1/09 Systems of Kinship.md",
+      "timestamp": 1684156118295
+    }
+  ],
+  "starredFileStore": [],
+  "searchDelay": 0,
+  "replaceNewTabs": true,
+  "newTabOnStart": false,
+  "closePreviousSessionTabs": false,
+  "omnisearch": false
+}
