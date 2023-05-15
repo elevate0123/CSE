@@ -3,10 +3,11 @@
   "livePreview": true,
   "showLineNumber": false,
   "pdfExportSettings": {
-    "pageSize": "Legal",
+    "includeName": true,
+    "pageSize": "A4",
     "landscape": false,
     "margin": "0",
-    "downscalePercent": 91
+    "downscalePercent": 100
   },
   "strictLineBreaks": false,
   "spellcheckLanguages": [

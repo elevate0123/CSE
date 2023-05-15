@@ -8,19 +8,30 @@
         "type": "tabs",
         "children": [
           {
-            "id": "60a7ee96c9ddc843",
+            "id": "2076804920cdc8d0",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "4 Sociology/Paper 1/08 Religion and Society.md",
+                "file": "SITrust/Ramadan Targets - Overview.md",
                 "mode": "source",
                 "backlinks": true,
                 "source": false
               }
             }
+          },
+          {
+            "id": "2109a0ea275c0abd",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.2.8"
+              }
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -59,14 +70,15 @@
             }
           },
           {
-            "id": "9906a0674e23968e",
+            "id": "65824f1a92eb42c9",
             "type": "leaf",
             "state": {
-              "type": "starred",
+              "type": "bookmarks",
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -86,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "4 Sociology/Paper 1/08 Religion and Society.md",
+                "file": "SITrust/Ramadan Targets - Overview.md",
                 "collapseAll": false,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -114,7 +126,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "4 Sociology/Paper 1/08 Religion and Society.md",
+                "file": "SITrust/Ramadan Targets - Overview.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,20 +138,38 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "4 Sociology/Paper 1/08 Religion and Society.md"
+                "file": "SITrust/Ramadan Targets - Overview.md"
               }
+            }
+          },
+          {
+            "id": "d73ee0828de389ff",
+            "type": "leaf",
+            "state": {
+              "type": "smart-connections-view",
+              "state": {}
+            }
+          },
+          {
+            "id": "e805c4fbdacef033",
+            "type": "leaf",
+            "state": {
+              "type": "smart-connections-chat-view",
+              "state": {}
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 370.5,
-    "collapsed": true
+    "width": 370.5
   },
   "left-ribbon": {
     "hiddenItems": {
+      "obsidian-textgenerator-plugin:Generate Text!": false,
+      "obsidian-textgenerator-plugin:Text Generator: Templates Packages Manager": false,
+      "obsidian-excalidraw-plugin:Create new drawing": false,
       "obsidian-extract-pdf-highlights:PDF Highlights": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
@@ -151,10 +181,15 @@
       "workspaces:Manage workspace layouts": false
     }
   },
-  "active": "60a7ee96c9ddc843",
+  "active": "e805c4fbdacef033",
   "lastOpenFiles": [
-    "4 Sociology/Paper 1/010 Social Change in Modern Society.md",
+    "SITrust/Ramadan Targets.md",
+    "SITrust/Ramadan Targets - Overview.md",
+    "SITrust/Elocution Competition.pdf",
+    "SITrust/Asma al-Husna Text.md",
+    "SITrust/Asma al-Husna Preface.pdf",
     "4 Sociology/Paper 1/08 Religion and Society.md",
+    "4 Sociology/Paper 1/010 Social Change in Modern Society.md",
     "4 Sociology/Paper 1/06 Work and Economic Life.md",
     "4 Sociology/Paper 1/09 Systems of Kinship.md",
     "4 Sociology/Paper 1/03 Research Methods and Analysis.md",
