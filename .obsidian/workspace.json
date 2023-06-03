@@ -4,23 +4,32 @@
     "type": "split",
     "children": [
       {
-        "id": "62eea2201d53cce1",
+        "id": "11ed5d5c7716e939",
         "type": "tabs",
         "children": [
           {
-            "id": "2109a0ea275c0abd",
+            "id": "ab2831afebf055fb",
+            "type": "leaf",
+            "state": {
+              "type": "home-tab-view",
+              "state": {}
+            }
+          },
+          {
+            "id": "2753492d7be262f1",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "4 Sociology/Sociology Index.md",
+                "file": "4 GS 4 Ethics/PYQ Pointers.md",
                 "mode": "source",
                 "backlinks": true,
                 "source": false
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -86,8 +95,8 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "4 Sociology/Sociology Index.md",
-                "collapseAll": false,
+                "file": "4 GS 4 Ethics/PYQ Pointers.md",
+                "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
                 "showSearch": false,
@@ -114,7 +123,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "4 Sociology/Sociology Index.md",
+                "file": "4 GS 4 Ethics/PYQ Pointers.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,28 +135,20 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "4 Sociology/Sociology Index.md"
+                "file": "4 GS 4 Ethics/PYQ Pointers.md"
               }
             }
           },
           {
-            "id": "29d5ab1a4f3e09a4",
+            "id": "3ddd1f100e17c7c5",
             "type": "leaf",
             "state": {
-              "type": "smart-connections-chat-view",
-              "state": {}
-            }
-          },
-          {
-            "id": "df5e6de2bcd94c3e",
-            "type": "leaf",
-            "state": {
-              "type": "smart-connections-view",
+              "type": "graph-analysis",
               "state": {}
             }
           }
         ],
-        "currentTab": 5
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
@@ -156,10 +157,6 @@
   "left-ribbon": {
     "hiddenItems": {
       "dbfolder:Create a new database table": false,
-      "homepage:Open homepage": false,
-      "obsidian-textgenerator-plugin:Generate Text!": false,
-      "obsidian-textgenerator-plugin:Text Generator: Templates Packages Manager": false,
-      "obsidian-excalidraw-plugin:Create new drawing": false,
       "obsidian-extract-pdf-highlights:PDF Highlights": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
@@ -168,28 +165,47 @@
       "command-palette:Open command palette": false,
       "markdown-importer:Open format converter": false,
       "audio-recorder:Start/stop recording": false,
-      "workspaces:Manage workspace layouts": false
+      "workspaces:Manage workspace layouts": false,
+      "obsidian-excalidraw-plugin:Create new drawing": false,
+      "homepage:Open homepage": false
     }
   },
-  "active": "2109a0ea275c0abd",
+  "active": "2753492d7be262f1",
   "lastOpenFiles": [
-    "4 Sociology/Paper 1/Untitled mindmap.md",
-    "4 Sociology/Paper 1/010 Social Change in Modern Society.md",
-    "4 Sociology/Paper 1/Other Imp Topics.md",
-    "4 Sociology/Paper 1/09 Systems of Kinship.md",
-    "4 Sociology/Paper 1/08 Religion and Society.md",
-    "4 Sociology/Paper 1/02 Sociology as Science.md",
+    "4 GS 4 Ethics/Case Study.md",
+    "4 GS 4 Ethics/PYQ Pointers.md",
+    "4 GS 4 Ethics/Ethics Theory.md",
+    "4 GS 4 Ethics",
     "Home.md",
+    "Untitled mindmap.md",
+    "Highlights for 08 Religion and Society.md",
+    "textgenerator/prompts/default/summarize.md",
+    "textgenerator/prompts/default/simplify.md",
+    "textgenerator/prompts/default/rewrite.md",
+    "textgenerator/prompts/default/getTitles.md",
+    "textgenerator/prompts/default/getTags.md",
+    "textgenerator/prompts/default/getParagraph.md",
+    "textgenerator/prompts/default/getOutline.md",
+    "textgenerator/prompts/default/getIdeas.md",
+    "textgenerator/prompts/default/getEmailPos.md",
+    "textgenerator/prompts/default/getEmailNeg.md",
+    "SITrust/Asma al-Husna Text.md",
+    "SITrust/Asma al-Husna - Frontmatter Points.pdf",
+    "SITrust/08 Religion and Society.pdf",
+    "5 Sociology/Paper 1/08 Religion and Society.md",
+    "textgenerator/prompts/default",
+    "textgenerator/prompts",
+    "textgenerator",
+    "Excalidraw/Drawing 2023-05-26 17.50.51.excalidraw.md",
+    "Excalidraw",
+    "5 Sociology/Paper 1/Untitled mindmap.md",
+    "5 Sociology/Paper 1/010 Social Change in Modern Society.md",
+    "5 Sociology/Paper 1/Other Imp Topics.md",
+    "5 Sociology/Paper 1/09 Systems of Kinship.md",
+    "5 Sociology/Paper 1/02 Sociology as Science.md",
     "SITrust/Ramadan Targets.md",
     "SITrust/Ramadan Targets - Overview.md",
     "SITrust/Elocution Competition.pdf",
-    "SITrust/Asma al-Husna Text.md",
-    "SITrust/Asma al-Husna Preface.pdf",
-    "4 Sociology/Paper 1/06 Work and Economic Life.md",
-    "4 Sociology/Paper 1/03 Research Methods and Analysis.md",
-    "4 Sociology/Paper 1/01 Sociology - The Discipline.md",
-    "4 Sociology/Paper 2/01 Perspectives on study of Indian Society.md",
-    "4 Sociology/Paper 1/Git Sample.md",
-    "Untitled mindmap.md"
+    "SITrust/Asma al-Husna Preface.pdf"
   ]
 }

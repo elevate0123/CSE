@@ -17,6 +17,9 @@ Earlier it was a speculative activity, but now Religion is seen in terms of func
 Religion - A Cultural system of commonly shred beliefs & rituals that provide a sense of ultimate meaning & purpose by creating an idea of reality that is sacred, super natural & all encompassing
 #ED Religion - A unified system of beliefs & practices related to sacred things, that is to say that things set apart & forbidden, beliefs & practices which unite them into a single moral community for all those who adhere to them. Religion is about the realm of sacred. (Elementary form of Religion)
 
+
+- It is important to remember that religion is a complex and multifaceted phenomenon. There is no single definition of religion that is universally accepted, and there is no single way to study religion. The best way to understand religion is to learn about different religious traditions and to talk to people who have different religious beliefs.
+
 New Definition of Religion, that transcends the dualism of materialism-spiritualism, sacred/secular
 Peter #Mandaville & #Paul James Religion - A relatively-bound system of beliefs, symbols & practices that addresses the nature of existence, and in which, communion with others & otherness is lived as if both, takes in & spiritually transcends, socially-grounded ontologies of time, space, embodiment & knowing
 

@@ -1,8 +1,8 @@
 {
-  "translucency": false,
+  "translucency": true,
   "theme": "obsidian",
   "baseFontSize": 17,
-  "cssTheme": "Blue Topaz",
+  "cssTheme": "Atom",
   "textFontFamily": "Trebuchet MS",
   "accentColor": "#23bafb"
 }
