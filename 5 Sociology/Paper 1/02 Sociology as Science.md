@@ -21,10 +21,12 @@ sr-ease: 250
 
 ## Science & Sociology as Science SaS 
 ***
+### Sociology
+#Sociology is the study of human society and social behaviour. It is a social science that uses scientific methods to study the structure, functions, and development of human societies #defn
 
 ### Science
-Science is a systematic organized body of knowledge wherein conclusions are drawn from interrelated facts
-Science is use of systematic methods of empirical investigation, analysis of data, theoretical thinking, and the logical assessment of arguments to develop a body of knowledge about a particular subject matter
+#Science is a systematic organized body of knowledge wherein conclusions are drawn from interrelated facts
+Science is use of systematic methods of empirical investigation, analysis of data, theoretical thinking, and the logical assessment of arguments to develop a body of knowledge about a particular subject matter #defn 
 
 #### Goal of Science 
 1. Explain why something happens
@@ -39,53 +41,53 @@ Science is use of systematic methods of empirical investigation, analysis of dat
 5. Based on Facts and not speculations
 6. Universal in application across time and space
 
-
 #### Sociology as Science SaS
+Sociology uses the scientific method to study human society, so it can be considered a science  #sas 
+1. Early Social scientists - True knowledge can be gained through sensory perception. Socio is also empirical in approach
+2. #Comte - Social Physics
+	Herbert #Spencer - Organismic Analogy ~ Darwinism Evolutionary Biology
+	#ED  - Social facts = natural facts
+	Social statics, Social dynamics, Mechanical equilibrium
+3. Socio has inter-subjective reality, disciplines basic concepts have a universal meaning eg family, religion
+4. #ED Meaning of Social facts remains the same as natural facts. Indirect experimentation to prove empirical validity of socio theories
+5. #Weber - Objectivity is possible through methods like Verstehen and Ideal types
 
-Early Social scientists - True knowledge can be gained through sensory perception. Socio is also empirical in approach
-
-#Comte - Social Physics
-Herbert #Spencer - Organismic Analogy ~ Darwinism Evolutionary Biology
-#ED  - Social facts = natural facts
-Social statics, Social dynamics, Mechanical equilibrium
-
-Socio has inter-subjective reality, disciplines basic concepts have a universal meaning eg family, religion
-
-#ED Meaning of Social facts remains the same as natural facts. Indirect experimentation to prove empirical validity of socio theories
-#Weber - Objectivity is possible through methods like Verstehen and Ideal types
+##### Important differences between sociology and the natural sciences
+1. **Human behaviour is more complex than the behaviour of physical objects.** This makes it more difficult to study human behaviour scientifically
+2. **Humans are capable of self-reflection and free will.** This means that they can choose to behave in ways that are not predictable
+3. **Sociology is a relatively new discipline.** As a result, it has not yet developed the same level of rigor as the natural sciences  #differences 
 
 #### Limitations SaS
-1. Difficulty of being empirical, inductive and universal in applications
-2. Controlled & Repeated experimentation isn't possible in Sociology 
-3. Difficulty in testing the results
-4. Human interactions cannot be quantified so Socio cannot be objective
-5. #Weber - Social Actions must be understood in terms of meanings that man attaches to them, So there can be no objective science of society
-6. Carl #Jung - Subjective things like pain, beauty, happiness cannot be measured by Sci methods, so methodology  should be discipline specific
-
-
+1. Carl #Jung - Subjective things like pain, beauty, happiness cannot be measured by Sci methods, so methodology  should be discipline specific
+2. #Weber - Social Actions must be understood in terms of meanings that man attaches to them, So there can be no objective science of society
+3. Difficulty of being empirical, inductive and universal in applications
+4. Controlled & Repeated experimentation isn't possible in Sociology 
+5. Difficulty in testing the results
+6. Human interactions cannot be quantified so Socio cannot be objective #limitations
 
 ##### Natural Sciences own Limitations
-1. Vagueness, Unpredictability, problems of testability.
-2. Karl #Popper - Science is not a body of knowledge, but a method of approaching
+1. Karl #Popper - Science is not a body of knowledge, but a method of approaching
+2. Vagueness, Unpredictability, problems of testability.
 
-Socio & Science share features - Perspectives, subject matter, method of study, etc
+- **Socio & Science share features - Perspectives, Subject matter, Method of study, concerned with Discovery of Knowledge, Public Disciplines (open to debate, scrutiny, criticism) etc**
+
+Sociology is a science that uses the scientific method to study human society and social relationships  #conclusion 
 
 ## Scientific method and critique
 ***
-
 ### Scientific Method
-#SM - Systematic, rational, objective set of steps to explore the truth or new knowledge or for investigating phenomena or correcting and integrating previous knowledge 
-SM ~ Is related with Discovery of Laws
+Scientific Method #SM - Systematic, rational, objective set of steps to explore the truth or new knowledge or for investigating phenomena or correcting and integrating previous knowledge #defn 
+SM ~ Related with Discovery of Laws
 
-George Lundberg - SM consists of 3 basic steps - Systematic observation, classification, data interpretation
+George #Lundberg - SM consists of 3 basic steps - Systematic observation, classification, data interpretation
 SM in Socio - To give concrete shapes to the Sociological concepts so that they are understood in the same way by different people. Ensures that Sociology as a body of knowledge is systematised and is given a definite shape
 
 #### SM Elements Characteristics
-1. Perspectives and Problem Definition - #Remaining 
+1. Perspectives and Problem Definition - Observation & Questioning - #Remaining 
 2. Hypothesis Formulation - 
-3. Information gathering using research methods & building causal explanations -
-4. Interpretations of results, analysis, comparison, classification - 
-5. Theory Building - 
+3. Information gathering using research methods & building causal explanations - Experimentation - 
+4. Interpretations of results, analysis, comparison, classification - Data Analysis -
+5. Theory Building - Conclusion - 
 
 
 
@@ -97,11 +99,14 @@ SM in Socio - To give concrete shapes to the Sociological concepts so that they 
 4. #Adorno - Sci is suffocating and kills creativity. It becomes the new Religion, blind faith in it negates human freedom which is an integral part of soc sci
 5. JF #Feyerbend - SM restricts choices of researcher, socio research should be free & liberating
 6. #Habermas - Sci is Presumptive
-7. Paul #Feyerbend - Epistemological Anarchism 
+7. Paul #Feyerbend - Epistemological Anarchism  #criticism
 
+#### Conclusion
+Sociology is a complex and challenging discipline. It is a science, but it is also a social science, which means that it must take into account the subjective aspects of human behaviour. Sociology can be a valuable tool for understanding the world around us, but it is important to be aware of its limitations  #conclusion 
 
 
 ***
+#check
 
 Immanuel #Kant: There are two sources of knowledge – Philosophy (deals with statement of values) and Science (deals with statement of facts). There is a logical gap between scientific conclusion and philosophical conclusion. They are qualitatively different.
 Neo-Kantian (followers of Kant): Science is nomothetic (tendency to generalize) and philosophy is ideographic (tendency to specify).
@@ -126,9 +131,9 @@ Methodology ideographic | nomothetic
 
 #RM is a wider term given to the entire process of Research which included specific approach, ideology, RM, research design, data, assumption and logics used in the process
 
-Socio research guided by researchers conception of relation between man and society
+Socio research is guided by researchers conception of relation between man and society
 
-Socio Approaches ---> 
+Socio Approaches ---> #diagram
 Micro and Macro
 Positivist and Interpretivists
 Functional-Conflict and Ethnomethodology - Symbolic Interactionism
@@ -139,22 +144,22 @@ Functional-Conflict and Ethnomethodology - Symbolic Interactionism
 ## Positivism and its critique
 ***
 
+### Positivism
+#Positivism is a sociological theory that emphasizes the use of scientific methods to study human society. Employs principles & methods similar to those in natural sciences Positivists believe that social phenomena can be studied objectively and that laws of society can be discovered through empirical research  #defn 
+
 #### First Questions
 1. Subject matter of Sociology
 2. Methodology to be adopted
+Influenced by the prevailing atmosphere of rationalism and science, earlier Sociologists followed a similar line for the new subject to be scientific and objective in terms
 
-Influenced by the prevailing atmosphere of rationalism and science, earlier Socios followed a similar line for the new subject to be scientific and objective in terms
+Saint #Simon, August #Comte, #ED, Herbert #Spencer laid the foundation of Positivistic theory
+Society is predictable as it is governed by certain fixed laws. Believed that application of methods based on natural sciences will lead to the Positive Science of Society and evolution of society follows invariable laws
+- Laws of society, true knowledge, causal relationship
 
-Saint Simon, August Comte, ED, Herbert Spencer laid the foundation of Positivistic theory
-Society is predictable as it is governed by certain fixed laws. They believed that application of methods based on natural sciences will lead to the Positive Science of Society and evolution of society follows invariable laws. 
+Saint #Simon - #Positivism was rooted in a science of society which is analogous to natural sciences
+#Comte - Socio is the last & the most sophisticated of all the sciences as t deals with all aspects of humanity and society. Social #Dynamics - social change and Social #Statics - equilibrium and stability of Social System
 
-Laws of society, true knowledge, causal relationship
-
-Positivism is the approach that employs principles and methods similar to those in natural sciences
-Saint #Simon - Positivism was rooted in a science of society which is analogous to natural sciences
-#Comte - Socio is the last & the most sophisticated of all the sciences as t deals with all aspects of humanity and society. Social Dynamics - social change and Social Statics - equilibrium and stability of Social System
-
-#### 4 methods of study
+#### 4 Methods of Study
 1. Observation
 2. Experimentation 
 3. Historical
@@ -173,13 +178,13 @@ Saint #Simon - Positivism was rooted in a science of society which is analogous 
 3. #ED - Study of Social Facts as these can be seen objectively
 4. Discovery of Cause-Effect relationship while studying phenomena
 5. Use of #SM similar to Natural sciences. #ED used statistical techniques for suicide study
-6. Focus was on Empiricism and rejected commonsensical speculation
+6. Focus was on Empiricism and rejected common sensical speculation
 7. Formulation of grand theories and universality of laws & principles was prime motive
 8. Predictability of Social events based on existing knowledge and theory was essential. #Comte - Law of social organisation to predict future events
 9. Used Deductive approaches - Generalise - Nomothetic
-10. Sociological knowledge should be Testable. True Knowledge is the one which can be tested
+10. Sociological knowledge should be Testable. True Knowledge is the one which can be tested  #features 
 
-Human Behaviour & working of society is predictable and so it can be quantified in concrete terms. Positivists make deterministic and predictive statements about the social factors
+Human Behaviour & working of society is predictable and so it can be quantified in concrete terms. Positivists make deterministic and predictive statements about the social factors  #conclusion 
 
 ### Criticism - Inherent Limitations
 1. Phenomenologists Peter #Berger - Facts never fall from sky, but develop in a particular context
@@ -196,9 +201,10 @@ Human Behaviour & working of society is predictable and so it can be quantified 
 12. Positivism is a Pseudo-Scientific discipline
 13. Critical Theorist #Habermas - P loses sight of the actors reducing them to passive entities determined by natural forces. Empirical Anarchism - Socio for Humanist approach & not Positivist approach
 14. #Ritzer - Sociology is a multi pragmatic science in its own sense
+15. Too narrow in focus, ignores subjective aspects of human behaviour & unable to account for social change  #criticism 
 
+However, Positivist freed social sciences from the clutches of religion and speculative philosophy, thus laying a solid foundation of a systematic study of society #conclusion
 
-However, Positivist freed social sciences from the clutches of religion and speculative philosophy, thus laying a solid foundation of a systematic study of society
 
 
 
@@ -208,12 +214,12 @@ However, Positivist freed social sciences from the clutches of religion and spec
 ***
 #### Concept
 An abstraction representing objects/phenomena. Proxies of objects. #Eg - Family, Caste, Kinships, etc
-Concepts should be unambiguous, precise and agreed upon by all so as to clarify researchers thinking. Concepts are abstract so must be operationalised. #Eg - Social status concept operationalised by indicators like occupation, income
+#Concepts should be unambiguous, precise and agreed upon by all so as to clarify researchers thinking. Concepts are abstract so must be operationalised. #Eg - Social status concept operationalised by indicators like occupation, income
 
 ### Fact
-Latin word - Factum - Something made or done
+Latin word - Factum - Something made or done  #fact
 An empirically verifiable observation that can be agreed upon as real, definite, incontrovertible, and having its own existence 
-Remain same in e very conditions for all observers
+Remain same in every condition for all observers
 - Objective facts - Subject matter of Natural Sciences
 - Social Facts - Sociology
 #ED - To make Sociology a science, attention should be paid only on factual analysis and not subjective interpretation and individual perceptions
@@ -292,6 +298,7 @@ One can accept the prevailing ideas of society and still remain objective in one
 
 ### Interpretivist Sociology
 
+Interpretative sociology emphasizes the importance of understanding the subjective meanings that people attach to their actions. Interpretivists believe that social phenomena can only be understood by understanding the perspectives of the people involved
 
 
 ### Phenomenology ~ European

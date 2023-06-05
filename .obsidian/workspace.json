@@ -4,32 +4,23 @@
     "type": "split",
     "children": [
       {
-        "id": "11ed5d5c7716e939",
+        "id": "d191b0e1efefc7ab",
         "type": "tabs",
         "children": [
           {
-            "id": "ab2831afebf055fb",
-            "type": "leaf",
-            "state": {
-              "type": "home-tab-view",
-              "state": {}
-            }
-          },
-          {
-            "id": "2753492d7be262f1",
+            "id": "acacd93c51478036",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "4 GS 4 Ethics/PYQ Pointers.md",
+                "file": "5 Sociology/Paper 1/02 Sociology as Science.md",
                 "mode": "source",
                 "backlinks": true,
                 "source": false
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -58,7 +49,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "tag:#diagram",
                 "matchingCase": false,
                 "explainSearch": true,
                 "collapseAll": true,
@@ -75,7 +66,8 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -95,9 +87,9 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "4 GS 4 Ethics/PYQ Pointers.md",
+                "file": "5 Sociology/Paper 1/02 Sociology as Science.md",
                 "collapseAll": true,
-                "extraContext": true,
+                "extraContext": false,
                 "sortOrder": "alphabetical",
                 "showSearch": false,
                 "searchQuery": "",
@@ -123,9 +115,9 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "4 GS 4 Ethics/PYQ Pointers.md",
+                "file": "5 Sociology/Paper 1/02 Sociology as Science.md",
                 "linksCollapsed": false,
-                "unlinkedCollapsed": true
+                "unlinkedCollapsed": false
               }
             }
           },
@@ -135,7 +127,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "4 GS 4 Ethics/PYQ Pointers.md"
+                "file": "5 Sociology/Paper 1/02 Sociology as Science.md"
               }
             }
           },
@@ -148,7 +140,7 @@
             }
           }
         ],
-        "currentTab": 4
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
@@ -166,19 +158,33 @@
       "markdown-importer:Open format converter": false,
       "audio-recorder:Start/stop recording": false,
       "workspaces:Manage workspace layouts": false,
-      "obsidian-excalidraw-plugin:Create new drawing": false,
-      "homepage:Open homepage": false
+      "homepage:Open homepage": false,
+      "obsidian-excalidraw-plugin:Create new drawing": false
     }
   },
-  "active": "2753492d7be262f1",
+  "active": "14e2afbccb58fcee",
   "lastOpenFiles": [
-    "4 GS 4 Ethics/Case Study.md",
-    "4 GS 4 Ethics/PYQ Pointers.md",
-    "4 GS 4 Ethics/Ethics Theory.md",
-    "4 GS 4 Ethics",
     "Home.md",
+    "Misc/Highlights for 08 Religion and Society.md",
+    "Said al Khatir!.md",
     "Untitled mindmap.md",
-    "Highlights for 08 Religion and Society.md",
+    "Misc/README.md",
+    "Misc/markdown-cheat-sheet.md",
+    "Misc/Fonts.md",
+    "Misc/Internal link.md",
+    "5 Sociology/Paper 1/01 Sociology - The Discipline.md",
+    "5 Sociology/Paper 1/02 Sociology as Science.md",
+    "5 Sociology/Paper 1/04 2 Karl Marx.md",
+    "5 Sociology/Paper 1/03 Research Methods and Analysis.md",
+    "5 Sociology/Paper 1/09 Systems of Kinship.md",
+    "5 Sociology/Sociology Index.md",
+    "1 GS 1/GS 1 Syllabus.canvas",
+    "Excalidraw/Drawing 2023-05-26 17.50.51.excalidraw.md",
+    "SITrust/08 Religion and Society.pdf",
+    "4 GS 4 Ethics/Case Study.md",
+    "4 GS 4 Ethics/Ethics Theory.md",
+    "4 GS 4 Ethics/PYQ Pointers.md",
+    "4 GS 4 Ethics",
     "textgenerator/prompts/default/summarize.md",
     "textgenerator/prompts/default/simplify.md",
     "textgenerator/prompts/default/rewrite.md",
@@ -187,24 +193,11 @@
     "textgenerator/prompts/default/getParagraph.md",
     "textgenerator/prompts/default/getOutline.md",
     "textgenerator/prompts/default/getIdeas.md",
-    "textgenerator/prompts/default/getEmailPos.md",
-    "textgenerator/prompts/default/getEmailNeg.md",
-    "SITrust/Asma al-Husna Text.md",
     "SITrust/Asma al-Husna - Frontmatter Points.pdf",
-    "SITrust/08 Religion and Society.pdf",
-    "5 Sociology/Paper 1/08 Religion and Society.md",
     "textgenerator/prompts/default",
     "textgenerator/prompts",
     "textgenerator",
-    "Excalidraw/Drawing 2023-05-26 17.50.51.excalidraw.md",
     "Excalidraw",
-    "5 Sociology/Paper 1/Untitled mindmap.md",
-    "5 Sociology/Paper 1/010 Social Change in Modern Society.md",
-    "5 Sociology/Paper 1/Other Imp Topics.md",
-    "5 Sociology/Paper 1/09 Systems of Kinship.md",
-    "5 Sociology/Paper 1/02 Sociology as Science.md",
-    "SITrust/Ramadan Targets.md",
-    "SITrust/Ramadan Targets - Overview.md",
     "SITrust/Elocution Competition.pdf",
     "SITrust/Asma al-Husna Preface.pdf"
   ]

@@ -16,6 +16,7 @@
     "Adamic Adar",
     "Jaccard",
     "Label Propagation",
+    "Louvain",
     "Sentiment"
   ]
 }
