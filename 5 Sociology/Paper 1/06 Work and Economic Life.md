@@ -15,28 +15,27 @@ sr-ease: 230
 # Unit 06 Work and Economic Life
 ***
 
-Notion of Work -
-- Natural Sciences - Expenditure of Energy
-- Sociology - Work is a social activity performed in groups. It is about the power relations, social dynamics, conflicts, functions performed, etc.
+### Notion of Work
+1. Natural Sciences - Expenditure of Energy
+2. Sociology - Work is a social #activity performed in groups. It is about the power relations, social dynamics, conflicts, functions performed, etc.
 
-Work is the basis of Economy!
-Study of Work in sociology is important because economy and production influence all other parts of the society
 
-Industrialization & Modernisation together led to the formation of new discipline Sociology
+#Work - Carrying of tasks requiring the expenditure of physical & mental efforts, with the objective of production of goods and services catering to human needs  #defn 
+Economic Sociology - Work is an #activity which results in paid employment, reward or contract  #defn 
 
-#Marx Work/Production of goods and services is an avenue of expression of creativity and a way to happiness and satisfaction. When workers loose control they are alienated
-#ED Work is an integrating force in modern societies and forms the basis of organic solidarity
+#Work is the basis of Economy! Integral to human existence
+Study of Work in sociology is important because economy & production influence all other parts of the society
+#Industrialization & #Modernisation together led to the formation of new discipline Sociology [[01 Sociology - The Discipline|Unit 01]]
 
-Work - Carrying of tasks requiring the expenditure of physical and mental efforts, with the objective of production of goods and services catering to human needs. 
-Economic Sociology - Work is an activity which results in paid employment, reward or contract
+#Marx Work/Production of goods & services is an avenue of expression of creativity & a way to happiness and satisfaction. When workers loose control they are #alienated
+#ED Work is an integrating force in modern societies and forms the basis of organic #solidarity
 
 ## Need of Work in Society
 ***
-
-### Importance of Work in modern societies -
+### Importance of Work in modern societies
 1. Source of Income & Living - Money Market
 2. Breaks monotony of domestic life
-3. Gives identity to a person, as in Industrial societies, a person is known by the work carried out
+3. Gives #identity to a person, as in Industrial societies, a person is known by the work carried out
 4. Provides opportunity to build Social Capital
 5. Directs human energy in constructive way to acquire skills
 
@@ -46,28 +45,32 @@ Economic Sociology - Work is an activity which results in paid employment, rewar
 3. Activity level - Experiment & experience Skills
 4. Variety - Breaks monotony
 5. Temporal Structure - Proved sense of direction on a daily basis
-6. Social Contracts - Friendship
+6. Social Contracts - Friendship  #significance 
 
-
-Work > Employment
-
-
+Worker - Enters into a paid employment out of his/her own will, is not in a managerial job, has contractual relations with the employer
+Worker /= Labour; Labour lacks choice for any reason, are forced into work, are in feudal / ritual relations with the employer. #Eg Child labour, bonded labour
+Work > Employment (more narrow)
+#Robert #Blauner Increase in use of technology leads to higher degree of alienation
+#Frank Hull also echoes similar views, the relation is more negatively linear than curvilinear
 
 ## Social Organisation of Work
 ***
 
-Organisation of Work - Patterning of activities which involves a technical & social component
-Technically - Division of Labour
-Socially - reflects normative structure of Society in the form of stratified order
+#Organisation of Work - Patterning of activities which involves a technical & social component  #defn 
+Technically - Division of Labour #DoL 
+Socially - reflects normative structure of Society in the form of #stratified order
+
+Different societies have difference organisation of work at different times
+#Marx #Capitalism was offing in Europe, South Asia had Asiatic Mode of Production #MoP  
 
 ### General Schema - Dimensions of analysis of organisation of work ~ Ideal Typical Framework
-1. Production Activities - Hunting-gathering, mass production, agriculture
+1. Production Activities - Hunting-gathering, mass #production, #agriculture
 2. Nature of Work - Simple/Complex, Formal/Informal
-3. Source of Power - Land, capital. Classical #Elites - Power in individual qualities, #Marx - Power is in control of modes of production
-4. Stratification System - Result of pattern of inequalities. Master-slave, Lord-Serf
-5. Social Mobility - High-low, Ascriptive-acquired
-6. Degree of Alienation - #Marx Peaks in Capitalism, #Weber Result of increasing rationalisation of work
-7. Specific features - Gender roles, Age roles, Individualisation, Communal organisation
+3. Source of #Power - #Land, capital. Classical #Elites - Power in individual qualities, #Marx - Power is in control of modes of production #MoP 
+4. #Stratification System - Result of pattern of inequalities. Master-slave, Lord-Serf
+5. Social #Mobility - High-low, Ascriptive-acquired
+6. Degree of #Alienation - #Marx Peaks in Capitalism, #Weber Result of increasing rationalisation of work
+7. Specific #features - Gender roles, Age roles, Individualisation, Communal organisation
 
 ### Primitive Slave Societies
 Man was overwhelmed by forces of nature, like rains, floods, which determined the social organisation. Forces of production were at lowest level and material density was low. Family was self-sufficient unit of production & consumption
@@ -132,6 +135,9 @@ Man now controlled Nature
 12. Work Life Separation - Domestic & Commercial activities are separated as community production replaced by factories
 13. High Levels of Innovation - Individual has more freedom to be creative
 14. Secular Economic Settings - Work organised more rationally, not on customs. Laws are progressive and Religion plays lesser role
+
+Organisation of Work in modern post-industrial societies cannot be clubbed under any single classification. Diverse service industry, increasing entrepreneurship, automation, etc have opened many new areas of study  #conclusion 
+
 
 ##### Ways of Organisation of Work in different societies
 1. Developed Countries - Generally industrialised and service oriented

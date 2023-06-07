@@ -83,14 +83,12 @@ George #Lundberg - SM consists of 3 basic steps - Systematic observation, classi
 SM in Socio - To give concrete shapes to the Sociological concepts so that they are understood in the same way by different people. Ensures that Sociology as a body of knowledge is systematised and is given a definite shape
 
 #### SM Elements Characteristics
-1. Perspectives and Problem Definition - Observation & Questioning - #Remaining 
-2. Hypothesis Formulation - 
-3. Information gathering using research methods & building causal explanations - Experimentation - 
-4. Interpretations of results, analysis, comparison, classification - Data Analysis -
-5. Theory Building - Conclusion - 
-
-
-
+1. Perspectives and Problem Definition - Observation & Questioning - Perspective provides a direction to the research. It is a set of assumptions based on existing knowledge 
+2. Hypothesis Formulation - Hypothesis is an untested statement about relationship of concept. It is subjected to generalisation to further the prediction process
+3. Information gathering using research methods & building causal explanations - Experimentation - Relevant facts-data are collected by means of surveys, observations, etc.
+4. Interpretations of results, analysis, comparison, classification - Data Analysis - Collected data is converted to information to be interpreted for a wider consumption
+5. Theory Building - Conclusion - Sociological theory is a set of interrelated ideas that allow systematisation of knowledge of social world. This is used to make predictions about social system, if found to be repeatedly true then result into theories or general laws  #characteristics 
+#Remaining #Eg 
 
 #### SM Criticism
 1. Karl #Popper, The Logic of Scientific Discovery - Sci+SM face problem of Demarcation (what is Scientific and what is not, is subjective at times) Scientific principles are based on Probability and not Finality
@@ -104,9 +102,8 @@ SM in Socio - To give concrete shapes to the Sociological concepts so that they 
 #### Conclusion
 Sociology is a complex and challenging discipline. It is a science, but it is also a social science, which means that it must take into account the subjective aspects of human behaviour. Sociology can be a valuable tool for understanding the world around us, but it is important to be aware of its limitations  #conclusion 
 
-
 ***
-#check
+#check #review #left #sas 
 
 Immanuel #Kant: There are two sources of knowledge – Philosophy (deals with statement of values) and Science (deals with statement of facts). There is a logical gap between scientific conclusion and philosophical conclusion. They are qualitatively different.
 Neo-Kantian (followers of Kant): Science is nomothetic (tendency to generalize) and philosophy is ideographic (tendency to specify).
@@ -129,16 +126,13 @@ Methodology ideographic | nomothetic
 ## Major theoretical strands of research methodology
 ***
 
-#RM is a wider term given to the entire process of Research which included specific approach, ideology, RM, research design, data, assumption and logics used in the process
-
+#RM is a wider term given to the entire process of Research which included specific approach, ideology, RM, research design, data, assumption and logics used in the process  #defn 
 Socio research is guided by researchers conception of relation between man and society
 
-Socio Approaches ---> #diagram
-Micro and Macro
-Positivist and Interpretivists
-Functional-Conflict and Ethnomethodology - Symbolic Interactionism
+Socio Approaches ---> #insert #diagram #left #Remaining 
 
-
+- #Micro > #Interpretive > Symbolic Interactionism - #Ethnomethodology - #Dramaturgy - Post #Modernism - #Phenomenology (Data - Emotions - Communication - Interpretation > Social Science)
+- #Macro > #Positivist > #Functionalism - #Conflict - #Feminist (Facts + Data - Analysis > Science)
 
 
 ## Positivism and its critique
@@ -165,12 +159,11 @@ Saint #Simon - #Positivism was rooted in a science of society which is analogous
 3. Historical
 4. Comparative
 
-### Dimensions of Positivism
+###  4 Dimensions of Positivism
 1. Empiricism & Direct Observation
 2. Use of SM
 3. Experimentation & Theory Building
 4. Cause & Effect
-
 
 ### Positivism Features
 1. Emphasis on behaviour that can be directly observed. Feelings and meanings which cannot be directly observed are not seemed to be important
@@ -206,61 +199,69 @@ Human Behaviour & working of society is predictable and so it can be quantified 
 However, Positivist freed social sciences from the clutches of religion and speculative philosophy, thus laying a solid foundation of a systematic study of society #conclusion
 
 
-
-
-
-
 ## Fact value and objectivity
 ***
 #### Concept
-An abstraction representing objects/phenomena. Proxies of objects. #Eg - Family, Caste, Kinships, etc
+An abstraction representing objects/phenomena. Proxies of objects. #Eg - Family, Caste, Kinships, etc  #defn 
 #Concepts should be unambiguous, precise and agreed upon by all so as to clarify researchers thinking. Concepts are abstract so must be operationalised. #Eg - Social status concept operationalised by indicators like occupation, income
 
 ### Fact
 Latin word - Factum - Something made or done  #fact
-An empirically verifiable observation that can be agreed upon as real, definite, incontrovertible, and having its own existence 
+An empirically verifiable observation that can be agreed upon as real, definite, incontrovertible, and having its own existence  #defn 
 Remain same in every condition for all observers
 - Objective facts - Subject matter of Natural Sciences
 - Social Facts - Sociology
 #ED - To make Sociology a science, attention should be paid only on factual analysis and not subjective interpretation and individual perceptions
 
-- Criticism
-	1. No agreement on which Social Facts are universal. #Eg - Capitalism as a social fact in any social system may be viewed differently
-	2. Difficulty in defining and concretising social facts, because their meanings change with the changing context
+#### Criticism
+1. No agreement on which Social Facts are universal. #Eg - Capitalism as a social fact in any social system may be viewed differently 
+2. Difficulty in defining and concretising social facts, because their meanings change with the changing context  #criticism 
 Therefore, Sociology cannot be based on facts alone, as human consciousness is intangible and cannot be measured against dry factual standards
 
 #### Theory
 Observed facts are systematised and their relation is expressed into a set of general statements that account for the causal relations between the observed facts
-It is a general statement, established, tested and supported by evidence
+It is a general statement, established, tested and supported by evidence  #defn 
 
 ##### Socio & Theory
 Positivists stand for predictability of future events as an essential part of Sociology
-Interpretivists consider theory building in Socio as a futile task
+Interpretivists consider theory building as a futile task
 
 ### Value
-Subjective disposition arising out of experience, bias, preferences, beliefs. Can be personal, cultural, temporal, and situation specific. They may change over a period of time
+Subjective disposition arising out of experience, bias, preferences, beliefs. Can be personal, cultural, temporal, and situation specific. They may change over a period of time  #defn 
 Values represent what one believes, and may not represent actual reality
-#Functionalists - Values are of society, and not individuals & are a medium of social control
+#Functionalists - Values are of society, not individuals & are a medium of social control
 Values are associated with ideological thinking & may be at diverging ends
 #Positivists - For objective evaluation, keep personal values aside
 Non positivists accorded Values their due significance, as it is not possible to avoid them totally
 
 #### Fact - Value Distinction / Dichotomy
-
-#Remaining 
-
+#Comte #ED #Weber favoured FV Distinction to make Socio a scientific discipline
+Others argued FV distinction is not is impossible to maintain as Socio doesn't deal with mechanical elements
+No FV Distinction, but yes to FV Dichotomy, as they two cannot be separated even if they are conceptually different
+#Howard #becker Depriving social sciences of values will be akin to taking the very soul away from its disciplines
+Values are dominant in society, so Sociologists cannot be concerned only about the facts
+If Sociologists do not promote Values, then sociology will be dominated by the values of ruling class
+Rather than aiming for complete value-freedom, instead avoid a strong interest in the research outcome
+Retain #Objectivity & #rationality in sociological research without completely doing away with values or making a clear distinction between FV  #conclusion 
 
 ### Objectivity ~ Value Freedom ~ Core of Positivism
-An approach in which the attitude of an investigator is detached, unprejudiced, value free and free from biases. 
+#Objectivity An approach in which the attitude of an investigator is detached, unprejudiced, value free and free from biases  #defn  
 Values are the basis of biases and subjectivity, as they flow from preconceived notions like caste, gender, religion, etc.
-Robert Bierstedt - Objectivity means that conclusions arrived at as a result of inquiry, investigation independent of race, creed, colour predisposition of the investigator
+#Robert Bierstedt - Objectivity means that conclusions arrived at as a result of inquiry, investigation independent of race, creed, colour predisposition of the investigator
 Objectivity presupposes value neutrality and predictability about outcome
+Objectivity is one of the pillars of #SM & the core of Positivism  #conclusion 
 
 #### Objectivity in Methodology 
 Objectivity in research can be improved by various #SM like double blind, Verstehen, enlarging samples, expanding research
 Reflexivity - Viewing ones own work from an outsiders perspective for an objective evaluation
+Use of #SM like #Verstehen , researchers training, enlarging samples, expanding research in #temporal & #spatial dimensions for wider acceptability
+#Subjective research may lead to high inconsistency which may render the results unfruitful 
 
-Biases | Research Stage | Eg
+- Dilution of #Objectivity in Social #research 
+#diagram #left  Sangwan 30
+#tables This table has some problem - Also the exlain the diagram with proper examples
+
+5 Biases | #Research Stage | #example 
 ------------ | ------------ | -------
 Personal Preferences | Choice of Topic | Problem definition
 Subjectivity in methods | Collection of Facts | Primary/Secondary methods
@@ -270,29 +271,34 @@ Choice of Tools | Testing | Subjectivity as no controlled environment
 
 
 Proponents of Objectivity - Refrain from Questions of what ought to be, instead focus on explaining what is
-
 Humans have consciousness so complete Objectivity is neither achievable nor desirable 
 #Dilthey - Facts based approach explores only 1 dimension and ignores cultural-ideological dimensions
+As there are multiple viewpoints & different ideologies, so absolute objectivity is not possible
 A particular social problem can be understood only within a particular context and ignoring the context may lead to faulty understanding of the problem
-Post Positivist Elvin #Gouldner - Value neutrality is an Elusive goal in Sociology, as there are multi-layered truths
+#Post Positivist Elvin #Gouldner - Value neutrality is an Elusive goal in Sociology, as there are multi-layered truths. Hence values and viewpoints are considered essential
 #Giddens - Structure is seen as object & social action as value laden, both are 2 sides of the same coin and cannot exist independently 
-Contemporary Researchers - Give due weight to objectivity, buy recognize futility of doing away with the value influence completely
-
-Objectivity is neither an end in itself nor a fixed principle, it undergoes changes
+#Contemporary Researchers - Give due weight to objectivity, buy recognize futility of doing away with the value influence completely  #conclusion 
+#Objectivity is neither an end in itself nor a fixed principle, it undergoes changes. It is a continuous and an ongoing process & not to be seen as an already achieved end result
+#hammersley Fallibility of knowledge is not an excuse to abandon research. Limitations of objectivity doesn't mean it needs to be abandoned completely
 
 ***`Objectivity ~= Value Neutrality`***
-One can accept the prevailing ideas of society and still remain objective in ones approach
+One can accept the prevailing ideas of society and still remain objective in ones approach 
+#left  Weber on Obj & Value netruality - Box in Sangwan 31
 
 
 
 
-
+- Problems of maintaining Objectivity & Value Neutrality in Social Sciences
+- Distinguish between fact and value in Weber’s Protestant Ethic and Spirit of Capitalism
+- Value Free Sociology #PYQ 
+- Objectivity in Interpretative research
 
 
 ## Non - positivist methodologies
 ***
 #Remaining 
-
+- Evolution of Non-positivist approach
+  #diagram #left Sangwan Page 27
 
 
 
