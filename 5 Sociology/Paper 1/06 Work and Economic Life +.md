@@ -19,7 +19,6 @@ sr-ease: 230
 1. Natural Sciences - Expenditure of Energy
 2. Sociology - Work is a social #activity performed in groups. It is about the power relations, social dynamics, conflicts, functions performed, etc.
 
-
 #Work - Carrying of tasks requiring the expenditure of physical & mental efforts, with the objective of production of goods and services catering to human needs  #defn 
 Economic Sociology - Work is an #activity which results in paid employment, reward or contract  #defn 
 
@@ -29,6 +28,11 @@ Study of Work in sociology is important because economy & production influence a
 
 #Marx Work/Production of goods & services is an avenue of expression of creativity & a way to happiness and satisfaction. When workers loose control they are #alienated
 #ED Work is an integrating force in modern societies and forms the basis of organic #solidarity
+#### Sociological Perspectives on Work
+1. **Functionalist perspective:** The functionalist perspective views work as a social institution that is necessary for the smooth functioning of society. Work provides us with the goods and services we need to survive, and it also helps to create social order and stability
+2. **Conflict perspective:** The conflict perspective views work as a source of inequality and exploitation. Workers are often forced to work long hours for low pay, and they have little control over their work environment
+3. **Symbolic interactionist perspective:** The symbolic interactionist perspective views work as a social process that is shaped by our interactions with others. The meaning of work is negotiated through our interactions with our coworkers, supervisors, and customers
+#left #rephrase #Remaining 
 
 ## Need of Work in Society
 ***
@@ -36,8 +40,10 @@ Study of Work in sociology is important because economy & production influence a
 1. Source of Income & Living - Money Market
 2. Breaks monotony of domestic life
 3. Gives #identity to a person, as in Industrial societies, a person is known by the work carried out
-4. Provides opportunity to build Social Capital
-5. Directs human energy in constructive way to acquire skills
+4. Gives identity, purpose & social status to a person
+5. Provides opportunity to build Social Capital
+6. Directs human energy in constructive way to acquire skills
+7. Source of satisfaction & fulfilment 
 
 ### Social Significance of Work
 1. Personal Identity - Work is valued for sense of social (stable) identity. Especially for men, self-esteem is bounded to economic contribution for household
@@ -223,6 +229,8 @@ Overall transformation of some societies & so some regions emerged more prospero
 7. Changing Family Structure - Mobile & Nuclear family
 8. Revolution & Marxian Thoughts - Industrialisation & Capitalism lead to real change - arrival of #Socialism
 9. Misc. - More Jobs, more prosperity, better standard of life. Communication & production process became more efficient  #SC #changes 
+
+Sociologists study the relationship between work and the economy in order to understand how it shapes our lives and society  #conclusion 
 
 ## Formal & Informal Work in Society
 ***
