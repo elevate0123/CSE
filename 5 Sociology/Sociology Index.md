@@ -18,7 +18,7 @@ tags:
 
 Intro 
 	1	[[01 Sociology - The Discipline|Discipline]] Discipline #discipline 
-	2	[[02 Sociology as Science|Science]] Science #Socio/Science 
+	2	[[02 Sociology as Science +|Science]] Science #Socio/Science 
 	3	[[03 Research Methods and Analysis|Research Methods]] Research Methods #research #methods
 	
 Social Thinkers	4 #thinker
@@ -31,7 +31,7 @@ Social Thinkers	4 #thinker
 	
 Stratification	5	Stratification #Stratification 
 	
-Work Econ	6	[[06 Work and Economic Life]] Work Econ #econ 
+Work Econ	6	[[06 Work and Economic Life +]] Work Econ #econ 
 	
 Politics	7	Politics #politics 
 	

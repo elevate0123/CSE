@@ -2,7 +2,6 @@
   "obsidian-style-settings",
   "obsidian-git",
   "obsidian-mind-map",
-  "cm-editor-syntax-highlight-obsidian",
   "obsidian-outliner",
   "obsidian-pandoc",
   "tag-wrangler",
@@ -16,6 +15,5 @@
   "home-tab",
   "obsidian-zotero-desktop-connector",
   "graph-analysis",
-  "obsidian-annotator",
   "remember-cursor-position"
 ]
