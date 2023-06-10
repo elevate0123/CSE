@@ -1,7 +1,7 @@
 {
   "translucency": true,
-  "theme": "moonstone",
-  "baseFontSize": 17,
+  "theme": "obsidian",
+  "baseFontSize": 16,
   "cssTheme": "Blue Topaz",
   "textFontFamily": "Trebuchet MS",
   "accentColor": "#23bafb"

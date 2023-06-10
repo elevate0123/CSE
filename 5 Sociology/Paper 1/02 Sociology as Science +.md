@@ -319,7 +319,7 @@ Alfred #Schutz - The Phenomenology of Social World, based on works of Edmund Hus
 
 ### Symbolic Interactionism
 
-#Remaining 
+#Remaining #left 
 
 
 ### Ethnomethodology

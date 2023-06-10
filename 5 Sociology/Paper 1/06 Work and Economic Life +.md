@@ -353,3 +353,5 @@ Globalisation of Labour in post modern times - High mobility, trans-boundary mov
 Rise of service sector due to decline of older factory production
 Blue Collar manufacturing to White Collar Service
 Technological Determinist - +ve advocates of Tech
+
+#left 

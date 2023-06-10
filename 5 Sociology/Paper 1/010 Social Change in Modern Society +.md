@@ -16,7 +16,7 @@ Social Change #SC Wilbert #Moore - Significant alteration in structure over time
 
 ##### SC Aspects / Facets Views
 1. #Structural Changes - Affects the whole society fundamentally. #Eg Industrialisation, Urbanisation, Democratisation, GR, Legal rights, occupational mobility
-2. #Cultural Changes - Changes rooted in value-belief system. #Eg Women empowerment, caste dilutions, changes in family forms, Sanskritization, GT LT, Westernisation
+2. #Cultural Changes - Changes rooted in value-belief system. #Eg Women empowerment, caste dilutions, changes in family forms, Sanskritization, #GT #LT, Westernisation
 
 ##### SC Characteristics
 1. Value Neutral (Neither good nor bad)
@@ -33,19 +33,19 @@ Social Change #SC Wilbert #Moore - Significant alteration in structure over time
 1. Endogenetic
 2. Exogenetic / Equigenetic
 
-Social change is a complex process, it is important to understand the factors that can lead to it so as to be prepared for the challenges & opportunities that lie ahead  #conclusion 
+#SC is a complex process, it is important to understand the factors that can lead to it so as to be prepared for the challenges & opportunities that lie ahead  #conclusion 
 
 ## Sociological Theories of Social Change
 ***
 
-- Sociological Theories of SC are classified based on the way Change is viewed
-	1. Linear Model of Change
-	2. Cyclical
-	3. Wave
-	4. Growth & Decay
-	5. Spiral
-	6. Ever expanding
-	7. *Post modernist* - No fixed pattern for SC
+#### Sociological Theories of SC - classified based on how Change is viewed
+1. Linear Model of Change
+2. Cyclical
+3. Wave
+4. Growth & Decay
+5. Spiral
+6. Ever expanding
+7. *Post modernist* - No fixed pattern for SC  #classification 
 
 ### Linear / Evolutionary Theories
 Adapted from the Biological evolution theory. #Comte #Tylor #Spencer #Marx #ED #Tonnies
@@ -54,11 +54,11 @@ Adapted from the Biological evolution theory. #Comte #Tylor #Spencer #Marx #ED #
 1. #Comte used Progressive Evolutionary Model for new forms of Society in Law of 3 Stages. 
 	- Intellectual development as the basis of all development. 
 	- Law of 3 Stages - 
-	  1. Theological - Society is an expression of Gods will. Thinking based on religious ideas and beliefs
-	  2. Metaphysical - Started with #Renaissance Society is seen in natural terms. Imaginative thoughts questioned theological dogmas. These are periods of Stability and upheaval known as Organic & Critical Periods. CP inaugurates new phases
+	  1. #Theological - Society is an expression of Gods will. Thinking based on religious ideas and beliefs
+	  2. #Metaphysical - Started with #Renaissance Society is seen in natural terms. Imaginative thoughts questioned theological dogmas. These are periods of Stability and upheaval known as Organic & Critical Periods. CP inaugurates new phases
 	  3. Positivistic - Starts with new scientific discoveries
 	    1. Eventually, man would be able to measure empirically and explain conclusively, all forms of social behaviour
-	    2. Aspects of SC - Social Statics remain constant, Social Dynamics change
+	    2. Aspects of #SC - Social Statics remain constant, Social Dynamics change
 2. #Morgan Moral stages of society - Primitive - Barbaric - Civilised stages of development
 3. #Tylor Evolutionary sequence followed 3 stages - Animism - Polytheism - Monotheism. Principal criteria for cultural growth were growth of industrial arts, scientific knowledge, nature of socio-political organisations
 4. #ED Evolutionary typology of SC - Society evolves from highly UNdifferentiated (mechanical-simple society) to Highly Differentiated (Organic-complex)
@@ -79,11 +79,75 @@ Adapted from the Biological evolution theory. #Comte #Tylor #Spencer #Marx #ED #
 
 1. Spencer - 
 2. 
+#left #Remaining 
 
+### Cyclical Theories of SC
+
+#left 
+/commi
+
+
+### Structure Functionalist Theory of SC of Parsons
+Concept of Dynamic/moving Equilibrium - Change is seen progressing from a stage of moving equilibrium to another
+
+#Parsons takes a systems view of society, where equilibrium is a dynamic
+1. Flux in the external situation tends to throw system off balance
+2. Processes inside the system are going on providing impulse for change
+Thus the equilibrium is distributed & system again restores it making it a dynamic equilibriums. Change is a temporary state which is overcome by systematic forces. Change occurs when structural strain of a system exceeds equilibrium forces. When shared values are institutionalised in a system, it results into an equilibrium state.
+
+#### 2 Integral Aspects of Parsons Idea of Change
+1. Systems View of Change - Change is restorative bringing system back to equilibrium. All the structures are closely related to each other & the functions are interrelated & interdependent. It is related to Parsons #AGIL framework, any disturbance in energy flow or information flow leads to SC. Since system is integrated, change in any of the functional pre-requisite produces change in others also
+2. Evolutionary View of Social Change - Societies head from one Evolutionary Universal to another in 5 stages. History of human society from hunting-gathering to complex is seen in terms of increasing adaptive capacity of society. As society evolves from simple to complex, control over environment increases, posing a problem of integration. This problem is solved by generalisation of values. Social Integration & Social Order are maintained by Generalisation. SC involved process of increasing differentiation, specialisation, adaptation
+- Systems & Subsystems - SS changes, so other SS adjust, thus overall System changed to a new one
+
+
+### Post Modernist Perspective  on SC
+#PM characterized by a rejection of grand narratives, a scepticism of metanarratives, with a focus on the local and the particular
+Post Modernist #PM see SC beyond integrating-conflict debate, rejecting the grand theories of SC as proposed by #Marx #ED #Parsons 
+#SC not driven by any single factor, but rather by a complex interplay of forces. Reject the idea that SC is always progressive, pointing to the ways in which it can also lead to fragmentation and inequality
+
+##### Features of PM on SC
+1. **Rejects grand narratives:** World is too complex and constantly changing to be understood in terms of a single, unified narrative
+2. **Focuses on the local and the specific:** Best way to understand the world is to study it in its particularity, rather than trying to fit it into a pre-defined framework
+3. **Emphasizes the role of power:** Power relations shape our understanding of the world
+4. **Rejects the idea of progress:** SC can also lead to fragmentation & inequality
+5. **Emphasizes difference:** Postmodernists argue that there is no single, universal truth. Believe that there are multiple truths, each of which is valid from a particular perspective
+6. **Challenges traditional notions of social justice:** Notions are often based on a false universalism  
+
+#### Key features of the postmodern perspective on SC
+1. **Rejects grand narratives:** Postmodernists reject the idea that there are any overarching theories that can explain the course of history. They argue that the world is too complex and constantly changing to be understood in terms of a single, unified narrative
+2. **Focuses on the local and the specific:** Postmodernists focus on the local and the specific, rather than on the global or the universal. They argue that the best way to understand the world is to study it in its particularity, rather than trying to fit it into a pre-defined framework
+3. **Emphasizes the role of power:** Postmodernists argue that power relations shape our understanding of the world. They believe that the way we see the world is not simply a matter of individual perception, but is also influenced by the power relations that exist within society
+4. **Rejects the idea of progress:** Postmodernists reject the idea that social change is always progressive. They argue that social change can also lead to fragmentation and inequality
+5. **Emphasizes difference:** Postmodernists argue that there is no single, universal truth. They believe that there are multiple truths, each of which is valid from a particular perspective
+6. **Challenges traditional notions of social justice:** Postmodernists have challenged traditional notions of social justice. They argue that these notions are often based on a false universalism  #features   #rephrase  #left 
+
+#### Feminist Perspective
+Emphasises centrality of gender in SC. Social Reality is viewed differently by both the sexes
+Rising awareness of rights, #feminisation of workforce, women #movements , challenging #gender stereotypes, changing social attitudes, are seen as new dimensions of #SC 
+
+##### Feminist Movement roles in bringing SC
+1. Feminist movement against domestic violence has led to increased awareness of the issue and to changes in laws and policies  #Eg 
+2. Feminist movement for economic equality has led to increased opportunities for women in the workplace and to changes in laws and policies governing pay equity
+
+Feminist perspectives continue to play an important role in the fight for #SC By challenging gender inequality & working to create a more just equitable society, feminists are helping to make the world a better place for all women  #conclusion 
+
+#### Post Structuralism
+PS characterized by a focus on language, meaning & relationship between the signifier and the signified
+Jacques #Derrida & Michael #Foucault analysed the emergence of modern institutions like prisons, schools, hospitals as a sign of increasing surveillance & discipline in society
+Postmodern society is likely to be more multi-cultural & diverse, leading the traditional sociology to be insufficient to account for SC
+Jean #Baudrillard Mass media has reversed the Marxist idea of Economic structure domination, rather signs & images control the society which is a creation of mass media
+
+#Postmodern perspective on #SC is still evolving, it is not clear what its full implications will be. However, it is clear that the postmodern perspective has had a significant impact on how we think about SC  #conclusion 
 
 
 ## Development & Dependency
 ***
+#left 
+
+
+
+
 
 
 
@@ -127,7 +191,7 @@ In recent years, there has been growing interest in the role of education in pro
 While education is not a magic bullet, it is clear that it can play a significant role in promoting social change. By providing people with the knowledge, skills, and values they need to participate in society, education can help to create a more just and equitable world.
 
 Here are some specific examples of how education has been used to promote social change:
-/comm
+
 - In India, the Right to Education Act has helped to increase access to education for millions of children from poor families.
 - In South Africa, the Truth and Reconciliation Commission used education to promote understanding and reconciliation between different racial groups.
 - In the United States, the Civil Rights Movement used education to challenge segregation and discrimination.
