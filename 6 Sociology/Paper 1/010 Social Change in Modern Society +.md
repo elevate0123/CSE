@@ -84,7 +84,7 @@ Adapted from the Biological evolution theory. #Comte #Tylor #Spencer #Marx #ED #
 ### Cyclical Theories of SC
 
 #left 
-/commi
+
 
 
 ### Structure Functionalist Theory of SC of Parsons
