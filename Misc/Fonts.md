@@ -52,3 +52,10 @@ Headline - Body Text Pairings
 	2. IBM Plex Mono
 	3. Space Mono 
 	4. Ubuntu Mono
+
+
+https://youtube.com/playlist?list=PLYfCBK8IplO5vetYLB_OgQ_g3ea0uduPp
+
+GDS Font Book [Playlist - 3 Videos with 5 Fonts each](https://youtube.com/playlist?list=PLYfCBK8IplO5vetYLB_OgQ_g3ea0uduPp)
+
+/commi

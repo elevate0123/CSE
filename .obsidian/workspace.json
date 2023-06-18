@@ -4,37 +4,23 @@
     "type": "split",
     "children": [
       {
-        "id": "7f9e97a3e4dabf53",
+        "id": "53310c6faa46251b",
         "type": "tabs",
         "children": [
           {
-            "id": "4258b7957c559f70",
+            "id": "45e75181540f5423",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Home.md",
-                "mode": "source",
-                "backlinks": true,
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "6004bf3a19245352",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "12 Job/BA Interview Questions.md",
+                "file": "Misc/Fonts.md",
                 "mode": "source",
                 "backlinks": true,
                 "source": false
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -100,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "12 Job/BA Interview Questions.md",
+                "file": "Misc/Fonts.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -128,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "12 Job/BA Interview Questions.md",
+                "file": "Misc/Fonts.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -140,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "12 Job/BA Interview Questions.md"
+                "file": "Misc/Fonts.md"
               }
             }
           },
@@ -175,9 +161,12 @@
       "obsidian-excalidraw-plugin:Create new drawing": false
     }
   },
-  "active": "8ac7585ea10a8106",
+  "active": "45e75181540f5423",
   "lastOpenFiles": [
+    "Misc/markdown-cheat-sheet.md",
+    "Misc/Fonts.md",
     "Home.md",
+    "Untitled mindmap.md",
     "12 Job/BA Interview Questions.md",
     "12 Job",
     "5 Essay",
@@ -197,10 +186,7 @@
     "5 Sociology/Paper 1/02 Sociology as Science 2023-06-07 17.52.48.excalidraw.md",
     "Misc/Highlights for 08 Religion and Society.md",
     "Said al Khatir!.md",
-    "Untitled mindmap.md",
     "Misc/README.md",
-    "Misc/markdown-cheat-sheet.md",
-    "Misc/Fonts.md",
     "Misc/Internal link.md",
     "6 Sociology/Sociology Index.md",
     "1 GS 1/GS 1 Syllabus.canvas",

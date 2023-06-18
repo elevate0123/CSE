@@ -4,7 +4,7 @@
 
 It is the most fundamental question you can expect during your interview. You can answer this question by explaining that a business analyst is a liaison or a link between different stakeholders belonging to different domains in an organization. A business analyst should have the capabilities to fulfill the business objectives and balance the needs of various stakeholders.
 
-/comm
+
 ### 2. How do you see yourself fit for the role of business analyst in our company?
 
 With this type of business analyst interview questions, the interviewer wants to assess your understanding regarding the job role and whether you match the company's expectation of the desired candidate.
