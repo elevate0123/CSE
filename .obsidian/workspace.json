@@ -4,16 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "53310c6faa46251b",
+        "id": "0961d21163659958",
         "type": "tabs",
         "children": [
           {
-            "id": "45e75181540f5423",
+            "id": "ea8313d04a9b84b1",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Misc/Fonts.md",
+                "file": "12 Job/BA Interview Questions.md",
                 "mode": "source",
                 "backlinks": true,
                 "source": false
@@ -86,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Misc/Fonts.md",
+                "file": "12 Job/BA Interview Questions.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Misc/Fonts.md",
+                "file": "12 Job/BA Interview Questions.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -126,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Misc/Fonts.md"
+                "file": "12 Job/BA Interview Questions.md"
               }
             }
           },
@@ -161,22 +161,24 @@
       "obsidian-excalidraw-plugin:Create new drawing": false
     }
   },
-  "active": "45e75181540f5423",
+  "active": "ea8313d04a9b84b1",
   "lastOpenFiles": [
-    "Misc/markdown-cheat-sheet.md",
-    "Misc/Fonts.md",
     "Home.md",
-    "Untitled mindmap.md",
+    "6 Sociology/Paper 1/06 Work and Economic Life +.docx",
+    "6 Sociology/Paper 1/02 Sociology as Science +.md",
+    "6 Sociology/Paper 1/08 Religion and Society.md",
+    "6 Sociology/Paper 1/06 Work and Economic Life +.md",
     "12 Job/BA Interview Questions.md",
+    "Said al Khatir!.md",
+    "Misc/Fonts.md",
+    "Misc/markdown-cheat-sheet.md",
+    "Untitled mindmap.md",
     "12 Job",
     "5 Essay",
     "6 Sociology/Paper 1/04 4 Talcott Parsons.md",
     "6 Sociology/Paper 1/Contemporary Scholars.md",
-    "6 Sociology/Paper 1/02 Sociology as Science +.md",
     "Contemporary Scholras",
-    "6 Sociology/Paper 1/08 Religion and Society.md",
     "6 Sociology/Paper 1/010 Social Change in Modern Society +.md",
-    "6 Sociology/Paper 1/06 Work and Economic Life +.md",
     "6 Sociology/Paper 1/Git Sample.md",
     "6 Sociology/Paper 1/09 Systems of Kinship.md",
     "6 Sociology/Paper 1/03 Research Methods and Analysis.md",
@@ -185,7 +187,6 @@
     "6 Sociology/Paper 1/Untitled mindmap.md",
     "5 Sociology/Paper 1/02 Sociology as Science 2023-06-07 17.52.48.excalidraw.md",
     "Misc/Highlights for 08 Religion and Society.md",
-    "Said al Khatir!.md",
     "Misc/README.md",
     "Misc/Internal link.md",
     "6 Sociology/Sociology Index.md",
@@ -193,12 +194,10 @@
     "Excalidraw/Drawing 2023-05-26 17.50.51.excalidraw.md",
     "SITrust/08 Religion and Society.pdf",
     "4 GS 4 Ethics/Case Study.md",
-    "4 GS 4 Ethics/Ethics Theory.md",
     "4 GS 4 Ethics",
     "SITrust/Asma al-Husna - Frontmatter Points.pdf",
     "textgenerator/prompts/default",
     "textgenerator/prompts",
-    "textgenerator",
-    "Excalidraw"
+    "textgenerator"
   ]
 }

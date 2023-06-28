@@ -3,7 +3,7 @@
 ### 1. What is the role of a business analyst in an organization? 
 
 It is the most fundamental question you can expect during your interview. You can answer this question by explaining that a business analyst is a liaison or a link between different stakeholders belonging to different domains in an organization. A business analyst should have the capabilities to fulfill the business objectives and balance the needs of various stakeholders.
-
+/commi
 
 ### 2. How do you see yourself fit for the role of business analyst in our company?
 
@@ -617,3 +617,73 @@ A Business Analyst’s job role varies from company to company, but the listed b
 - Always narrate your experience while explaining any documentation or diagram.
 - Be a good listener, patiently understand the question, and provide relevant information. Too much or too little information is not required.
 - Always highlight and focus on your strengths and establish your effectiveness
+
+
+
+ Project Leadership  
+        • Requirement Gathering and Analysis  
+        • Conducting interviews, workshops, and other requirements elicitation techniques to understand the needs of the business and translate them into actionable requirements.  
+        • Stakeholder Management  
+        • Solution Assessment and Validation  
+        • Business Process Improvement  
+        • Documentation and Communication  
+        • Team Collaboration and Mentoring  
+        • Peer Evaluations  
+        • Change Management
+
+ 
+ Gathering, analysing and documenting business requirement  
+        • Identifying business needs of stakeholders and proposing adequate solutions  
+        • Recommending priorities & prioritising conflicting needs  
+        • Authoring Product Backlog items and management of Product Backlog  
+        • Planning and managing deadlines for implementing solutions and changes  
+        • Identifying and responding to risks  
+        • Defining and documenting workflows  
+        • Supporting communication between development team and customer
+
+To analyze business & to understand business requirements  
+        • Client Communication  
+        • Sprint Management  
+        • Created various documents like SRS, BRD, wireframes, Scope documents etc.  
+        • Business Diagrams  
+        • Project Audit management  
+        • Product Demo  
+        • User Manual  
+        • To analyze business & to understand business requirements  
+        • GAP Analysis for existing business, system, process & information flow  
+        • Provided many solution proposals to fill those gaps: Understand Business Requirements, coordinate with design, development and QA team, Prepare Proposal and Detailed Project Plan  
+        • Performed role of pre-sales & post-sales analyst  
+        • Handled change requests & client support  
+        • Involved in UAT (User Acceptance Testing) with the client being on client site for project implementation  
+        • Used different tools like Outlook, JIRA, Confluence, Trello, Redmine, Excel, PPT, Word, Visio, Balsamiq, Azure, etc  
+        • Coordinated with the cross-functional team along with external stakeholders & customers 
+Requirement Elicitation  
+    • Wireframes  
+    • Client Coordination  
+    • Documentation  
+    • Mockups  
+    • Scrum Rituals  
+    • Facilitate the sprints as per Scrum (Agile Methodology)  
+    • Managing product Project & product backlog  
+    • User Stories / Flows  
+    • Demo  
+    • UAT/Acceptance testing  
+    • Pre-sales activity
+Requirement Elicitation  
+    • Wireframes  
+    • Documentation  
+    • Mockups  
+    • UAT/Acceptance testing
+
+User Stories
+Gap Analysis
+Delivery Process
+Pre sales
+Post sales
+Project estimation
+Scenario Options
+Project Scope
+Objective
+Analyses
+Insights and Tech recommendations
+Organizational Turnaround
