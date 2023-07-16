@@ -3,7 +3,7 @@
 ### 1. What is the role of a business analyst in an organization? 
 
 It is the most fundamental question you can expect during your interview. You can answer this question by explaining that a business analyst is a liaison or a link between different stakeholders belonging to different domains in an organization. A business analyst should have the capabilities to fulfill the business objectives and balance the needs of various stakeholders.
-/commi
+
 
 ### 2. How do you see yourself fit for the role of business analyst in our company?
 

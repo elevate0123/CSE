@@ -1,0 +1,10 @@
+{
+	"id": "zotero-bridge",
+	"name": "Zotero Bridge",
+	"version": "1.3.0",
+	"minAppVersion": "0.12.0",
+	"description": "Zotero integration",
+	"author": "Shmavon Gazanchyan",
+	"authorUrl": "https://github.com/MunGell",
+	"isDesktopOnly": true
+}
