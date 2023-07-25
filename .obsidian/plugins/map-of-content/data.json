@@ -8,5 +8,7 @@
   "auto_update_on_file_change": true,
   "do_remember_expanded": true,
   "MOC_path_starts_at_CN": true,
-  "file_descendants_expanded": {}
+  "file_descendants_expanded": {
+    "path": true
+  }
 }
