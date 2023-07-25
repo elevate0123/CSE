@@ -1,0 +1,17 @@
+{
+	"nodes":[
+		{"id":"64dc7dfd38bb8fc7","x":-577,"y":-283,"width":250,"height":60,"type":"text","text":""},
+		{"type":"text","text":"Talent Manager","id":"8e404b599d61843b","x":-125,"y":-30,"width":250,"height":60,"color":"1"},
+		{"type":"text","text":"Talent","id":"9748518796927686","x":-125,"y":-260,"width":250,"height":60},
+		{"type":"text","text":"Client","id":"8eaa43ac238adb4d","x":-125,"y":220,"width":250,"height":60}
+	],
+	"edges":[
+		{"id":"3105f5a66495f365","fromNode":"8e404b599d61843b","fromSide":"bottom","toNode":"8eaa43ac238adb4d","toSide":"top"},
+		{"id":"f0dbd57488851913","fromNode":"8e404b599d61843b","fromSide":"top","toNode":"9748518796927686","toSide":"bottom"},
+		{"id":"2d857b943873a25e","fromNode":"9748518796927686","fromSide":"left","toNode":"8eaa43ac238adb4d","toSide":"left"},
+		{"id":"d0fd4a832ed8c69d","fromNode":"8eaa43ac238adb4d","fromSide":"right","toNode":"9748518796927686","toSide":"right"},
+		{"id":"87da595480b5cdbd","fromNode":"9748518796927686","fromSide":"right","toNode":"8eaa43ac238adb4d","toSide":"right"},
+		{"id":"a83fc96521aa9bc4","fromNode":"9748518796927686","fromSide":"top","toNode":"8e404b599d61843b","toSide":"right"},
+		{"id":"b5bcedbd467863bd","fromNode":"8eaa43ac238adb4d","fromSide":"left","toNode":"8e404b599d61843b","toSide":"left"}
+	]
+}
