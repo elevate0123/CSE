@@ -46,8 +46,8 @@ Social Change	10	Social Change #sc
 ## --> Paper 02
 
 Indian Society (Section A)
-	1	[[01 Perspectives on study of Indian Society]] Perspectives on study of Indian Society #perspectives #ghurye #mns #dumont #dipankargupta 
-	2	Colonial Rule #colonial 
+	01	[[01 Perspectives on study of Indian Society]] Perspectives on study of Indian Society #perspectives #ghurye #mns #dumont #dipankargupta 
+	02	[[02 Colonial Rule]] #colonial 
 	
 Social Structure (Section B)
 	3	Rural-Agrarian #rural #agrarian 

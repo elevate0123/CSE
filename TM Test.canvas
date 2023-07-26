@@ -4,7 +4,8 @@
 		{"type":"text","text":"Talent Manager","id":"8e404b599d61843b","x":-125,"y":-30,"width":250,"height":60,"color":"1"},
 		{"type":"text","text":"Talent","id":"9748518796927686","x":-125,"y":-260,"width":250,"height":60},
 		{"type":"text","text":"Client","id":"8eaa43ac238adb4d","x":-125,"y":220,"width":250,"height":60},
-		{"id":"31b3262dbf98f903","x":-517,"y":0,"width":117,"height":60,"color":"4","type":"text","text":"Home Check Successful "}
+		{"type":"text","text":"Home Check Successful ","id":"31b3262dbf98f903","x":-517,"y":0,"width":117,"height":60,"color":"4"},
+		{"id":"4d8c44646f6de85a","x":-540,"y":220,"width":163,"height":60,"color":"5","type":"text","text":"Lavorg Check!"}
 	],
 	"edges":[
 		{"id":"3105f5a66495f365","fromNode":"8e404b599d61843b","fromSide":"bottom","toNode":"8eaa43ac238adb4d","toSide":"top"},
@@ -13,6 +14,7 @@
 		{"id":"d0fd4a832ed8c69d","fromNode":"8eaa43ac238adb4d","fromSide":"right","toNode":"9748518796927686","toSide":"right"},
 		{"id":"87da595480b5cdbd","fromNode":"9748518796927686","fromSide":"right","toNode":"8eaa43ac238adb4d","toSide":"right"},
 		{"id":"a83fc96521aa9bc4","fromNode":"9748518796927686","fromSide":"top","toNode":"8e404b599d61843b","toSide":"right"},
-		{"id":"b5bcedbd467863bd","fromNode":"8eaa43ac238adb4d","fromSide":"left","toNode":"8e404b599d61843b","toSide":"left"}
+		{"id":"b5bcedbd467863bd","fromNode":"8eaa43ac238adb4d","fromSide":"left","toNode":"8e404b599d61843b","toSide":"left"},
+		{"id":"54546ee790c8eabc","fromNode":"31b3262dbf98f903","fromSide":"bottom","toNode":"4d8c44646f6de85a","toSide":"top"}
 	]
 }
