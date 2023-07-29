@@ -1,0 +1,34 @@
+{
+	"nodes":[
+		{"id":"9479d494a2051681","x":68,"y":-123,"width":250,"height":60,"color":"1","type":"text","text":"Tauheed"},
+		{"id":"2589bc4d0ac8d6a8","x":68,"y":42,"width":250,"height":60,"color":"1","type":"text","text":"Dua"},
+		{"id":"142b40539f30b8a0","x":-652,"y":42,"width":250,"height":60,"color":"1","type":"text","text":"Maut aur Zindagi"},
+		{"id":"51e8bf097e7d918c","x":-652,"y":-127,"width":250,"height":60,"color":"1","type":"text","text":"Gazwa Uhud"},
+		{"id":"a1b8a636f063ec65","x":-310,"y":-18,"width":250,"height":60,"color":"2","type":"text","text":"***Surah Aale Imraan***"},
+		{"id":"d2ef77d5ccec7a4b","x":418,"y":-216,"width":250,"height":60,"type":"text","text":"A 31, 32"},
+		{"id":"755666b4abc16627","x":418,"y":42,"width":250,"height":60,"type":"text","text":"A 189 - 194"},
+		{"id":"fb2c208b89e38fb0","x":418,"y":-97,"width":250,"height":60,"type":"text","text":"A 19, 85"},
+		{"id":"b9d97412ce17039d","x":-977,"y":187,"width":250,"height":60,"type":"text","text":"A 185, 156, . . ."},
+		{"id":"b77ccc740c9f605c","x":-977,"y":12,"width":250,"height":60,"type":"text","text":"A 102, 193"},
+		{"id":"2873935965199843","x":-977,"y":-78,"width":250,"height":60,"type":"text","text":"A 144"},
+		{"id":"a75ea37eac54fe6e","x":-977,"y":-216,"width":250,"height":60,"type":"text","text":"A 139"},
+		{"id":"e91af052786c5b43","x":-310,"y":128,"width":250,"height":179,"color":"4","type":"text","text":"Makki Madani Surah?\nAayah?\nBroad Overview?\nGeneral Theme?\nTeachings / Lessons / Commands?"},
+		{"id":"439ecabf1fa7e121","x":-310,"y":-311,"width":250,"height":60,"type":"text","text":"**JaNasheen Shaikh Ul Islam\nSyed Hamza Ashraf**"},
+		{"id":"97ef8abe30394b2a","x":-310,"y":-246,"width":250,"height":60,"type":"text","text":"Shaikh Ul Islam Trust"}
+	],
+	"edges":[
+		{"id":"23785196ce9fc983","fromNode":"e91af052786c5b43","fromSide":"top","toNode":"a1b8a636f063ec65","toSide":"bottom"},
+		{"id":"9daf139589908ac8","fromNode":"a1b8a636f063ec65","fromSide":"top","toNode":"9479d494a2051681","toSide":"left"},
+		{"id":"4ffa95bc319babc9","fromNode":"a1b8a636f063ec65","fromSide":"top","toNode":"51e8bf097e7d918c","toSide":"right"},
+		{"id":"794d7821609902e3","fromNode":"a1b8a636f063ec65","fromSide":"left","toNode":"142b40539f30b8a0","toSide":"right"},
+		{"id":"ed25ac5e9538806b","fromNode":"a1b8a636f063ec65","fromSide":"right","toNode":"2589bc4d0ac8d6a8","toSide":"left"},
+		{"id":"2c3382f78536d8e9","fromNode":"9479d494a2051681","fromSide":"right","toNode":"d2ef77d5ccec7a4b","toSide":"left"},
+		{"id":"74a5db980661e8d4","fromNode":"9479d494a2051681","fromSide":"right","toNode":"fb2c208b89e38fb0","toSide":"left"},
+		{"id":"14d56ae770385818","fromNode":"2589bc4d0ac8d6a8","fromSide":"right","toNode":"755666b4abc16627","toSide":"left"},
+		{"id":"8b91963f230e6a4e","fromNode":"142b40539f30b8a0","fromSide":"left","toNode":"b77ccc740c9f605c","toSide":"right"},
+		{"id":"f5db6433ac54e394","fromNode":"142b40539f30b8a0","fromSide":"left","toNode":"b9d97412ce17039d","toSide":"right"},
+		{"id":"f77b2a1f3629d07c","fromNode":"51e8bf097e7d918c","fromSide":"left","toNode":"a75ea37eac54fe6e","toSide":"right"},
+		{"id":"520cc4343df1a229","fromNode":"51e8bf097e7d918c","fromSide":"left","toNode":"2873935965199843","toSide":"right"},
+		{"id":"0f5f028acb91bbef","fromNode":"a75ea37eac54fe6e","fromSide":"bottom","toNode":"2873935965199843","toSide":"top"}
+	]
+}

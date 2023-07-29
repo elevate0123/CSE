@@ -1,0 +1,36 @@
+{
+	"nodes":[
+		{"id":"a1b8a636f063ec65","x":-310,"y":42,"width":250,"height":50,"color":"2","type":"text","text":"***Surah Muzzammil***"},
+		{"id":"e91af052786c5b43","x":-310,"y":283,"width":250,"height":126,"color":"4","type":"text","text":"Makki Surah 20 Aayah\n\nIqra -> Muddassir -> Muzzammil"},
+		{"id":"1a9510ddb9b59c88","x":-310,"y":155,"width":250,"height":60,"color":"4","type":"text","text":"Muzzammil = Lipta hua"},
+		{"id":"24e5e58183d89b5f","x":-310,"y":-70,"width":250,"height":60,"color":"1","type":"text","text":"*Ibadat ki Ahmiyat*"},
+		{"id":"c13839f1629de1c1","x":501,"y":92,"width":250,"height":60,"color":"5","type":"text","text":"A5 -> Ankareb hum tumhe ata karenge..."},
+		{"id":"ad4665677e2db8a6","x":501,"y":215,"width":250,"height":60,"color":"5","type":"text","text":"A8 -> Aur Khuda ki Ibadat karo"},
+		{"id":"ea2526f283724178","x":501,"y":346,"width":250,"height":122,"color":"5","type":"text","text":"A20 ->  1/3rd ya 2/3rd raat Ibadat karo, Quran ki Tilawat karo aur Sadqa diya karo"},
+		{"id":"7c881495eb27681c","x":501,"y":-363,"width":250,"height":211,"type":"text","text":"Yaha Quran Paak ko tarteel ke sath ruk ruk kar padhne ka huqm diya gaya hai.\nIsme Tajweed, jaise ki Gunnah, Mad, Idgam, etc bhi lazim aata hai\nAur, Tafseer, Quran ko samjhna bhi zaruri hai."},
+		{"id":"c81d71e065f1a978","x":501,"y":-70,"width":250,"height":96,"color":"5","type":"text","text":"A4 -> Aur Quran ko khub thahar thahar kar achi awaz mai padho"},
+		{"id":"777f2fd5be075d54","x":126,"y":14,"width":250,"height":156,"type":"text","text":"Yaha hume raat ko jaag kar Ibadat karne ki targib dilayi ja rahi hai, yeh Farz nahi lekin yeh Allah ke Qurb ka behtareen rasta hai."},
+		{"id":"e5df986aed7e48ba","x":126,"y":215,"width":250,"height":352,"color":"1","type":"text","text":"Iss Surat mai hume Tahajjud Namaaz ki Ahmiyat sikhayi gayi aur bataya gaya ki kaise raat ke waqt Ibadat karne se Banda Khuda ke zyada kareeb ho jata hai.\nHume bhi chahiye ki Tahajjud ki aadat banaye, aur agar yeh na ho sake to kam az kam kabhi kabhi Tahajjud ki Namaaz padh liya kare."},
+		{"id":"7683c219c68a81bf","x":-310,"y":-235,"width":250,"height":60,"type":"text","text":"Shaikh Ul Islam Trust\n"},
+		{"id":"439ecabf1fa7e121","x":-310,"y":507,"width":250,"height":60,"type":"text","text":"JaNasheen Shaikh Ul Islam\nSyed Hamza Ashraf"},
+		{"id":"e3f8e8a6cb8959b2","x":126,"y":-235,"width":250,"height":120,"color":"5","type":"text","text":"A1-4 -> Aey Muzzammil, Raat ko Ibadat ke liye khade raho, aadhi raat ke liye, ya usse thoda zyada"},
+		{"id":"f240ce87a16e310d","x":126,"y":-363,"width":250,"height":60,"type":"text","text":"Aadhi raat matlab ~4 hours"}
+	],
+	"edges":[
+		{"id":"695ac7c4c70f8fa7","fromNode":"a1b8a636f063ec65","fromSide":"bottom","toNode":"1a9510ddb9b59c88","toSide":"top"},
+		{"id":"8e6f1dff98ff7983","fromNode":"1a9510ddb9b59c88","fromSide":"bottom","toNode":"e91af052786c5b43","toSide":"top"},
+		{"id":"032f29ee728fefdf","fromNode":"24e5e58183d89b5f","fromSide":"bottom","toNode":"a1b8a636f063ec65","toSide":"top"},
+		{"id":"527f1fde7c12175b","fromNode":"a1b8a636f063ec65","fromSide":"top","toNode":"24e5e58183d89b5f","toSide":"bottom"},
+		{"id":"21aea345801fa485","fromNode":"a1b8a636f063ec65","fromSide":"top","toNode":"e3f8e8a6cb8959b2","toSide":"bottom"},
+		{"id":"ff245c418a64a440","fromNode":"f240ce87a16e310d","fromSide":"bottom","toNode":"e3f8e8a6cb8959b2","toSide":"top"},
+		{"id":"2bd9c858dabb6d1a","fromNode":"777f2fd5be075d54","fromSide":"top","toNode":"c13839f1629de1c1","toSide":"left"},
+		{"id":"320e6d7d319f62e7","fromNode":"c13839f1629de1c1","fromSide":"bottom","toNode":"ad4665677e2db8a6","toSide":"top"},
+		{"id":"e73e137f297f8024","fromNode":"777f2fd5be075d54","fromSide":"right","toNode":"ad4665677e2db8a6","toSide":"left"},
+		{"id":"e021a4770b397e84","fromNode":"ad4665677e2db8a6","fromSide":"bottom","toNode":"ea2526f283724178","toSide":"top"},
+		{"id":"34378a2940cf60c0","fromNode":"a1b8a636f063ec65","fromSide":"right","toNode":"e5df986aed7e48ba","toSide":"left"},
+		{"id":"9c6a891760fa5167","fromNode":"e5df986aed7e48ba","fromSide":"right","toNode":"ea2526f283724178","toSide":"left"},
+		{"id":"158c5ecc3bbe6f84","fromNode":"e3f8e8a6cb8959b2","fromSide":"right","toNode":"c81d71e065f1a978","toSide":"top"},
+		{"id":"8621a662b42fbc2f","fromNode":"c81d71e065f1a978","fromSide":"bottom","toNode":"c13839f1629de1c1","toSide":"top"},
+		{"id":"8d5d525d42483260","fromNode":"7c881495eb27681c","fromSide":"right","toNode":"c81d71e065f1a978","toSide":"right"}
+	]
+}

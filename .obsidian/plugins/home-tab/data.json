@@ -7,12 +7,12 @@
   },
   "logoScale": 1.2,
   "iconColorType": "default",
-  "wordmark": "Obsidian",
+  "wordmark": "Muhammedalmaas",
   "customFont": "interfaceFont",
   "fontSize": "4em",
   "fontColorType": "default",
   "fontWeight": 600,
-  "maxResults": 5,
+  "maxResults": 8,
   "showStarredFiles": false,
   "showRecentFiles": false,
   "maxRecentFiles": 5,
@@ -24,24 +24,24 @@
   "unresolvedLinks": false,
   "recentFilesStore": [
     {
-      "filepath": "12 Job/Extras.md",
-      "timestamp": 1690619028825
-    },
-    {
-      "filepath": "Random Notes.md",
-      "timestamp": 1690618215923
-    },
-    {
-      "filepath": "Untitled mindmap.md",
-      "timestamp": 1690618210805
-    },
-    {
-      "filepath": "TM Test.canvas",
-      "timestamp": 1690616544980
+      "filepath": "11 Finance & Data/Research Workflow Setup.md",
+      "timestamp": 1690646848559
     },
     {
       "filepath": "Home.md",
-      "timestamp": 1690616543300
+      "timestamp": 1690646845285
+    },
+    {
+      "filepath": "My Library/mrunalpatelPCB01.md",
+      "timestamp": 1690646843901
+    },
+    {
+      "filepath": "mrunalpatelPCB01.md",
+      "timestamp": 1690646798722
+    },
+    {
+      "filepath": "11 Finance & Data/Zot Template.md",
+      "timestamp": 1690646735003
     }
   ],
   "starredFileStore": [],
@@ -49,5 +49,5 @@
   "replaceNewTabs": true,
   "newTabOnStart": false,
   "closePreviousSessionTabs": false,
-  "omnisearch": false
+  "omnisearch": true
 }

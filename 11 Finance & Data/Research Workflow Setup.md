@@ -13,3 +13,8 @@ Bibtex will be required for Zotero for reference management
 
 [Basic Usage – Obsidian Zotero (aidenlx.top)](https://obzt.aidenlx.top/getting-started/basic-usage) 
 This one seems more promising
+
+[Zotero Integration – Import Templates? - Share & showcase - Obsidian Forum](https://forum.obsidian.md/t/zotero-integration-import-templates/36310/105)
+Zotero Import Templates
+
+

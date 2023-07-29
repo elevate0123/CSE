@@ -7,3 +7,4 @@ Local AI can be run Locally on system inside Docker or Kubernates
 
 [The Local AI Playground](https://www.localai.app/)
 
+
