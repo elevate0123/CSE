@@ -4,11 +4,24 @@
     "type": "split",
     "children": [
       {
-        "id": "1c4c72604a28f81b",
+        "id": "8f01616fc0a4ee17",
         "type": "tabs",
         "children": [
           {
-            "id": "0e3e9aa51dd4b9a6",
+            "id": "71ada213a951e5dd",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Untitled mindmap.md",
+                "mode": "source",
+                "backlinks": true,
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "f8213e84da185bf9",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -20,7 +33,8 @@
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -137,6 +151,14 @@
               "type": "graph-analysis",
               "state": {}
             }
+          },
+          {
+            "id": "135129795ee186df",
+            "type": "leaf",
+            "state": {
+              "type": "git-history-view",
+              "state": {}
+            }
           }
         ]
       },
@@ -170,50 +192,52 @@
       "markdown-importer:Open format converter": false,
       "audio-recorder:Start/stop recording": false,
       "workspaces:Manage workspace layouts": false,
+      "map-of-content:Update Map of Content": false,
       "obsidian-excalidraw-plugin:Create new drawing": false,
       "homepage:Open homepage": false,
-      "map-of-content:Update Map of Content": false
+      "omnisearch:Omnisearch": false,
+      "obsidian-advanced-slides:Show Slide Preview": false
     }
   },
-  "active": "0e3e9aa51dd4b9a6",
+  "active": "f8213e84da185bf9",
   "lastOpenFiles": [
-    "12 Job/BA Interview Questions.md",
+    "Random Notes.md",
+    "Untitled mindmap.md",
     "12 Job/Extras.md",
-    "Misc/Misc.md",
-    "Misc/PDF Exporting.md",
-    "6 Sociology/Sociology Index.md",
-    "11 Finance & Data/Foundations of Modern Finance 1.md",
-    "11 Finance & Data/Foundations of Modern Finance 2.md",
     "TM Test.canvas",
     "Home.md",
-    "6 Sociology/Paper 1/02 Sociology as Science +.md",
-    "6 Sociology/Paper 1/03 Research Methods and Analysis.md",
-    "6 Sociology/Paper 1/06 Work and Economic Life +.md",
-    "Misc/10 Judgements that changed India - Zia Mody.md",
-    "Misc/Fonts.md",
-    "6 Sociology/Paper 1/06 Work and Economic Life +.docx",
     "6 Sociology/Paper 1/08 Religion and Society.md",
-    "Said al Khatir!.md",
-    "Misc/markdown-cheat-sheet.md",
-    "Untitled mindmap.md",
+    "6 Sociology/Paper 1/06 Work and Economic Life +.md",
+    "6 Sociology/Paper 1/010 Social Change in Modern Society +.md",
+    "6 Sociology/Extr/Sociology Index.pdf",
+    "11 Finance & Data/Research Workflow Setup.md",
+    "textgenerator/prompts/default/rewrite.md",
+    "textgenerator/prompts/default/summarize.md",
+    "textgenerator/prompts/default/simplify.md",
+    "textgenerator/prompts/default/getTitles.md",
+    "textgenerator/prompts/default/getTags.md",
+    "textgenerator/prompts/default/getParagraph.md",
+    "textgenerator/prompts/default/getOutline.md",
+    "textgenerator/prompts/default/getIdeas.md",
+    "textgenerator/prompts/default/getEmailPos.md",
+    "textgenerator/prompts/default/getEmailNeg.md",
+    "Untitled mindmap 1.md",
+    "6 Sociology/Paper 1/Other Imp Topics.md",
+    "6 Sociology/Paper 2/02 Colonial Rule.md",
+    "6 Sociology/Paper 2/Colonial Rule.md",
+    "SITrust/40 Hadith of Shah Waliullah Dehlawi.md",
+    "12 Job/BA Interview Questions.md",
+    "Misc/Misc.md",
+    "Misc/PDF Exporting.md",
+    "6 Sociology/Paper 1/06 Work and Economic Life +.docx",
     "12 Job",
     "5 Essay",
-    "6 Sociology/Paper 1/04 4 Talcott Parsons.md",
-    "6 Sociology/Paper 1/Contemporary Scholars.md",
     "Contemporary Scholras",
-    "6 Sociology/Paper 1/010 Social Change in Modern Society +.md",
-    "6 Sociology/Paper 1/Git Sample.md",
-    "6 Sociology/Paper 1/09 Systems of Kinship.md",
-    "6 Sociology/Paper 1/01 Sociology - The Discipline.md",
-    "6 Sociology/Paper 1/04 2 Karl Marx.md",
-    "6 Sociology/Paper 1/Untitled mindmap.md",
-    "5 Sociology/Paper 1/02 Sociology as Science 2023-06-07 17.52.48.excalidraw.md",
     "1 GS 1/GS 1 Syllabus.canvas",
     "SITrust/08 Religion and Society.pdf",
     "4 GS 4 Ethics",
     "SITrust/Asma al-Husna - Frontmatter Points.pdf",
     "textgenerator/prompts/default",
-    "textgenerator/prompts",
-    "textgenerator"
+    "textgenerator/prompts"
   ]
 }

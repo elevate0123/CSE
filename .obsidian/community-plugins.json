@@ -22,5 +22,10 @@
   "excalibrain",
   "dataview",
   "obsidian-icon-folder",
-  "obsidian-hover-editor"
+  "obsidian-hover-editor",
+  "obsidian-argdown-plugin",
+  "obsidian-languagetool-plugin",
+  "last-modified-timestamp-in-status-bar",
+  "omnisearch",
+  "obsidian-advanced-slides"
 ]

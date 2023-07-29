@@ -14,7 +14,7 @@
   "syncMethod": "merge",
   "customMessageOnAutoBackup": true,
   "autoBackupAfterFileChange": false,
-  "treeStructure": false,
+  "treeStructure": true,
   "refreshSourceControl": false,
   "basePath": "",
   "differentIntervalCommitAndPush": false,

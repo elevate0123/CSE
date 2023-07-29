@@ -8,6 +8,7 @@ Coolors Hunt for Colour Palette Selection
 Font Joy for Fonts matching
 Dribble for Graphics and Behance for UI UX
 
-Brand Guidelines
+**Brand Guidelines**
 
 
+/
