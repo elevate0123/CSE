@@ -8,11 +8,16 @@
         "type": "tabs",
         "children": [
           {
-            "id": "11cbd24dea3f0c57",
+            "id": "1b778fee830d6c67",
             "type": "leaf",
             "state": {
-              "type": "home-tab-view",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "28 SITrust/UCC and India.md",
+                "mode": "source",
+                "backlinks": true,
+                "source": false
+              }
             }
           }
         ]
@@ -81,6 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "28 SITrust/UCC and India.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -108,6 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "28 SITrust/UCC and India.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -118,7 +125,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "28 SITrust/UCC and India.md"
+              }
             }
           },
           {
@@ -194,10 +203,13 @@
       "breadcrumbs:Breadcrumbs Visualisation": false
     }
   },
-  "active": "11cbd24dea3f0c57",
+  "active": "1b778fee830d6c67",
   "lastOpenFiles": [
-    "11 Finance & Data/Research Workflow Setup.md",
+    "28 SITrust/UCC and India Urdu.md",
+    "28 SITrust/UCC and India.md",
+    "28 SITrust/40 Hadith of Shah Waliullah Dehlawi.md",
     "Home.md",
+    "11 Finance & Data/Research Workflow Setup.md",
     "My Library/mrunalpatelPCB01.md",
     "mrunalpatelPCB01.md",
     "11 Finance & Data/Zot Template.md",
@@ -214,7 +226,6 @@
     "My Library",
     "Random Notes.md",
     "X Misc/Untitled mindmap.md",
-    "28 SITrust/40 Hadith of Shah Waliullah Dehlawi.md",
     "X Misc/Yaml Frontmatter Template.md",
     "Said al Khatir!.md",
     "12 Job/Extras.md",
@@ -231,7 +242,6 @@
     "textgenerator/prompts/default/getIdeas.md",
     "textgenerator/prompts/default/getEmailPos.md",
     "textgenerator/prompts/default/getEmailNeg.md",
-    "X Misc/Untitled mindmap 1.md",
     "01 GS 1/GS 1 Syllabus.canvas"
   ]
 }
