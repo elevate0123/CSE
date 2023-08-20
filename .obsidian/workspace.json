@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "28 SITrust/UCC and India.md",
+                "file": "Home.md",
                 "mode": "source",
                 "backlinks": true,
                 "source": false
@@ -86,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "28 SITrust/UCC and India.md",
+                "file": "Home.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "28 SITrust/UCC and India.md",
+                "file": "Home.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -126,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "28 SITrust/UCC and India.md"
+                "file": "Home.md"
               }
             }
           },
@@ -199,16 +199,16 @@
       "homepage:Open homepage": false,
       "omnisearch:Omnisearch": false,
       "obsidian-advanced-slides:Show Slide Preview": false,
-      "map-of-content:Update Map of Content": false,
-      "breadcrumbs:Breadcrumbs Visualisation": false
+      "map-of-content:Update Map of Content": false
     }
   },
   "active": "1b778fee830d6c67",
   "lastOpenFiles": [
-    "28 SITrust/UCC and India Urdu.md",
-    "28 SITrust/UCC and India.md",
+    "28 SITrust/Elocution Competition.md",
     "28 SITrust/40 Hadith of Shah Waliullah Dehlawi.md",
     "Home.md",
+    "28 SITrust/UCC and India Urdu.md",
+    "28 SITrust/UCC and India.md",
     "11 Finance & Data/Research Workflow Setup.md",
     "My Library/mrunalpatelPCB01.md",
     "mrunalpatelPCB01.md",
@@ -241,7 +241,6 @@
     "textgenerator/prompts/default/getOutline.md",
     "textgenerator/prompts/default/getIdeas.md",
     "textgenerator/prompts/default/getEmailPos.md",
-    "textgenerator/prompts/default/getEmailNeg.md",
     "01 GS 1/GS 1 Syllabus.canvas"
   ]
 }

@@ -50,7 +50,7 @@ Here are some additional points that you could add to your explanation:
 - Some people believe that a UCC is necessary to ensure equality for all citizens.
 - Others believe that a UCC would violate religious freedom and cultural diversity.
 
-/commi
+
 * It would be difficult to implement and enforce.
 A Uniform Civil Code (UCC) would replace the personal laws of different religious communities with a single set of laws. This could lead to unfairness for some communities, for a number of reasons.
 First, the single set of laws may not be suitable for all communities. For example, a UCC may not take into account the specific cultural and religious practices of some communities. This could lead to some communities being disadvantaged under the new laws.
