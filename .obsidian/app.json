@@ -10,9 +10,7 @@
     "downscalePercent": 100
   },
   "strictLineBreaks": false,
-  "spellcheckLanguages": [
-    "en-GB"
-  ],
+  "spellcheckLanguages": null,
   "attachmentFolderPath": "./",
   "fileSortOrder": "alphabetical",
   "showFrontmatter": false,

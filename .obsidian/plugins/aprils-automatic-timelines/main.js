@@ -617,7 +617,7 @@ var require_lodash = __commonJS({
       }
       return "";
     }
-    function cloneDeep(value) {
+    function cloneDeep2(value) {
       return baseClone(value, true, true);
     }
     function eq(value, other) {
@@ -657,7 +657,7 @@ var require_lodash = __commonJS({
     function stubFalse() {
       return false;
     }
-    module2.exports = cloneDeep;
+    module2.exports = cloneDeep2;
   }
 });
 
@@ -676,6 +676,16 @@ var DateTokenType = /* @__PURE__ */ ((DateTokenType2) => {
   return DateTokenType2;
 })(DateTokenType || {});
 var availableDateTokenTypeArray = Object.values(DateTokenType);
+var Condition = /* @__PURE__ */ ((Condition2) => {
+  Condition2["Greater"] = "GREATER";
+  Condition2["Less"] = "LESS";
+  Condition2["Equal"] = "EQUAL";
+  Condition2["NotEqual"] = "NOTEQUAL";
+  Condition2["GreaterOrEqual"] = "GREATEROREQUAL";
+  Condition2["LessOrEqual"] = "LESSOREQUAL";
+  return Condition2;
+})(Condition || {});
+var availableConditionArray = Object.values(Condition);
 
 // src/utils.ts
 function getMetadataKey(cachedMetadata, key, type) {
@@ -685,6 +695,7 @@ function getMetadataKey(cachedMetadata, key, type) {
 }
 var isDefined = (argument) => argument !== void 0;
 var isDefinedAsString = (argument) => typeof argument === "string";
+var isDefinedAsBoolean = (argument) => typeof argument === "boolean";
 function findLastIndex(arr, predicate) {
   const length = arr ? arr.length : 0;
   if (!length)
@@ -695,8 +706,8 @@ function findLastIndex(arr, predicate) {
       return index;
   return -1;
 }
-var lerp = (a, b, t) => a + t * (b - a);
-var inLerp = (a, b, v) => (v - a) / (b - a);
+var lerp = (a, b2, t) => a + t * (b2 - a);
+var inLerp = (a, b2, v) => (v - a) / (b2 - a);
 var measureTime = (str) => {
   const value = `[April's automatic timelines] - ${str}`;
   console.time(value);
@@ -720,24 +731,24 @@ function createElementShort(el, element, classes, content) {
     out.innerHTML = content.toString();
   return out;
 }
-function compareAbstractDates(a, b) {
-  if (!isDefined(a) && !isDefined(b))
+function compareAbstractDates(a, b2) {
+  if (!isDefined(a) && !isDefined(b2))
     return 0;
   if (!isDefined(a))
     return -1;
-  if (!isDefined(b))
+  if (!isDefined(b2))
     return 1;
-  if (a === true && b !== true)
+  if (a === true && b2 !== true)
     return 1;
-  if (b === true && a !== true)
+  if (b2 === true && a !== true)
     return -1;
-  if (a === true && b === true)
+  if (a === true && b2 === true)
     return 0;
   a = a;
-  b = b;
+  b2 = b2;
   for (let index = 0; index < a.length; index++)
-    if (a[index] !== b[index])
-      return a[index] > b[index] ? 1 : -1;
+    if (a[index] !== b2[index])
+      return a[index] > b2[index] ? 1 : -1;
   return 0;
 }
 function isDefinedAsArray(value) {
@@ -752,6 +763,8 @@ function createNumberDateTokenConfiguration(defaultValue = {}) {
     name: "",
     type: "NUMBER" /* number */,
     displayWhenZero: true,
+    formatting: [],
+    hideSign: false,
     ...defaultValue
   };
 }
@@ -775,6 +788,22 @@ function parseAbstractDate(groupsToCheck, metadataString, reg) {
   if (output.length !== groupsToCheck.length)
     return void 0;
   return output;
+}
+function evalNumericalCondition(condition, a, b2) {
+  switch (condition) {
+    case "EQUAL" /* Equal */:
+      return a === b2;
+    case "NOTEQUAL" /* NotEqual */:
+      return a !== b2;
+    case "GREATER" /* Greater */:
+      return a > b2;
+    case "GREATEROREQUAL" /* GreaterOrEqual */:
+      return a >= b2;
+    case "LESS" /* Less */:
+      return a < b2;
+    case "LESSOREQUAL" /* LessOrEqual */:
+      return a <= b2;
+  }
 }
 
 // node_modules/yaml/browser/dist/nodes/identity.js
@@ -1675,12 +1704,12 @@ function foldFlowLines(text, indent, mode = "flow", { indentAtStart, lineWidth =
             ch = text[i += 1];
             overflow = true;
           }
-          const j = i > escEnd + 1 ? i - 2 : escStart - 1;
-          if (escapedFolds[j])
+          const j2 = i > escEnd + 1 ? i - 2 : escStart - 1;
+          if (escapedFolds[j2])
             return text;
-          folds.push(j);
-          escapedFolds[j] = true;
-          end = j + endStep;
+          folds.push(j2);
+          escapedFolds[j2] = true;
+          end = j2 + endStep;
           split = void 0;
         } else {
           overflow = true;
@@ -2342,7 +2371,7 @@ var Pair = class _Pair {
       value = value.clone(schema4);
     return new _Pair(key, value);
   }
-  toJSON(_, ctx) {
+  toJSON(_2, ctx) {
     const pair = (ctx == null ? void 0 : ctx.mapAsMap) ? /* @__PURE__ */ new Map() : {};
     return addPairToJSMap(ctx, pair, this);
   }
@@ -2600,7 +2629,7 @@ var YAMLMap = class extends Collection {
    * @param {Class} Type - If set, forces the returned collection type
    * @returns Instance of Type, Map, or Object
    */
-  toJSON(_, ctx, Type) {
+  toJSON(_2, ctx, Type) {
     const map3 = Type ? new Type() : (ctx == null ? void 0 : ctx.mapAsMap) ? /* @__PURE__ */ new Map() : {};
     if (ctx == null ? void 0 : ctx.onCreate)
       ctx.onCreate(map3);
@@ -2702,7 +2731,7 @@ var YAMLSeq = class extends Collection {
     else
       this.items[idx] = value;
   }
-  toJSON(_, ctx) {
+  toJSON(_2, ctx) {
     const seq2 = [];
     if (ctx == null ? void 0 : ctx.onCreate)
       ctx.onCreate(seq2);
@@ -3101,9 +3130,9 @@ var YAMLOMap = class _YAMLOMap extends YAMLSeq {
    * If `ctx` is given, the return type is actually `Map<unknown, unknown>`,
    * but TypeScript won't allow widening the signature of a child method.
    */
-  toJSON(_, ctx) {
+  toJSON(_2, ctx) {
     if (!ctx)
-      return super.toJSON(_);
+      return super.toJSON(_2);
     const map3 = /* @__PURE__ */ new Map();
     if (ctx == null ? void 0 : ctx.onCreate)
       ctx.onCreate(map3);
@@ -3320,8 +3349,8 @@ var YAMLSet = class _YAMLSet extends YAMLMap {
       this.items.push(new Pair(key));
     }
   }
-  toJSON(_, ctx) {
-    return super.toJSON(_, ctx, Set);
+  toJSON(_2, ctx) {
+    return super.toJSON(_2, ctx, Set);
   }
   toString(ctx, onComment, onChompKeep) {
     if (!ctx)
@@ -3528,7 +3557,7 @@ function getTags(customTags, schemaName) {
 }
 
 // node_modules/yaml/browser/dist/schema/Schema.js
-var sortMapEntriesByKey = (a, b) => a.key < b.key ? -1 : a.key > b.key ? 1 : 0;
+var sortMapEntriesByKey = (a, b2) => a.key < b2.key ? -1 : a.key > b2.key ? 1 : 0;
 var Schema = class _Schema {
   constructor({ compat, customTags, merge, resolveKnownTags, schema: schema4, sortMapEntries, toStringDefaults }) {
     this.compat = Array.isArray(compat) ? getTags(compat, "compat") : compat ? getTags(null, compat) : null;
@@ -4138,7 +4167,7 @@ function mapIncludes(ctx, items, search) {
   const { uniqueKeys } = ctx.options;
   if (uniqueKeys === false)
     return false;
-  const isEqual = typeof uniqueKeys === "function" ? uniqueKeys : (a, b) => a === b || isScalar(a) && isScalar(b) && a.value === b.value && !(a.value === "<<" && ctx.schema.merge);
+  const isEqual = typeof uniqueKeys === "function" ? uniqueKeys : (a, b2) => a === b2 || isScalar(a) && isScalar(b2) && a.value === b2.value && !(a.value === "<<" && ctx.schema.merge);
   return items.some((pair) => isEqual(pair.key, search));
 }
 
@@ -4775,7 +4804,7 @@ function foldLines(source) {
   try {
     first = new RegExp("(.*?)(?<![ 	])[ 	]*\r?\n", "sy");
     line = new RegExp("[ 	]*(.*?)(?:(?<![ 	])[ 	]*)?\r?\n", "sy");
-  } catch (_) {
+  } catch (_2) {
     first = /(.*?)[ \t]*\r?\n/sy;
     line = /[ \t]*(.*?)[ \t]*\r?\n/sy;
   }
@@ -7097,6 +7126,80 @@ function setupTimelineCreation(app, element, timelineFile, settings) {
 
 // src/cardMarkup.ts
 var import_obsidian2 = require("obsidian");
+
+// src/abstractDateFormatting.ts
+function formatAbstractDate(date, {
+  dateDisplayFormat,
+  dateParserGroupPriority,
+  dateTokenConfiguration,
+  applyAdditonalConditionFormatting
+}) {
+  if (typeof date === "boolean")
+    return "now";
+  const prioArray = dateParserGroupPriority.split(",");
+  let output = dateDisplayFormat.toString();
+  prioArray.forEach((token, index) => {
+    const configuration = dateTokenConfiguration.find(
+      ({ name }) => name === token
+    );
+    if (!configuration)
+      throw new Error(
+        `[April's not so automatic timelines] - No date token configuration found for ${token}, please setup your date tokens correctly`
+      );
+    output = output.replace(
+      `{${token}}`,
+      applyConditionBasedFormatting(
+        formatDateToken(date[index], configuration),
+        date[index],
+        configuration,
+        applyAdditonalConditionFormatting
+      )
+    );
+  });
+  return output;
+}
+function formatDateToken(datePart, configuration) {
+  if (dateTokenConfigurationIsTypeNumber(configuration))
+    return formatNumberDateToken(datePart, configuration);
+  if (dateTokenConfigurationIsTypeString(configuration))
+    return formatStringDateToken(datePart, configuration);
+  throw new Error(
+    `[April's not so automatic timelines] - Corrupted date token configuration, please reset settings`
+  );
+}
+function applyConditionBasedFormatting(formatedDate, date, { formatting }, applyAdditonalConditionFormatting) {
+  if (!applyAdditonalConditionFormatting)
+    return formatedDate;
+  return formatting.reduce(
+    (output, { format: format2, conditionsAreExclusive, evaluations }) => {
+      const evaluationRestult = (conditionsAreExclusive ? evaluations.some : evaluations.every).bind(evaluations)(
+        ({
+          condition,
+          value
+        }) => evalNumericalCondition(condition, date, value)
+      );
+      if (evaluationRestult)
+        return format2.replace("{value}", output);
+      return output;
+    },
+    formatedDate
+  );
+}
+function formatNumberDateToken(datePart, { minLeght, hideSign }) {
+  let stringifiedToken = Math.abs(datePart).toString();
+  if (minLeght < 0)
+    return stringifiedToken;
+  while (stringifiedToken.length < minLeght)
+    stringifiedToken = "0" + stringifiedToken;
+  if (!hideSign && datePart < 0)
+    stringifiedToken = `-${stringifiedToken}`;
+  return stringifiedToken;
+}
+function formatStringDateToken(datePart, { dictionary }) {
+  return dictionary[datePart];
+}
+
+// src/cardMarkup.ts
 function createCardFromBuiltContext({
   elements: { cardListRootElement },
   file,
@@ -7158,50 +7261,6 @@ function getDateText({ startDate, endDate }, settings) {
   if (!isDefined(endDate))
     return formatedStart;
   return `From ${formatedStart} to ${formatAbstractDate(endDate, settings)}`;
-}
-function formatAbstractDate(date, {
-  dateDisplayFormat,
-  dateParserGroupPriority,
-  dateTokenConfiguration
-}) {
-  if (typeof date === "boolean")
-    return "now";
-  const prioArray = dateParserGroupPriority.split(",");
-  let output = dateDisplayFormat.toString();
-  prioArray.forEach((token, index) => {
-    const configuration = dateTokenConfiguration.find(
-      ({ name }) => name === token
-    );
-    if (!configuration)
-      throw new Error(
-        `[April's not so automatic timelines] - No date token configuration found for ${token}, please setup your date tokens correctly`
-      );
-    output = output.replace(
-      `{${token}}`,
-      formatDateToken(date[index], configuration)
-    );
-  });
-  return output;
-}
-function formatDateToken(datePart, configuration) {
-  if (dateTokenConfigurationIsTypeNumber(configuration))
-    return formatNumberDateToken(datePart, configuration);
-  if (dateTokenConfigurationIsTypeString(configuration))
-    return formatStringDateToken(datePart, configuration);
-  throw new Error(
-    `[April's not so automatic timelines] - Corrupted date token configuration, please reset settings`
-  );
-}
-function formatNumberDateToken(datePart, { minLeght }) {
-  let stringifiedToken = datePart.toString();
-  if (minLeght < 0)
-    return stringifiedToken;
-  while (stringifiedToken.length < minLeght)
-    stringifiedToken = "0" + stringifiedToken;
-  return stringifiedToken;
-}
-function formatStringDateToken(datePart, { dictionary }) {
-  return dictionary[datePart];
 }
 
 // src/rangeData.ts
@@ -7273,15 +7332,15 @@ function findEndPositionForDate(date, collection, timelineLength, rootElement, i
     );
     const t = inLerp(inLerpStart, inLerpEnd, targetInLerpDate);
     return lerp(start.top, end.top, t);
-  } catch (_) {
+  } catch (_2) {
     return timelineLength;
   }
 }
-function getInLerpValues(a, b, c) {
+function getInLerpValues(a, b2, c) {
   for (let index = 0; index < a.length; index++) {
-    if (a[index] === b[index])
+    if (a[index] === b2[index])
       continue;
-    return [a[index], b[index], c[index]];
+    return [a[index], b2[index], c[index]];
   }
   return [0, 1, 1];
 }
@@ -7635,7 +7694,7 @@ var cacheStringFunction = (fn) => {
 };
 var camelizeRE = /-(\w)/g;
 var camelize = cacheStringFunction((str) => {
-  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
+  return str.replace(camelizeRE, (_2, c) => c ? c.toUpperCase() : "");
 });
 var hyphenateRE = /\B([A-Z])/g;
 var hyphenate = cacheStringFunction(
@@ -7698,30 +7757,30 @@ var isGloballyWhitelisted = /* @__PURE__ */ makeMap(GLOBALS_WHITE_LISTED);
 var range = 2;
 function generateCodeFrame(source, start = 0, end = source.length) {
   let lines = source.split(/(\r?\n)/);
-  const newlineSequences = lines.filter((_, idx) => idx % 2 === 1);
-  lines = lines.filter((_, idx) => idx % 2 === 0);
+  const newlineSequences = lines.filter((_2, idx) => idx % 2 === 1);
+  lines = lines.filter((_2, idx) => idx % 2 === 0);
   let count = 0;
   const res = [];
   for (let i = 0; i < lines.length; i++) {
     count += lines[i].length + (newlineSequences[i] && newlineSequences[i].length || 0);
     if (count >= start) {
-      for (let j = i - range; j <= i + range || end > count; j++) {
-        if (j < 0 || j >= lines.length)
+      for (let j2 = i - range; j2 <= i + range || end > count; j2++) {
+        if (j2 < 0 || j2 >= lines.length)
           continue;
-        const line = j + 1;
+        const line = j2 + 1;
         res.push(
-          `${line}${" ".repeat(Math.max(3 - String(line).length, 0))}|  ${lines[j]}`
+          `${line}${" ".repeat(Math.max(3 - String(line).length, 0))}|  ${lines[j2]}`
         );
-        const lineLength = lines[j].length;
-        const newLineSeqLength = newlineSequences[j] && newlineSequences[j].length || 0;
-        if (j === i) {
+        const lineLength = lines[j2].length;
+        const newLineSeqLength = newlineSequences[j2] && newlineSequences[j2].length || 0;
+        if (j2 === i) {
           const pad = start - (count - (lineLength + newLineSeqLength));
           const length = Math.max(
             1,
             end > count ? lineLength - pad : end - start
           );
           res.push(`   |  ` + " ".repeat(pad) + "^".repeat(length));
-        } else if (j > i) {
+        } else if (j2 > i) {
           if (end > count) {
             const length = Math.max(Math.min(end - count, lineLength), 1);
             res.push(`   |  ` + "^".repeat(length));
@@ -7812,53 +7871,53 @@ var isBooleanAttr = /* @__PURE__ */ makeMap(
 function includeBooleanAttr(value) {
   return !!value || value === "";
 }
-function looseCompareArrays(a, b) {
-  if (a.length !== b.length)
+function looseCompareArrays(a, b2) {
+  if (a.length !== b2.length)
     return false;
   let equal = true;
   for (let i = 0; equal && i < a.length; i++) {
-    equal = looseEqual(a[i], b[i]);
+    equal = looseEqual(a[i], b2[i]);
   }
   return equal;
 }
-function looseEqual(a, b) {
-  if (a === b)
+function looseEqual(a, b2) {
+  if (a === b2)
     return true;
   let aValidType = isDate(a);
-  let bValidType = isDate(b);
+  let bValidType = isDate(b2);
   if (aValidType || bValidType) {
-    return aValidType && bValidType ? a.getTime() === b.getTime() : false;
+    return aValidType && bValidType ? a.getTime() === b2.getTime() : false;
   }
   aValidType = isSymbol(a);
-  bValidType = isSymbol(b);
+  bValidType = isSymbol(b2);
   if (aValidType || bValidType) {
-    return a === b;
+    return a === b2;
   }
   aValidType = isArray(a);
-  bValidType = isArray(b);
+  bValidType = isArray(b2);
   if (aValidType || bValidType) {
-    return aValidType && bValidType ? looseCompareArrays(a, b) : false;
+    return aValidType && bValidType ? looseCompareArrays(a, b2) : false;
   }
   aValidType = isObject(a);
-  bValidType = isObject(b);
+  bValidType = isObject(b2);
   if (aValidType || bValidType) {
     if (!aValidType || !bValidType) {
       return false;
     }
     const aKeysCount = Object.keys(a).length;
-    const bKeysCount = Object.keys(b).length;
+    const bKeysCount = Object.keys(b2).length;
     if (aKeysCount !== bKeysCount) {
       return false;
     }
     for (const key in a) {
       const aHasKey = a.hasOwnProperty(key);
-      const bHasKey = b.hasOwnProperty(key);
-      if (aHasKey && !bHasKey || !aHasKey && bHasKey || !looseEqual(a[key], b[key])) {
+      const bHasKey = b2.hasOwnProperty(key);
+      if (aHasKey && !bHasKey || !aHasKey && bHasKey || !looseEqual(a[key], b2[key])) {
         return false;
       }
     }
   }
-  return String(a) === String(b);
+  return String(a) === String(b2);
 }
 function looseIndexOf(arr, val) {
   return arr.findIndex((item) => looseEqual(item, val));
@@ -8849,8 +8908,8 @@ function triggerRefValue(ref2, newVal) {
     }
   }
 }
-function isRef(r) {
-  return !!(r && r.__v_isRef === true);
+function isRef(r2) {
+  return !!(r2 && r2.__v_isRef === true);
 }
 function ref(value) {
   return createRef(value, false);
@@ -9352,7 +9411,7 @@ function flushPostFlushCbs(seen2) {
     if (true) {
       seen2 = seen2 || /* @__PURE__ */ new Map();
     }
-    activePostFlushCbs.sort((a, b) => getId(a) - getId(b));
+    activePostFlushCbs.sort((a, b2) => getId(a) - getId(b2));
     for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
       if (checkRecursiveUpdates(seen2, activePostFlushCbs[postFlushIndex])) {
         continue;
@@ -9364,12 +9423,12 @@ function flushPostFlushCbs(seen2) {
   }
 }
 var getId = (job) => job.id == null ? Infinity : job.id;
-var comparator = (a, b) => {
-  const diff = getId(a) - getId(b);
+var comparator = (a, b2) => {
+  const diff = getId(a) - getId(b2);
   if (diff === 0) {
-    if (a.pre && !b.pre)
+    if (a.pre && !b2.pre)
       return -1;
-    if (b.pre && !a.pre)
+    if (b2.pre && !a.pre)
       return 1;
   }
   return diff;
@@ -9833,7 +9892,7 @@ function renderComponentRoot(instance) {
     slots,
     attrs,
     emit: emit2,
-    render: render21,
+    render: render26,
     renderCache,
     data,
     setupState,
@@ -9850,7 +9909,7 @@ function renderComponentRoot(instance) {
     if (vnode.shapeFlag & 4) {
       const proxyToUse = withProxy || proxy;
       result = normalizeVNode(
-        render21.call(
+        render26.call(
           proxyToUse,
           proxyToUse,
           renderCache,
@@ -9862,12 +9921,12 @@ function renderComponentRoot(instance) {
       );
       fallthroughAttrs = attrs;
     } else {
-      const render22 = Component;
+      const render27 = Component;
       if (attrs === props) {
         markAttrsAccessed();
       }
       result = normalizeVNode(
-        render22.length > 1 ? render22(
+        render27.length > 1 ? render27(
           props,
           true ? {
             get attrs() {
@@ -9877,7 +9936,7 @@ function renderComponentRoot(instance) {
             slots,
             emit: emit2
           } : { attrs, slots, emit: emit2 }
-        ) : render22(
+        ) : render27(
           props,
           null
           /* we know it doesn't need it */
@@ -11815,8 +11874,8 @@ function createSlots(slots, dynamicSlots) {
   for (let i = 0; i < dynamicSlots.length; i++) {
     const slot = dynamicSlots[i];
     if (isArray(slot)) {
-      for (let j = 0; j < slot.length; j++) {
-        slots[slot[j].name] = slot[j].fn;
+      for (let j2 = 0; j2 < slot.length; j2++) {
+        slots[slot[j2].name] = slot[j2].fn;
       }
     } else if (slot) {
       slots[slot.name] = slot.key ? (...args) => {
@@ -12063,9 +12122,9 @@ var RuntimeCompiledPublicInstanceProxyHandlers = /* @__PURE__ */ extend(
       }
       return PublicInstanceProxyHandlers.get(target, key, target);
     },
-    has(_, key) {
+    has(_2, key) {
       const has2 = key[0] !== "_" && !isGloballyWhitelisted(key);
-      if (!has2 && PublicInstanceProxyHandlers.has(_, key)) {
+      if (!has2 && PublicInstanceProxyHandlers.has(_2, key)) {
         warn3(
           `Property ${JSON.stringify(
             key
@@ -12250,12 +12309,12 @@ function mergeDefaults(raw, defaults) {
   }
   return props;
 }
-function mergeModels(a, b) {
-  if (!a || !b)
-    return a || b;
-  if (isArray(a) && isArray(b))
-    return a.concat(b);
-  return extend({}, normalizePropsOrEmits(a), normalizePropsOrEmits(b));
+function mergeModels(a, b2) {
+  if (!a || !b2)
+    return a || b2;
+  if (isArray(a) && isArray(b2))
+    return a.concat(b2);
+  return extend({}, normalizePropsOrEmits(a), normalizePropsOrEmits(b2));
 }
 function createPropsRestProxy(props, excludedKeys) {
   const ret = {};
@@ -12325,7 +12384,7 @@ function applyOptions(instance) {
     beforeUnmount,
     destroyed,
     unmounted,
-    render: render21,
+    render: render26,
     renderTracked,
     renderTriggered,
     errorCaptured,
@@ -12479,8 +12538,8 @@ function applyOptions(instance) {
       instance.exposed = {};
     }
   }
-  if (render21 && instance.render === NOOP) {
-    instance.render = render21;
+  if (render26 && instance.render === NOOP) {
+    instance.render = render26;
   }
   if (inheritAttrs != null) {
     instance.inheritAttrs = inheritAttrs;
@@ -12546,7 +12605,7 @@ function createWatcher(raw, ctx, publicThis, key) {
     watch(getter, raw.bind(publicThis));
   } else if (isObject(raw)) {
     if (isArray(raw)) {
-      raw.forEach((r) => createWatcher(r, ctx, publicThis, key));
+      raw.forEach((r2) => createWatcher(r2, ctx, publicThis, key));
     } else {
       const handler = isFunction(raw.handler) ? raw.handler.bind(publicThis) : ctx[raw.handler];
       if (isFunction(handler)) {
@@ -12722,7 +12781,7 @@ function createAppContext() {
   };
 }
 var uid$1 = 0;
-function createAppAPI(render21, hydrate2) {
+function createAppAPI(render26, hydrate2) {
   return function createApp2(rootComponent, rootProps = null) {
     if (!isFunction(rootComponent)) {
       rootComponent = extend({}, rootComponent);
@@ -12835,13 +12894,13 @@ function createAppAPI(render21, hydrate2) {
           vnode.appContext = context;
           if (true) {
             context.reload = () => {
-              render21(cloneVNode(vnode), rootContainer, isSVG);
+              render26(cloneVNode(vnode), rootContainer, isSVG);
             };
           }
           if (isHydrate && hydrate2) {
             hydrate2(vnode, rootContainer);
           } else {
-            render21(vnode, rootContainer, isSVG);
+            render26(vnode, rootContainer, isSVG);
           }
           isMounted = true;
           app._container = rootContainer;
@@ -12860,7 +12919,7 @@ If you want to remount the same app, move your app creation logic into a factory
       },
       unmount() {
         if (isMounted) {
-          render21(null, app._container);
+          render26(null, app._container);
           if (true) {
             app._instance = null;
             devtoolsUnmountApp(app);
@@ -13219,8 +13278,8 @@ function getType(ctor) {
   const match = ctor && ctor.toString().match(/^\s*(function|class) (\w+)/);
   return match ? match[2] : ctor === null ? "null" : "";
 }
-function isSameType(a, b) {
-  return getType(a) === getType(b);
+function isSameType(a, b2) {
+  return getType(a) === getType(b2);
 }
 function getTypeIndex(type, expectedTypes) {
   if (isArray(expectedTypes)) {
@@ -13432,8 +13491,8 @@ var updateSlots = (instance, children, optimized) => {
 function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
   if (isArray(rawRef)) {
     rawRef.forEach(
-      (r, i) => setRef(
-        r,
+      (r2, i) => setRef(
+        r2,
         oldRawRef && (isArray(oldRawRef) ? oldRawRef[i] : oldRawRef),
         parentSuspense,
         vnode,
@@ -15067,7 +15126,7 @@ function baseCreateRenderer(options, createHydrationFns) {
           keyToNewIndexMap.set(nextChild.key, i);
         }
       }
-      let j;
+      let j2;
       let patched = 0;
       const toBePatched = e2 - s2 + 1;
       let moved = false;
@@ -15085,9 +15144,9 @@ function baseCreateRenderer(options, createHydrationFns) {
         if (prevChild.key != null) {
           newIndex = keyToNewIndexMap.get(prevChild.key);
         } else {
-          for (j = s2; j <= e2; j++) {
-            if (newIndexToOldIndexMap[j - s2] === 0 && isSameVNodeType(prevChild, c2[j])) {
-              newIndex = j;
+          for (j2 = s2; j2 <= e2; j2++) {
+            if (newIndexToOldIndexMap[j2 - s2] === 0 && isSameVNodeType(prevChild, c2[j2])) {
+              newIndex = j2;
               break;
             }
           }
@@ -15116,7 +15175,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         }
       }
       const increasingNewIndexSequence = moved ? getSequence(newIndexToOldIndexMap) : EMPTY_ARR;
-      j = increasingNewIndexSequence.length - 1;
+      j2 = increasingNewIndexSequence.length - 1;
       for (i = toBePatched - 1; i >= 0; i--) {
         const nextIndex = s2 + i;
         const nextChild = c2[nextIndex];
@@ -15134,10 +15193,10 @@ function baseCreateRenderer(options, createHydrationFns) {
             optimized
           );
         } else if (moved) {
-          if (j < 0 || i !== increasingNewIndexSequence[j]) {
+          if (j2 < 0 || i !== increasingNewIndexSequence[j2]) {
             move(nextChild, container, anchor, 2);
           } else {
-            j--;
+            j2--;
           }
         }
       }
@@ -15350,7 +15409,7 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     return hostNextSibling(vnode.anchor || vnode.el);
   };
-  const render21 = (vnode, container, isSVG) => {
+  const render26 = (vnode, container, isSVG) => {
     if (vnode == null) {
       if (container._vnode) {
         unmount(container._vnode, null, null, true);
@@ -15382,9 +15441,9 @@ function baseCreateRenderer(options, createHydrationFns) {
     );
   }
   return {
-    render: render21,
+    render: render26,
     hydrate: hydrate2,
-    createApp: createAppAPI(render21, hydrate2)
+    createApp: createAppAPI(render26, hydrate2)
   };
 }
 function toggleRecurse({ effect: effect2, update }, allowed) {
@@ -15417,14 +15476,14 @@ function traverseStaticChildren(n1, n2, shallow = false) {
 function getSequence(arr) {
   const p2 = arr.slice();
   const result = [0];
-  let i, j, u, v, c;
+  let i, j2, u, v, c;
   const len = arr.length;
   for (i = 0; i < len; i++) {
     const arrI = arr[i];
     if (arrI !== 0) {
-      j = result[result.length - 1];
-      if (arr[j] < arrI) {
-        p2[i] = j;
+      j2 = result[result.length - 1];
+      if (arr[j2] < arrI) {
+        p2[i] = j2;
         result.push(i);
         continue;
       }
@@ -16717,12 +16776,12 @@ function initCustomFormatter() {
     window.devtoolsFormatters = [formatter];
   }
 }
-function withMemo(memo, render21, cache2, index) {
+function withMemo(memo, render26, cache2, index) {
   const cached = cache2[index];
   if (cached && isMemoSame(cached, memo)) {
     return cached;
   }
-  const ret = render21();
+  const ret = render26();
   ret.memo = memo.slice();
   return cache2[index] = ret;
 }
@@ -17843,7 +17902,7 @@ var vModelText = {
 var vModelCheckbox = {
   // #4096 array checkboxes need to be deep traversed
   deep: true,
-  created(el, _, vnode) {
+  created(el, _2, vnode) {
     el._assign = getModelAssigner(vnode);
     addEventListener(el, "change", () => {
       const modelValue = el._modelValue;
@@ -18901,7 +18960,7 @@ var defaultParserOptions = {
   isVoidTag: NO,
   isPreTag: NO,
   isCustomElement: NO,
-  decodeEntities: (rawText) => rawText.replace(decodeRE, (_, p1) => decodeMap[p1]),
+  decodeEntities: (rawText) => rawText.replace(decodeRE, (_2, p1) => decodeMap[p1]),
   onError: defaultOnError,
   onWarn: defaultOnWarn,
   comments: true
@@ -21001,17 +21060,17 @@ function createChildrenCodegenNode(branch, keyIndex, context) {
     return ret;
   }
 }
-function isSameKey(a, b) {
-  if (!a || a.type !== b.type) {
+function isSameKey(a, b2) {
+  if (!a || a.type !== b2.type) {
     return false;
   }
   if (a.type === 6) {
-    if (a.value.content !== b.value.content) {
+    if (a.value.content !== b2.value.content) {
       return false;
     }
   } else {
     const exp = a.exp;
-    const branchExp = b.exp;
+    const branchExp = b2.exp;
     if (exp.type !== branchExp.type) {
       return false;
     }
@@ -21388,10 +21447,10 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
       true
       /* allowEmpty */
     )) {
-      let j = i;
+      let j2 = i;
       let prev;
-      while (j--) {
-        prev = children[j];
+      while (j2--) {
+        prev = children[j2];
         if (prev.type !== 3) {
           break;
         }
@@ -22325,8 +22384,8 @@ var transformText = (node, context) => {
         const child = children[i];
         if (isText$1(child)) {
           hasText = true;
-          for (let j = i + 1; j < children.length; j++) {
-            const next = children[j];
+          for (let j2 = i + 1; j2 < children.length; j2++) {
+            const next = children[j2];
             if (isText$1(next)) {
               if (!currentContainer) {
                 currentContainer = children[i] = createCompoundExpression(
@@ -22335,8 +22394,8 @@ var transformText = (node, context) => {
                 );
               }
               currentContainer.children.push(` + `, next);
-              children.splice(j, 1);
-              j--;
+              children.splice(j2, 1);
+              j2--;
             } else {
               currentContainer = void 0;
               break;
@@ -22567,10 +22626,10 @@ function parseFilter(node, context) {
           break;
       }
       if (c === 47) {
-        let j = i - 1;
+        let j2 = i - 1;
         let p2;
-        for (; j >= 0; j--) {
-          p2 = exp.charAt(j);
+        for (; j2 >= 0; j2--) {
+          p2 = exp.charAt(j2);
           if (p2 !== " ")
             break;
         }
@@ -23227,9 +23286,9 @@ function compileToFunction(template, options) {
     warn3(codeFrame ? `${message}
 ${codeFrame}` : message);
   }
-  const render21 = new Function("Vue", code3)(runtime_dom_esm_bundler_exports);
-  render21._rc = true;
-  return compileCache[key] = render21;
+  const render26 = new Function("Vue", code3)(runtime_dom_esm_bundler_exports);
+  render26._rc = true;
+  return compileCache[key] = render26;
 }
 registerRuntimeCompiler(compileToFunction);
 
@@ -23310,17 +23369,17 @@ function generateCodeFrame2(source, start = 0, end = source.length) {
   for (let i = 0; i < lines.length; i++) {
     count += lines[i].length + 1;
     if (count >= start) {
-      for (let j = i - RANGE; j <= i + RANGE || end > count; j++) {
-        if (j < 0 || j >= lines.length)
+      for (let j2 = i - RANGE; j2 <= i + RANGE || end > count; j2++) {
+        if (j2 < 0 || j2 >= lines.length)
           continue;
-        const line = j + 1;
-        res.push(`${line}${" ".repeat(3 - String(line).length)}|  ${lines[j]}`);
-        const lineLength = lines[j].length;
-        if (j === i) {
+        const line = j2 + 1;
+        res.push(`${line}${" ".repeat(3 - String(line).length)}|  ${lines[j2]}`);
+        const lineLength = lines[j2].length;
+        if (j2 === i) {
           const pad = start - (count - lineLength) + 1;
           const length = Math.max(1, end > count ? lineLength - pad : end - start);
           res.push(`   |  ` + " ".repeat(pad) + "^".repeat(length));
-        } else if (j > i) {
+        } else if (j2 > i) {
           if (end > count) {
             const length = Math.max(Math.min(end - count, lineLength), 1);
             res.push(`   |  ` + "^".repeat(length));
@@ -24952,8 +25011,8 @@ function isLiteral(exp) {
 }
 function stripQuotes(str) {
   const a = str.charCodeAt(0);
-  const b = str.charCodeAt(str.length - 1);
-  return a === b && (a === 34 || a === 39) ? str.slice(1, -1) : str;
+  const b2 = str.charCodeAt(str.length - 1);
+  return a === b2 && (a === 34 || a === 39) ? str.slice(1, -1) : str;
 }
 function getPathCharType(ch) {
   if (ch === void 0 || ch === null) {
@@ -28544,7 +28603,8 @@ var en_default = {
     start: "Start",
     add: "Add",
     confirm: "Confirm my changes!",
-    remove: "Remove"
+    remove: "Remove",
+    formatCount: "Format #{count}"
   },
   nav: {
     title: {
@@ -28565,11 +28625,12 @@ var en_default = {
     },
     title: {
       "generic-settings": "Generic settings",
-      "date-formats": "Date formating",
+      "date-formats": "Date formatting",
       "slot-presets": "Enable presets for {slot}",
       lookForTagsForTimeline: "Look into note tags",
       lookForInlineEventsInNotes: "Look for events in note body",
-      advancedDateFormatsTokenConfiguration: "Configure the tokens"
+      advancedDateFormatsTokenConfiguration: "Configure the tokens",
+      applyAdditonalConditionFormatting: "Apply additonal condition based formatting"
     },
     label: {
       dateDisplayFormat: "Date display format",
@@ -28588,10 +28649,23 @@ var en_default = {
       useAdvancedMode: "Use advanced mode / edit regexes",
       lookForTagsForTimeline: "Check to include a notes tags into the values used to assign notes to a timeline",
       lookForInlineEventsInNotes: "Check to ennable the inline event feature. This allows to define events for any timeline from inside a note.",
-      configureSingleDateToken: "The type of the token"
+      applyAdditonalConditionFormatting: "Toggle on to allow date tokens conditional formatting to be allowed. When set to false this feature will be skipped. This could save you a few milliseconds off every card render.",
+      configureSingleDateToken: {
+        type: "The type of the token",
+        conditionalFormatting: "Add additional formatting"
+      },
+      configureSingleDateTokenType: {
+        minLength: "The minimum amount of digits",
+        hideSign: "Hide the sign"
+      },
+      configureSingleDateTokenConditionalFormatting: {
+        conditionsAreExclusive: "Condtions are exclusive",
+        format: "The template format to apply"
+      }
     },
     button: {
-      resetToDefault: "Reset to default"
+      resetToDefault: "Reset to default",
+      addACondition: "Add a condition to evaluate"
     },
     description: {
       dateDisplayFormat: "This is the end format the date should be displayed as in the actual timeline cards. You don't actually need to include every parsed member here.",
@@ -28610,16 +28684,27 @@ var en_default = {
       tryYourInputFormat: "Just type out the date like you would in a notes metadata block. Bellow, every field should corespond to the correct token and be sorted in the correct order.",
       lookForTagsForTimeline: "This means if you tag you note with a string and include that string in the timeline definition this note will be included in the timeline computing",
       lookForInlineEventsInNotes: "Check {linkText} on how to create inline events.",
+      applyAdditonalConditionFormatting: "Toggle on to allow date tokens conditional formatting to be allowed. When set to false this feature will be skipped. This could save you a few milliseconds off every card render.",
       configureSingleDateToken: {
         STRING: "A string typed date token represents something akin to our months. tl;dr, they are written using letter and not numbers",
         NUMBER: `A numerical typed date token is your stardard number representing a date. Just make sure to configure it's mininal lengh. For example a minimal length set to 2 will result in the 6th day being written as "06"`
+      },
+      configureSingleDateTokenType: {
+        minLength: "If set to 2, this would always display at least two digit. So for a value of 3 it would display 03.",
+        hideSign: "When checked, the sign of the number won't be displayed on the card."
+      },
+      configureSingleDateTokenConditionalFormatting: {
+        conditionsAreExclusive: "When checked only one condition need to be true for the format to apply. If it's unchecked all conditions need to be true.",
+        format: "Use `{value}` to include the formated token in the template."
       }
     },
     linkValue: {
-      lookForInlineEventsInNotes: "https://github.com/April-Gras/obsidian-auto-timelines#in-line-events"
+      lookForInlineEventsInNotes: "https://github.com/April-Gras/obsidian-auto-timelines#in-line-events",
+      applyAdditonalConditionFormatting: "https://github.com/April-Gras/obsidian-auto-timelines#conditional-token-formatting"
     },
     linkText: {
-      lookForInlineEventsInNotes: "the documentation"
+      lookForInlineEventsInNotes: "the documentation",
+      applyAdditonalConditionFormatting: "the documentation"
     },
     details: {
       createDateToken: "Write your date system tokens ordered from top to bottom. Make sure not to leave any cluter, these token will be used to capture your date and sort them in the expeted order."
@@ -28644,6 +28729,14 @@ var en_default = {
       STRING: "String",
       NUMBER: "Numerical"
     }
+  },
+  conditions: {
+    GREATER: "Greater than",
+    LESS: "Less than",
+    EQUAL: "Equal to",
+    NOTEQUAL: "Not equal to",
+    GREATEROREQUAL: "Greater or equal to",
+    LESSOREQUAL: "Less or equal to"
   }
 };
 
@@ -28657,7 +28750,7 @@ var i18n_config_default = () => createI18n({
   allowComposition: true
 });
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VNav.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VNav.vue?type=script
 var VNav_default = /* @__PURE__ */ defineComponent({
   __name: "VNav",
   props: {
@@ -28673,7 +28766,7 @@ var VNav_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VNav.vue?type=template
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VNav.vue?type=template
 var _hoisted_1 = { class: "v-nav" };
 var _hoisted_2 = ["onClick"];
 function render2(_ctx, _cache, $props, $setup, $data, $options) {
@@ -28700,7 +28793,7 @@ VNav_default.render = render2;
 VNav_default.__file = "src/components/VNav.vue";
 var VNav_default2 = VNav_default;
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VHeader.vue?type=template
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VHeader.vue?type=template
 var _hoisted_12 = { class: "v-header" };
 function render3(_ctx, _cache) {
   return openBlock(), createElementBlock("h2", _hoisted_12, [
@@ -28727,7 +28820,7 @@ function hasSlot(slot, slotProps = {}) {
   });
 }
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VLabel.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VLabel.vue?type=script
 var VLabel_default = /* @__PURE__ */ defineComponent({
   __name: "VLabel",
   props: {
@@ -28744,7 +28837,7 @@ var VLabel_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VLabel.vue?type=template
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VLabel.vue?type=template
 var _hoisted_13 = { key: 0 };
 var _hoisted_22 = ["for"];
 var _hoisted_3 = {
@@ -28771,7 +28864,7 @@ VLabel_default.render = render4;
 VLabel_default.__file = "src/components/VLabel.vue";
 var VLabel_default2 = VLabel_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VInput.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VInput.vue?type=script
 var VInput_default = /* @__PURE__ */ defineComponent({
   __name: "VInput",
   props: {
@@ -28810,7 +28903,7 @@ var VInput_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VInput.vue?type=template
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VInput.vue?type=template
 var _hoisted_14 = ["role"];
 var _hoisted_23 = ["id", "min", "max", "placeholder", "value", "type"];
 function render5(_ctx, _cache, $props, $setup, $data, $options) {
@@ -28845,7 +28938,7 @@ VInput_default.render = render5;
 VInput_default.__file = "src/components/VInput.vue";
 var VInput_default2 = VInput_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VCheckbox.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCheckbox.vue?type=script
 var VCheckbox_default = /* @__PURE__ */ defineComponent({
   __name: "VCheckbox",
   props: {
@@ -28865,7 +28958,7 @@ var VCheckbox_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VCheckbox.vue?type=template
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCheckbox.vue?type=template
 var _hoisted_15 = { class: "v-input-wrap v-checkbox" };
 var _hoisted_24 = ["for"];
 var _hoisted_32 = {
@@ -28911,7 +29004,7 @@ VCheckbox_default.render = render6;
 VCheckbox_default.__file = "src/components/VCheckbox.vue";
 var VCheckbox_default2 = VCheckbox_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/views/VSettings.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/views/VSettings.vue?type=script
 var VSettings_default = /* @__PURE__ */ defineComponent({
   __name: "VSettings",
   props: {
@@ -28921,13 +29014,16 @@ var VSettings_default = /* @__PURE__ */ defineComponent({
   setup(__props, { expose: __expose, emit: emit2 }) {
     __expose();
     const props = __props;
-    const generalSettingKeys = Object.keys(SETTINGS_DEFAULT).filter(
-      (e) => e.startsWith("metadataKey")
-    );
-    generalSettingKeys.push(
+    const generalSettingKeys = [
+      "metadataKeyEventStartDate",
+      "metadataKeyEventEndDate",
+      "metadataKeyEventTitleOverride",
+      "metadataKeyEventBodyOverride",
+      "metadataKeyEventPictureOverride",
+      "metadataKeyEventTimelineTag",
       "markdownBlockTagsToFindSeparator",
       "noteInlineEventKey"
-    );
+    ];
     const fantasyCalendarPreset = {
       metadataKeyEventEndDate: "fc-end",
       metadataKeyEventStartDate: "fc-date",
@@ -28953,14 +29049,18 @@ var VSettings_default = /* @__PURE__ */ defineComponent({
       else
         emit2("update:value", fantasyCalendarPreset);
     };
-    const checkboxKeys = ["lookForInlineEventsInNotes", "lookForTagsForTimeline"];
+    const checkboxKeys = [
+      "lookForInlineEventsInNotes",
+      "lookForTagsForTimeline",
+      "applyAdditonalConditionFormatting"
+    ];
     const __returned__ = { props, emit: emit2, generalSettingKeys, fantasyCalendarPreset, fantasyCalendarKeys, keysAreCompliantWithFcPreset, handleUpdateValueFantasyCalendarCheckbox, checkboxKeys, VHeader: VHeader_default, VInput: VInput_default2, VCheckbox: VCheckbox_default2 };
     Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
     return __returned__;
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/views/VSettings.vue?type=template
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/views/VSettings.vue?type=template
 var _hoisted_16 = { class: "v-grid-display" };
 var _hoisted_25 = { class: "v-grid-display" };
 var _hoisted_33 = /* @__PURE__ */ createBaseVNode(
@@ -28991,11 +29091,11 @@ function render7(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_i18n_t = resolveComponent("i18n-t");
   return openBlock(), createElementBlock("div", _hoisted_16, [
     createBaseVNode("section", _hoisted_25, [
-      (openBlock(true), createElementBlock(
+      (openBlock(), createElementBlock(
         Fragment,
         null,
         renderList($setup.generalSettingKeys, (key) => {
-          return openBlock(), createBlock($setup["VInput"], {
+          return createVNode($setup["VInput"], {
             type: "text",
             value: $props.value[key],
             "onUpdate:value": ($event) => $setup.emit("update:value", { [key]: $event.trim() }),
@@ -29019,8 +29119,8 @@ function render7(_ctx, _cache, $props, $setup, $data, $options) {
             /* DYNAMIC */
           }, 1032, ["value", "onUpdate:value", "input-id"]);
         }),
-        256
-        /* UNKEYED_FRAGMENT */
+        64
+        /* STABLE_FRAGMENT */
       ))
     ]),
     _hoisted_33,
@@ -29134,7 +29234,7 @@ VSettings_default.render = render7;
 VSettings_default.__file = "src/views/VSettings.vue";
 var VSettings_default2 = VSettings_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VButton.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VButton.vue?type=script
 var VButton_default = /* @__PURE__ */ defineComponent({
   __name: "VButton",
   props: {
@@ -29157,7 +29257,7 @@ var VButton_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VButton.vue?type=template
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VButton.vue?type=template
 var _hoisted_17 = ["disabled"];
 function render8(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("button", {
@@ -29173,10 +29273,45 @@ VButton_default.render = render8;
 VButton_default.__file = "src/components/VButton.vue";
 var VButton_default2 = VButton_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VConfigureSingleDateToken.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenConditionalFormatting.vue?type=script
 var import_lodash = __toESM(require_lodash());
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VSelect.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCard.vue?type=script
+var VCard_default = /* @__PURE__ */ defineComponent({
+  __name: "VCard",
+  props: {
+    slim: { type: Boolean, required: false, default: false }
+  },
+  setup(__props, { expose: __expose }) {
+    __expose();
+    const __returned__ = {};
+    Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
+    return __returned__;
+  }
+});
+
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCard.vue?type=template
+function render9(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock(
+    "article",
+    {
+      class: normalizeClass(["v-card", { slim: $props.slim }])
+    },
+    [
+      renderSlot(_ctx.$slots, "default", {}, void 0, true)
+    ],
+    2
+    /* CLASS */
+  );
+}
+
+// src/components/VCard.vue
+VCard_default.render = render9;
+VCard_default.__file = "src/components/VCard.vue";
+VCard_default.__scopeId = "data-v-7469b424";
+var VCard_default2 = VCard_default;
+
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VSelect.vue?type=script
 var VSelect_default = /* @__PURE__ */ defineComponent({
   __name: "VSelect",
   props: {
@@ -29188,27 +29323,26 @@ var VSelect_default = /* @__PURE__ */ defineComponent({
   emits: ["update:modelValue"],
   setup(__props, { expose: __expose, emit: emit2 }) {
     __expose();
-    const props = __props;
     function handleSelectInput({ target }) {
       if (!target)
         return;
       const value = target.value;
       return emit2("update:modelValue", value);
     }
-    const __returned__ = { props, emit: emit2, handleSelectInput, VLabel: VLabel_default2 };
+    const __returned__ = { emit: emit2, handleSelectInput, VLabel: VLabel_default2 };
     Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
     return __returned__;
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VSelect.vue?type=template
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VSelect.vue?type=template
 var _hoisted_18 = {
   role: "select",
   class: "v-input-wrap"
 };
 var _hoisted_26 = ["value"];
 var _hoisted_34 = ["value"];
-function render9(_ctx, _cache, $props, $setup, $data, $options) {
+function render10(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("div", _hoisted_18, [
     createVNode($setup["VLabel"], { "input-id": $props.inputId }, {
       label: withCtx(() => [
@@ -29238,15 +29372,319 @@ function render9(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VSelect.vue
-VSelect_default.render = render9;
+VSelect_default.render = render10;
 VSelect_default.__file = "src/components/VSelect.vue";
 var VSelect_default2 = VSelect_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VConfigureSingleDateToken.vue?type=script
-var VConfigureSingleDateToken_default = /* @__PURE__ */ defineComponent({
-  __name: "VConfigureSingleDateToken",
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureEvaluation.vue?type=script
+var VConfigureEvaluation_default = /* @__PURE__ */ defineComponent({
+  __name: "VConfigureEvaluation",
+  props: {
+    modelValue: { type: null, required: true },
+    inputId: { type: [String, Number], required: true }
+  },
+  emits: ["update:modelValue", "delete"],
+  setup(__props, { expose: __expose, emit: emit2 }) {
+    __expose();
+    const __returned__ = { emit: emit2, VSelect: VSelect_default2, VInput: VInput_default2, VButton: VButton_default2, get availableConditionArray() {
+      return availableConditionArray;
+    } };
+    Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
+    return __returned__;
+  }
+});
+
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureEvaluation.vue?type=template
+var _hoisted_19 = { class: "v-inline-flex-display" };
+var _hoisted_27 = { class: "slim v-grid-display-2" };
+function render11(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", _hoisted_19, [
+    createVNode($setup["VButton"], {
+      onClick: _cache[0] || (_cache[0] = ($event) => $setup.emit("delete"))
+    }, {
+      default: withCtx(() => [
+        createTextVNode("X")
+      ]),
+      _: 1
+      /* STABLE */
+    }),
+    createBaseVNode("div", _hoisted_27, [
+      createVNode($setup["VSelect"], {
+        options: $setup.availableConditionArray,
+        "model-value": $props.modelValue.condition,
+        "input-id": `configure-single-date-token-format-condition-${$props.inputId}`,
+        "translation-key": "conditions",
+        "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $setup.emit("update:modelValue", {
+          ...$props.modelValue,
+          condition: $event
+        }))
+      }, null, 8, ["options", "model-value", "input-id"]),
+      createVNode($setup["VInput"], {
+        type: "number",
+        value: $props.modelValue.value,
+        "input-id": `configure-single-date-token-format-value-${$props.inputId}`,
+        "onUpdate:value": _cache[2] || (_cache[2] = ($event) => $setup.emit("update:modelValue", { ...$props.modelValue, value: $event }))
+      }, null, 8, ["value", "input-id"])
+    ])
+  ]);
+}
+
+// src/components/VConfigureEvaluation.vue
+VConfigureEvaluation_default.render = render11;
+VConfigureEvaluation_default.__file = "src/components/VConfigureEvaluation.vue";
+var VConfigureEvaluation_default2 = VConfigureEvaluation_default;
+
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenConditionalFormatting.vue?type=script
+var VConfigureSingleDateTokenConditionalFormatting_default = /* @__PURE__ */ defineComponent({
+  __name: "VConfigureSingleDateTokenConditionalFormatting",
   props: {
     modelValue: { type: null, required: true }
+  },
+  emits: ["update:modelValue"],
+  setup(__props, { expose: __expose, emit: emit2 }) {
+    __expose();
+    const props = __props;
+    function addFormatting() {
+      const clonedModelValue = (0, import_lodash.default)(props.modelValue);
+      clonedModelValue.formatting.push({
+        evaluations: [],
+        conditionsAreExclusive: false,
+        format: "sample {value} more sample"
+      });
+      emit2("update:modelValue", clonedModelValue);
+    }
+    function editFormattingAtIndex(index, edits) {
+      const clonedModelValue = (0, import_lodash.default)(props.modelValue);
+      clonedModelValue.formatting.splice(index, 1, {
+        ...clonedModelValue.formatting[index],
+        ...edits
+      });
+      emit2("update:modelValue", clonedModelValue);
+    }
+    function removeFormattingAtIndex(index) {
+      const clonedModelValue = (0, import_lodash.default)(props.modelValue);
+      clonedModelValue.formatting.splice(index, 1);
+      emit2("update:modelValue", clonedModelValue);
+    }
+    function addEvaluationToFormatAtIndex(index) {
+      const clonedModelValue = (0, import_lodash.default)(props.modelValue);
+      clonedModelValue.formatting[index].evaluations.push({
+        condition: "EQUAL" /* Equal */,
+        value: 0
+      });
+      emit2("update:modelValue", clonedModelValue);
+    }
+    function editEvaluationAtIndexFromFormatAtIndex(formatIndex, evaluationIndex, evaluation) {
+      const clonedModelValue = (0, import_lodash.default)(props.modelValue);
+      clonedModelValue.formatting[formatIndex].evaluations[evaluationIndex] = {
+        ...clonedModelValue.formatting[formatIndex].evaluations[evaluationIndex],
+        ...evaluation
+      };
+      emit2("update:modelValue", clonedModelValue);
+    }
+    function removeEvaluationAtIndexFromFormatAtIndex(formatIndex, evaluationIndex) {
+      const clonedModelValue = (0, import_lodash.default)(props.modelValue);
+      clonedModelValue.formatting[formatIndex].evaluations.splice(
+        evaluationIndex,
+        1
+      );
+      emit2("update:modelValue", clonedModelValue);
+    }
+    const moreThanOneEntry = computed2(() => props.modelValue.formatting.length > 1);
+    const __returned__ = { props, emit: emit2, addFormatting, editFormattingAtIndex, removeFormattingAtIndex, addEvaluationToFormatAtIndex, editEvaluationAtIndexFromFormatAtIndex, removeEvaluationAtIndexFromFormatAtIndex, moreThanOneEntry, VButton: VButton_default2, VCard: VCard_default2, VInput: VInput_default2, VHeader: VHeader_default, VConfigureEvaluation: VConfigureEvaluation_default2, VCheckbox: VCheckbox_default2 };
+    Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
+    return __returned__;
+  }
+});
+
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenConditionalFormatting.vue?type=template
+var _hoisted_110 = { class: "v-grid-display" };
+var _hoisted_28 = { class: "v-grid-display" };
+var _hoisted_35 = { class: "v-inline-flex-display" };
+var _hoisted_43 = { class: "v-grid-display slim" };
+var _hoisted_52 = /* @__PURE__ */ createBaseVNode(
+  "hr",
+  null,
+  null,
+  -1
+  /* HOISTED */
+);
+function render12(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", _hoisted_110, [
+    createVNode($setup["VButton"], { onClick: $setup.addFormatting }, {
+      default: withCtx(() => [
+        createTextVNode(
+          toDisplayString(_ctx.$t("common.add")),
+          1
+          /* TEXT */
+        )
+      ]),
+      _: 1
+      /* STABLE */
+    }),
+    (openBlock(true), createElementBlock(
+      Fragment,
+      null,
+      renderList($props.modelValue.formatting, ({ format: format2, conditionsAreExclusive, evaluations }, index) => {
+        return openBlock(), createBlock(
+          $setup["VCard"],
+          null,
+          {
+            default: withCtx(() => [
+              createBaseVNode("div", _hoisted_28, [
+                createBaseVNode("div", _hoisted_35, [
+                  $setup.moreThanOneEntry ? (openBlock(), createBlock($setup["VButton"], {
+                    key: 0,
+                    onClick: ($event) => $setup.removeFormattingAtIndex(index)
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode("X")
+                    ]),
+                    _: 2
+                    /* DYNAMIC */
+                  }, 1032, ["onClick"])) : createCommentVNode("v-if", true),
+                  createVNode(
+                    $setup["VHeader"],
+                    null,
+                    {
+                      default: withCtx(() => [
+                        createTextVNode(
+                          toDisplayString(_ctx.$tc("common.formatCount", index + 1)),
+                          1
+                          /* TEXT */
+                        )
+                      ]),
+                      _: 2
+                      /* DYNAMIC */
+                    },
+                    1024
+                    /* DYNAMIC_SLOTS */
+                  )
+                ]),
+                createBaseVNode("div", _hoisted_43, [
+                  createVNode($setup["VCheckbox"], {
+                    "input-id": `configure-single-date-token-format-condition-are-exclusive-${index}`,
+                    value: conditionsAreExclusive,
+                    "onUpdate:value": ($event) => $setup.editFormattingAtIndex(index, {
+                      conditionsAreExclusive: $event
+                    })
+                  }, {
+                    label: withCtx(() => [
+                      createTextVNode(
+                        toDisplayString(_ctx.$t(
+                          "settings.label.configureSingleDateTokenConditionalFormatting.conditionsAreExclusive"
+                        )),
+                        1
+                        /* TEXT */
+                      )
+                    ]),
+                    description: withCtx(() => [
+                      createTextVNode(
+                        toDisplayString(_ctx.$t(
+                          "settings.description.configureSingleDateTokenConditionalFormatting.conditionsAreExclusive"
+                        )),
+                        1
+                        /* TEXT */
+                      )
+                    ]),
+                    _: 2
+                    /* DYNAMIC */
+                  }, 1032, ["input-id", "value", "onUpdate:value"]),
+                  createVNode($setup["VInput"], {
+                    "input-id": `configure-single-date-token-format-condition-are-exclusive-${index}`,
+                    value: format2,
+                    type: "text",
+                    "onUpdate:value": ($event) => $setup.editFormattingAtIndex(index, {
+                      format: $event
+                    })
+                  }, {
+                    label: withCtx(() => [
+                      createTextVNode(
+                        toDisplayString(_ctx.$t(
+                          "settings.label.configureSingleDateTokenConditionalFormatting.format"
+                        )),
+                        1
+                        /* TEXT */
+                      )
+                    ]),
+                    description: withCtx(() => [
+                      createTextVNode(
+                        toDisplayString(_ctx.$t(
+                          "settings.description.configureSingleDateTokenConditionalFormatting.format",
+                          // This is ridiculous but didn't find any way to escape the {value} without vue-i18n spawning an error.
+                          { value: "{value}" }
+                        )),
+                        1
+                        /* TEXT */
+                      )
+                    ]),
+                    _: 2
+                    /* DYNAMIC */
+                  }, 1032, ["input-id", "value", "onUpdate:value"]),
+                  _hoisted_52,
+                  createVNode($setup["VButton"], {
+                    "has-accent": "",
+                    onClick: ($event) => $setup.addEvaluationToFormatAtIndex(index)
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(
+                        toDisplayString(_ctx.$t("settings.button.addACondition")),
+                        1
+                        /* TEXT */
+                      )
+                    ]),
+                    _: 2
+                    /* DYNAMIC */
+                  }, 1032, ["onClick"]),
+                  (openBlock(true), createElementBlock(
+                    Fragment,
+                    null,
+                    renderList(evaluations, (evaluation, evaluationIndex) => {
+                      return openBlock(), createBlock($setup["VConfigureEvaluation"], {
+                        "model-value": evaluation,
+                        "input-id": `${index}-${evaluationIndex}`,
+                        onDelete: ($event) => $setup.removeEvaluationAtIndexFromFormatAtIndex(
+                          index,
+                          evaluationIndex
+                        ),
+                        "onUpdate:modelValue": ($event) => $setup.editEvaluationAtIndexFromFormatAtIndex(
+                          index,
+                          evaluationIndex,
+                          $event
+                        )
+                      }, null, 8, ["model-value", "input-id", "onDelete", "onUpdate:modelValue"]);
+                    }),
+                    256
+                    /* UNKEYED_FRAGMENT */
+                  ))
+                ])
+              ])
+            ]),
+            _: 2
+            /* DYNAMIC */
+          },
+          1024
+          /* DYNAMIC_SLOTS */
+        );
+      }),
+      256
+      /* UNKEYED_FRAGMENT */
+    ))
+  ]);
+}
+
+// src/components/VConfigureSingleDateTokenConditionalFormatting.vue
+VConfigureSingleDateTokenConditionalFormatting_default.render = render12;
+VConfigureSingleDateTokenConditionalFormatting_default.__file = "src/components/VConfigureSingleDateTokenConditionalFormatting.vue";
+var VConfigureSingleDateTokenConditionalFormatting_default2 = VConfigureSingleDateTokenConditionalFormatting_default;
+
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenType.vue?type=script
+var import_lodash2 = __toESM(require_lodash());
+var VConfigureSingleDateTokenType_default = /* @__PURE__ */ defineComponent({
+  __name: "VConfigureSingleDateTokenType",
+  props: {
+    modelValue: { type: null, required: true },
+    allowDelete: { type: Boolean, required: true, default: false }
   },
   emits: ["update:modelValue"],
   setup(__props, { expose: __expose, emit: emit2 }) {
@@ -29264,20 +29702,21 @@ var VConfigureSingleDateToken_default = /* @__PURE__ */ defineComponent({
           ...props.modelValue,
           type: $event,
           minLeght: 0,
-          displayWhenZero: true
+          displayWhenZero: true,
+          hideSign: false
         });
     }
     function addMemberToDictionary() {
       if (!dateTokenConfigurationIsTypeString(props.modelValue))
         return;
-      const clone = (0, import_lodash.default)(props.modelValue);
+      const clone = (0, import_lodash2.default)(props.modelValue);
       clone.dictionary.push("");
       emit2("update:modelValue", clone);
     }
     function handleDictionaryUpdateAtIndex(index, entryValue) {
       if (!dateTokenConfigurationIsTypeString(props.modelValue))
         return;
-      const clone = (0, import_lodash.default)(props.modelValue);
+      const clone = (0, import_lodash2.default)(props.modelValue);
       if (isDefined(entryValue))
         clone.dictionary.splice(index, 1, entryValue);
       else
@@ -29290,63 +29729,46 @@ var VConfigureSingleDateToken_default = /* @__PURE__ */ defineComponent({
       return dateTokenConfigurationIsTypeNumber;
     }, get dateTokenConfigurationIsTypeString() {
       return dateTokenConfigurationIsTypeString;
-    }, VSelect: VSelect_default2, VInput: VInput_default2, VButton: VButton_default2 };
+    }, VButton: VButton_default2, VSelect: VSelect_default2, VInput: VInput_default2, VCheckbox: VCheckbox_default2 };
     Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
     return __returned__;
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VConfigureSingleDateToken.vue?type=template
-var _hoisted_19 = { class: "v-grid-display" };
-var _hoisted_27 = { class: "v-grid-display" };
-var _hoisted_35 = {
-  style: { "margin-top": "8px" },
-  class: "v-grid-display"
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenType.vue?type=template
+var _hoisted_111 = { class: "v-grid-display" };
+var _hoisted_29 = {
+  key: "number",
+  class: "v-grid-display slim"
 };
-var _hoisted_43 = { key: 0 };
-var _hoisted_52 = {
-  key: 1,
-  class: "v-grid-display"
+var _hoisted_36 = {
+  class: "v-grid-display",
+  key: "string"
 };
-var _hoisted_62 = { class: "v-grid-display-2" };
-function render10(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("div", _hoisted_19, [
-    createBaseVNode("details", _hoisted_27, [
-      createBaseVNode(
-        "summary",
-        null,
-        toDisplayString($props.modelValue.name),
-        1
-        /* TEXT */
-      ),
-      createBaseVNode("div", _hoisted_35, [
-        createVNode($setup["VSelect"], {
-          "model-value": $props.modelValue.type,
-          "input-id": `configure-date-token-${$props.modelValue.name}`,
-          options: $setup.availableDateTokenTypeArray,
-          "onUpdate:modelValue": $setup.handleUpdateType,
-          "translation-key": "dateTokens.configure"
-        }, {
-          label: withCtx(() => [
-            createTextVNode(
-              toDisplayString(_ctx.$t("settings.label.configureSingleDateToken")),
-              1
-              /* TEXT */
-            )
-          ]),
-          description: withCtx(() => [
-            createTextVNode(
-              toDisplayString(_ctx.$t(
-                `settings.description.configureSingleDateToken.${$props.modelValue.type}`
-              )),
-              1
-              /* TEXT */
-            )
-          ]),
-          _: 1
-          /* STABLE */
-        }, 8, ["model-value", "input-id", "options"]),
-        $setup.dateTokenConfigurationIsTypeNumber($props.modelValue) ? (openBlock(), createElementBlock("div", _hoisted_43, [
+function render13(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", _hoisted_111, [
+    createVNode($setup["VSelect"], {
+      "model-value": $props.modelValue.type,
+      "input-id": `configure-date-token-${$props.modelValue.name}`,
+      options: $setup.availableDateTokenTypeArray,
+      "onUpdate:modelValue": $setup.handleUpdateType,
+      "translation-key": "dateTokens.configure"
+    }, {
+      description: withCtx(() => [
+        createTextVNode(
+          toDisplayString(_ctx.$t(
+            `settings.description.configureSingleDateToken.${$props.modelValue.type}`
+          )),
+          1
+          /* TEXT */
+        )
+      ]),
+      _: 1
+      /* STABLE */
+    }, 8, ["model-value", "input-id", "options"]),
+    createVNode(Transition, { mode: "out-in" }, {
+      default: withCtx(() => [
+        $setup.dateTokenConfigurationIsTypeNumber($props.modelValue) ? (openBlock(), createElementBlock("div", _hoisted_29, [
           createVNode($setup["VInput"], {
             "input-id": `configure-single-date-token-min-length-edit-${$props.modelValue.name}`,
             value: $props.modelValue.minLeght,
@@ -29357,9 +29779,58 @@ function render10(_ctx, _cache, $props, $setup, $data, $options) {
             type: "number",
             min: 0,
             max: 10
-          }, null, 8, ["input-id", "value"])
-        ])) : createCommentVNode("v-if", true),
-        $setup.dateTokenConfigurationIsTypeString($props.modelValue) ? (openBlock(), createElementBlock("ul", _hoisted_52, [
+          }, {
+            label: withCtx(() => [
+              createTextVNode(
+                toDisplayString(_ctx.$t(
+                  "settings.label.configureSingleDateTokenType.minLength"
+                )),
+                1
+                /* TEXT */
+              )
+            ]),
+            description: withCtx(() => [
+              createTextVNode(
+                toDisplayString(_ctx.$t(
+                  "settings.description.configureSingleDateTokenType.minLength"
+                )),
+                1
+                /* TEXT */
+              )
+            ]),
+            _: 1
+            /* STABLE */
+          }, 8, ["input-id", "value"]),
+          createVNode($setup["VCheckbox"], {
+            "input-id": `configure-single-date-token-hide-sign-edit-${$props.modelValue.name}`,
+            value: $props.modelValue.hideSign || false,
+            "onUpdate:value": _cache[1] || (_cache[1] = ($event) => $setup.emit("update:modelValue", {
+              ...$props.modelValue,
+              hideSign: $event
+            }))
+          }, {
+            label: withCtx(() => [
+              createTextVNode(
+                toDisplayString(_ctx.$t(
+                  "settings.label.configureSingleDateTokenType.hideSign"
+                )),
+                1
+                /* TEXT */
+              )
+            ]),
+            description: withCtx(() => [
+              createTextVNode(
+                toDisplayString(_ctx.$t(
+                  "settings.description.configureSingleDateTokenType.hideSign"
+                )),
+                1
+                /* TEXT */
+              )
+            ]),
+            _: 1
+            /* STABLE */
+          }, 8, ["input-id", "value"])
+        ])) : $setup.dateTokenConfigurationIsTypeString($props.modelValue) ? (openBlock(), createElementBlock("ul", _hoisted_36, [
           createVNode($setup["VButton"], {
             onClick: $setup.addMemberToDictionary,
             "has-accent": ""
@@ -29378,83 +29849,339 @@ function render10(_ctx, _cache, $props, $setup, $data, $options) {
             Fragment,
             null,
             renderList($props.modelValue.dictionary, (entry, index) => {
-              return openBlock(), createElementBlock("li", _hoisted_62, [
-                createVNode($setup["VInput"], {
-                  type: "text",
-                  inputId: `update-${$props.modelValue.name}-dictionary-value-at-index-${index}`,
-                  value: entry,
-                  placeholder: _ctx.$t(
-                    "settings.placeholder.stringTokenDctionaryEntry"
-                  ),
-                  "onUpdate:value": ($event) => $setup.handleDictionaryUpdateAtIndex(index, $event)
-                }, null, 8, ["inputId", "value", "placeholder", "onUpdate:value"]),
-                $props.modelValue.dictionary.length > 1 ? (openBlock(), createBlock($setup["VButton"], {
-                  key: 0,
-                  onClick: ($event) => $setup.handleDictionaryUpdateAtIndex(index)
-                }, {
-                  default: withCtx(() => [
-                    createTextVNode(
-                      toDisplayString(_ctx.$t("common.remove")),
-                      1
-                      /* TEXT */
-                    )
-                  ]),
-                  _: 2
-                  /* DYNAMIC */
-                }, 1032, ["onClick"])) : createCommentVNode("v-if", true)
-              ]);
+              return openBlock(), createElementBlock(
+                "li",
+                {
+                  class: normalizeClass([
+                    "slim",
+                    $props.modelValue.dictionary.length > 1 ? "v-grid-display-2" : "v-grid-display"
+                  ])
+                },
+                [
+                  createVNode($setup["VInput"], {
+                    type: "text",
+                    inputId: `update-${$props.modelValue.name}-dictionary-value-at-index-${index}`,
+                    value: entry,
+                    placeholder: _ctx.$t("settings.placeholder.stringTokenDctionaryEntry"),
+                    "onUpdate:value": ($event) => $setup.handleDictionaryUpdateAtIndex(index, $event)
+                  }, null, 8, ["inputId", "value", "placeholder", "onUpdate:value"]),
+                  $props.modelValue.dictionary.length > 1 ? (openBlock(), createBlock($setup["VButton"], {
+                    key: 0,
+                    onClick: ($event) => $setup.handleDictionaryUpdateAtIndex(index)
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(
+                        toDisplayString(_ctx.$t("common.remove")),
+                        1
+                        /* TEXT */
+                      )
+                    ]),
+                    _: 2
+                    /* DYNAMIC */
+                  }, 1032, ["onClick"])) : createCommentVNode("v-if", true)
+                ],
+                2
+                /* CLASS */
+              );
             }),
             256
             /* UNKEYED_FRAGMENT */
           ))
         ])) : createCommentVNode("v-if", true)
-      ])
-    ])
+      ]),
+      _: 1
+      /* STABLE */
+    })
   ]);
 }
 
-// src/components/VConfigureSingleDateToken.vue
-VConfigureSingleDateToken_default.render = render10;
-VConfigureSingleDateToken_default.__file = "src/components/VConfigureSingleDateToken.vue";
-var VConfigureSingleDateToken_default2 = VConfigureSingleDateToken_default;
+// src/components/VConfigureSingleDateTokenType.vue
+VConfigureSingleDateTokenType_default.render = render13;
+VConfigureSingleDateTokenType_default.__file = "src/components/VConfigureSingleDateTokenType.vue";
+VConfigureSingleDateTokenType_default.__scopeId = "data-v-06def973";
+var VConfigureSingleDateTokenType_default2 = VConfigureSingleDateTokenType_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VConfigureDateTokenArray.vue?type=script
-var VConfigureDateTokenArray_default = /* @__PURE__ */ defineComponent({
-  __name: "VConfigureDateTokenArray",
-  props: {
-    modelValue: { type: Array, required: true }
-  },
-  emits: ["update:modelValue"],
-  setup(__props, { expose: __expose, emit: emit2 }) {
-    __expose();
-    const { modelValue } = __props;
-    function handleUpdateModelValue(value, index) {
-      const clone = [...modelValue];
-      clone[index] = value;
-      emit2("update:modelValue", clone);
+// node_modules/vue-collapsed/dist/index.mjs
+var _ = "--vc-auto-duration";
+var T = `height var(${_}) cubic-bezier(0.33, 1, 0.68, 1)`;
+var r = { padding: 0 };
+var j = { position: "absolute", width: "1px", height: "1px", padding: "0", margin: "-1px", overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: "0" };
+function b(t) {
+  var _a;
+  return { height: `${(_a = t == null ? void 0 : t.scrollHeight) != null ? _a : 0}px` };
+}
+function $(t) {
+  if (!t)
+    return {};
+  const { transition: n } = getComputedStyle(t);
+  return n === "all 0s ease 0s" ? { transition: T } : { transition: n };
+}
+function H(t) {
+  if (!t)
+    return true;
+  const { transition: n } = getComputedStyle(t);
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches || n.includes("none") || n.includes("height 0s");
+}
+defineComponent({ inheritAttrs: true });
+var G = defineComponent({ __name: "Collapse", props: { when: { type: Boolean }, baseHeight: { default: 0 }, as: { default: "div" } }, emits: ["collapse", "expand", "collapsed", "expanded"], setup(t, { emit: n }) {
+  const v = t, u = toRef(v, "when"), o = toRef(v, "baseHeight"), p2 = computed2(() => ({ overflow: "hidden", height: `${o.value}px` })), h2 = computed2(() => ({ ...r, ...o.value === 0 ? { display: "none" } : p2.value })), l = ref(null), i = ref(u.value ? "expanded" : "collapsed"), e = shallowRef({}), g = ref(300), f = computed2(() => ({ [_]: `${g.value}ms` }));
+  function m() {
+    e.value = r, i.value = "expanded", n("expanded");
+  }
+  function x() {
+    e.value = h2.value, i.value = "collapsed", n("collapsed");
+  }
+  function k(a) {
+    var s, w;
+    a.target === l.value && a.propertyName === "height" && (u.value ? ((s = l.value) == null ? void 0 : s.scrollHeight) === parseFloat(a.target.style.height) && m() : ((w = l.value) == null ? void 0 : w.style.height) === `${o.value}px` && x());
+  }
+  return onMounted(() => {
+    l.value && (u.value || o.value !== 0 || (e.value = j), g.value = function(a = 0) {
+      if (a === 0)
+        return 0;
+      const s = a / 36;
+      return Math.round(10 * (4 + 15 * s ** 0.25 + s / 5));
+    }(l.value.scrollHeight - o.value), e.value = u.value ? r : h2.value);
+  }), watch(u, (a) => {
+    if (a) {
+      if (H(l.value))
+        return m();
+      i.value = "expanding", n("expand"), e.value = { ...r, ...p2.value, ...f.value, willChange: "height" }, requestAnimationFrame(() => {
+        e.value = { ...e.value, ...b(l.value), ...$(l.value) };
+      });
+    } else {
+      if (H(l.value))
+        return x();
+      i.value = "collapsing", n("collapse"), e.value = { ...e.value, ...f.value, ...b(l.value), willChange: "height" }, requestAnimationFrame(() => {
+        e.value = { ...e.value, ...p2.value, ...$(l.value) };
+      });
     }
-    const __returned__ = { emit: emit2, handleUpdateModelValue, VConfigureSingleDateToken: VConfigureSingleDateToken_default2 };
+  }), watch(o, (a) => {
+    u.value || (e.value = { ...e.value, ...a === 0 ? { display: "none" } : { transition: "none", height: `${a}px` } });
+  }), (a, s) => (openBlock(), createBlock(resolveDynamicComponent(v.as), { ref_key: "collapseRef", ref: l, style: normalizeStyle(e.value), onTransitionend: k, "data-collapse": i.value }, { default: withCtx(() => [renderSlot(a.$slots, "default", normalizeProps(guardReactiveProps({ state: i.value })))]), _: 3 }, 40, ["style", "data-collapse"]));
+} });
+
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VDetails.vue?type=script
+var VDetails_default = /* @__PURE__ */ defineComponent({
+  __name: "VDetails",
+  props: {
+    startOpened: { type: Boolean, required: false, default: false }
+  },
+  setup(__props, { expose: __expose }) {
+    __expose();
+    const props = __props;
+    const isOpen = ref(props.startOpened);
+    const __returned__ = { props, isOpen, get Collapse() {
+      return G;
+    } };
     Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
     return __returned__;
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VConfigureDateTokenArray.vue?type=template
-var _hoisted_110 = { class: "v-grid-display" };
-var _hoisted_28 = { key: 0 };
-function render11(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("section", _hoisted_110, [
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VDetails.vue?type=template
+var _withScopeId = (n) => (pushScopeId("data-v-b71f4981"), n = n(), popScopeId(), n);
+var _hoisted_112 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode(
+  "span",
+  { role: "icon" },
+  "\u25B8",
+  -1
+  /* HOISTED */
+));
+var _hoisted_210 = { style: { "padding-top": "8px" } };
+function render14(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock(
+    "div",
+    {
+      role: "article",
+      class: normalizeClass(["v-details", { isOpen: $setup.isOpen }])
+    },
+    [
+      createBaseVNode("div", {
+        role: "heading",
+        "aria-level": "2",
+        onClick: _cache[0] || (_cache[0] = ($event) => $setup.isOpen = !$setup.isOpen)
+      }, [
+        _hoisted_112,
+        createBaseVNode("span", null, [
+          renderSlot(_ctx.$slots, "summary", {}, void 0, true)
+        ])
+      ]),
+      createVNode($setup["Collapse"], { when: $setup.isOpen }, {
+        default: withCtx(() => [
+          createBaseVNode("div", _hoisted_210, [
+            renderSlot(_ctx.$slots, "details", {}, void 0, true)
+          ])
+        ]),
+        _: 3
+        /* FORWARDED */
+      }, 8, ["when"])
+    ],
+    2
+    /* CLASS */
+  );
+}
+
+// src/components/VDetails.vue
+VDetails_default.render = render14;
+VDetails_default.__file = "src/components/VDetails.vue";
+VDetails_default.__scopeId = "data-v-b71f4981";
+var VDetails_default2 = VDetails_default;
+
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateToken.vue?type=script
+var VConfigureSingleDateToken_default = /* @__PURE__ */ defineComponent({
+  __name: "VConfigureSingleDateToken",
+  props: {
+    modelValue: { type: null, required: true },
+    allowDelete: { type: Boolean, required: true, default: false }
+  },
+  emits: ["update:modelValue", "delete"],
+  setup(__props, { expose: __expose, emit: emit2 }) {
+    __expose();
+    const props = __props;
+    const __returned__ = { props, emit: emit2, VButton: VButton_default2, VConfigureSingleDateTokenConditionalFormatting: VConfigureSingleDateTokenConditionalFormatting_default2, VConfigureSingleDateTokenType: VConfigureSingleDateTokenType_default2, VDetails: VDetails_default2, VHeader: VHeader_default };
+    Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
+    return __returned__;
+  }
+});
+
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateToken.vue?type=template
+var _hoisted_113 = { class: "v-grid-display" };
+function render15(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", _hoisted_113, [
+    $props.allowDelete ? (openBlock(), createBlock($setup["VButton"], {
+      key: 0,
+      onClick: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("delete"))
+    }, {
+      default: withCtx(() => [
+        createTextVNode(
+          toDisplayString(_ctx.$t("common.remove")),
+          1
+          /* TEXT */
+        )
+      ]),
+      _: 1
+      /* STABLE */
+    })) : createCommentVNode("v-if", true),
+    createVNode($setup["VHeader"], null, {
+      default: withCtx(() => [
+        createTextVNode(
+          toDisplayString($props.modelValue.name),
+          1
+          /* TEXT */
+        )
+      ]),
+      _: 1
+      /* STABLE */
+    }),
+    createVNode($setup["VDetails"], null, {
+      summary: withCtx(() => [
+        createTextVNode(
+          toDisplayString(_ctx.$t("settings.label.configureSingleDateToken.type")),
+          1
+          /* TEXT */
+        )
+      ]),
+      details: withCtx(() => [
+        createVNode(
+          $setup["VConfigureSingleDateTokenType"],
+          mergeProps($setup.props, {
+            "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $setup.emit("update:modelValue", $event))
+          }),
+          null,
+          16
+          /* FULL_PROPS */
+        )
+      ]),
+      _: 1
+      /* STABLE */
+    }),
+    createVNode($setup["VDetails"], null, {
+      summary: withCtx(() => [
+        createTextVNode(
+          toDisplayString(_ctx.$t(
+            "settings.label.configureSingleDateToken.conditionalFormatting"
+          )),
+          1
+          /* TEXT */
+        )
+      ]),
+      details: withCtx(() => [
+        createVNode(
+          $setup["VConfigureSingleDateTokenConditionalFormatting"],
+          mergeProps($setup.props, {
+            "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => $setup.emit("update:modelValue", $event))
+          }),
+          null,
+          16
+          /* FULL_PROPS */
+        )
+      ]),
+      _: 1
+      /* STABLE */
+    })
+  ]);
+}
+
+// src/components/VConfigureSingleDateToken.vue
+VConfigureSingleDateToken_default.render = render15;
+VConfigureSingleDateToken_default.__file = "src/components/VConfigureSingleDateToken.vue";
+var VConfigureSingleDateToken_default2 = VConfigureSingleDateToken_default;
+
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureDateTokenArray.vue?type=script
+var VConfigureDateTokenArray_default = /* @__PURE__ */ defineComponent({
+  __name: "VConfigureDateTokenArray",
+  props: {
+    modelValue: { type: Array, required: true },
+    displayDeleteOption: { type: Boolean, required: false, default: false }
+  },
+  emits: ["update:modelValue"],
+  setup(__props, { expose: __expose, emit: emit2 }) {
+    __expose();
+    const props = __props;
+    function handleUpdateModelValueAtIndex(value, index) {
+      const clone = [...props.modelValue];
+      clone[index] = value;
+      emit2("update:modelValue", clone);
+    }
+    function handleDeleteModelValueAtIndex(index) {
+      emit2(
+        "update:modelValue",
+        props.modelValue.filter((_2, i) => index !== i)
+      );
+    }
+    const __returned__ = { props, emit: emit2, handleUpdateModelValueAtIndex, handleDeleteModelValueAtIndex, VConfigureSingleDateToken: VConfigureSingleDateToken_default2, VCard: VCard_default2 };
+    Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
+    return __returned__;
+  }
+});
+
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureDateTokenArray.vue?type=template
+var _hoisted_114 = { class: "v-grid-display" };
+function render16(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("section", _hoisted_114, [
     (openBlock(true), createElementBlock(
       Fragment,
       null,
       renderList($props.modelValue, (dateTokenConfiguration, index) => {
-        return openBlock(), createElementBlock("div", null, [
-          createVNode($setup["VConfigureSingleDateToken"], {
-            "model-value": dateTokenConfiguration,
-            "onUpdate:modelValue": ($event) => $setup.handleUpdateModelValue($event, index)
-          }, null, 8, ["model-value", "onUpdate:modelValue"]),
-          index < $props.modelValue.length - 1 ? (openBlock(), createElementBlock("hr", _hoisted_28)) : createCommentVNode("v-if", true)
-        ]);
+        return openBlock(), createBlock(
+          $setup["VCard"],
+          null,
+          {
+            default: withCtx(() => [
+              createVNode($setup["VConfigureSingleDateToken"], {
+                "model-value": dateTokenConfiguration,
+                allowDelete: $props.displayDeleteOption,
+                "onUpdate:modelValue": ($event) => $setup.handleUpdateModelValueAtIndex($event, index),
+                onDelete: ($event) => $setup.handleDeleteModelValueAtIndex(index)
+              }, null, 8, ["model-value", "allowDelete", "onUpdate:modelValue", "onDelete"])
+            ]),
+            _: 2
+            /* DYNAMIC */
+          },
+          1024
+          /* DYNAMIC_SLOTS */
+        );
       }),
       256
       /* UNKEYED_FRAGMENT */
@@ -29463,11 +30190,11 @@ function render11(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VConfigureDateTokenArray.vue
-VConfigureDateTokenArray_default.render = render11;
+VConfigureDateTokenArray_default.render = render16;
 VConfigureDateTokenArray_default.__file = "src/components/VConfigureDateTokenArray.vue";
 var VConfigureDateTokenArray_default2 = VConfigureDateTokenArray_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VWarningBlock.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VWarningBlock.vue?type=script
 var VWarningBlock_default = /* @__PURE__ */ defineComponent({
   __name: "VWarningBlock",
   setup(__props, { expose: __expose }) {
@@ -29478,10 +30205,10 @@ var VWarningBlock_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VWarningBlock.vue?type=template
-var _hoisted_111 = { class: "warning v-warning-block v-grid-display" };
-function render12(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("figure", _hoisted_111, [
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VWarningBlock.vue?type=template
+var _hoisted_115 = { class: "warning v-warning-block v-grid-display" };
+function render17(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("figure", _hoisted_115, [
     createBaseVNode("figcaption", null, [
       renderSlot(_ctx.$slots, "title")
     ]),
@@ -29492,11 +30219,11 @@ function render12(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VWarningBlock.vue
-VWarningBlock_default.render = render12;
+VWarningBlock_default.render = render17;
 VWarningBlock_default.__file = "src/components/VWarningBlock.vue";
 var VWarningBlock_default2 = VWarningBlock_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VAdvancedDateFormats.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VAdvancedDateFormats.vue?type=script
 var VAdvancedDateFormats_default = /* @__PURE__ */ defineComponent({
   __name: "VAdvancedDateFormats",
   props: {
@@ -29506,7 +30233,11 @@ var VAdvancedDateFormats_default = /* @__PURE__ */ defineComponent({
   setup(__props, { expose: __expose, emit: emit2 }) {
     __expose();
     const props = __props;
-    const targetKeys = ["dateParserRegex", "dateParserGroupPriority", "dateDisplayFormat"];
+    const targetKeys = [
+      "dateParserRegex",
+      "dateParserGroupPriority",
+      "dateDisplayFormat"
+    ];
     const unconfiguredTokens = computed2(() => {
       return props.value.dateParserGroupPriority.split(",").filter(
         (tokenName) => !props.value.dateTokenConfiguration.some(
@@ -29543,11 +30274,11 @@ var VAdvancedDateFormats_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VAdvancedDateFormats.vue?type=template
-var _hoisted_112 = { class: "v-grid-display" };
-var _hoisted_29 = { style: { "margin": "0px" } };
-function render13(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("section", _hoisted_112, [
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VAdvancedDateFormats.vue?type=template
+var _hoisted_116 = { class: "v-grid-display" };
+var _hoisted_211 = { style: { "margin": "0px" } };
+function render18(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("section", _hoisted_116, [
     createVNode($setup["VButton"], { onClick: $setup.handleResetToDefault }, {
       default: withCtx(() => [
         createTextVNode(
@@ -29602,7 +30333,7 @@ function render13(_ctx, _cache, $props, $setup, $data, $options) {
           ]),
           text: withCtx(() => [
             createBaseVNode("div", null, [
-              createBaseVNode("ul", _hoisted_29, [
+              createBaseVNode("ul", _hoisted_211, [
                 (openBlock(true), createElementBlock(
                   Fragment,
                   null,
@@ -29660,17 +30391,18 @@ function render13(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     createVNode($setup["VConfigureDateTokenArray"], {
       "model-value": $props.value.dateTokenConfiguration,
+      "display-delete-option": "",
       "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.emit("update:value", { dateTokenConfiguration: $event }))
     }, null, 8, ["model-value"])
   ]);
 }
 
 // src/components/VAdvancedDateFormats.vue
-VAdvancedDateFormats_default.render = render13;
+VAdvancedDateFormats_default.render = render18;
 VAdvancedDateFormats_default.__file = "src/components/VAdvancedDateFormats.vue";
 var VAdvancedDateFormats_default2 = VAdvancedDateFormats_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VCreateDateTokens.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateDateTokens.vue?type=script
 var VCreateDateTokens_default = /* @__PURE__ */ defineComponent({
   __name: "VCreateDateTokens",
   props: {
@@ -29708,11 +30440,11 @@ var VCreateDateTokens_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VCreateDateTokens.vue?type=template
-var _hoisted_113 = { class: "v-grid-display" };
-var _hoisted_210 = { class: "v-inline-flex-display" };
-function render14(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("div", _hoisted_113, [
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateDateTokens.vue?type=template
+var _hoisted_117 = { class: "v-grid-display" };
+var _hoisted_212 = { class: "v-inline-flex-display" };
+function render19(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", _hoisted_117, [
     createBaseVNode(
       "p",
       null,
@@ -29724,7 +30456,7 @@ function render14(_ctx, _cache, $props, $setup, $data, $options) {
       Fragment,
       null,
       renderList($props.modelValue, (token, index) => {
-        return openBlock(), createElementBlock("div", _hoisted_210, [
+        return openBlock(), createElementBlock("div", _hoisted_212, [
           createVNode($setup["VButton"], {
             onClick: ($event) => $setup.handleRemoveAtIndex(index)
           }, {
@@ -29760,11 +30492,11 @@ function render14(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VCreateDateTokens.vue
-VCreateDateTokens_default.render = render14;
+VCreateDateTokens_default.render = render19;
 VCreateDateTokens_default.__file = "src/components/VCreateDateTokens.vue";
 var VCreateDateTokens_default2 = VCreateDateTokens_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VCreateInputFormat.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateInputFormat.vue?type=script
 var VCreateInputFormat_default = /* @__PURE__ */ defineComponent({
   __name: "VCreateInputFormat",
   props: {
@@ -29798,7 +30530,7 @@ var VCreateInputFormat_default = /* @__PURE__ */ defineComponent({
           tryoutInput.value,
           generateInputRegex()
         );
-      } catch (_) {
+      } catch (_2) {
         return void 0;
       }
     });
@@ -29814,16 +30546,16 @@ var VCreateInputFormat_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VCreateInputFormat.vue?type=template
-var _hoisted_114 = { class: "v-grid-display" };
-var _hoisted_211 = /* @__PURE__ */ createBaseVNode(
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateInputFormat.vue?type=template
+var _hoisted_118 = { class: "v-grid-display" };
+var _hoisted_213 = /* @__PURE__ */ createBaseVNode(
   "hr",
   null,
   null,
   -1
   /* HOISTED */
 );
-var _hoisted_36 = { key: 0 };
+var _hoisted_37 = { key: 0 };
 var _hoisted_44 = /* @__PURE__ */ createBaseVNode(
   "span",
   null,
@@ -29835,8 +30567,8 @@ var _hoisted_53 = {
   key: 1,
   style: { "color": "var(--color-red)" }
 };
-function render15(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("section", _hoisted_114, [
+function render20(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("section", _hoisted_118, [
     createVNode($setup["VInput"], {
       value: $setup.template,
       "onUpdate:value": _cache[0] || (_cache[0] = ($event) => $setup.template = $event),
@@ -29852,7 +30584,7 @@ function render15(_ctx, _cache, $props, $setup, $data, $options) {
       _: 1
       /* STABLE */
     }, 8, ["value"]),
-    _hoisted_211,
+    _hoisted_213,
     createVNode($setup["VInput"], {
       value: $setup.tryoutInput,
       "onUpdate:value": _cache[1] || (_cache[1] = ($event) => $setup.tryoutInput = $event),
@@ -29878,7 +30610,7 @@ function render15(_ctx, _cache, $props, $setup, $data, $options) {
     }, 8, ["value"]),
     createVNode(Transition, { mode: "out-in" }, {
       default: withCtx(() => [
-        $setup.tryOutResults ? (openBlock(), createElementBlock("ul", _hoisted_36, [
+        $setup.tryOutResults ? (openBlock(), createElementBlock("ul", _hoisted_37, [
           (openBlock(true), createElementBlock(
             Fragment,
             null,
@@ -29919,11 +30651,11 @@ function render15(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VCreateInputFormat.vue
-VCreateInputFormat_default.render = render15;
+VCreateInputFormat_default.render = render20;
 VCreateInputFormat_default.__file = "src/components/VCreateInputFormat.vue";
 var VCreateInputFormat_default2 = VCreateInputFormat_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VCreateOutputFormat.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateOutputFormat.vue?type=script
 var VCreateOutputFormat_default = /* @__PURE__ */ defineComponent({
   __name: "VCreateOutputFormat",
   props: {
@@ -29957,23 +30689,23 @@ var VCreateOutputFormat_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VCreateOutputFormat.vue?type=template
-var _hoisted_115 = { class: "v-grid-display" };
-var _hoisted_212 = /* @__PURE__ */ createBaseVNode(
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateOutputFormat.vue?type=template
+var _hoisted_119 = { class: "v-grid-display" };
+var _hoisted_214 = /* @__PURE__ */ createBaseVNode(
   "hr",
   null,
   null,
   -1
   /* HOISTED */
 );
-var _hoisted_37 = { class: "v-grid-display-2" };
+var _hoisted_38 = { class: "v-grid-display-2" };
 var _hoisted_45 = {
   key: 1,
   style: { "color": "var(--color-red)" }
 };
-function render16(_ctx, _cache, $props, $setup, $data, $options) {
+function render21(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_i18n_t = resolveComponent("i18n-t");
-  return openBlock(), createElementBlock("section", _hoisted_115, [
+  return openBlock(), createElementBlock("section", _hoisted_119, [
     createVNode($setup["VInput"], {
       type: "text",
       value: $props.value,
@@ -29997,8 +30729,8 @@ function render16(_ctx, _cache, $props, $setup, $data, $options) {
       _: 1
       /* STABLE */
     }, 8, ["value"]),
-    _hoisted_212,
-    createBaseVNode("section", _hoisted_37, [
+    _hoisted_214,
+    createBaseVNode("section", _hoisted_38, [
       (openBlock(true), createElementBlock(
         Fragment,
         null,
@@ -30052,11 +30784,11 @@ function render16(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VCreateOutputFormat.vue
-VCreateOutputFormat_default.render = render16;
+VCreateOutputFormat_default.render = render21;
 VCreateOutputFormat_default.__file = "src/components/VCreateOutputFormat.vue";
 var VCreateOutputFormat_default2 = VCreateOutputFormat_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VDateFormatCreationConfirmation.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VDateFormatCreationConfirmation.vue?type=script
 var VDateFormatCreationConfirmation_default = /* @__PURE__ */ defineComponent({
   __name: "VDateFormatCreationConfirmation",
   props: {
@@ -30073,24 +30805,24 @@ var VDateFormatCreationConfirmation_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VDateFormatCreationConfirmation.vue?type=template
-var _hoisted_116 = { class: "v-grid-display" };
-var _hoisted_213 = /* @__PURE__ */ createBaseVNode(
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VDateFormatCreationConfirmation.vue?type=template
+var _hoisted_120 = { class: "v-grid-display" };
+var _hoisted_215 = /* @__PURE__ */ createBaseVNode(
   "hr",
   null,
   null,
   -1
   /* HOISTED */
 );
-var _hoisted_38 = /* @__PURE__ */ createBaseVNode(
+var _hoisted_39 = /* @__PURE__ */ createBaseVNode(
   "hr",
   null,
   null,
   -1
   /* HOISTED */
 );
-function render17(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("section", _hoisted_116, [
+function render22(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("section", _hoisted_120, [
     createBaseVNode("div", null, [
       createBaseVNode(
         "b",
@@ -30117,7 +30849,7 @@ function render17(_ctx, _cache, $props, $setup, $data, $options) {
         /* UNKEYED_FRAGMENT */
       ))
     ]),
-    _hoisted_213,
+    _hoisted_215,
     createBaseVNode("p", null, [
       createBaseVNode(
         "b",
@@ -30134,7 +30866,7 @@ function render17(_ctx, _cache, $props, $setup, $data, $options) {
       1
       /* TEXT */
     ),
-    _hoisted_38,
+    _hoisted_39,
     createBaseVNode("p", null, [
       createBaseVNode(
         "b",
@@ -30169,11 +30901,11 @@ function render17(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VDateFormatCreationConfirmation.vue
-VDateFormatCreationConfirmation_default.render = render17;
+VDateFormatCreationConfirmation_default.render = render22;
 VDateFormatCreationConfirmation_default.__file = "src/components/VDateFormatCreationConfirmation.vue";
 var VDateFormatCreationConfirmation_default2 = VDateFormatCreationConfirmation_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VCreateDateFormatFlow.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateDateFormatFlow.vue?type=script
 var FlowState = /* @__PURE__ */ ((FlowState2) => {
   FlowState2[FlowState2["not-started"] = 0] = "not-started";
   FlowState2[FlowState2["token-creation"] = 1] = "token-creation";
@@ -30243,22 +30975,22 @@ var VCreateDateFormatFlow_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/components/VCreateDateFormatFlow.vue?type=template
-var _hoisted_117 = {
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateDateFormatFlow.vue?type=template
+var _hoisted_121 = {
   key: 0,
   class: "v-grid-display"
 };
-var _hoisted_214 = {
+var _hoisted_216 = {
   key: 1,
   class: "v-grid-display"
 };
-var _hoisted_39 = { class: "v-grid-display-2" };
+var _hoisted_310 = { class: "v-grid-display-2" };
 var _hoisted_46 = { key: 2 };
-function render18(_ctx, _cache, $props, $setup, $data, $options) {
+function render23(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_i18n_t = resolveComponent("i18n-t");
   return openBlock(), createBlock(Transition, { mode: "out-in" }, {
     default: withCtx(() => [
-      $setup.flowProgress === $setup.FlowState["not-started"] ? (openBlock(), createElementBlock("section", _hoisted_117, [
+      $setup.flowProgress === $setup.FlowState["not-started"] ? (openBlock(), createElementBlock("section", _hoisted_121, [
         createVNode(
           _component_i18n_t,
           {
@@ -30302,7 +31034,7 @@ function render18(_ctx, _cache, $props, $setup, $data, $options) {
           _: 1
           /* STABLE */
         })
-      ])) : $setup.flowProgress !== $setup.FlowState["final"] ? (openBlock(), createElementBlock("section", _hoisted_214, [
+      ])) : $setup.flowProgress !== $setup.FlowState["final"] ? (openBlock(), createElementBlock("section", _hoisted_216, [
         createVNode(Transition, { mode: "out-in" }, {
           default: withCtx(() => [
             $setup.flowProgress === $setup.FlowState["token-creation"] ? (openBlock(), createBlock($setup["VCreateDateTokens"], {
@@ -30328,7 +31060,7 @@ function render18(_ctx, _cache, $props, $setup, $data, $options) {
           _: 1
           /* STABLE */
         }),
-        createBaseVNode("div", _hoisted_39, [
+        createBaseVNode("div", _hoisted_310, [
           createVNode($setup["VButton"], { onClick: $setup.handlePreviousClick }, {
             default: withCtx(() => [
               createTextVNode(
@@ -30370,11 +31102,11 @@ function render18(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VCreateDateFormatFlow.vue
-VCreateDateFormatFlow_default.render = render18;
+VCreateDateFormatFlow_default.render = render23;
 VCreateDateFormatFlow_default.__file = "src/components/VCreateDateFormatFlow.vue";
 var VCreateDateFormatFlow_default2 = VCreateDateFormatFlow_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/views/VDateFormats.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/views/VDateFormats.vue?type=script
 var VDateFormats_default = /* @__PURE__ */ defineComponent({
   __name: "VDateFormats",
   props: {
@@ -30390,10 +31122,10 @@ var VDateFormats_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/views/VDateFormats.vue?type=template
-var _hoisted_118 = { class: "v-grid-display" };
-function render19(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("article", _hoisted_118, [
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/views/VDateFormats.vue?type=template
+var _hoisted_122 = { class: "v-grid-display" };
+function render24(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("article", _hoisted_122, [
     createVNode($setup["VHeader"], null, {
       default: withCtx(() => [
         createTextVNode(
@@ -30447,11 +31179,11 @@ function render19(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/views/VDateFormats.vue
-VDateFormats_default.render = render19;
+VDateFormats_default.render = render24;
 VDateFormats_default.__file = "src/views/VDateFormats.vue";
 var VDateFormats_default2 = VDateFormats_default;
 
-// sfc-script:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/views/App.vue?type=script
+// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/views/App.vue?type=script
 var App_default = /* @__PURE__ */ defineComponent({
   __name: "App",
   props: {
@@ -30476,8 +31208,8 @@ var App_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/XethgnurVaultShare/F&F - TriviumOfTime/.obsidian/plugins/aprils-automatic-timelines/src/views/App.vue?type=template
-function render20(_ctx, _cache, $props, $setup, $data, $options) {
+// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/views/App.vue?type=template
+function render25(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("div", null, [
     createVNode($setup["VNav"], {
       value: $setup.currentRoute,
@@ -30497,7 +31229,7 @@ function render20(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/views/App.vue
-App_default.render = render20;
+App_default.render = render25;
 App_default.__file = "src/views/App.vue";
 var App_default2 = App_default;
 
@@ -30516,6 +31248,7 @@ var SETTINGS_DEFAULT = {
   dateDisplayFormat: "{day}/{month}/{year}",
   lookForTagsForTimeline: false,
   lookForInlineEventsInNotes: true,
+  applyAdditonalConditionFormatting: true,
   dateTokenConfiguration: [
     createNumberDateTokenConfiguration({ name: "year", minLeght: 4 }),
     createNumberDateTokenConfiguration({ name: "month" }),
@@ -30579,7 +31312,10 @@ function parseMarkdownBlockSource(source) {
     }, {})
   };
 }
-var acceptedSettingsOverride = ["dateDisplayFormat"];
+var acceptedSettingsOverride = [
+  "dateDisplayFormat",
+  "applyAdditonalConditionFormatting"
+];
 function isOverridableSettingsKey(value) {
   return acceptedSettingsOverride.includes(value);
 }
@@ -30588,6 +31324,12 @@ function formatValueFromKey(key, value) {
     return void 0;
   if (isDefinedAsString(SETTINGS_DEFAULT[key]))
     return value;
+  if (isDefinedAsBoolean(SETTINGS_DEFAULT[key])) {
+    const validBooleanStrings = ["true", "false"];
+    if (!validBooleanStrings.includes(value.toLocaleLowerCase()))
+      throw new Error(`${value} is supposed to be a boolean`);
+    return value.toLocaleLowerCase() === "true" ? true : false;
+  }
   return void 0;
 }
 function parseSingleLine(line) {
@@ -30634,8 +31376,7 @@ var AprilsAutomaticTimelinesPlugin = class extends import_obsidian4.Plugin {
   async run(source, element, { sourcePath }) {
     const runtimeTime = measureTime("Run time");
     const { app } = this;
-    const parserResults = parseMarkdownBlockSource(source);
-    const { tagsToFind, settingsOverride } = parserResults;
+    const { tagsToFind, settingsOverride } = parseMarkdownBlockSource(source);
     const finalSettings = { ...this.settings, ...settingsOverride };
     const creationContext = setupTimelineCreation(
       app,
@@ -30658,8 +31399,8 @@ var AprilsAutomaticTimelinesPlugin = class extends import_obsidian4.Plugin {
       events.push(...inlineEvents);
     }
     events.sort(
-      ({ cardData: { startDate: a, endDate: aE } }, { cardData: { startDate: b, endDate: bE } }) => {
-        const score = compareAbstractDates(a, b);
+      ({ cardData: { startDate: a, endDate: aE } }, { cardData: { startDate: b2, endDate: bE } }) => {
+        const score = compareAbstractDates(a, b2);
         if (score)
           return score;
         return compareAbstractDates(aE, bE);
@@ -30688,6 +31429,9 @@ var AprilsAutomaticTimelinesPlugin = class extends import_obsidian4.Plugin {
       SETTINGS_DEFAULT,
       await this.loadData()
     );
+    for (let index = 0; index < this.settings.dateTokenConfiguration.length; index++) {
+      this.settings.dateTokenConfiguration[index].formatting = this.settings.dateTokenConfiguration[index].formatting || [];
+    }
     this.addSettingTab(new TimelineSettingTab(this.app, this));
   }
   /**

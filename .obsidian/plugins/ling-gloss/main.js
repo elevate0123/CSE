@@ -37,17 +37,19 @@ var CommandType = /* @__PURE__ */ ((CommandType2) => {
   CommandType2[CommandType2["glb"] = 3] = "glb";
   CommandType2[CommandType2["glc"] = 4] = "glc";
   CommandType2[CommandType2["gl"] = 5] = "gl";
-  CommandType2[CommandType2["set"] = 6] = "set";
+  CommandType2[CommandType2["num"] = 6] = "num";
+  CommandType2[CommandType2["set"] = 7] = "set";
   return CommandType2;
 })(CommandType || {});
 var SetOptionType = /* @__PURE__ */ ((SetOptionType2) => {
-  SetOptionType2[SetOptionType2["exstyle"] = 0] = "exstyle";
-  SetOptionType2[SetOptionType2["ftstyle"] = 1] = "ftstyle";
-  SetOptionType2[SetOptionType2["glastyle"] = 2] = "glastyle";
-  SetOptionType2[SetOptionType2["glbstyle"] = 3] = "glbstyle";
-  SetOptionType2[SetOptionType2["glcstyle"] = 4] = "glcstyle";
-  SetOptionType2[SetOptionType2["glxstyle"] = 5] = "glxstyle";
-  SetOptionType2[SetOptionType2["glaspaces"] = 6] = "glaspaces";
+  SetOptionType2[SetOptionType2["style"] = 0] = "style";
+  SetOptionType2[SetOptionType2["exstyle"] = 1] = "exstyle";
+  SetOptionType2[SetOptionType2["ftstyle"] = 2] = "ftstyle";
+  SetOptionType2[SetOptionType2["glastyle"] = 3] = "glastyle";
+  SetOptionType2[SetOptionType2["glbstyle"] = 4] = "glbstyle";
+  SetOptionType2[SetOptionType2["glcstyle"] = 5] = "glcstyle";
+  SetOptionType2[SetOptionType2["glxstyle"] = 6] = "glxstyle";
+  SetOptionType2[SetOptionType2["glaspaces"] = 7] = "glaspaces";
   return SetOptionType2;
 })(SetOptionType || {});
 
@@ -59,10 +61,10 @@ var initGlossElement = () => ({
   nlevels: []
 });
 var initGlossLineStyle = () => ({
-  classes: [],
-  altSpaces: false
+  classes: []
 });
 var initGlossData = () => ({
+  label: "",
   preamble: "",
   elements: [],
   translation: "",
@@ -252,7 +254,8 @@ var getSetOption = (tokens) => {
 // src/gloss-parser.ts
 var GlossStrings = {
   [0 /* ex */]: "preamble",
-  [1 /* ft */]: "translation"
+  [1 /* ft */]: "translation",
+  [6 /* num */]: "label"
 };
 var GlossLevels = {
   [2 /* gla */]: "levelA",
@@ -260,13 +263,14 @@ var GlossLevels = {
   [4 /* glc */]: "levelC"
 };
 var GlossLineStyles = {
-  [0 /* exstyle */]: "preamble",
-  [1 /* ftstyle */]: "translation",
-  [2 /* glastyle */]: "levelA",
-  [3 /* glbstyle */]: "levelB",
-  [4 /* glcstyle */]: "levelC",
-  [5 /* glxstyle */]: "nlevels",
-  [6 /* glaspaces */]: "levelA"
+  [0 /* style */]: "global",
+  [1 /* exstyle */]: "preamble",
+  [2 /* ftstyle */]: "translation",
+  [3 /* glastyle */]: "levelA",
+  [4 /* glbstyle */]: "levelB",
+  [5 /* glcstyle */]: "levelC",
+  [6 /* glxstyle */]: "nlevels",
+  [7 /* glaspaces */]: "levelA"
 };
 var GlossParser = class {
   constructor(options) {
@@ -298,6 +302,7 @@ var GlossParser = class {
     switch (type) {
       case 0 /* ex */:
       case 1 /* ft */:
+      case 6 /* num */:
         this.parseStringField(params, GlossStrings[type]);
         break;
       case 2 /* gla */:
@@ -312,7 +317,7 @@ var GlossParser = class {
           throw `command \u201C${text}\u201D can't be used in regular mode`;
         this.parseCombinedElements(params);
         break;
-      case 6 /* set */:
+      case 7 /* set */:
         this.parseOptionsList(params);
         break;
       default:
@@ -321,15 +326,16 @@ var GlossParser = class {
   }
   parseSetOption({ text, type, values }) {
     switch (type) {
-      case 0 /* exstyle */:
-      case 1 /* ftstyle */:
-      case 2 /* glastyle */:
-      case 3 /* glbstyle */:
-      case 4 /* glcstyle */:
-      case 5 /* glxstyle */:
-        this.parseLineStyleClassesField(values, GlossLineStyles[type]);
+      case 0 /* style */:
+      case 1 /* exstyle */:
+      case 2 /* ftstyle */:
+      case 3 /* glastyle */:
+      case 4 /* glbstyle */:
+      case 5 /* glcstyle */:
+      case 6 /* glxstyle */:
+        this.setLineStyleClasses(values, GlossLineStyles[type]);
         break;
-      case 6 /* glaspaces */:
+      case 7 /* glaspaces */:
         this.setLineStyleValue(true, GlossLineStyles[type], "altSpaces");
         break;
       default:
@@ -365,7 +371,7 @@ var GlossParser = class {
       throw `don't know how to parse ${makeTokenError(errTokens)}`;
     options.forEach((opt) => this.parseSetOption(opt));
   }
-  parseLineStyleClassesField(values, section) {
+  setLineStyleClasses(values, section) {
     if (values.length < 1)
       throw `no values provided for \u201C${section}\u201D`;
     const invalid = values.find((x) => !/^[a-z0-9-]+$/i.test(x));
@@ -381,13 +387,14 @@ var GlossParser = class {
 };
 
 // src/gloss-printer.ts
+var withNbsp = (text) => text.replace(/\s+/g, "\xA0");
 var textOrNbsp = (text, style) => {
   if (text.length < 1)
     return "\xA0";
   if (style == null ? void 0 : style.altSpaces) {
     text = text.replace(/[_]+/g, "\xA0");
   }
-  return text.replace(/\s+/g, "\xA0");
+  return withNbsp(text);
 };
 var styleClasses = (style) => {
   var _a;
@@ -396,13 +403,17 @@ var styleClasses = (style) => {
 var glossPrinter = (gloss, dest) => {
   var _a, _b, _c;
   const container = dest.createDiv({ cls: "ling-gloss" });
+  const label = container.createDiv({ cls: "ling-gloss-label" });
+  label.innerText = withNbsp(gloss.label);
+  const body = container.createDiv({ cls: "ling-gloss-body" });
+  body.addClasses(styleClasses(gloss.options.global));
   if (((_a = gloss.preamble) == null ? void 0 : _a.length) > 0) {
-    const preamble = container.createDiv({ cls: "ling-gloss-preamble" });
+    const preamble = body.createDiv({ cls: "ling-gloss-preamble" });
     preamble.innerText = gloss.preamble;
     preamble.addClasses(styleClasses(gloss.options.preamble));
   }
   if (gloss.elements.length > 0) {
-    const elements = container.createDiv({ cls: "ling-gloss-elements" });
+    const elements = body.createDiv({ cls: "ling-gloss-elements" });
     const hasLevelB = gloss.elements.some((el) => {
       var _a2;
       return ((_a2 = el.levelB) == null ? void 0 : _a2.length) > 0;
@@ -435,11 +446,11 @@ var glossPrinter = (gloss, dest) => {
     }
   }
   if (((_c = gloss.translation) == null ? void 0 : _c.length) > 0) {
-    const translation = container.createDiv({ cls: "ling-gloss-translation" });
+    const translation = body.createDiv({ cls: "ling-gloss-translation" });
     translation.innerText = gloss.translation;
     translation.addClasses(styleClasses(gloss.options.translation));
   }
-  if (!container.hasChildNodes()) {
+  if (!body.hasChildNodes()) {
     errorPrinter(["the gloss is empty, there's nothing to display"], dest);
   }
 };
