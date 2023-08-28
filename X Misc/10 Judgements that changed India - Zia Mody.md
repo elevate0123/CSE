@@ -15,7 +15,7 @@ I understand enough of this.
 ! [Photo001](C:\Users\muham\Downloads\Telegram Desktop|5489)
 
 [[Internal link]]
-/commi
+
 ## Heading 2
 #Zia #Judgements
 

@@ -7,7 +7,7 @@
   "imagesIndexing": false,
   "unsupportedFilesIndexing": "no",
   "splitCamelCase": false,
-  "openInNewPane": false,
+  "openInNewPane": true,
   "ribbonIcon": true,
   "showExcerpt": true,
   "renderLineReturnInExcerpts": true,

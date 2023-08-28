@@ -4,20 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "4732eb22b2bf8ddc",
+        "id": "10c9e479efdf3741",
         "type": "tabs",
         "children": [
           {
-            "id": "1b778fee830d6c67",
+            "id": "5771c5f11a525abb",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "X Misc/10 Judgements that changed India - Zia Mody.md",
-                "mode": "source",
-                "backlinks": true,
-                "source": false
-              }
+              "type": "home-tab-view",
+              "state": {}
             }
           }
         ]
@@ -86,7 +81,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "X Misc/10 Judgements that changed India - Zia Mody.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +108,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "X Misc/10 Judgements that changed India - Zia Mody.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -125,9 +118,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "X Misc/10 Judgements that changed India - Zia Mody.md"
-              }
+              "state": {}
             }
           },
           {
@@ -171,7 +162,7 @@
             }
           }
         ],
-        "currentTab": 7
+        "currentTab": 1
       },
       {
         "id": "20736ddf48fd8777",
@@ -205,19 +196,22 @@
       "workspaces:Manage workspace layouts": false,
       "omnisearch:Omnisearch": false,
       "obsidian-advanced-slides:Show Slide Preview": false,
-      "map-of-content:Update Map of Content": false,
-      "breadcrumbs:Breadcrumbs Visualisation": false,
       "obsidian-excalidraw-plugin:Create new drawing": false,
-      "homepage:Open homepage": false
+      "homepage:Open homepage": false,
+      "map-of-content:Update Map of Content": false,
+      "breadcrumbs:Breadcrumbs Visualisation": false
     }
   },
-  "active": "8ac7585ea10a8106",
+  "active": "5771c5f11a525abb",
   "lastOpenFiles": [
+    "28 SITrust/2 Pager Intro.md",
+    "28 SITrust/Asma al-Husna Preface.md",
+    "28 SITrust/SITrust Introduction.md",
+    "Home.md",
     "X Misc/PDF Exporting.md",
     "06 Sociology/Paper 1/01 Sociology - The Discipline.md",
     "06 Sociology/Paper 1/02 Sociology as Science +.md",
     "28 SITrust/Elocution Competition.md",
-    "Home.md",
     "28 SITrust/40 Hadith of Shah Waliullah Dehlawi.md",
     "28 SITrust/UCC and India Urdu.md",
     "28 SITrust/UCC and India.md",
@@ -247,9 +241,6 @@
     "textgenerator/prompts/default/rewrite.md",
     "textgenerator/prompts/default/summarize.md",
     "textgenerator/prompts/default/simplify.md",
-    "textgenerator/prompts/default/getTitles.md",
-    "textgenerator/prompts/default/getTags.md",
-    "textgenerator/prompts/default/getParagraph.md",
     "01 GS 1/GS 1 Syllabus.canvas"
   ]
 }
