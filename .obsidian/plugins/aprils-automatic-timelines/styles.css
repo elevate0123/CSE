@@ -1,4 +1,14 @@
 /* main.css */
+.v-details > div[role=heading][data-v-b71f4981] {
+  display: flex;
+  gap: 8px;
+}
+span[role=icon][data-v-b71f4981] {
+  transition: transform 150ms ease-in-out;
+}
+.isOpen span[role=icon][data-v-b71f4981] {
+  transform: rotate(90deg);
+}
 .v-card[data-v-7469b424] {
   transition: box-shadow 150ms ease-in-out;
   box-shadow: var(--input-shadow);
@@ -17,16 +27,6 @@ ul[data-v-06def973] {
   padding-inline-start: 0px;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
-}
-.v-details > div[role=heading][data-v-b71f4981] {
-  display: flex;
-  gap: 4px;
-}
-span[role=icon][data-v-b71f4981] {
-  transition: transform 150ms ease-in-out;
-}
-.isOpen span[role=icon][data-v-b71f4981] {
-  transform: rotate(90deg);
 }
 
 /* src/main.css */

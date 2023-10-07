@@ -378,7 +378,7 @@ var require_lodash = __commonJS({
       if (result !== void 0) {
         return result;
       }
-      if (!isObject3(value)) {
+      if (!isObject4(value)) {
         return value;
       }
       var isArr = isArray3(value);
@@ -426,7 +426,7 @@ var require_lodash = __commonJS({
       return result;
     }
     function baseCreate(proto) {
-      return isObject3(proto) ? objectCreate(proto) : {};
+      return isObject4(proto) ? objectCreate(proto) : {};
     }
     function baseGetAllKeys(object, keysFunc, symbolsFunc) {
       var result = keysFunc(object);
@@ -436,7 +436,7 @@ var require_lodash = __commonJS({
       return objectToString3.call(value);
     }
     function baseIsNative(value) {
-      if (!isObject3(value) || isMasked(value)) {
+      if (!isObject4(value) || isMasked(value)) {
         return false;
       }
       var pattern = isFunction3(value) || isHostObject(value) ? reIsNative : reIsHostCtor;
@@ -635,13 +635,13 @@ var require_lodash = __commonJS({
     }
     var isBuffer = nativeIsBuffer || stubFalse;
     function isFunction3(value) {
-      var tag = isObject3(value) ? objectToString3.call(value) : "";
+      var tag = isObject4(value) ? objectToString3.call(value) : "";
       return tag == funcTag || tag == genTag;
     }
     function isLength(value) {
       return typeof value == "number" && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
     }
-    function isObject3(value) {
+    function isObject4(value) {
       var type = typeof value;
       return !!value && (type == "object" || type == "function");
     }
@@ -694,6 +694,7 @@ function getMetadataKey(cachedMetadata, key, type) {
   return typeof cachedMetadata.frontmatter[key] === type ? cachedMetadata.frontmatter[key] : void 0;
 }
 var isDefined = (argument) => argument !== void 0;
+var isDefinedAsNonNaNNumber = (argument) => typeof argument === "number" && !isNaN(argument);
 var isDefinedAsString = (argument) => typeof argument === "string";
 var isDefinedAsBoolean = (argument) => typeof argument === "boolean";
 function findLastIndex(arr, predicate) {
@@ -707,7 +708,7 @@ function findLastIndex(arr, predicate) {
   return -1;
 }
 var lerp = (a, b2, t) => a + t * (b2 - a);
-var inLerp = (a, b2, v) => (v - a) / (b2 - a);
+var inLerp = (a, b2, v2) => (v2 - a) / (b2 - a);
 var measureTime = (str) => {
   const value = `[April's automatic timelines] - ${str}`;
   console.time(value);
@@ -1257,7 +1258,7 @@ function applyReviver(reviver, obj, key, val) {
 // node_modules/yaml/browser/dist/nodes/toJS.js
 function toJS(value, arg, ctx) {
   if (Array.isArray(value))
-    return value.map((v, i) => toJS(v, String(i), ctx));
+    return value.map((v2, i) => toJS(v2, String(i), ctx));
   if (value && typeof value.toJSON === "function") {
     if (!ctx || !hasAnchor(value))
       return value.toJSON(arg, ctx);
@@ -1494,18 +1495,18 @@ function createNode(value, tagName, ctx) {
 
 // node_modules/yaml/browser/dist/nodes/Collection.js
 function collectionFromPath(schema4, path, value) {
-  let v = value;
+  let v2 = value;
   for (let i = path.length - 1; i >= 0; --i) {
     const k = path[i];
     if (typeof k === "number" && Number.isInteger(k) && k >= 0) {
       const a = [];
-      a[k] = v;
-      v = a;
+      a[k] = v2;
+      v2 = a;
     } else {
-      v = /* @__PURE__ */ new Map([[k, v]]);
+      v2 = /* @__PURE__ */ new Map([[k, v2]]);
     }
   }
-  return createNode(v, void 0, {
+  return createNode(v2, void 0, {
     aliasDuplicateObjects: false,
     keepUndefined: false,
     onAnchor: () => {
@@ -1957,7 +1958,7 @@ ${indent}${body}`;
 function plainString(item, ctx, onComment, onChompKeep) {
   const { type, value } = item;
   const { actualString, implicitKey, indent, indentStep, inFlow } = ctx;
-  if (implicitKey && /[\n[\]{},]/.test(value) || inFlow && /[[\]{},]/.test(value)) {
+  if (implicitKey && value.includes("\n") || inFlow && /[[\]{},]/.test(value)) {
     return quotedString(value, ctx);
   }
   if (!value || /^[\n\t ,[\]{}#&*!|>'"%@`]|^[?-]$|^[?-][ \t]|[\n:][ \t]|[ \t]\n|[\n\t ]#|[\n\t :]$/.test(value)) {
@@ -2331,7 +2332,7 @@ function stringifyKey(key, jsKey, ctx) {
     return "";
   if (typeof jsKey !== "object")
     return String(jsKey);
-  if (isNode(key) && ctx && ctx.doc) {
+  if (isNode(key) && (ctx == null ? void 0 : ctx.doc)) {
     const strCtx = createStringifyContext(ctx.doc, {});
     strCtx.anchors = /* @__PURE__ */ new Set();
     for (const node of ctx.anchors.keys())
@@ -2354,8 +2355,8 @@ function stringifyKey(key, jsKey, ctx) {
 // node_modules/yaml/browser/dist/nodes/Pair.js
 function createPair(key, value, ctx) {
   const k = createNode(key, void 0, ctx);
-  const v = createNode(value, void 0, ctx);
-  return new Pair(k, v);
+  const v2 = createNode(value, void 0, ctx);
+  return new Pair(k, v2);
 }
 var Pair = class _Pair {
   constructor(key, value = null) {
@@ -2471,7 +2472,7 @@ function stringifyFlowCollection({ comment, items }, ctx, { flowChars, itemInden
           comment2 = iv.comment;
         if (iv.commentBefore)
           reqNewline = true;
-      } else if (item.value == null && ik && ik.comment) {
+      } else if (item.value == null && (ik == null ? void 0 : ik.comment)) {
         comment2 = ik.comment;
       }
     }
@@ -2829,14 +2830,14 @@ var boolTag = {
 };
 
 // node_modules/yaml/browser/dist/stringify/stringifyNumber.js
-function stringifyNumber({ format: format2, minFractionDigits, tag, value }) {
+function stringifyNumber({ format: format4, minFractionDigits, tag, value }) {
   if (typeof value === "bigint")
     return String(value);
   const num = typeof value === "number" ? value : Number(value);
   if (!isFinite(num))
     return isNaN(num) ? ".nan" : num < 0 ? "-.inf" : ".inf";
   let n = JSON.stringify(value);
-  if (!format2 && minFractionDigits && (!tag || tag === "tag:yaml.org,2002:float") && /^\d/.test(n)) {
+  if (!format4 && minFractionDigits && (!tag || tag === "tag:yaml.org,2002:float") && /^\d/.test(n)) {
     let i = n.indexOf(".");
     if (i < 0) {
       i = n.length;
@@ -3098,8 +3099,9 @@ function createPairs(schema4, iterable, ctx) {
         if (keys.length === 1) {
           key = keys[0];
           value = it[key];
-        } else
-          throw new TypeError(`Expected { key: value } tuple: ${it}`);
+        } else {
+          throw new TypeError(`Expected tuple with one key, not ${keys.length} keys`);
+        }
       } else {
         key = it;
       }
@@ -3740,7 +3742,7 @@ var Document = class _Document {
       value = replacer2.call({ "": value }, "", value);
       _replacer = replacer2;
     } else if (Array.isArray(replacer2)) {
-      const keyToStr = (v) => typeof v === "number" || v instanceof String || v instanceof Number;
+      const keyToStr = (v2) => typeof v2 === "number" || v2 instanceof String || v2 instanceof Number;
       const asStr = replacer2.filter(keyToStr).map(String);
       if (asStr.length > 0)
         replacer2 = replacer2.concat(asStr);
@@ -3776,8 +3778,8 @@ var Document = class _Document {
    */
   createPair(key, value, options = {}) {
     const k = this.createNode(key, null, options);
-    const v = this.createNode(value, null, options);
-    return new Pair(k, v);
+    const v2 = this.createNode(value, null, options);
+    return new Pair(k, v2);
   }
   /**
    * Removes a value from the document.
@@ -7171,7 +7173,7 @@ function applyConditionBasedFormatting(formatedDate, date, { formatting }, apply
   if (!applyAdditonalConditionFormatting)
     return formatedDate;
   return formatting.reduce(
-    (output, { format: format2, conditionsAreExclusive, evaluations }) => {
+    (output, { format: format4, conditionsAreExclusive, evaluations }) => {
       const evaluationRestult = (conditionsAreExclusive ? evaluations.some : evaluations.every).bind(evaluations)(
         ({
           condition,
@@ -7179,7 +7181,7 @@ function applyConditionBasedFormatting(formatedDate, date, { formatting }, apply
         }) => evalNumericalCondition(condition, date, value)
       );
       if (evaluationRestult)
-        return format2.replace("{value}", output);
+        return format4.replace("{value}", output);
       return output;
     },
     formatedDate
@@ -7188,7 +7190,7 @@ function applyConditionBasedFormatting(formatedDate, date, { formatting }, apply
 function formatNumberDateToken(datePart, { minLeght, hideSign }) {
   let stringifiedToken = Math.abs(datePart).toString();
   if (minLeght < 0)
-    return stringifiedToken;
+    minLeght = 0;
   while (stringifiedToken.length < minLeght)
     stringifiedToken = "0" + stringifiedToken;
   if (!hideSign && datePart < 0)
@@ -7228,13 +7230,22 @@ function createCardFromBuiltContext({
     "header",
     "aat-card-head-wrap"
   );
-  createElementShort(titleWrap, "h2", "aat-card-title", title);
-  createElementShort(
+  const titleElement = createElementShort(
+    titleWrap,
+    "h2",
+    "aat-card-title",
+    title
+  );
+  if (settings.titleFontSize >= 0)
+    titleElement.style.fontSize = `${settings.titleFontSize}px`;
+  const dateElement = createElementShort(
     titleWrap,
     "h4",
     "aat-card-start-date",
     getDateText(cardContent, settings).trim()
   );
+  if (settings.dateFontSize >= 0)
+    dateElement.style.fontSize = `${settings.dateFontSize}px`;
   const markdownTextWrapper = createElementShort(
     cardTextWraper,
     "div",
@@ -7248,11 +7259,13 @@ function createCardFromBuiltContext({
     file.path,
     rendered
   );
+  if (settings.bodyFontSize > 0)
+    markdownTextWrapper.style.fontSize = `${settings.bodyFontSize}px`;
 }
 function formatBodyForCard(body) {
   if (!body)
     return "No body for this note :(";
-  return body.replace(/!\[.*\]\(.*\)/gi, "").replace(/#[a-zA-Z\d-_]*/gi, "").replace(/!\[\[.*\]\]/gi, "").replace(/```aat-vertical\n.*\n```/gi, "").trim();
+  return body.replace(/!\[.*\]\(.*\)/gi, "").replace(/#[a-zA-Z\d-_]*/gi, "").replace(/!\[\[.*\]\]/gi, "").replace(/```aat-vertical\n(.|\n)*\n```/gi, "").trim();
 }
 function getDateText({ startDate, endDate }, settings) {
   if (!isDefined(startDate))
@@ -8483,7 +8496,7 @@ var shallowReadonlyHandlers = /* @__PURE__ */ extend(
   }
 );
 var toShallow = (value) => value;
-var getProto = (v) => Reflect.getPrototypeOf(v);
+var getProto = (v2) => Reflect.getPrototypeOf(v2);
 function get(target, key, isReadonly2 = false, isShallow3 = false) {
   target = target["__v_raw"];
   const rawTarget = toRaw(target);
@@ -8908,8 +8921,8 @@ function triggerRefValue(ref2, newVal) {
     }
   }
 }
-function isRef(r2) {
-  return !!(r2 && r2.__v_isRef === true);
+function isRef(r) {
+  return !!(r && r.__v_isRef === true);
 }
 function ref(value) {
   return createRef(value, false);
@@ -9892,7 +9905,7 @@ function renderComponentRoot(instance) {
     slots,
     attrs,
     emit: emit2,
-    render: render26,
+    render: render27,
     renderCache,
     data,
     setupState,
@@ -9909,7 +9922,7 @@ function renderComponentRoot(instance) {
     if (vnode.shapeFlag & 4) {
       const proxyToUse = withProxy || proxy;
       result = normalizeVNode(
-        render26.call(
+        render27.call(
           proxyToUse,
           proxyToUse,
           renderCache,
@@ -9921,12 +9934,12 @@ function renderComponentRoot(instance) {
       );
       fallthroughAttrs = attrs;
     } else {
-      const render27 = Component;
+      const render28 = Component;
       if (attrs === props) {
         markAttrsAccessed();
       }
       result = normalizeVNode(
-        render27.length > 1 ? render27(
+        render28.length > 1 ? render28(
           props,
           true ? {
             get attrs() {
@@ -9936,7 +9949,7 @@ function renderComponentRoot(instance) {
             slots,
             emit: emit2
           } : { attrs, slots, emit: emit2 }
-        ) : render27(
+        ) : render28(
           props,
           null
           /* we know it doesn't need it */
@@ -10842,7 +10855,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
     if (cb) {
       const newValue = effect2.run();
       if (deep || forceTrigger || (isMultiSource ? newValue.some(
-        (v, i) => hasChanged(v, oldValue[i])
+        (v2, i) => hasChanged(v2, oldValue[i])
       ) : hasChanged(newValue, oldValue)) || false) {
         if (cleanup) {
           cleanup();
@@ -10946,8 +10959,8 @@ function traverse(value, seen2) {
       traverse(value[i], seen2);
     }
   } else if (isSet(value) || isMap2(value)) {
-    value.forEach((v) => {
-      traverse(v, seen2);
+    value.forEach((v2) => {
+      traverse(v2, seen2);
     });
   } else if (isPlainObject(value)) {
     for (const key in value) {
@@ -12253,7 +12266,7 @@ function useModel(props, name, options) {
     const proxy = ref(props[name]);
     watch(
       () => props[name],
-      (v) => proxy.value = v
+      (v2) => proxy.value = v2
     );
     watch(proxy, (value) => {
       if (value !== props[name]) {
@@ -12384,7 +12397,7 @@ function applyOptions(instance) {
     beforeUnmount,
     destroyed,
     unmounted,
-    render: render26,
+    render: render27,
     renderTracked,
     renderTriggered,
     errorCaptured,
@@ -12485,7 +12498,7 @@ function applyOptions(instance) {
         enumerable: true,
         configurable: true,
         get: () => c.value,
-        set: (v) => c.value = v
+        set: (v2) => c.value = v2
       });
       if (true) {
         checkDuplicateProperties("Computed", key);
@@ -12538,8 +12551,8 @@ function applyOptions(instance) {
       instance.exposed = {};
     }
   }
-  if (render26 && instance.render === NOOP) {
-    instance.render = render26;
+  if (render27 && instance.render === NOOP) {
+    instance.render = render27;
   }
   if (inheritAttrs != null) {
     instance.inheritAttrs = inheritAttrs;
@@ -12575,7 +12588,7 @@ function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP) 
         enumerable: true,
         configurable: true,
         get: () => injected.value,
-        set: (v) => injected.value = v
+        set: (v2) => injected.value = v2
       });
     } else {
       ctx[key] = injected;
@@ -12605,7 +12618,7 @@ function createWatcher(raw, ctx, publicThis, key) {
     watch(getter, raw.bind(publicThis));
   } else if (isObject(raw)) {
     if (isArray(raw)) {
-      raw.forEach((r2) => createWatcher(r2, ctx, publicThis, key));
+      raw.forEach((r) => createWatcher(r, ctx, publicThis, key));
     } else {
       const handler = isFunction(raw.handler) ? raw.handler.bind(publicThis) : ctx[raw.handler];
       if (isFunction(handler)) {
@@ -12781,7 +12794,7 @@ function createAppContext() {
   };
 }
 var uid$1 = 0;
-function createAppAPI(render26, hydrate2) {
+function createAppAPI(render27, hydrate2) {
   return function createApp2(rootComponent, rootProps = null) {
     if (!isFunction(rootComponent)) {
       rootComponent = extend({}, rootComponent);
@@ -12816,7 +12829,7 @@ function createAppAPI(render26, hydrate2) {
       get config() {
         return context.config;
       },
-      set config(v) {
+      set config(v2) {
         if (true) {
           warn3(
             `app.config cannot be replaced. Modify individual options instead.`
@@ -12894,13 +12907,13 @@ function createAppAPI(render26, hydrate2) {
           vnode.appContext = context;
           if (true) {
             context.reload = () => {
-              render26(cloneVNode(vnode), rootContainer, isSVG);
+              render27(cloneVNode(vnode), rootContainer, isSVG);
             };
           }
           if (isHydrate && hydrate2) {
             hydrate2(vnode, rootContainer);
           } else {
-            render26(vnode, rootContainer, isSVG);
+            render27(vnode, rootContainer, isSVG);
           }
           isMounted = true;
           app._container = rootContainer;
@@ -12919,7 +12932,7 @@ If you want to remount the same app, move your app creation logic into a factory
       },
       unmount() {
         if (isMounted) {
-          render26(null, app._container);
+          render27(null, app._container);
           if (true) {
             app._instance = null;
             devtoolsUnmountApp(app);
@@ -13491,8 +13504,8 @@ var updateSlots = (instance, children, optimized) => {
 function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
   if (isArray(rawRef)) {
     rawRef.forEach(
-      (r2, i) => setRef(
-        r2,
+      (r, i) => setRef(
+        r,
         oldRawRef && (isArray(oldRawRef) ? oldRawRef[i] : oldRawRef),
         parentSuspense,
         vnode,
@@ -13830,14 +13843,14 @@ function createHydrationFunctions(rendererInternals) {
           slotScopeIds,
           optimized
         );
-        let hasWarned2 = false;
+        let hasWarned3 = false;
         while (next) {
           hasMismatch = true;
-          if (!hasWarned2) {
+          if (!hasWarned3) {
             warn3(
               `Hydration children mismatch in <${vnode.type}>: server rendered element contains more child nodes than client vdom.`
             );
-            hasWarned2 = true;
+            hasWarned3 = true;
           }
           const cur = next;
           next = next.nextSibling;
@@ -13861,7 +13874,7 @@ function createHydrationFunctions(rendererInternals) {
     optimized = optimized || !!parentVNode.dynamicChildren;
     const children = parentVNode.children;
     const l = children.length;
-    let hasWarned2 = false;
+    let hasWarned3 = false;
     for (let i = 0; i < l; i++) {
       const vnode = optimized ? children[i] : children[i] = normalizeVNode(children[i]);
       if (node) {
@@ -13877,11 +13890,11 @@ function createHydrationFunctions(rendererInternals) {
         continue;
       } else {
         hasMismatch = true;
-        if (!hasWarned2) {
+        if (!hasWarned3) {
           warn3(
             `Hydration children mismatch in <${container.tagName.toLowerCase()}>: server rendered element contains fewer child nodes than client vdom.`
           );
-          hasWarned2 = true;
+          hasWarned3 = true;
         }
         patch(
           null,
@@ -15409,7 +15422,7 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     return hostNextSibling(vnode.anchor || vnode.el);
   };
-  const render26 = (vnode, container, isSVG) => {
+  const render27 = (vnode, container, isSVG) => {
     if (vnode == null) {
       if (container._vnode) {
         unmount(container._vnode, null, null, true);
@@ -15441,9 +15454,9 @@ function baseCreateRenderer(options, createHydrationFns) {
     );
   }
   return {
-    render: render26,
+    render: render27,
     hydrate: hydrate2,
-    createApp: createAppAPI(render26, hydrate2)
+    createApp: createAppAPI(render27, hydrate2)
   };
 }
 function toggleRecurse({ effect: effect2, update }, allowed) {
@@ -15476,7 +15489,7 @@ function traverseStaticChildren(n1, n2, shallow = false) {
 function getSequence(arr) {
   const p2 = arr.slice();
   const result = [0];
-  let i, j2, u, v, c;
+  let i, j2, u, v2, c;
   const len = arr.length;
   for (i = 0; i < len; i++) {
     const arrI = arr[i];
@@ -15488,13 +15501,13 @@ function getSequence(arr) {
         continue;
       }
       u = 0;
-      v = result.length - 1;
-      while (u < v) {
-        c = u + v >> 1;
+      v2 = result.length - 1;
+      while (u < v2) {
+        c = u + v2 >> 1;
         if (arr[result[c]] < arrI) {
           u = c + 1;
         } else {
-          v = c;
+          v2 = c;
         }
       }
       if (arrI < arr[result[u]]) {
@@ -15506,10 +15519,10 @@ function getSequence(arr) {
     }
   }
   u = result.length;
-  v = result[u - 1];
+  v2 = result[u - 1];
   while (u-- > 0) {
-    result[u] = v;
-    v = p2[v];
+    result[u] = v2;
+    v2 = p2[v2];
   }
   return result;
 }
@@ -16723,17 +16736,17 @@ function initCustomFormatter() {
       ]
     ];
   }
-  function formatValue(v, asRaw = true) {
-    if (typeof v === "number") {
-      return ["span", numberStyle, v];
-    } else if (typeof v === "string") {
-      return ["span", stringStyle, JSON.stringify(v)];
-    } else if (typeof v === "boolean") {
-      return ["span", keywordStyle, v];
-    } else if (isObject(v)) {
-      return ["object", { object: asRaw ? toRaw(v) : v }];
+  function formatValue(v2, asRaw = true) {
+    if (typeof v2 === "number") {
+      return ["span", numberStyle, v2];
+    } else if (typeof v2 === "string") {
+      return ["span", stringStyle, JSON.stringify(v2)];
+    } else if (typeof v2 === "boolean") {
+      return ["span", keywordStyle, v2];
+    } else if (isObject(v2)) {
+      return ["object", { object: asRaw ? toRaw(v2) : v2 }];
     } else {
-      return ["span", stringStyle, String(v)];
+      return ["span", stringStyle, String(v2)];
     }
   }
   function extractKeys(instance, type) {
@@ -16761,11 +16774,11 @@ function initCustomFormatter() {
       return true;
     }
   }
-  function genRefFlag(v) {
-    if (isShallow2(v)) {
+  function genRefFlag(v2) {
+    if (isShallow2(v2)) {
       return `ShallowRef`;
     }
-    if (v.effect) {
+    if (v2.effect) {
       return `ComputedRef`;
     }
     return `Ref`;
@@ -16776,12 +16789,12 @@ function initCustomFormatter() {
     window.devtoolsFormatters = [formatter];
   }
 }
-function withMemo(memo, render26, cache2, index) {
+function withMemo(memo, render27, cache2, index) {
   const cached = cache2[index];
   if (cached && isMemoSame(cached, memo)) {
     return cached;
   }
-  const ret = render26();
+  const ret = render27();
   ret.memo = memo.slice();
   return cache2[index] = ret;
 }
@@ -16925,7 +16938,7 @@ var semicolonRE = /[^\\];\s*$/;
 var importantRE = /\s*!important$/;
 function setStyle(style, name, val) {
   if (isArray(val)) {
-    val.forEach((v) => setStyle(style, name, v));
+    val.forEach((v2) => setStyle(style, name, v2));
   } else {
     if (val == null)
       val = "";
@@ -17908,16 +17921,16 @@ var vModelCheckbox = {
       const modelValue = el._modelValue;
       const elementValue = getValue(el);
       const checked = el.checked;
-      const assign2 = el._assign;
+      const assign3 = el._assign;
       if (isArray(modelValue)) {
         const index = looseIndexOf(modelValue, elementValue);
         const found = index !== -1;
         if (checked && !found) {
-          assign2(modelValue.concat(elementValue));
+          assign3(modelValue.concat(elementValue));
         } else if (!checked && found) {
           const filtered = [...modelValue];
           filtered.splice(index, 1);
-          assign2(filtered);
+          assign3(filtered);
         }
       } else if (isSet(modelValue)) {
         const cloned = new Set(modelValue);
@@ -17926,9 +17939,9 @@ var vModelCheckbox = {
         } else {
           cloned.delete(elementValue);
         }
-        assign2(cloned);
+        assign3(cloned);
       } else {
-        assign2(getCheckboxValue(el, checked));
+        assign3(getCheckboxValue(el, checked));
       }
     });
   },
@@ -23286,20 +23299,23 @@ function compileToFunction(template, options) {
     warn3(codeFrame ? `${message}
 ${codeFrame}` : message);
   }
-  const render26 = new Function("Vue", code3)(runtime_dom_esm_bundler_exports);
-  render26._rc = true;
-  return compileCache[key] = render26;
+  const render27 = new Function("Vue", code3)(runtime_dom_esm_bundler_exports);
+  render27._rc = true;
+  return compileCache[key] = render27;
 }
 registerRuntimeCompiler(compileToFunction);
 
-// node_modules/@intlify/shared/dist/shared.esm-bundler.js
+// node_modules/@intlify/shared/dist/shared.mjs
 var inBrowser = typeof window !== "undefined";
 var mark;
 var measure;
 if (true) {
   const perf3 = inBrowser && window.performance;
-  if (perf3 && perf3.mark && perf3.measure && perf3.clearMarks && perf3.clearMeasures) {
-    mark = (tag) => perf3.mark(tag);
+  if (perf3 && perf3.mark && perf3.measure && perf3.clearMarks && // @ts-ignore browser compat
+  perf3.clearMeasures) {
+    mark = (tag) => {
+      perf3.mark(tag);
+    };
     measure = (name, startTag, endTag) => {
       perf3.measure(name, startTag, endTag);
       perf3.clearMarks(startTag);
@@ -23319,22 +23335,13 @@ function format(message, ...args) {
     return args.hasOwnProperty(identifier) ? args[identifier] : "";
   });
 }
-var hasSymbol = typeof Symbol === "function" && typeof Symbol.toStringTag === "symbol";
-var makeSymbol = (name) => hasSymbol ? Symbol(name) : name;
+var makeSymbol = (name, shareable = false) => !shareable ? Symbol(name) : Symbol.for(name);
 var generateFormatCacheKey = (locale, key, source) => friendlyJSONstringify({ l: locale, k: key, s: source });
 var friendlyJSONstringify = (json) => JSON.stringify(json).replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029").replace(/\u0027/g, "\\u0027");
 var isNumber = (val) => typeof val === "number" && isFinite(val);
 var isDate2 = (val) => toTypeString2(val) === "[object Date]";
 var isRegExp2 = (val) => toTypeString2(val) === "[object RegExp]";
 var isEmptyObject = (val) => isPlainObject2(val) && Object.keys(val).length === 0;
-function warn4(msg, err) {
-  if (typeof console !== "undefined") {
-    console.warn(`[intlify] ` + msg);
-    if (err) {
-      console.warn(err.stack);
-    }
-  }
-}
 var assign = Object.assign;
 var _globalThis2;
 var getGlobalThis2 = () => {
@@ -23351,16 +23358,21 @@ var isArray2 = Array.isArray;
 var isFunction2 = (val) => typeof val === "function";
 var isString2 = (val) => typeof val === "string";
 var isBoolean2 = (val) => typeof val === "boolean";
-var isObject2 = (val) => (
-  // eslint-disable-line
-  val !== null && typeof val === "object"
-);
+var isObject2 = (val) => val !== null && typeof val === "object";
 var objectToString2 = Object.prototype.toString;
 var toTypeString2 = (value) => objectToString2.call(value);
-var isPlainObject2 = (val) => toTypeString2(val) === "[object Object]";
+var isPlainObject2 = (val) => {
+  if (!isObject2(val))
+    return false;
+  const proto = Object.getPrototypeOf(val);
+  return proto === null || proto.constructor === Object;
+};
 var toDisplayString2 = (val) => {
   return val == null ? "" : isArray2(val) || isPlainObject2(val) && val.toString === objectToString2 ? JSON.stringify(val, null, 2) : String(val);
 };
+function join(items, separator = "") {
+  return items.reduce((str, item, index) => index === 0 ? str + item : str + separator + item, "");
+}
 var RANGE = 2;
 function generateCodeFrame2(source, start = 0, end = source.length) {
   const lines = source.split(/\r?\n/);
@@ -23392,6 +23404,25 @@ function generateCodeFrame2(source, start = 0, end = source.length) {
   }
   return res.join("\n");
 }
+function incrementer(code3) {
+  let current = code3;
+  return () => ++current;
+}
+function warn4(msg, err) {
+  if (typeof console !== "undefined") {
+    console.warn(`[intlify] ` + msg);
+    if (err) {
+      console.warn(err.stack);
+    }
+  }
+}
+var hasWarned2 = {};
+function warnOnce(msg) {
+  if (!hasWarned2[msg]) {
+    hasWarned2[msg] = true;
+    warn4(msg);
+  }
+}
 function createEmitter() {
   const events = /* @__PURE__ */ new Map();
   const emitter = {
@@ -23417,7 +23448,35 @@ function createEmitter() {
   return emitter;
 }
 
-// node_modules/@intlify/message-compiler/dist/message-compiler.esm-bundler.js
+// node_modules/@intlify/message-compiler/dist/message-compiler.esm-browser.js
+function createPosition(line, column, offset) {
+  return { line, column, offset };
+}
+function createLocation(start, end, source) {
+  const loc = { start, end };
+  if (source != null) {
+    loc.source = source;
+  }
+  return loc;
+}
+var RE_ARGS2 = /\{([0-9a-zA-Z]+)\}/g;
+function format2(message, ...args) {
+  if (args.length === 1 && isObject3(args[0])) {
+    args = args[0];
+  }
+  if (!args || !args.hasOwnProperty) {
+    args = {};
+  }
+  return message.replace(RE_ARGS2, (match, identifier) => {
+    return args.hasOwnProperty(identifier) ? args[identifier] : "";
+  });
+}
+var assign2 = Object.assign;
+var isString3 = (val) => typeof val === "string";
+var isObject3 = (val) => val !== null && typeof val === "object";
+function join2(items, separator = "") {
+  return items.reduce((str, item, index) => index === 0 ? str + item : str + separator + item, "");
+}
 var CompileErrorCodes = {
   // tokenizer error codes
   EXPECTED_TOKEN: 1,
@@ -23435,10 +23494,14 @@ var CompileErrorCodes = {
   UNEXPECTED_EMPTY_LINKED_MODIFIER: 12,
   UNEXPECTED_EMPTY_LINKED_KEY: 13,
   UNEXPECTED_LEXICAL_ANALYSIS: 14,
+  // generator error codes
+  UNHANDLED_CODEGEN_NODE_TYPE: 15,
+  // minifier error codes
+  UNHANDLED_MINIFIER_NODE_TYPE: 16,
   // Special value for higher-order compilers to pick up the last code
   // to avoid collision of error codes. This should always be kept as the last
   // item.
-  __EXTEND_POINT__: 15
+  __EXTEND_POINT__: 17
 };
 var errorMessages2 = {
   // tokenizer error messages
@@ -23456,11 +23519,15 @@ var errorMessages2 = {
   [CompileErrorCodes.MUST_HAVE_MESSAGES_IN_PLURAL]: `Plural must have messages`,
   [CompileErrorCodes.UNEXPECTED_EMPTY_LINKED_MODIFIER]: `Unexpected empty linked modifier`,
   [CompileErrorCodes.UNEXPECTED_EMPTY_LINKED_KEY]: `Unexpected empty linked key`,
-  [CompileErrorCodes.UNEXPECTED_LEXICAL_ANALYSIS]: `Unexpected lexical analysis in token: '{0}'`
+  [CompileErrorCodes.UNEXPECTED_LEXICAL_ANALYSIS]: `Unexpected lexical analysis in token: '{0}'`,
+  // generator error messages
+  [CompileErrorCodes.UNHANDLED_CODEGEN_NODE_TYPE]: `unhandled codegen node type: '{0}'`,
+  // minimizer error messages
+  [CompileErrorCodes.UNHANDLED_MINIFIER_NODE_TYPE]: `unhandled mimifier node type: '{0}'`
 };
 function createCompileError(code3, loc, options = {}) {
   const { domain, messages, args } = options;
-  const msg = true ? format((messages || errorMessages2)[code3] || "", ...args || []) : code3;
+  const msg = format2((messages || errorMessages2)[code3] || "", ...args || []);
   const error = new SyntaxError(String(msg));
   error.code = code3;
   if (loc) {
@@ -23472,16 +23539,8 @@ function createCompileError(code3, loc, options = {}) {
 function defaultOnError2(error) {
   throw error;
 }
-function createPosition(line, column, offset) {
-  return { line, column, offset };
-}
-function createLocation(start, end, source) {
-  const loc = { start, end };
-  if (source != null) {
-    loc.source = source;
-  }
-  return loc;
-}
+var RE_HTML_TAG = /<\/?[\w\s="/.':;#-\/]+>/;
+var detectHtmlTag = (source) => RE_HTML_TAG.test(source);
 var CHAR_SP = " ";
 var CHAR_CR = "\r";
 var CHAR_LF = "\n";
@@ -23557,8 +23616,9 @@ function createScanner(str) {
   };
 }
 var EOF = void 0;
+var DOT = ".";
 var LITERAL_DELIMITER = "'";
-var ERROR_DOMAIN$1 = "tokenizer";
+var ERROR_DOMAIN$3 = "tokenizer";
 function createTokenizer(source, options = {}) {
   const location = options.location !== false;
   const _scnr = createScanner(source);
@@ -23586,9 +23646,9 @@ function createTokenizer(source, options = {}) {
     pos.column += offset;
     pos.offset += offset;
     if (onError) {
-      const loc = createLocation(ctx.startLoc, pos);
+      const loc = location ? createLocation(ctx.startLoc, pos) : null;
       const err = createCompileError(code3, loc, {
-        domain: ERROR_DOMAIN$1,
+        domain: ERROR_DOMAIN$3,
         args
       });
       onError(err);
@@ -23609,7 +23669,7 @@ function createTokenizer(source, options = {}) {
   const getEndToken = (context2) => getToken(
     context2,
     14
-    /* EOF */
+    /* TokenTypes.EOF */
   );
   function eat(scnr, ch) {
     if (scnr.currentChar() === ch) {
@@ -23959,11 +24019,11 @@ function createTokenizer(source, options = {}) {
   function readLinkedRefer(scnr) {
     const fn = (detect = false, buf) => {
       const ch = scnr.currentChar();
-      if (ch === "{" || ch === "%" || ch === "@" || ch === "|" || !ch) {
+      if (ch === "{" || ch === "%" || ch === "@" || ch === "|" || ch === "(" || ch === ")" || !ch) {
         return buf;
       } else if (ch === CHAR_SP) {
         return buf;
-      } else if (ch === CHAR_LF) {
+      } else if (ch === CHAR_LF || ch === DOT) {
         buf += ch;
         scnr.next();
         return fn(detect, buf);
@@ -23980,7 +24040,7 @@ function createTokenizer(source, options = {}) {
     const plural = eat(
       scnr,
       "|"
-      /* Pipe */
+      /* TokenChars.Pipe */
     );
     skipSpaces(scnr);
     return plural;
@@ -23998,7 +24058,7 @@ function createTokenizer(source, options = {}) {
           context2,
           2,
           "{"
-          /* BraceLeft */
+          /* TokenChars.BraceLeft */
         );
         skipSpaces(scnr);
         context2.braceNest++;
@@ -24012,7 +24072,7 @@ function createTokenizer(source, options = {}) {
           context2,
           3,
           "}"
-          /* BraceRight */
+          /* TokenChars.BraceRight */
         );
         context2.braceNest--;
         context2.braceNest > 0 && skipSpaces(scnr);
@@ -24084,7 +24144,7 @@ function createTokenizer(source, options = {}) {
           context2,
           8,
           "@"
-          /* LinkedAlias */
+          /* TokenChars.LinkedAlias */
         );
         context2.inLinked = true;
         return token;
@@ -24095,7 +24155,7 @@ function createTokenizer(source, options = {}) {
           context2,
           9,
           "."
-          /* LinkedDot */
+          /* TokenChars.LinkedDot */
         );
       case ":":
         skipSpaces(scnr);
@@ -24104,7 +24164,7 @@ function createTokenizer(source, options = {}) {
           context2,
           10,
           ":"
-          /* LinkedDelimiter */
+          /* TokenChars.LinkedDelimiter */
         );
       default:
         if (isPluralStart(scnr)) {
@@ -24140,7 +24200,7 @@ function createTokenizer(source, options = {}) {
   function readToken(scnr, context2) {
     let token = {
       type: 14
-      /* EOF */
+      /* TokenTypes.EOF */
     };
     if (context2.braceNest > 0) {
       return readTokenInPlaceholder(scnr, context2) || getEndToken(context2);
@@ -24159,7 +24219,7 @@ function createTokenizer(source, options = {}) {
           context2,
           3,
           "}"
-          /* BraceRight */
+          /* TokenChars.BraceRight */
         );
       case "@":
         return readTokenInLinked(scnr, context2) || getEndToken(context2);
@@ -24193,7 +24253,7 @@ function createTokenizer(source, options = {}) {
       return getToken(
         _context,
         14
-        /* EOF */
+        /* TokenTypes.EOF */
       );
     }
     return readToken(_scnr, _context);
@@ -24205,7 +24265,7 @@ function createTokenizer(source, options = {}) {
     context
   };
 }
-var ERROR_DOMAIN = "parser";
+var ERROR_DOMAIN$2 = "parser";
 var KNOWN_ESCAPES = /(?:\\\\|\\'|\\u([0-9a-fA-F]{4})|\\U([0-9a-fA-F]{6}))/g;
 function fromEscapeSequence(match, codePoint4, codePoint6) {
   switch (match) {
@@ -24230,32 +24290,32 @@ function createParser(options = {}) {
     end.offset += offset;
     end.column += offset;
     if (onError) {
-      const loc = createLocation(start, end);
+      const loc = location ? createLocation(start, end) : null;
       const err = createCompileError(code3, loc, {
-        domain: ERROR_DOMAIN,
+        domain: ERROR_DOMAIN$2,
         args
       });
       onError(err);
     }
   }
   function startNode(type, offset, loc) {
-    const node = {
-      type,
-      start: offset,
-      end: offset
-    };
+    const node = { type };
     if (location) {
+      node.start = offset;
+      node.end = offset;
       node.loc = { start: loc, end: loc };
     }
     return node;
   }
   function endNode(node, offset, pos, type) {
-    node.end = offset;
     if (type) {
       node.type = type;
     }
-    if (location && node.loc) {
-      node.loc.end = pos;
+    if (location) {
+      node.end = offset;
+      if (node.loc) {
+        node.loc.end = pos;
+      }
     }
   }
   function parseText2(tokenizer, value) {
@@ -24458,13 +24518,16 @@ function createParser(options = {}) {
     }
   }
   function parse3(source) {
-    const tokenizer = createTokenizer(source, assign({}, options));
+    const tokenizer = createTokenizer(source, assign2({}, options));
     const context = tokenizer.context();
     const node = startNode(0, context.offset, context.startLoc);
     if (location && node.loc) {
       node.loc.source = source;
     }
     node.body = parseResource(tokenizer);
+    if (options.onCacheKey) {
+      node.cacheKey = options.onCacheKey(source);
+    }
     if (context.currentType !== 14) {
       emitError2(tokenizer, CompileErrorCodes.UNEXPECTED_LEXICAL_ANALYSIS, context.lastStartLoc, 0, source[context.offset] || "");
     }
@@ -24503,7 +24566,7 @@ function traverseNode2(node, transformer) {
       traverseNodes(node.cases, transformer);
       transformer.helper(
         "plural"
-        /* PLURAL */
+        /* HelperNameMap.PLURAL */
       );
       break;
     case 2:
@@ -24514,31 +24577,31 @@ function traverseNode2(node, transformer) {
       traverseNode2(linked.key, transformer);
       transformer.helper(
         "linked"
-        /* LINKED */
+        /* HelperNameMap.LINKED */
       );
       transformer.helper(
         "type"
-        /* TYPE */
+        /* HelperNameMap.TYPE */
       );
       break;
     case 5:
       transformer.helper(
         "interpolate"
-        /* INTERPOLATE */
+        /* HelperNameMap.INTERPOLATE */
       );
       transformer.helper(
         "list"
-        /* LIST */
+        /* HelperNameMap.LIST */
       );
       break;
     case 4:
       transformer.helper(
         "interpolate"
-        /* INTERPOLATE */
+        /* HelperNameMap.INTERPOLATE */
       );
       transformer.helper(
         "named"
-        /* NAMED */
+        /* HelperNameMap.NAMED */
       );
       break;
   }
@@ -24547,16 +24610,128 @@ function transform2(ast, options = {}) {
   const transformer = createTransformer(ast);
   transformer.helper(
     "normalize"
-    /* NORMALIZE */
+    /* HelperNameMap.NORMALIZE */
   );
   ast.body && traverseNode2(ast.body, transformer);
   const context = transformer.context();
   ast.helpers = Array.from(context.helpers);
 }
+function optimize(ast) {
+  const body = ast.body;
+  if (body.type === 2) {
+    optimizeMessageNode(body);
+  } else {
+    body.cases.forEach((c) => optimizeMessageNode(c));
+  }
+  return ast;
+}
+function optimizeMessageNode(message) {
+  if (message.items.length === 1) {
+    const item = message.items[0];
+    if (item.type === 3 || item.type === 9) {
+      message.static = item.value;
+      delete item.value;
+    }
+  } else {
+    const values = [];
+    for (let i = 0; i < message.items.length; i++) {
+      const item = message.items[i];
+      if (!(item.type === 3 || item.type === 9)) {
+        break;
+      }
+      if (item.value == null) {
+        break;
+      }
+      values.push(item.value);
+    }
+    if (values.length === message.items.length) {
+      message.static = join2(values);
+      for (let i = 0; i < message.items.length; i++) {
+        const item = message.items[i];
+        if (item.type === 3 || item.type === 9) {
+          delete item.value;
+        }
+      }
+    }
+  }
+}
+var ERROR_DOMAIN$1 = "minifier";
+function minify(node) {
+  node.t = node.type;
+  switch (node.type) {
+    case 0:
+      const resource = node;
+      minify(resource.body);
+      resource.b = resource.body;
+      delete resource.body;
+      break;
+    case 1:
+      const plural = node;
+      const cases = plural.cases;
+      for (let i = 0; i < cases.length; i++) {
+        minify(cases[i]);
+      }
+      plural.c = cases;
+      delete plural.cases;
+      break;
+    case 2:
+      const message = node;
+      const items = message.items;
+      for (let i = 0; i < items.length; i++) {
+        minify(items[i]);
+      }
+      message.i = items;
+      delete message.items;
+      if (message.static) {
+        message.s = message.static;
+        delete message.static;
+      }
+      break;
+    case 3:
+    case 9:
+    case 8:
+    case 7:
+      const valueNode = node;
+      if (valueNode.value) {
+        valueNode.v = valueNode.value;
+        delete valueNode.value;
+      }
+      break;
+    case 6:
+      const linked = node;
+      minify(linked.key);
+      linked.k = linked.key;
+      delete linked.key;
+      if (linked.modifier) {
+        minify(linked.modifier);
+        linked.m = linked.modifier;
+        delete linked.modifier;
+      }
+      break;
+    case 5:
+      const list = node;
+      list.i = list.index;
+      delete list.index;
+      break;
+    case 4:
+      const named = node;
+      named.k = named.key;
+      delete named.key;
+      break;
+    default: {
+      throw createCompileError(CompileErrorCodes.UNHANDLED_MINIFIER_NODE_TYPE, null, {
+        domain: ERROR_DOMAIN$1,
+        args: [node.type]
+      });
+    }
+  }
+  delete node.type;
+}
+var ERROR_DOMAIN = "parser";
 function createCodeGenerator(ast, options) {
   const { sourceMap, filename, breakLineCode, needIndent: _needIndent } = options;
+  const location = options.location !== false;
   const _context = {
-    source: ast.loc.source,
     filename,
     code: "",
     column: 1,
@@ -24567,6 +24742,9 @@ function createCodeGenerator(ast, options) {
     needIndent: _needIndent,
     indentLevel: 0
   };
+  if (location && ast.loc) {
+    _context.source = ast.loc.source;
+  }
   const context = () => _context;
   function push(code3, node) {
     _context.code += code3;
@@ -24602,7 +24780,7 @@ function generateLinkedNode(generator, node) {
   const { helper } = generator;
   generator.push(`${helper(
     "linked"
-    /* LINKED */
+    /* HelperNameMap.LINKED */
   )}(`);
   generateNode(generator, node.key);
   if (node.modifier) {
@@ -24618,7 +24796,7 @@ function generateMessageNode(generator, node) {
   const { helper, needIndent } = generator;
   generator.push(`${helper(
     "normalize"
-    /* NORMALIZE */
+    /* HelperNameMap.NORMALIZE */
   )}([`);
   generator.indent(needIndent());
   const length = node.items.length;
@@ -24637,7 +24815,7 @@ function generatePluralNode(generator, node) {
   if (node.cases.length > 1) {
     generator.push(`${helper(
       "plural"
-      /* PLURAL */
+      /* HelperNameMap.PLURAL */
     )}([`);
     generator.indent(needIndent());
     const length = node.cases.length;
@@ -24683,19 +24861,19 @@ function generateNode(generator, node) {
     case 5:
       generator.push(`${helper(
         "interpolate"
-        /* INTERPOLATE */
+        /* HelperNameMap.INTERPOLATE */
       )}(${helper(
         "list"
-        /* LIST */
+        /* HelperNameMap.LIST */
       )}(${node.index}))`, node);
       break;
     case 4:
       generator.push(`${helper(
         "interpolate"
-        /* INTERPOLATE */
+        /* HelperNameMap.INTERPOLATE */
       )}(${helper(
         "named"
-        /* NAMED */
+        /* HelperNameMap.NAMED */
       )}(${JSON.stringify(node.key)}))`, node);
       break;
     case 9:
@@ -24704,15 +24882,17 @@ function generateNode(generator, node) {
     case 3:
       generator.push(JSON.stringify(node.value), node);
       break;
-    default:
-      if (true) {
-        throw new Error(`unhandled codegen node type: ${node.type}`);
-      }
+    default: {
+      throw createCompileError(CompileErrorCodes.UNHANDLED_CODEGEN_NODE_TYPE, null, {
+        domain: ERROR_DOMAIN,
+        args: [node.type]
+      });
+    }
   }
 }
 var generate2 = (ast, options = {}) => {
-  const mode = isString2(options.mode) ? options.mode : "normal";
-  const filename = isString2(options.filename) ? options.filename : "message.intl";
+  const mode = isString3(options.mode) ? options.mode : "normal";
+  const filename = isString3(options.filename) ? options.filename : "message.intl";
   const sourceMap = !!options.sourceMap;
   const breakLineCode = options.breakLineCode != null ? options.breakLineCode : mode === "arrow" ? ";" : "\n";
   const needIndent = options.needIndent ? options.needIndent : mode !== "arrow";
@@ -24727,13 +24907,14 @@ var generate2 = (ast, options = {}) => {
   generator.push(mode === "normal" ? `function __msg__ (ctx) {` : `(ctx) => {`);
   generator.indent(needIndent);
   if (helpers.length > 0) {
-    generator.push(`const { ${helpers.map((s) => `${s}: _${s}`).join(", ")} } = ctx`);
+    generator.push(`const { ${join2(helpers.map((s) => `${s}: _${s}`), ", ")} } = ctx`);
     generator.newline();
   }
   generator.push(`return `);
   generateNode(generator, ast);
   generator.deindent(needIndent);
   generator.push(`}`);
+  delete ast.helpers;
   const { code: code3, map: map3 } = generator.context();
   return {
     ast,
@@ -24743,266 +24924,280 @@ var generate2 = (ast, options = {}) => {
   };
 };
 function baseCompile2(source, options = {}) {
-  const assignedOptions = assign({}, options);
+  const assignedOptions = assign2({}, options);
+  const jit = !!assignedOptions.jit;
+  const enalbeMinify = !!assignedOptions.minify;
+  const enambeOptimize = assignedOptions.optimize == null ? true : assignedOptions.optimize;
   const parser = createParser(assignedOptions);
   const ast = parser.parse(source);
-  transform2(ast, assignedOptions);
-  return generate2(ast, assignedOptions);
+  if (!jit) {
+    transform2(ast, assignedOptions);
+    return generate2(ast, assignedOptions);
+  } else {
+    enambeOptimize && optimize(ast);
+    enalbeMinify && minify(ast);
+    return { ast, code: "" };
+  }
 }
 
-// node_modules/@intlify/devtools-if/dist/devtools-if.esm-bundler.js
-var IntlifyDevToolsHooks = {
-  I18nInit: "i18n:init",
-  FunctionTranslate: "function:translate"
-};
-
-// node_modules/@intlify/core-base/dist/core-base.esm-bundler.js
+// node_modules/@intlify/core-base/dist/core-base.mjs
+function initFeatureFlags2() {
+  if (typeof __INTLIFY_PROD_DEVTOOLS__ !== "boolean") {
+    getGlobalThis2().__INTLIFY_PROD_DEVTOOLS__ = false;
+  }
+  if (typeof __INTLIFY_JIT_COMPILATION__ !== "boolean") {
+    getGlobalThis2().__INTLIFY_JIT_COMPILATION__ = false;
+  }
+  if (typeof __INTLIFY_DROP_MESSAGE_COMPILER__ !== "boolean") {
+    getGlobalThis2().__INTLIFY_DROP_MESSAGE_COMPILER__ = false;
+  }
+}
 var pathStateMachine = [];
 pathStateMachine[
   0
-  /* BEFORE_PATH */
+  /* States.BEFORE_PATH */
 ] = {
   [
     "w"
-    /* WORKSPACE */
+    /* PathCharTypes.WORKSPACE */
   ]: [
     0
-    /* BEFORE_PATH */
+    /* States.BEFORE_PATH */
   ],
   [
     "i"
-    /* IDENT */
+    /* PathCharTypes.IDENT */
   ]: [
     3,
     0
-    /* APPEND */
+    /* Actions.APPEND */
   ],
   [
     "["
-    /* LEFT_BRACKET */
+    /* PathCharTypes.LEFT_BRACKET */
   ]: [
     4
-    /* IN_SUB_PATH */
+    /* States.IN_SUB_PATH */
   ],
   [
     "o"
-    /* END_OF_FAIL */
+    /* PathCharTypes.END_OF_FAIL */
   ]: [
     7
-    /* AFTER_PATH */
+    /* States.AFTER_PATH */
   ]
 };
 pathStateMachine[
   1
-  /* IN_PATH */
+  /* States.IN_PATH */
 ] = {
   [
     "w"
-    /* WORKSPACE */
+    /* PathCharTypes.WORKSPACE */
   ]: [
     1
-    /* IN_PATH */
+    /* States.IN_PATH */
   ],
   [
     "."
-    /* DOT */
+    /* PathCharTypes.DOT */
   ]: [
     2
-    /* BEFORE_IDENT */
+    /* States.BEFORE_IDENT */
   ],
   [
     "["
-    /* LEFT_BRACKET */
+    /* PathCharTypes.LEFT_BRACKET */
   ]: [
     4
-    /* IN_SUB_PATH */
+    /* States.IN_SUB_PATH */
   ],
   [
     "o"
-    /* END_OF_FAIL */
+    /* PathCharTypes.END_OF_FAIL */
   ]: [
     7
-    /* AFTER_PATH */
+    /* States.AFTER_PATH */
   ]
 };
 pathStateMachine[
   2
-  /* BEFORE_IDENT */
+  /* States.BEFORE_IDENT */
 ] = {
   [
     "w"
-    /* WORKSPACE */
+    /* PathCharTypes.WORKSPACE */
   ]: [
     2
-    /* BEFORE_IDENT */
+    /* States.BEFORE_IDENT */
   ],
   [
     "i"
-    /* IDENT */
+    /* PathCharTypes.IDENT */
   ]: [
     3,
     0
-    /* APPEND */
+    /* Actions.APPEND */
   ],
   [
     "0"
-    /* ZERO */
+    /* PathCharTypes.ZERO */
   ]: [
     3,
     0
-    /* APPEND */
+    /* Actions.APPEND */
   ]
 };
 pathStateMachine[
   3
-  /* IN_IDENT */
+  /* States.IN_IDENT */
 ] = {
   [
     "i"
-    /* IDENT */
+    /* PathCharTypes.IDENT */
   ]: [
     3,
     0
-    /* APPEND */
+    /* Actions.APPEND */
   ],
   [
     "0"
-    /* ZERO */
+    /* PathCharTypes.ZERO */
   ]: [
     3,
     0
-    /* APPEND */
+    /* Actions.APPEND */
   ],
   [
     "w"
-    /* WORKSPACE */
+    /* PathCharTypes.WORKSPACE */
   ]: [
     1,
     1
-    /* PUSH */
+    /* Actions.PUSH */
   ],
   [
     "."
-    /* DOT */
+    /* PathCharTypes.DOT */
   ]: [
     2,
     1
-    /* PUSH */
+    /* Actions.PUSH */
   ],
   [
     "["
-    /* LEFT_BRACKET */
+    /* PathCharTypes.LEFT_BRACKET */
   ]: [
     4,
     1
-    /* PUSH */
+    /* Actions.PUSH */
   ],
   [
     "o"
-    /* END_OF_FAIL */
+    /* PathCharTypes.END_OF_FAIL */
   ]: [
     7,
     1
-    /* PUSH */
+    /* Actions.PUSH */
   ]
 };
 pathStateMachine[
   4
-  /* IN_SUB_PATH */
+  /* States.IN_SUB_PATH */
 ] = {
   [
     "'"
-    /* SINGLE_QUOTE */
+    /* PathCharTypes.SINGLE_QUOTE */
   ]: [
     5,
     0
-    /* APPEND */
+    /* Actions.APPEND */
   ],
   [
     '"'
-    /* DOUBLE_QUOTE */
+    /* PathCharTypes.DOUBLE_QUOTE */
   ]: [
     6,
     0
-    /* APPEND */
+    /* Actions.APPEND */
   ],
   [
     "["
-    /* LEFT_BRACKET */
+    /* PathCharTypes.LEFT_BRACKET */
   ]: [
     4,
     2
-    /* INC_SUB_PATH_DEPTH */
+    /* Actions.INC_SUB_PATH_DEPTH */
   ],
   [
     "]"
-    /* RIGHT_BRACKET */
+    /* PathCharTypes.RIGHT_BRACKET */
   ]: [
     1,
     3
-    /* PUSH_SUB_PATH */
+    /* Actions.PUSH_SUB_PATH */
   ],
   [
     "o"
-    /* END_OF_FAIL */
+    /* PathCharTypes.END_OF_FAIL */
   ]: 8,
   [
     "l"
-    /* ELSE */
+    /* PathCharTypes.ELSE */
   ]: [
     4,
     0
-    /* APPEND */
+    /* Actions.APPEND */
   ]
 };
 pathStateMachine[
   5
-  /* IN_SINGLE_QUOTE */
+  /* States.IN_SINGLE_QUOTE */
 ] = {
   [
     "'"
-    /* SINGLE_QUOTE */
+    /* PathCharTypes.SINGLE_QUOTE */
   ]: [
     4,
     0
-    /* APPEND */
+    /* Actions.APPEND */
   ],
   [
     "o"
-    /* END_OF_FAIL */
+    /* PathCharTypes.END_OF_FAIL */
   ]: 8,
   [
     "l"
-    /* ELSE */
+    /* PathCharTypes.ELSE */
   ]: [
     5,
     0
-    /* APPEND */
+    /* Actions.APPEND */
   ]
 };
 pathStateMachine[
   6
-  /* IN_DOUBLE_QUOTE */
+  /* States.IN_DOUBLE_QUOTE */
 ] = {
   [
     '"'
-    /* DOUBLE_QUOTE */
+    /* PathCharTypes.DOUBLE_QUOTE */
   ]: [
     4,
     0
-    /* APPEND */
+    /* Actions.APPEND */
   ],
   [
     "o"
-    /* END_OF_FAIL */
+    /* PathCharTypes.END_OF_FAIL */
   ]: 8,
   [
     "l"
-    /* ELSE */
+    /* PathCharTypes.ELSE */
   ]: [
     6,
     0
-    /* APPEND */
+    /* Actions.APPEND */
   ]
 };
 var literalValueRE = /^\s?(?:true|false|-?[\d.]+|'[^']*'|"[^"]*")\s?$/;
@@ -25063,7 +25258,7 @@ function parse2(path) {
   const actions = [];
   actions[
     0
-    /* APPEND */
+    /* Actions.APPEND */
   ] = () => {
     if (key === void 0) {
       key = newChar;
@@ -25073,7 +25268,7 @@ function parse2(path) {
   };
   actions[
     1
-    /* PUSH */
+    /* Actions.PUSH */
   ] = () => {
     if (key !== void 0) {
       keys.push(key);
@@ -25082,24 +25277,24 @@ function parse2(path) {
   };
   actions[
     2
-    /* INC_SUB_PATH_DEPTH */
+    /* Actions.INC_SUB_PATH_DEPTH */
   ] = () => {
     actions[
       0
-      /* APPEND */
+      /* Actions.APPEND */
     ]();
     subPathDepth++;
   };
   actions[
     3
-    /* PUSH_SUB_PATH */
+    /* Actions.PUSH_SUB_PATH */
   ] = () => {
     if (subPathDepth > 0) {
       subPathDepth--;
       mode = 4;
       actions[
         0
-        /* APPEND */
+        /* Actions.APPEND */
       ]();
     } else {
       subPathDepth = 0;
@@ -25112,7 +25307,7 @@ function parse2(path) {
       } else {
         actions[
           1
-          /* PUSH */
+          /* Actions.PUSH */
         ]();
       }
     }
@@ -25124,7 +25319,7 @@ function parse2(path) {
       newChar = "\\" + nextChar;
       actions[
         0
-        /* APPEND */
+        /* Actions.APPEND */
       ]();
       return true;
     }
@@ -25139,7 +25334,7 @@ function parse2(path) {
     typeMap = pathStateMachine[mode];
     transition = typeMap[type] || typeMap[
       "l"
-      /* ELSE */
+      /* PathCharTypes.ELSE */
     ] || 8;
     if (transition === 8) {
       return;
@@ -25193,7 +25388,7 @@ function resolveValue(obj, path) {
 var DEFAULT_MODIFIER = (str) => str;
 var DEFAULT_MESSAGE = (ctx) => "";
 var DEFAULT_MESSAGE_DATA_TYPE = "text";
-var DEFAULT_NORMALIZE = (values) => values.length === 0 ? "" : values.join("");
+var DEFAULT_NORMALIZE = (values) => values.length === 0 ? "" : join(values);
 var DEFAULT_INTERPOLATE = toDisplayString2;
 function pluralDefault(choice, choicesLength) {
   choice = Math.abs(choice);
@@ -25254,45 +25449,50 @@ function createMessageContext(options = {}) {
         type2 = arg2 || type2;
       }
     }
-    let msg = message(key)(ctx);
-    if (type2 === "vnode" && isArray2(msg) && modifier) {
-      msg = msg[0];
-    }
+    const ret = message(key)(ctx);
+    const msg = (
+      // The message in vnode resolved with linked are returned as an array by processor.nomalize
+      type2 === "vnode" && isArray2(ret) && modifier ? ret[0] : ret
+    );
     return modifier ? _modifier(modifier)(msg, type2) : msg;
   };
   const ctx = {
     [
       "list"
-      /* LIST */
+      /* HelperNameMap.LIST */
     ]: list,
     [
       "named"
-      /* NAMED */
+      /* HelperNameMap.NAMED */
     ]: named,
     [
       "plural"
-      /* PLURAL */
+      /* HelperNameMap.PLURAL */
     ]: plural,
     [
       "linked"
-      /* LINKED */
+      /* HelperNameMap.LINKED */
     ]: linked,
     [
       "message"
-      /* MESSAGE */
+      /* HelperNameMap.MESSAGE */
     ]: message,
     [
       "type"
-      /* TYPE */
+      /* HelperNameMap.TYPE */
     ]: type,
     [
       "interpolate"
-      /* INTERPOLATE */
+      /* HelperNameMap.INTERPOLATE */
     ]: interpolate,
     [
       "normalize"
-      /* NORMALIZE */
-    ]: normalize
+      /* HelperNameMap.NORMALIZE */
+    ]: normalize,
+    [
+      "values"
+      /* HelperNameMap.VALUES */
+    ]: assign({}, _list, _named)
   };
   return ctx;
 }
@@ -25301,14 +25501,17 @@ function setDevToolsHook(hook) {
   devtools2 = hook;
 }
 function initI18nDevTools(i18n, version2, meta) {
-  devtools2 && devtools2.emit(IntlifyDevToolsHooks.I18nInit, {
+  devtools2 && devtools2.emit("i18n:init", {
     timestamp: Date.now(),
     i18n,
     version: version2,
     meta
   });
 }
-var translateDevTools = /* @__PURE__ */ createDevToolsHook(IntlifyDevToolsHooks.FunctionTranslate);
+var translateDevTools = /* @__PURE__ */ createDevToolsHook(
+  "function:translate"
+  /* IntlifyDevToolsHooks.FunctionTranslate */
+);
 function createDevToolsHook(hook) {
   return (payloads) => devtools2 && devtools2.emit(hook, payloads);
 }
@@ -25319,7 +25522,8 @@ var CoreWarnCodes = {
   FALLBACK_TO_NUMBER_FORMAT: 4,
   CANNOT_FORMAT_DATE: 5,
   FALLBACK_TO_DATE_FORMAT: 6,
-  __EXTEND_POINT__: 7
+  EXPERIMENTAL_CUSTOM_MESSAGE_COMPILER: 7,
+  __EXTEND_POINT__: 8
 };
 var warnMessages = {
   [CoreWarnCodes.NOT_FOUND_KEY]: `Not found '{key}' key in '{locale}' locale messages.`,
@@ -25327,7 +25531,8 @@ var warnMessages = {
   [CoreWarnCodes.CANNOT_FORMAT_NUMBER]: `Cannot format a number value due to not supported Intl.NumberFormat.`,
   [CoreWarnCodes.FALLBACK_TO_NUMBER_FORMAT]: `Fall back to number format '{key}' key with '{target}' locale.`,
   [CoreWarnCodes.CANNOT_FORMAT_DATE]: `Cannot format a date value due to not supported Intl.DateTimeFormat.`,
-  [CoreWarnCodes.FALLBACK_TO_DATE_FORMAT]: `Fall back to datetime format '{key}' key with '{target}' locale.`
+  [CoreWarnCodes.FALLBACK_TO_DATE_FORMAT]: `Fall back to datetime format '{key}' key with '{target}' locale.`,
+  [CoreWarnCodes.EXPERIMENTAL_CUSTOM_MESSAGE_COMPILER]: `This project is using Custom Message Compiler, which is an experimental feature. It may receive breaking changes or be removed in the future.`
 };
 function getWarnMessage(code3, ...args) {
   return format(warnMessages[code3], ...args);
@@ -25395,7 +25600,7 @@ function appendItemToChain(chain, target, blocks) {
   }
   return follow;
 }
-var VERSION = "9.2.2";
+var VERSION = "9.4.1";
 var NOT_REOSLVED = -1;
 var DEFAULT_LOCALE = "en-US";
 var MISSING_RESOLVE_VALUE = "";
@@ -25437,6 +25642,7 @@ var setFallbackContext = (context) => {
 var getFallbackContext = () => _fallbackContext;
 var _cid = 0;
 function createCoreContext(options = {}) {
+  const onWarn = isFunction2(options.onWarn) ? options.onWarn : warn4;
   const version2 = isString2(options.version) ? options.version : VERSION;
   const locale = isString2(options.locale) ? options.locale : DEFAULT_LOCALE;
   const fallbackLocale = isArray2(options.fallbackLocale) || isPlainObject2(options.fallbackLocale) || isString2(options.fallbackLocale) || options.fallbackLocale === false ? options.fallbackLocale : locale;
@@ -25455,10 +25661,12 @@ function createCoreContext(options = {}) {
   const warnHtmlMessage = isBoolean2(options.warnHtmlMessage) ? options.warnHtmlMessage : true;
   const escapeParameter = !!options.escapeParameter;
   const messageCompiler = isFunction2(options.messageCompiler) ? options.messageCompiler : _compiler;
+  if (isFunction2(options.messageCompiler)) {
+    warnOnce(getWarnMessage(CoreWarnCodes.EXPERIMENTAL_CUSTOM_MESSAGE_COMPILER));
+  }
   const messageResolver = isFunction2(options.messageResolver) ? options.messageResolver : _resolver || resolveWithKeyValue;
   const localeFallbacker = isFunction2(options.localeFallbacker) ? options.localeFallbacker : _fallbacker || fallbackWithSimple;
   const fallbackContext = isObject2(options.fallbackContext) ? options.fallbackContext : void 0;
-  const onWarn = isFunction2(options.onWarn) ? options.onWarn : warn4;
   const internalOptions = options;
   const __datetimeFormatters = isObject2(internalOptions.__datetimeFormatters) ? internalOptions.__datetimeFormatters : /* @__PURE__ */ new Map();
   const __numberFormatters = isObject2(internalOptions.__numberFormatters) ? internalOptions.__numberFormatters : /* @__PURE__ */ new Map();
@@ -25536,44 +25744,70 @@ function updateFallbackLocale(ctx, locale, fallback) {
   context.__localeChainCache = /* @__PURE__ */ new Map();
   ctx.localeFallbacker(ctx, fallback, locale);
 }
-var RE_HTML_TAG = /<\/?[\w\s="/.':;#-\/]+>/;
-var WARN_MESSAGE = `Detected HTML in '{source}' message. Recommend not using HTML messages to avoid XSS.`;
-function checkHtmlMessage(source, options) {
-  const warnHtmlMessage = isBoolean2(options.warnHtmlMessage) ? options.warnHtmlMessage : true;
-  if (warnHtmlMessage && RE_HTML_TAG.test(source)) {
-    warn4(format(WARN_MESSAGE, { source }));
+function format3(ast) {
+  const msg = (ctx) => formatParts(ctx, ast);
+  return msg;
+}
+function formatParts(ctx, ast) {
+  const body = ast.b || ast.body;
+  if ((body.t || body.type) === 1) {
+    const plural = body;
+    const cases = plural.c || plural.cases;
+    return ctx.plural(cases.reduce((messages, c) => [
+      ...messages,
+      formatMessageParts(ctx, c)
+    ], []));
+  } else {
+    return formatMessageParts(ctx, body);
   }
 }
-var defaultOnCacheKey = (source) => source;
-var compileCache2 = /* @__PURE__ */ Object.create(null);
-function compileToFunction2(source, options = {}) {
-  {
-    checkHtmlMessage(source, options);
-    const onCacheKey = options.onCacheKey || defaultOnCacheKey;
-    const key = onCacheKey(source);
-    const cached = compileCache2[key];
-    if (cached) {
-      return cached;
-    }
-    let occurred = false;
-    const onError = options.onError || defaultOnError2;
-    options.onError = (err) => {
-      occurred = true;
-      onError(err);
-    };
-    const { code: code3 } = baseCompile2(source, options);
-    const msg = new Function(`return ${code3}`)();
-    return !occurred ? compileCache2[key] = msg : msg;
+function formatMessageParts(ctx, node) {
+  const _static = node.s || node.static;
+  if (_static) {
+    return ctx.type === "text" ? _static : ctx.normalize([_static]);
+  } else {
+    const messages = (node.i || node.items).reduce((acm, c) => [...acm, formatMessagePart(ctx, c)], []);
+    return ctx.normalize(messages);
+  }
+}
+function formatMessagePart(ctx, node) {
+  const type = node.t || node.type;
+  switch (type) {
+    case 3:
+      const text = node;
+      return text.v || text.value;
+    case 9:
+      const literal = node;
+      return literal.v || literal.value;
+    case 4:
+      const named = node;
+      return ctx.interpolate(ctx.named(named.k || named.key));
+    case 5:
+      const list = node;
+      return ctx.interpolate(ctx.list(list.i || list.index));
+    case 6:
+      const linked = node;
+      const modifier = linked.m || linked.modifier;
+      return ctx.linked(formatMessagePart(ctx, linked.k || linked.key), modifier ? formatMessagePart(ctx, modifier) : void 0, ctx.type);
+    case 7:
+      const linkedKey = node;
+      return linkedKey.v || linkedKey.value;
+    case 8:
+      const linkedModifier = node;
+      return linkedModifier.v || linkedModifier.value;
+    default:
+      throw new Error(`unhandled node type on format message part: ${type}`);
   }
 }
 var code = CompileErrorCodes.__EXTEND_POINT__;
-var inc = () => ++code;
+var inc = incrementer(code);
 var CoreErrorCodes = {
   INVALID_ARGUMENT: code,
   INVALID_DATE_ARGUMENT: inc(),
   INVALID_ISO_DATE_ARGUMENT: inc(),
+  NOT_SUPPORT_NON_STRING_MESSAGE: inc(),
   __EXTEND_POINT__: inc()
-  // 18
+  // 22
 };
 function createCoreError(code3) {
   return createCompileError(code3, null, true ? { messages: errorMessages3 } : void 0);
@@ -25581,8 +25815,79 @@ function createCoreError(code3) {
 var errorMessages3 = {
   [CoreErrorCodes.INVALID_ARGUMENT]: "Invalid arguments",
   [CoreErrorCodes.INVALID_DATE_ARGUMENT]: "The date provided is an invalid Date object.Make sure your Date represents a valid date.",
-  [CoreErrorCodes.INVALID_ISO_DATE_ARGUMENT]: "The argument provided is not a valid ISO date string"
+  [CoreErrorCodes.INVALID_ISO_DATE_ARGUMENT]: "The argument provided is not a valid ISO date string",
+  [CoreErrorCodes.NOT_SUPPORT_NON_STRING_MESSAGE]: "Not support non-string message"
 };
+var WARN_MESSAGE = `Detected HTML in '{source}' message. Recommend not using HTML messages to avoid XSS.`;
+function checkHtmlMessage(source, warnHtmlMessage) {
+  if (warnHtmlMessage && detectHtmlTag(source)) {
+    warn4(format(WARN_MESSAGE, { source }));
+  }
+}
+var defaultOnCacheKey = (message) => message;
+var compileCache2 = /* @__PURE__ */ Object.create(null);
+var isMessageAST = (val) => isObject2(val) && (val.t === 0 || val.type === 0) && ("b" in val || "body" in val);
+function baseCompile3(message, options = {}) {
+  let detectError = false;
+  const onError = options.onError || defaultOnError2;
+  options.onError = (err) => {
+    detectError = true;
+    onError(err);
+  };
+  return { ...baseCompile2(message, options), detectError };
+}
+var compileToFunction2 = (message, context) => {
+  if (!isString2(message)) {
+    throw createCoreError(CoreErrorCodes.NOT_SUPPORT_NON_STRING_MESSAGE);
+  }
+  {
+    const warnHtmlMessage = isBoolean2(context.warnHtmlMessage) ? context.warnHtmlMessage : true;
+    checkHtmlMessage(message, warnHtmlMessage);
+    const onCacheKey = context.onCacheKey || defaultOnCacheKey;
+    const cacheKey = onCacheKey(message);
+    const cached = compileCache2[cacheKey];
+    if (cached) {
+      return cached;
+    }
+    const { code: code3, detectError } = baseCompile3(message, context);
+    const msg = new Function(`return ${code3}`)();
+    return !detectError ? compileCache2[cacheKey] = msg : msg;
+  }
+};
+function compile3(message, context) {
+  if (__INTLIFY_JIT_COMPILATION__ && !__INTLIFY_DROP_MESSAGE_COMPILER__ && isString2(message)) {
+    const warnHtmlMessage = isBoolean2(context.warnHtmlMessage) ? context.warnHtmlMessage : true;
+    checkHtmlMessage(message, warnHtmlMessage);
+    const onCacheKey = context.onCacheKey || defaultOnCacheKey;
+    const cacheKey = onCacheKey(message);
+    const cached = compileCache2[cacheKey];
+    if (cached) {
+      return cached;
+    }
+    const { ast, detectError } = baseCompile3(message, {
+      ...context,
+      location: true,
+      jit: true
+    });
+    const msg = format3(ast);
+    return !detectError ? compileCache2[cacheKey] = msg : msg;
+  } else {
+    if (!isMessageAST(message)) {
+      warn4(`the message that is resolve with key '${context.key}' is not supported for jit compilation`);
+      return () => message;
+    }
+    const cacheKey = message.cacheKey;
+    if (cacheKey) {
+      const cached = compileCache2[cacheKey];
+      if (cached) {
+        return cached;
+      }
+      return compileCache2[cacheKey] = format3(message);
+    } else {
+      return format3(message);
+    }
+  }
+}
 var NOOP_MESSAGE_FUNCTION = () => "";
 var isMessageFunction = (val) => isFunction2(val);
 function translate(context, ...args) {
@@ -25601,28 +25906,28 @@ function translate(context, ...args) {
     locale,
     messages[locale] || {}
   ];
-  let format2 = formatScope;
+  let format4 = formatScope;
   let cacheBaseKey = key;
-  if (!resolvedMessage && !(isString2(format2) || isMessageFunction(format2))) {
+  if (!resolvedMessage && !(isString2(format4) || isMessageAST(format4) || isMessageFunction(format4))) {
     if (enableDefaultMsg) {
-      format2 = defaultMsgOrKey;
-      cacheBaseKey = format2;
+      format4 = defaultMsgOrKey;
+      cacheBaseKey = format4;
     }
   }
-  if (!resolvedMessage && (!(isString2(format2) || isMessageFunction(format2)) || !isString2(targetLocale))) {
+  if (!resolvedMessage && (!(isString2(format4) || isMessageAST(format4) || isMessageFunction(format4)) || !isString2(targetLocale))) {
     return unresolving ? NOT_REOSLVED : key;
   }
-  if (isString2(format2) && context.messageCompiler == null) {
+  if (isString2(format4) && context.messageCompiler == null) {
     warn4(`The message format compilation is not supported in this build. Because message compiler isn't included. You need to pre-compilation all message format. So translate function return '${key}'.`);
     return key;
   }
   let occurred = false;
-  const errorDetector = () => {
+  const onError = () => {
     occurred = true;
   };
-  const msg = !isMessageFunction(format2) ? compileMessageFormat(context, key, targetLocale, format2, cacheBaseKey, errorDetector) : format2;
+  const msg = !isMessageFunction(format4) ? compileMessageFormat(context, key, targetLocale, format4, cacheBaseKey, onError) : format4;
   if (occurred) {
-    return format2;
+    return format4;
   }
   const ctxOptions = getMessageContextOptions(context, targetLocale, message, options);
   const msgContext = createMessageContext(ctxOptions);
@@ -25631,9 +25936,9 @@ function translate(context, ...args) {
   if (true) {
     const payloads = {
       timestamp: Date.now(),
-      key: isString2(key) ? key : isMessageFunction(format2) ? format2.key : "",
-      locale: targetLocale || (isMessageFunction(format2) ? format2.locale : ""),
-      format: isString2(format2) ? format2 : isMessageFunction(format2) ? format2.source : "",
+      key: isString2(key) ? key : isMessageFunction(format4) ? format4.key : "",
+      locale: targetLocale || (isMessageFunction(format4) ? format4.locale : ""),
+      format: isString2(format4) ? format4 : isMessageFunction(format4) ? format4.source : "",
       message: ret
     };
     payloads.meta = assign({}, context.__meta, getAdditionalMeta() || {});
@@ -25657,7 +25962,7 @@ function resolveMessageFormat(context, key, locale, fallbackLocale, fallbackWarn
   const locales = localeFallbacker(context, fallbackLocale, locale);
   let message = {};
   let targetLocale;
-  let format2 = null;
+  let format4 = null;
   let from = locale;
   let to = null;
   const type = "translate";
@@ -25691,17 +25996,17 @@ function resolveMessageFormat(context, key, locale, fallbackLocale, fallbackWarn
       endTag = "intlify-message-resolve-end";
       mark && mark(startTag);
     }
-    if ((format2 = resolveValue2(message, key)) === null) {
-      format2 = message[key];
+    if ((format4 = resolveValue2(message, key)) === null) {
+      format4 = message[key];
     }
     if (inBrowser) {
       const end = window.performance.now();
       const emitter = context.__v_emitter;
-      if (emitter && start && format2) {
+      if (emitter && start && format4) {
         emitter.emit("message-resolve", {
           type: "message-resolve",
           key,
-          message: format2,
+          message: format4,
           time: end - start,
           groupId: `${type}:${key}`
         });
@@ -25711,8 +26016,9 @@ function resolveMessageFormat(context, key, locale, fallbackLocale, fallbackWarn
         measure("intlify message resolve", startTag, endTag);
       }
     }
-    if (isString2(format2) || isFunction2(format2))
+    if (isString2(format4) || isMessageAST(format4) || isMessageFunction(format4)) {
       break;
+    }
     const missingRet = handleMissing(
       context,
       // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -25722,22 +26028,22 @@ function resolveMessageFormat(context, key, locale, fallbackLocale, fallbackWarn
       type
     );
     if (missingRet !== key) {
-      format2 = missingRet;
+      format4 = missingRet;
     }
     from = to;
   }
-  return [format2, targetLocale, message];
+  return [format4, targetLocale, message];
 }
-function compileMessageFormat(context, key, targetLocale, format2, cacheBaseKey, errorDetector) {
+function compileMessageFormat(context, key, targetLocale, format4, cacheBaseKey, onError) {
   const { messageCompiler, warnHtmlMessage } = context;
-  if (isMessageFunction(format2)) {
-    const msg2 = format2;
+  if (isMessageFunction(format4)) {
+    const msg2 = format4;
     msg2.locale = msg2.locale || targetLocale;
     msg2.key = msg2.key || key;
     return msg2;
   }
   if (messageCompiler == null) {
-    const msg2 = () => format2;
+    const msg2 = () => format4;
     msg2.locale = targetLocale;
     msg2.key = key;
     return msg2;
@@ -25751,14 +26057,14 @@ function compileMessageFormat(context, key, targetLocale, format2, cacheBaseKey,
     endTag = "intlify-message-compilation-end";
     mark && mark(startTag);
   }
-  const msg = messageCompiler(format2, getCompileOptions(context, targetLocale, cacheBaseKey, format2, warnHtmlMessage, errorDetector));
+  const msg = messageCompiler(format4, getCompileContext(context, targetLocale, cacheBaseKey, format4, warnHtmlMessage, onError));
   if (inBrowser) {
     const end = window.performance.now();
     const emitter = context.__v_emitter;
     if (emitter && start) {
       emitter.emit("message-compilation", {
         type: "message-compilation",
-        message: format2,
+        message: format4,
         time: end - start,
         groupId: `${"translate"}:${key}`
       });
@@ -25770,7 +26076,7 @@ function compileMessageFormat(context, key, targetLocale, format2, cacheBaseKey,
   }
   msg.locale = targetLocale;
   msg.key = key;
-  msg.source = format2;
+  msg.source = format4;
   return msg;
 }
 function evaluateMessage(context, msg, msgCtx) {
@@ -25805,7 +26111,7 @@ function evaluateMessage(context, msg, msgCtx) {
 function parseTranslateArgs(...args) {
   const [arg1, arg2, arg3] = args;
   const options = {};
-  if (!isString2(arg1) && !isNumber(arg1) && !isMessageFunction(arg1)) {
+  if (!isString2(arg1) && !isNumber(arg1) && !isMessageFunction(arg1) && !isMessageAST(arg1)) {
     throw createCoreError(CoreErrorCodes.INVALID_ARGUMENT);
   }
   const key = isNumber(arg1) ? String(arg1) : isMessageFunction(arg1) ? arg1 : arg1;
@@ -25827,18 +26133,21 @@ function parseTranslateArgs(...args) {
   }
   return [key, options];
 }
-function getCompileOptions(context, locale, key, source, warnHtmlMessage, errorDetector) {
+function getCompileContext(context, locale, key, source, warnHtmlMessage, onError) {
   return {
+    locale,
+    key,
     warnHtmlMessage,
     onError: (err) => {
-      errorDetector && errorDetector(err);
+      onError && onError(err);
       if (true) {
+        const _source = getSourceForCodeFrame(source);
         const message = `Message compilation error: ${err.message}`;
-        const codeFrame = err.location && generateCodeFrame2(source, err.location.start.offset, err.location.end.offset);
+        const codeFrame = err.location && _source && generateCodeFrame2(_source, err.location.start.offset, err.location.end.offset);
         const emitter = context.__v_emitter;
-        if (emitter) {
+        if (emitter && _source) {
           emitter.emit("compile-error", {
-            message: source,
+            message: _source,
             error: err.message,
             start: err.location && err.location.start.offset,
             end: err.location && err.location.end.offset,
@@ -25854,6 +26163,16 @@ ${codeFrame}` : message);
     onCacheKey: (source2) => generateFormatCacheKey(locale, key, source2)
   };
 }
+function getSourceForCodeFrame(source) {
+  var _a;
+  if (isString2(source))
+    ;
+  else {
+    if ((_a = source.loc) == null ? void 0 : _a.source) {
+      return source.loc.source;
+    }
+  }
+}
 function getMessageContextOptions(context, locale, message, options) {
   const { modifiers, pluralRules, messageResolver: resolveValue2, fallbackLocale, fallbackWarn, missingWarn, fallbackContext } = context;
   const resolveMessage = (key) => {
@@ -25862,12 +26181,12 @@ function getMessageContextOptions(context, locale, message, options) {
       const [, , message2] = resolveMessageFormat(fallbackContext, key, locale, fallbackLocale, fallbackWarn, missingWarn);
       val = resolveValue2(message2, key);
     }
-    if (isString2(val)) {
+    if (isString2(val) || isMessageAST(val)) {
       let occurred = false;
-      const errorDetector = () => {
+      const onError = () => {
         occurred = true;
       };
-      const msg = compileMessageFormat(context, key, locale, val, key, errorDetector);
+      const msg = compileMessageFormat(context, key, locale, val, key, onError);
       return !occurred ? msg : NOOP_MESSAGE_FUNCTION;
     } else if (isMessageFunction(val)) {
       return val;
@@ -25923,7 +26242,7 @@ function datetime(context, ...args) {
   }
   let datetimeFormat = {};
   let targetLocale;
-  let format2 = null;
+  let format4 = null;
   let from = locale;
   let to = null;
   const type = "datetime format";
@@ -25948,13 +26267,13 @@ function datetime(context, ...args) {
       }
     }
     datetimeFormat = datetimeFormats[targetLocale] || {};
-    format2 = datetimeFormat[key];
-    if (isPlainObject2(format2))
+    format4 = datetimeFormat[key];
+    if (isPlainObject2(format4))
       break;
     handleMissing(context, key, targetLocale, missingWarn, type);
     from = to;
   }
-  if (!isPlainObject2(format2) || !isString2(targetLocale)) {
+  if (!isPlainObject2(format4) || !isString2(targetLocale)) {
     return unresolving ? NOT_REOSLVED : key;
   }
   let id = `${targetLocale}__${key}`;
@@ -25963,7 +26282,7 @@ function datetime(context, ...args) {
   }
   let formatter = __datetimeFormatters.get(id);
   if (!formatter) {
-    formatter = new Intl.DateTimeFormat(targetLocale, assign({}, format2, overrides));
+    formatter = new Intl.DateTimeFormat(targetLocale, assign({}, format4, overrides));
     __datetimeFormatters.set(id, formatter);
   }
   return !part ? formatter.format(value) : formatter.formatToParts(value);
@@ -26038,9 +26357,9 @@ function parseDateTimeArgs(...args) {
   }
   return [options.key || "", value, options, overrides];
 }
-function clearDateTimeFormat(ctx, locale, format2) {
+function clearDateTimeFormat(ctx, locale, format4) {
   const context = ctx;
-  for (const key in format2) {
+  for (const key in format4) {
     const id = `${locale}__${key}`;
     if (!context.__datetimeFormatters.has(id)) {
       continue;
@@ -26071,7 +26390,7 @@ function number(context, ...args) {
   }
   let numberFormat = {};
   let targetLocale;
-  let format2 = null;
+  let format4 = null;
   let from = locale;
   let to = null;
   const type = "number format";
@@ -26096,13 +26415,13 @@ function number(context, ...args) {
       }
     }
     numberFormat = numberFormats[targetLocale] || {};
-    format2 = numberFormat[key];
-    if (isPlainObject2(format2))
+    format4 = numberFormat[key];
+    if (isPlainObject2(format4))
       break;
     handleMissing(context, key, targetLocale, missingWarn, type);
     from = to;
   }
-  if (!isPlainObject2(format2) || !isString2(targetLocale)) {
+  if (!isPlainObject2(format4) || !isString2(targetLocale)) {
     return unresolving ? NOT_REOSLVED : key;
   }
   let id = `${targetLocale}__${key}`;
@@ -26111,7 +26430,7 @@ function number(context, ...args) {
   }
   let formatter = __numberFormatters.get(id);
   if (!formatter) {
-    formatter = new Intl.NumberFormat(targetLocale, assign({}, format2, overrides));
+    formatter = new Intl.NumberFormat(targetLocale, assign({}, format4, overrides));
     __numberFormatters.set(id, formatter);
   }
   return !part ? formatter.format(value) : formatter.formatToParts(value);
@@ -26167,9 +26486,9 @@ function parseNumberArgs(...args) {
   }
   return [options.key || "", value, options, overrides];
 }
-function clearNumberFormat(ctx, locale, format2) {
+function clearNumberFormat(ctx, locale, format4) {
   const context = ctx;
-  for (const key in format2) {
+  for (const key in format4) {
     const id = `${locale}__${key}`;
     if (!context.__numberFormatters.has(id)) {
       continue;
@@ -26178,9 +26497,7 @@ function clearNumberFormat(ctx, locale, format2) {
   }
 }
 {
-  if (typeof __INTLIFY_PROD_DEVTOOLS__ !== "boolean") {
-    getGlobalThis2().__INTLIFY_PROD_DEVTOOLS__ = false;
-  }
+  initFeatureFlags2();
 }
 
 // node_modules/@vue/devtools-api/lib/esm/env.js
@@ -26340,55 +26657,27 @@ function setupDevtoolsPlugin(pluginDescriptor, setupFn) {
   }
 }
 
-// node_modules/@intlify/vue-devtools/dist/vue-devtools.esm-bundler.js
-var VueDevToolsLabels = {
-  [
-    "vue-devtools-plugin-vue-i18n"
-    /* PLUGIN */
-  ]: "Vue I18n devtools",
-  [
-    "vue-i18n-resource-inspector"
-    /* CUSTOM_INSPECTOR */
-  ]: "I18n Resources",
-  [
-    "vue-i18n-timeline"
-    /* TIMELINE */
-  ]: "Vue I18n"
-};
-var VueDevToolsPlaceholders = {
-  [
-    "vue-i18n-resource-inspector"
-    /* CUSTOM_INSPECTOR */
-  ]: "Search for scopes ..."
-};
-var VueDevToolsTimelineColors = {
-  [
-    "vue-i18n-timeline"
-    /* TIMELINE */
-  ]: 16764185
-};
-
-// node_modules/vue-i18n/dist/vue-i18n.esm-bundler.js
-var VERSION2 = "9.2.2";
-function initFeatureFlags2() {
-  let needWarn = false;
+// node_modules/vue-i18n/dist/vue-i18n.mjs
+var VERSION2 = "9.4.1";
+function initFeatureFlags3() {
   if (typeof __VUE_I18N_FULL_INSTALL__ !== "boolean") {
-    needWarn = true;
     getGlobalThis2().__VUE_I18N_FULL_INSTALL__ = true;
   }
   if (typeof __VUE_I18N_LEGACY_API__ !== "boolean") {
-    needWarn = true;
     getGlobalThis2().__VUE_I18N_LEGACY_API__ = true;
+  }
+  if (typeof __INTLIFY_JIT_COMPILATION__ !== "boolean") {
+    getGlobalThis2().__INTLIFY_JIT_COMPILATION__ = false;
+  }
+  if (typeof __INTLIFY_DROP_MESSAGE_COMPILER__ !== "boolean") {
+    getGlobalThis2().__INTLIFY_DROP_MESSAGE_COMPILER__ = false;
   }
   if (typeof __INTLIFY_PROD_DEVTOOLS__ !== "boolean") {
     getGlobalThis2().__INTLIFY_PROD_DEVTOOLS__ = false;
   }
-  if (needWarn) {
-    console.warn(`You are running the esm-bundler build of vue-i18n. It is recommended to configure your bundler to explicitly replace feature flag globals with boolean literals to get proper tree-shaking in the final bundle.`);
-  }
 }
 var code$1 = CoreWarnCodes.__EXTEND_POINT__;
-var inc$1 = () => ++code$1;
+var inc$1 = incrementer(code$1);
 var I18nWarnCodes = {
   FALLBACK_TO_ROOT: code$1,
   NOT_SUPPORTED_PRESERVE: inc$1(),
@@ -26396,8 +26685,10 @@ var I18nWarnCodes = {
   NOT_SUPPORTED_PRESERVE_DIRECTIVE: inc$1(),
   NOT_SUPPORTED_GET_CHOICE_INDEX: inc$1(),
   COMPONENT_NAME_LEGACY_COMPATIBLE: inc$1(),
-  NOT_FOUND_PARENT_SCOPE: inc$1()
-  // 13
+  NOT_FOUND_PARENT_SCOPE: inc$1(),
+  IGNORE_OBJ_FLATTEN: inc$1(),
+  NOTICE_DROP_ALLOW_COMPOSITION: inc$1()
+  // 17
 };
 var warnMessages2 = {
   [I18nWarnCodes.FALLBACK_TO_ROOT]: `Fall back to {type} '{key}' with root locale.`,
@@ -26406,13 +26697,15 @@ var warnMessages2 = {
   [I18nWarnCodes.NOT_SUPPORTED_PRESERVE_DIRECTIVE]: `Not supported 'preserveDirectiveContent'.`,
   [I18nWarnCodes.NOT_SUPPORTED_GET_CHOICE_INDEX]: `Not supported 'getChoiceIndex'.`,
   [I18nWarnCodes.COMPONENT_NAME_LEGACY_COMPATIBLE]: `Component name legacy compatible: '{name}' -> 'i18n'`,
-  [I18nWarnCodes.NOT_FOUND_PARENT_SCOPE]: `Not found parent scope. use the global scope.`
+  [I18nWarnCodes.NOT_FOUND_PARENT_SCOPE]: `Not found parent scope. use the global scope.`,
+  [I18nWarnCodes.IGNORE_OBJ_FLATTEN]: `Ignore object flatten: '{key}' key has an string value`,
+  [I18nWarnCodes.NOTICE_DROP_ALLOW_COMPOSITION]: `'allowComposition' option will be dropped in the next major version. For more information, please see \u{1F449} https://tinyurl.com/2p97mcze`
 };
 function getWarnMessage2(code3, ...args) {
   return format(warnMessages2[code3], ...args);
 }
-var code2 = CompileErrorCodes.__EXTEND_POINT__;
-var inc2 = () => ++code2;
+var code2 = CoreErrorCodes.__EXTEND_POINT__;
+var inc2 = incrementer(code2);
 var I18nErrorCodes = {
   // composer module errors
   UNEXPECTED_RETURN_TYPE: code2,
@@ -26420,14 +26713,14 @@ var I18nErrorCodes = {
   INVALID_ARGUMENT: inc2(),
   // i18n module errors
   MUST_BE_CALL_SETUP_TOP: inc2(),
-  NOT_INSLALLED: inc2(),
+  NOT_INSTALLED: inc2(),
   NOT_AVAILABLE_IN_LEGACY_MODE: inc2(),
   // directive module errors
   REQUIRED_VALUE: inc2(),
   INVALID_VALUE: inc2(),
   // vue-devtools errors
   CANNOT_SETUP_VUE_DEVTOOLS_PLUGIN: inc2(),
-  NOT_INSLALLED_WITH_PROVIDE: inc2(),
+  NOT_INSTALLED_WITH_PROVIDE: inc2(),
   // unexpected error
   UNEXPECTED_ERROR: inc2(),
   // not compatible legacy vue-i18n constructor
@@ -26440,7 +26733,7 @@ var I18nErrorCodes = {
   NOT_AVAILABLE_COMPOSITION_IN_LEGACY: inc2(),
   // for enhancement
   __EXTEND_POINT__: inc2()
-  // 29
+  // 37
 };
 function createI18nError(code3, ...args) {
   return createCompileError(code3, null, true ? { messages: errorMessages4, args } : void 0);
@@ -26449,26 +26742,27 @@ var errorMessages4 = {
   [I18nErrorCodes.UNEXPECTED_RETURN_TYPE]: "Unexpected return type in composer",
   [I18nErrorCodes.INVALID_ARGUMENT]: "Invalid argument",
   [I18nErrorCodes.MUST_BE_CALL_SETUP_TOP]: "Must be called at the top of a `setup` function",
-  [I18nErrorCodes.NOT_INSLALLED]: "Need to install with `app.use` function",
+  [I18nErrorCodes.NOT_INSTALLED]: "Need to install with `app.use` function",
   [I18nErrorCodes.UNEXPECTED_ERROR]: "Unexpected error",
   [I18nErrorCodes.NOT_AVAILABLE_IN_LEGACY_MODE]: "Not available in legacy mode",
   [I18nErrorCodes.REQUIRED_VALUE]: `Required in value: {0}`,
   [I18nErrorCodes.INVALID_VALUE]: `Invalid value`,
   [I18nErrorCodes.CANNOT_SETUP_VUE_DEVTOOLS_PLUGIN]: `Cannot setup vue-devtools plugin`,
-  [I18nErrorCodes.NOT_INSLALLED_WITH_PROVIDE]: "Need to install with `provide` function",
+  [I18nErrorCodes.NOT_INSTALLED_WITH_PROVIDE]: "Need to install with `provide` function",
   [I18nErrorCodes.NOT_COMPATIBLE_LEGACY_VUE_I18N]: "Not compatible legacy VueI18n.",
   [I18nErrorCodes.BRIDGE_SUPPORT_VUE_2_ONLY]: "vue-i18n-bridge support Vue 2.x only",
   [I18nErrorCodes.MUST_DEFINE_I18N_OPTION_IN_ALLOW_COMPOSITION]: "Must define \u2018i18n\u2019 option or custom block in Composition API with using local scope in Legacy API mode",
   [I18nErrorCodes.NOT_AVAILABLE_COMPOSITION_IN_LEGACY]: "Not available Compostion API in Legacy API mode. Please make sure that the legacy API mode is working properly"
 };
-var TransrateVNodeSymbol = /* @__PURE__ */ makeSymbol("__transrateVNode");
+var TranslateVNodeSymbol = /* @__PURE__ */ makeSymbol("__translateVNode");
 var DatetimePartsSymbol = /* @__PURE__ */ makeSymbol("__datetimeParts");
 var NumberPartsSymbol = /* @__PURE__ */ makeSymbol("__numberParts");
 var EnableEmitter = /* @__PURE__ */ makeSymbol("__enableEmitter");
 var DisableEmitter = /* @__PURE__ */ makeSymbol("__disableEmitter");
 var SetPluralRulesSymbol = makeSymbol("__setPluralRules");
 makeSymbol("__intlifyMeta");
-var InejctWithOption = /* @__PURE__ */ makeSymbol("__injectWithOption");
+var InejctWithOptionSymbol = /* @__PURE__ */ makeSymbol("__injectWithOption");
+var DisposeSymbol = /* @__PURE__ */ makeSymbol("__dispose");
 function handleFlatJson(obj) {
   if (!isObject2(obj)) {
     return obj;
@@ -26485,14 +26779,24 @@ function handleFlatJson(obj) {
       const subKeys = key.split(".");
       const lastIndex = subKeys.length - 1;
       let currentObj = obj;
+      let hasStringValue = false;
       for (let i = 0; i < lastIndex; i++) {
         if (!(subKeys[i] in currentObj)) {
           currentObj[subKeys[i]] = {};
         }
+        if (!isObject2(currentObj[subKeys[i]])) {
+          warn4(getWarnMessage2(I18nWarnCodes.IGNORE_OBJ_FLATTEN, {
+            key: subKeys[i]
+          }));
+          hasStringValue = true;
+          break;
+        }
         currentObj = currentObj[subKeys[i]];
       }
-      currentObj[subKeys[lastIndex]] = obj[key];
-      delete obj[key];
+      if (!hasStringValue) {
+        currentObj[subKeys[lastIndex]] = obj[key];
+        delete obj[key];
+      }
       if (isObject2(currentObj[subKeys[lastIndex]])) {
         handleFlatJson(currentObj[subKeys[lastIndex]]);
       }
@@ -26545,10 +26849,10 @@ function deepCopy(src, des) {
 function getComponentOptions(instance) {
   return instance.type;
 }
-function adjustI18nResources(global2, options, componentOptions) {
+function adjustI18nResources(gl, options, componentOptions) {
   let messages = isObject2(options.messages) ? options.messages : {};
   if ("__i18nGlobal" in componentOptions) {
-    messages = getLocaleMessages(global2.locale.value, {
+    messages = getLocaleMessages(gl.locale.value, {
       messages,
       __i18n: componentOptions.__i18nGlobal
     });
@@ -26556,7 +26860,7 @@ function adjustI18nResources(global2, options, componentOptions) {
   const locales = Object.keys(messages);
   if (locales.length) {
     locales.forEach((locale) => {
-      global2.mergeLocaleMessage(locale, messages[locale]);
+      gl.mergeLocaleMessage(locale, messages[locale]);
     });
   }
   {
@@ -26564,7 +26868,7 @@ function adjustI18nResources(global2, options, componentOptions) {
       const locales2 = Object.keys(options.datetimeFormats);
       if (locales2.length) {
         locales2.forEach((locale) => {
-          global2.mergeDateTimeFormat(locale, options.datetimeFormats[locale]);
+          gl.mergeDateTimeFormat(locale, options.datetimeFormats[locale]);
         });
       }
     }
@@ -26572,7 +26876,7 @@ function adjustI18nResources(global2, options, componentOptions) {
       const locales2 = Object.keys(options.numberFormats);
       if (locales2.length) {
         locales2.forEach((locale) => {
-          global2.mergeNumberFormat(locale, options.numberFormats[locale]);
+          gl.mergeNumberFormat(locale, options.numberFormats[locale]);
         });
       }
     }
@@ -26594,7 +26898,7 @@ var getMetaInfo = () => {
   return instance && (meta = getComponentOptions(instance)[DEVTOOLS_META]) ? { [DEVTOOLS_META]: meta } : null;
 };
 function createComposer(options = {}, VueI18nLegacy) {
-  const { __root } = options;
+  const { __root, __injectWithOption } = options;
   const _isGlobal = __root === void 0;
   let _inheritLocale = isBoolean2(options.inheritLocale) ? options.inheritLocale : true;
   const _locale = ref(
@@ -26638,6 +26942,7 @@ function createComposer(options = {}, VueI18nLegacy) {
       warnHtmlMessage: _warnHtmlMessage,
       escapeParameter: _escapeParameter,
       messageResolver: options.messageResolver,
+      messageCompiler: options.messageCompiler,
       __meta: { framework: "vue" }
     };
     {
@@ -26705,21 +27010,21 @@ function createComposer(options = {}, VueI18nLegacy) {
   const wrapWithDeps = (fn, argumentParser, warnType, fallbackSuccess, fallbackFail, successCondition) => {
     trackReactivityValues();
     let ret;
-    if (true) {
-      try {
+    try {
+      if (true) {
         setAdditionalMeta(getMetaInfo());
-        if (!_isGlobal) {
-          _context.fallbackContext = __root ? getFallbackContext() : void 0;
-        }
-        ret = fn(_context);
-      } finally {
-        setAdditionalMeta(null);
-        if (!_isGlobal) {
-          _context.fallbackContext = void 0;
-        }
       }
-    } else {
+      if (!_isGlobal) {
+        _context.fallbackContext = __root ? getFallbackContext() : void 0;
+      }
       ret = fn(_context);
+    } finally {
+      if (true) {
+        setAdditionalMeta(null);
+      }
+      if (!_isGlobal) {
+        _context.fallbackContext = void 0;
+      }
     }
     if (isNumber(ret) && ret === NOT_REOSLVED) {
       const [key, arg2] = argumentParser();
@@ -26774,7 +27079,7 @@ function createComposer(options = {}, VueI18nLegacy) {
     interpolate,
     type: "vnode"
   };
-  function transrateVNode(...args) {
+  function translateVNode(...args) {
     return wrapWithDeps(
       (context) => {
         let ret;
@@ -26790,7 +27095,7 @@ function createComposer(options = {}, VueI18nLegacy) {
       () => parseTranslateArgs(...args),
       "translate",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (root) => root[TransrateVNodeSymbol](...args),
+      (root) => root[TranslateVNodeSymbol](...args),
       (key) => [createTextNode(key)],
       (val) => isArray2(val)
     );
@@ -26858,28 +27163,28 @@ function createComposer(options = {}, VueI18nLegacy) {
   function getDateTimeFormat(locale2) {
     return _datetimeFormats.value[locale2] || {};
   }
-  function setDateTimeFormat(locale2, format2) {
-    _datetimeFormats.value[locale2] = format2;
+  function setDateTimeFormat(locale2, format4) {
+    _datetimeFormats.value[locale2] = format4;
     _context.datetimeFormats = _datetimeFormats.value;
-    clearDateTimeFormat(_context, locale2, format2);
+    clearDateTimeFormat(_context, locale2, format4);
   }
-  function mergeDateTimeFormat(locale2, format2) {
-    _datetimeFormats.value[locale2] = assign(_datetimeFormats.value[locale2] || {}, format2);
+  function mergeDateTimeFormat(locale2, format4) {
+    _datetimeFormats.value[locale2] = assign(_datetimeFormats.value[locale2] || {}, format4);
     _context.datetimeFormats = _datetimeFormats.value;
-    clearDateTimeFormat(_context, locale2, format2);
+    clearDateTimeFormat(_context, locale2, format4);
   }
   function getNumberFormat(locale2) {
     return _numberFormats.value[locale2] || {};
   }
-  function setNumberFormat(locale2, format2) {
-    _numberFormats.value[locale2] = format2;
+  function setNumberFormat(locale2, format4) {
+    _numberFormats.value[locale2] = format4;
     _context.numberFormats = _numberFormats.value;
-    clearNumberFormat(_context, locale2, format2);
+    clearNumberFormat(_context, locale2, format4);
   }
-  function mergeNumberFormat(locale2, format2) {
-    _numberFormats.value[locale2] = assign(_numberFormats.value[locale2] || {}, format2);
+  function mergeNumberFormat(locale2, format4) {
+    _numberFormats.value[locale2] = assign(_numberFormats.value[locale2] || {}, format4);
     _context.numberFormats = _numberFormats.value;
-    clearNumberFormat(_context, locale2, format2);
+    clearNumberFormat(_context, locale2, format4);
   }
   composerID++;
   if (__root && inBrowser) {
@@ -26991,8 +27296,8 @@ function createComposer(options = {}, VueI18nLegacy) {
     composer.getNumberFormat = getNumberFormat;
     composer.setNumberFormat = setNumberFormat;
     composer.mergeNumberFormat = mergeNumberFormat;
-    composer[InejctWithOption] = options.__injectWithOption;
-    composer[TransrateVNodeSymbol] = transrateVNode;
+    composer[InejctWithOptionSymbol] = __injectWithOption;
+    composer[TranslateVNodeSymbol] = translateVNode;
     composer[DatetimePartsSymbol] = datetimeParts;
     composer[NumberPartsSymbol] = numberParts;
   }
@@ -27067,6 +27372,7 @@ function convertComposerOptions(options) {
 function createVueI18n(options = {}, VueI18nLegacy) {
   {
     const composer = createComposer(convertComposerOptions(options));
+    const { __extender } = options;
     const vueI18n = {
       // id
       id: composer.id,
@@ -27278,12 +27584,12 @@ function createVueI18n(options = {}, VueI18nLegacy) {
         return composer.getDateTimeFormat(locale);
       },
       // setDateTimeFormat
-      setDateTimeFormat(locale, format2) {
-        composer.setDateTimeFormat(locale, format2);
+      setDateTimeFormat(locale, format4) {
+        composer.setDateTimeFormat(locale, format4);
       },
       // mergeDateTimeFormat
-      mergeDateTimeFormat(locale, format2) {
-        composer.mergeDateTimeFormat(locale, format2);
+      mergeDateTimeFormat(locale, format4) {
+        composer.mergeDateTimeFormat(locale, format4);
       },
       // n
       n(...args) {
@@ -27294,27 +27600,21 @@ function createVueI18n(options = {}, VueI18nLegacy) {
         return composer.getNumberFormat(locale);
       },
       // setNumberFormat
-      setNumberFormat(locale, format2) {
-        composer.setNumberFormat(locale, format2);
+      setNumberFormat(locale, format4) {
+        composer.setNumberFormat(locale, format4);
       },
       // mergeNumberFormat
-      mergeNumberFormat(locale, format2) {
-        composer.mergeNumberFormat(locale, format2);
+      mergeNumberFormat(locale, format4) {
+        composer.mergeNumberFormat(locale, format4);
       },
       // getChoiceIndex
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       getChoiceIndex(choice, choicesLength) {
         warn4(getWarnMessage2(I18nWarnCodes.NOT_SUPPORTED_GET_CHOICE_INDEX));
         return -1;
-      },
-      // for internal
-      __onComponentInstanceCreated(target) {
-        const { componentInstanceCreatedListener } = options;
-        if (componentInstanceCreatedListener) {
-          componentInstanceCreatedListener(target, vueI18n);
-        }
       }
     };
+    vueI18n.__extender = __extender;
     if (true) {
       vueI18n.__enableEmitter = (emitter) => {
         const __composer = composer;
@@ -27340,7 +27640,7 @@ var baseFormatProps = {
     // NOTE: avoid https://github.com/microsoft/rushstack/issues/1050
     validator: (val) => val === "parent" || val === "global",
     default: "parent"
-    /* ComponetI18nScope */
+    /* ComponentI18nScope */
   },
   i18n: {
     type: Object
@@ -27350,9 +27650,10 @@ function getInterpolateArg({ slots }, keys) {
   if (keys.length === 1 && keys[0] === "default") {
     const ret = slots.default ? slots.default() : [];
     return ret.reduce((slot, current) => {
-      return slot = [
+      return [
         ...slot,
-        ...isArray2(current.children) ? current.children : [current]
+        // prettier-ignore
+        ...current.type === Fragment ? current.children : [current]
       ];
     }, []);
   } else {
@@ -27368,48 +27669,46 @@ function getInterpolateArg({ slots }, keys) {
 function getFragmentableTag(tag) {
   return Fragment;
 }
-var Translation = (
-  /* defineComponent */
-  {
-    /* eslint-disable */
-    name: "i18n-t",
-    props: assign({
-      keypath: {
-        type: String,
-        required: true
-      },
-      plural: {
-        type: [Number, String],
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        validator: (val) => isNumber(val) || !isNaN(val)
-      }
-    }, baseFormatProps),
-    /* eslint-enable */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setup(props, context) {
-      const { slots, attrs } = context;
-      const i18n = props.i18n || useI18n({
-        useScope: props.scope,
-        __useComponent: true
-      });
-      return () => {
-        const keys = Object.keys(slots).filter((key) => key !== "_");
-        const options = {};
-        if (props.locale) {
-          options.locale = props.locale;
-        }
-        if (props.plural !== void 0) {
-          options.plural = isString2(props.plural) ? +props.plural : props.plural;
-        }
-        const arg = getInterpolateArg(context, keys);
-        const children = i18n[TransrateVNodeSymbol](props.keypath, arg, options);
-        const assignedAttrs = assign({}, attrs);
-        const tag = isString2(props.tag) || isObject2(props.tag) ? props.tag : getFragmentableTag();
-        return h(tag, assignedAttrs, children);
-      };
+var TranslationImpl = /* @__PURE__ */ defineComponent({
+  /* eslint-disable */
+  name: "i18n-t",
+  props: assign({
+    keypath: {
+      type: String,
+      required: true
+    },
+    plural: {
+      type: [Number, String],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      validator: (val) => isNumber(val) || !isNaN(val)
     }
+  }, baseFormatProps),
+  /* eslint-enable */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setup(props, context) {
+    const { slots, attrs } = context;
+    const i18n = props.i18n || useI18n({
+      useScope: props.scope,
+      __useComponent: true
+    });
+    return () => {
+      const keys = Object.keys(slots).filter((key) => key !== "_");
+      const options = {};
+      if (props.locale) {
+        options.locale = props.locale;
+      }
+      if (props.plural !== void 0) {
+        options.plural = isString2(props.plural) ? +props.plural : props.plural;
+      }
+      const arg = getInterpolateArg(context, keys);
+      const children = i18n[TranslateVNodeSymbol](props.keypath, arg, options);
+      const assignedAttrs = assign({}, attrs);
+      const tag = isString2(props.tag) || isObject2(props.tag) ? props.tag : getFragmentableTag();
+      return h(tag, assignedAttrs, children);
+    };
   }
-);
+});
+var Translation = TranslationImpl;
 function isVNode2(target) {
   return isArray2(target) && !isString2(target[0]);
 }
@@ -27450,56 +27749,58 @@ function renderFormatter(props, context, slotKeys, partFormatter) {
     return h(tag, assignedAttrs, children);
   };
 }
-var NumberFormat = (
-  /* defineComponent */
-  {
-    /* eslint-disable */
-    name: "i18n-n",
-    props: assign({
-      value: {
-        type: Number,
-        required: true
-      },
-      format: {
-        type: [String, Object]
-      }
-    }, baseFormatProps),
-    /* eslint-enable */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setup(props, context) {
-      const i18n = props.i18n || useI18n({ useScope: "parent", __useComponent: true });
-      return renderFormatter(props, context, NUMBER_FORMAT_OPTIONS_KEYS, (...args) => (
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        i18n[NumberPartsSymbol](...args)
-      ));
+var NumberFormatImpl = /* @__PURE__ */ defineComponent({
+  /* eslint-disable */
+  name: "i18n-n",
+  props: assign({
+    value: {
+      type: Number,
+      required: true
+    },
+    format: {
+      type: [String, Object]
     }
+  }, baseFormatProps),
+  /* eslint-enable */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setup(props, context) {
+    const i18n = props.i18n || useI18n({
+      useScope: "parent",
+      __useComponent: true
+    });
+    return renderFormatter(props, context, NUMBER_FORMAT_OPTIONS_KEYS, (...args) => (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      i18n[NumberPartsSymbol](...args)
+    ));
   }
-);
-var DatetimeFormat = (
-  /*defineComponent */
-  {
-    /* eslint-disable */
-    name: "i18n-d",
-    props: assign({
-      value: {
-        type: [Number, Date],
-        required: true
-      },
-      format: {
-        type: [String, Object]
-      }
-    }, baseFormatProps),
-    /* eslint-enable */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setup(props, context) {
-      const i18n = props.i18n || useI18n({ useScope: "parent", __useComponent: true });
-      return renderFormatter(props, context, DATETIME_FORMAT_OPTIONS_KEYS, (...args) => (
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        i18n[DatetimePartsSymbol](...args)
-      ));
+});
+var NumberFormat = NumberFormatImpl;
+var DatetimeFormatImpl = /* @__PURE__ */ defineComponent({
+  /* eslint-disable */
+  name: "i18n-d",
+  props: assign({
+    value: {
+      type: [Number, Date],
+      required: true
+    },
+    format: {
+      type: [String, Object]
     }
+  }, baseFormatProps),
+  /* eslint-enable */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setup(props, context) {
+    const i18n = props.i18n || useI18n({
+      useScope: "parent",
+      __useComponent: true
+    });
+    return renderFormatter(props, context, DATETIME_FORMAT_OPTIONS_KEYS, (...args) => (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      i18n[DatetimePartsSymbol](...args)
+    ));
   }
-);
+});
+var DatetimeFormat = DatetimeFormatImpl;
 function getComposer$2(i18n, instance) {
   const i18nInternal = i18n;
   if (i18n.mode === "composition") {
@@ -27603,14 +27904,40 @@ function apply(app, i18n, ...options) {
     }));
   }
   if (globalInstall) {
-    app.component(!useI18nComponentName ? Translation.name : "i18n", Translation);
-    app.component(NumberFormat.name, NumberFormat);
-    app.component(DatetimeFormat.name, DatetimeFormat);
+    [!useI18nComponentName ? Translation.name : "i18n", "I18nT"].forEach((name) => app.component(name, Translation));
+    [NumberFormat.name, "I18nN"].forEach((name) => app.component(name, NumberFormat));
+    [DatetimeFormat.name, "I18nD"].forEach((name) => app.component(name, DatetimeFormat));
   }
   {
     app.directive("t", vTDirective(i18n));
   }
 }
+var VueDevToolsLabels = {
+  [
+    "vue-devtools-plugin-vue-i18n"
+    /* VueDevToolsIDs.PLUGIN */
+  ]: "Vue I18n devtools",
+  [
+    "vue-i18n-resource-inspector"
+    /* VueDevToolsIDs.CUSTOM_INSPECTOR */
+  ]: "I18n Resources",
+  [
+    "vue-i18n-timeline"
+    /* VueDevToolsIDs.TIMELINE */
+  ]: "Vue I18n"
+};
+var VueDevToolsPlaceholders = {
+  [
+    "vue-i18n-resource-inspector"
+    /* VueDevToolsIDs.CUSTOM_INSPECTOR */
+  ]: "Search for scopes ..."
+};
+var VueDevToolsTimelineColors = {
+  [
+    "vue-i18n-timeline"
+    /* VueDevToolsIDs.TIMELINE */
+  ]: 16764185
+};
 var VUE_I18N_COMPONENT_TYPES = "vue-i18n: composer properties";
 var devtoolsApi;
 async function enableDevTools(app, i18n) {
@@ -27620,7 +27947,7 @@ async function enableDevTools(app, i18n) {
         id: "vue-devtools-plugin-vue-i18n",
         label: VueDevToolsLabels[
           "vue-devtools-plugin-vue-i18n"
-          /* PLUGIN */
+          /* VueDevToolsIDs.PLUGIN */
         ],
         packageName: "vue-i18n",
         homepage: "https://vue-i18n.intlify.dev",
@@ -27648,12 +27975,12 @@ async function enableDevTools(app, i18n) {
           id: "vue-i18n-resource-inspector",
           label: VueDevToolsLabels[
             "vue-i18n-resource-inspector"
-            /* CUSTOM_INSPECTOR */
+            /* VueDevToolsIDs.CUSTOM_INSPECTOR */
           ],
           icon: "language",
           treeFilterPlaceholder: VueDevToolsPlaceholders[
             "vue-i18n-resource-inspector"
-            /* CUSTOM_INSPECTOR */
+            /* VueDevToolsIDs.CUSTOM_INSPECTOR */
           ]
         });
         api.on.getInspectorTree((payload) => {
@@ -27687,11 +28014,11 @@ async function enableDevTools(app, i18n) {
           id: "vue-i18n-timeline",
           label: VueDevToolsLabels[
             "vue-i18n-timeline"
-            /* TIMELINE */
+            /* VueDevToolsIDs.TIMELINE */
           ],
           color: VueDevToolsTimelineColors[
             "vue-i18n-timeline"
-            /* TIMELINE */
+            /* VueDevToolsIDs.TIMELINE */
           ]
         });
         resolve2(true);
@@ -27768,13 +28095,15 @@ function inspectComposer(instanceData, composer) {
 function getLocaleMessageValue(messages) {
   const value = {};
   Object.keys(messages).forEach((key) => {
-    const v = messages[key];
-    if (isFunction2(v) && "source" in v) {
-      value[key] = getMessageFunctionDetails(v);
-    } else if (isObject2(v)) {
-      value[key] = getLocaleMessageValue(v);
+    const v2 = messages[key];
+    if (isFunction2(v2) && "source" in v2) {
+      value[key] = getMessageFunctionDetails(v2);
+    } else if (isMessageAST(v2) && v2.loc && v2.loc.source) {
+      value[key] = v2.loc.source;
+    } else if (isObject2(v2)) {
+      value[key] = getLocaleMessageValue(v2);
     } else {
-      value[key] = v;
+      value[key] = v2;
     }
   });
   return value;
@@ -27960,20 +28289,30 @@ function defineMixin(vuei18n, composer, i18n) {
         }
         optionsI18n.__root = composer;
         if (this === this.$root) {
-          this.$i18n = mergeToRoot(vuei18n, optionsI18n);
+          this.$i18n = mergeToGlobal(vuei18n, optionsI18n);
         } else {
           optionsI18n.__injectWithOption = true;
+          optionsI18n.__extender = i18n.__vueI18nExtend;
           this.$i18n = createVueI18n(optionsI18n);
+          const _vueI18n = this.$i18n;
+          if (_vueI18n.__extender) {
+            _vueI18n.__disposer = _vueI18n.__extender(this.$i18n);
+          }
         }
       } else if (options.__i18n) {
         if (this === this.$root) {
-          this.$i18n = mergeToRoot(vuei18n, options);
+          this.$i18n = mergeToGlobal(vuei18n, options);
         } else {
           this.$i18n = createVueI18n({
             __i18n: options.__i18n,
             __injectWithOption: true,
+            __extender: i18n.__vueI18nExtend,
             __root: composer
           });
+          const _vueI18n = this.$i18n;
+          if (_vueI18n.__extender) {
+            _vueI18n.__disposer = _vueI18n.__extender(this.$i18n);
+          }
         }
       } else {
         this.$i18n = vuei18n;
@@ -27981,8 +28320,6 @@ function defineMixin(vuei18n, composer, i18n) {
       if (options.__i18nGlobal) {
         adjustI18nResources(composer, options, options);
       }
-      vuei18n.__onComponentInstanceCreated(this.$i18n);
-      i18n.__setInstance(instance, this.$i18n);
       this.$t = (...args) => this.$i18n.t(...args);
       this.$rt = (...args) => this.$i18n.rt(...args);
       this.$tc = (...args) => this.$i18n.tc(...args);
@@ -27990,12 +28327,13 @@ function defineMixin(vuei18n, composer, i18n) {
       this.$d = (...args) => this.$i18n.d(...args);
       this.$n = (...args) => this.$i18n.n(...args);
       this.$tm = (key) => this.$i18n.tm(key);
+      i18n.__setInstance(instance, this.$i18n);
     },
     mounted() {
       if (this.$el && this.$i18n) {
-        this.$el.__VUE_I18N__ = this.$i18n.__composer;
-        const emitter = this.__v_emitter = createEmitter();
         const _vueI18n = this.$i18n;
+        this.$el.__VUE_I18N__ = _vueI18n.__composer;
+        const emitter = this.__v_emitter = createEmitter();
         _vueI18n.__enableEmitter && _vueI18n.__enableEmitter(emitter);
         emitter.on("*", addTimelineEvent);
       }
@@ -28005,13 +28343,13 @@ function defineMixin(vuei18n, composer, i18n) {
       if (!instance) {
         throw createI18nError(I18nErrorCodes.UNEXPECTED_ERROR);
       }
+      const _vueI18n = this.$i18n;
       if (this.$el && this.$el.__VUE_I18N__) {
         if (this.__v_emitter) {
           this.__v_emitter.off("*", addTimelineEvent);
           delete this.__v_emitter;
         }
         if (this.$i18n) {
-          const _vueI18n = this.$i18n;
           _vueI18n.__disableEmitter && _vueI18n.__disableEmitter();
           delete this.$el.__VUE_I18N__;
         }
@@ -28023,35 +28361,40 @@ function defineMixin(vuei18n, composer, i18n) {
       delete this.$d;
       delete this.$n;
       delete this.$tm;
+      if (_vueI18n.__disposer) {
+        _vueI18n.__disposer();
+        delete _vueI18n.__disposer;
+        delete _vueI18n.__extender;
+      }
       i18n.__deleteInstance(instance);
       delete this.$i18n;
     }
   };
 }
-function mergeToRoot(root, options) {
-  root.locale = options.locale || root.locale;
-  root.fallbackLocale = options.fallbackLocale || root.fallbackLocale;
-  root.missing = options.missing || root.missing;
-  root.silentTranslationWarn = options.silentTranslationWarn || root.silentFallbackWarn;
-  root.silentFallbackWarn = options.silentFallbackWarn || root.silentFallbackWarn;
-  root.formatFallbackMessages = options.formatFallbackMessages || root.formatFallbackMessages;
-  root.postTranslation = options.postTranslation || root.postTranslation;
-  root.warnHtmlInMessage = options.warnHtmlInMessage || root.warnHtmlInMessage;
-  root.escapeParameterHtml = options.escapeParameterHtml || root.escapeParameterHtml;
-  root.sync = options.sync || root.sync;
-  root.__composer[SetPluralRulesSymbol](options.pluralizationRules || root.pluralizationRules);
-  const messages = getLocaleMessages(root.locale, {
+function mergeToGlobal(g, options) {
+  g.locale = options.locale || g.locale;
+  g.fallbackLocale = options.fallbackLocale || g.fallbackLocale;
+  g.missing = options.missing || g.missing;
+  g.silentTranslationWarn = options.silentTranslationWarn || g.silentFallbackWarn;
+  g.silentFallbackWarn = options.silentFallbackWarn || g.silentFallbackWarn;
+  g.formatFallbackMessages = options.formatFallbackMessages || g.formatFallbackMessages;
+  g.postTranslation = options.postTranslation || g.postTranslation;
+  g.warnHtmlInMessage = options.warnHtmlInMessage || g.warnHtmlInMessage;
+  g.escapeParameterHtml = options.escapeParameterHtml || g.escapeParameterHtml;
+  g.sync = options.sync || g.sync;
+  g.__composer[SetPluralRulesSymbol](options.pluralizationRules || g.pluralizationRules);
+  const messages = getLocaleMessages(g.locale, {
     messages: options.messages,
     __i18n: options.__i18n
   });
-  Object.keys(messages).forEach((locale) => root.mergeLocaleMessage(locale, messages[locale]));
+  Object.keys(messages).forEach((locale) => g.mergeLocaleMessage(locale, messages[locale]));
   if (options.datetimeFormats) {
-    Object.keys(options.datetimeFormats).forEach((locale) => root.mergeDateTimeFormat(locale, options.datetimeFormats[locale]));
+    Object.keys(options.datetimeFormats).forEach((locale) => g.mergeDateTimeFormat(locale, options.datetimeFormats[locale]));
   }
   if (options.numberFormats) {
-    Object.keys(options.numberFormats).forEach((locale) => root.mergeNumberFormat(locale, options.numberFormats[locale]));
+    Object.keys(options.numberFormats).forEach((locale) => g.mergeNumberFormat(locale, options.numberFormats[locale]));
   }
-  return root;
+  return g;
 }
 var I18nInjectionKey = /* @__PURE__ */ makeSymbol("global-vue-i18n");
 function createI18n(options = {}, VueI18nLegacy) {
@@ -28060,7 +28403,12 @@ function createI18n(options = {}, VueI18nLegacy) {
   const __allowComposition = __VUE_I18N_LEGACY_API__ && __legacyMode ? !!options.allowComposition : true;
   const __instances = /* @__PURE__ */ new Map();
   const [globalScope, __global] = createGlobal(options, __legacyMode);
-  const symbol = makeSymbol(true ? "vue-i18n" : "");
+  const symbol = /* @__PURE__ */ makeSymbol(true ? "vue-i18n" : "");
+  if (true) {
+    if (__legacyMode && __allowComposition && true) {
+      warn4(getWarnMessage2(I18nWarnCodes.NOTICE_DROP_ALLOW_COMPOSITION));
+    }
+  }
   function __getInstance(component) {
     return __instances.get(component) || null;
   }
@@ -28087,8 +28435,14 @@ function createI18n(options = {}, VueI18nLegacy) {
         }
         app.__VUE_I18N_SYMBOL__ = symbol;
         app.provide(app.__VUE_I18N_SYMBOL__, i18n);
+        if (isPlainObject2(options2[0])) {
+          const opts = options2[0];
+          i18n.__composerExtend = opts.__composerExtend;
+          i18n.__vueI18nExtend = opts.__vueI18nExtend;
+        }
+        let globalReleaseHandler = null;
         if (!__legacyMode && __globalInjection) {
-          injectGlobalFields(app, i18n.global);
+          globalReleaseHandler = injectGlobalFields(app, i18n.global);
         }
         if (__VUE_I18N_FULL_INSTALL__) {
           apply(app, i18n, ...options2);
@@ -28098,6 +28452,7 @@ function createI18n(options = {}, VueI18nLegacy) {
         }
         const unmountApp = app.unmount;
         app.unmount = () => {
+          globalReleaseHandler && globalReleaseHandler();
           i18n.dispose();
           unmountApp();
         };
@@ -28142,10 +28497,10 @@ function useI18n(options = {}) {
     throw createI18nError(I18nErrorCodes.MUST_BE_CALL_SETUP_TOP);
   }
   if (!instance.isCE && instance.appContext.app != null && !instance.appContext.app.__VUE_I18N_SYMBOL__) {
-    throw createI18nError(I18nErrorCodes.NOT_INSLALLED);
+    throw createI18nError(I18nErrorCodes.NOT_INSTALLED);
   }
   const i18n = getI18nInstance(instance);
-  const global2 = getGlobalComposer(i18n);
+  const gl = getGlobalComposer(i18n);
   const componentOptions = getComponentOptions(instance);
   const scope = getScope(options, componentOptions);
   if (__VUE_I18N_LEGACY_API__) {
@@ -28153,12 +28508,12 @@ function useI18n(options = {}) {
       if (!i18n.allowComposition) {
         throw createI18nError(I18nErrorCodes.NOT_AVAILABLE_IN_LEGACY_MODE);
       }
-      return useI18nForLegacy(instance, scope, global2, options);
+      return useI18nForLegacy(instance, scope, gl, options);
     }
   }
   if (scope === "global") {
-    adjustI18nResources(global2, options, componentOptions);
-    return global2;
+    adjustI18nResources(gl, options, componentOptions);
+    return gl;
   }
   if (scope === "parent") {
     let composer2 = getComposer(i18n, instance, options.__useComponent);
@@ -28166,7 +28521,7 @@ function useI18n(options = {}) {
       if (true) {
         warn4(getWarnMessage2(I18nWarnCodes.NOT_FOUND_PARENT_SCOPE));
       }
-      composer2 = global2;
+      composer2 = gl;
     }
     return composer2;
   }
@@ -28177,10 +28532,13 @@ function useI18n(options = {}) {
     if ("__i18n" in componentOptions) {
       composerOptions.__i18n = componentOptions.__i18n;
     }
-    if (global2) {
-      composerOptions.__root = global2;
+    if (gl) {
+      composerOptions.__root = gl;
     }
     composer = createComposer(composerOptions);
+    if (i18nInternal.__composerExtend) {
+      composer[DisposeSymbol] = i18nInternal.__composerExtend(composer);
+    }
     setupLifeCycle(i18nInternal, instance, composer);
     i18nInternal.__setInstance(instance, composer);
   }
@@ -28200,7 +28558,7 @@ function getI18nInstance(instance) {
   {
     const i18n = inject(!instance.isCE ? instance.appContext.app.__VUE_I18N_SYMBOL__ : I18nInjectionKey);
     if (!i18n) {
-      throw createI18nError(!instance.isCE ? I18nErrorCodes.UNEXPECTED_ERROR : I18nErrorCodes.NOT_INSLALLED_WITH_PROVIDE);
+      throw createI18nError(!instance.isCE ? I18nErrorCodes.UNEXPECTED_ERROR : I18nErrorCodes.NOT_INSTALLED_WITH_PROVIDE);
     }
     return i18n;
   }
@@ -28214,7 +28572,7 @@ function getGlobalComposer(i18n) {
 function getComposer(i18n, target, useComponent = false) {
   let composer = null;
   const root = target.root;
-  let current = target.parent;
+  let current = getParentComponentInstance(target, useComponent);
   while (current != null) {
     const i18nInternal = i18n;
     if (i18n.mode === "composition") {
@@ -28224,7 +28582,7 @@ function getComposer(i18n, target, useComponent = false) {
         const vueI18n = i18nInternal.__getInstance(current);
         if (vueI18n != null) {
           composer = vueI18n.__composer;
-          if (useComponent && composer && !composer[InejctWithOption]) {
+          if (useComponent && composer && !composer[InejctWithOptionSymbol]) {
             composer = null;
           }
         }
@@ -28240,6 +28598,14 @@ function getComposer(i18n, target, useComponent = false) {
   }
   return composer;
 }
+function getParentComponentInstance(target, useComponent = false) {
+  if (target == null) {
+    return null;
+  }
+  {
+    return !useComponent ? target.parent : target.vnode.ctx || target.parent;
+  }
+}
 function setupLifeCycle(i18n, target, composer) {
   let emitter = null;
   {
@@ -28253,44 +28619,49 @@ function setupLifeCycle(i18n, target, composer) {
       }
     }, target);
     onUnmounted(() => {
+      const _composer = composer;
       if (target.vnode.el && target.vnode.el.__VUE_I18N__) {
         emitter && emitter.off("*", addTimelineEvent);
-        const _composer = composer;
         _composer[DisableEmitter] && _composer[DisableEmitter]();
         delete target.vnode.el.__VUE_I18N__;
       }
       i18n.__deleteInstance(target);
+      const dispose = _composer[DisposeSymbol];
+      if (dispose) {
+        dispose();
+        delete _composer[DisposeSymbol];
+      }
     }, target);
   }
 }
 function useI18nForLegacy(instance, scope, root, options = {}) {
-  const isLocale = scope === "local";
+  const isLocalScope = scope === "local";
   const _composer = shallowRef(null);
-  if (isLocale && instance.proxy && !(instance.proxy.$options.i18n || instance.proxy.$options.__i18n)) {
+  if (isLocalScope && instance.proxy && !(instance.proxy.$options.i18n || instance.proxy.$options.__i18n)) {
     throw createI18nError(I18nErrorCodes.MUST_DEFINE_I18N_OPTION_IN_ALLOW_COMPOSITION);
   }
-  const _inheritLocale = isBoolean2(options.inheritLocale) ? options.inheritLocale : true;
+  const _inheritLocale = isBoolean2(options.inheritLocale) ? options.inheritLocale : !isString2(options.locale);
   const _locale = ref(
     // prettier-ignore
-    isLocale && _inheritLocale ? root.locale.value : isString2(options.locale) ? options.locale : DEFAULT_LOCALE
+    !isLocalScope || _inheritLocale ? root.locale.value : isString2(options.locale) ? options.locale : DEFAULT_LOCALE
   );
   const _fallbackLocale = ref(
     // prettier-ignore
-    isLocale && _inheritLocale ? root.fallbackLocale.value : isString2(options.fallbackLocale) || isArray2(options.fallbackLocale) || isPlainObject2(options.fallbackLocale) || options.fallbackLocale === false ? options.fallbackLocale : _locale.value
+    !isLocalScope || _inheritLocale ? root.fallbackLocale.value : isString2(options.fallbackLocale) || isArray2(options.fallbackLocale) || isPlainObject2(options.fallbackLocale) || options.fallbackLocale === false ? options.fallbackLocale : _locale.value
   );
   const _messages = ref(getLocaleMessages(_locale.value, options));
   const _datetimeFormats = ref(isPlainObject2(options.datetimeFormats) ? options.datetimeFormats : { [_locale.value]: {} });
   const _numberFormats = ref(isPlainObject2(options.numberFormats) ? options.numberFormats : { [_locale.value]: {} });
-  const _missingWarn = isLocale ? root.missingWarn : isBoolean2(options.missingWarn) || isRegExp2(options.missingWarn) ? options.missingWarn : true;
-  const _fallbackWarn = isLocale ? root.fallbackWarn : isBoolean2(options.fallbackWarn) || isRegExp2(options.fallbackWarn) ? options.fallbackWarn : true;
-  const _fallbackRoot = isLocale ? root.fallbackRoot : isBoolean2(options.fallbackRoot) ? options.fallbackRoot : true;
+  const _missingWarn = isLocalScope ? root.missingWarn : isBoolean2(options.missingWarn) || isRegExp2(options.missingWarn) ? options.missingWarn : true;
+  const _fallbackWarn = isLocalScope ? root.fallbackWarn : isBoolean2(options.fallbackWarn) || isRegExp2(options.fallbackWarn) ? options.fallbackWarn : true;
+  const _fallbackRoot = isLocalScope ? root.fallbackRoot : isBoolean2(options.fallbackRoot) ? options.fallbackRoot : true;
   const _fallbackFormat = !!options.fallbackFormat;
   const _missing = isFunction2(options.missing) ? options.missing : null;
   const _postTranslation = isFunction2(options.postTranslation) ? options.postTranslation : null;
-  const _warnHtmlMessage = isLocale ? root.warnHtmlMessage : isBoolean2(options.warnHtmlMessage) ? options.warnHtmlMessage : true;
+  const _warnHtmlMessage = isLocalScope ? root.warnHtmlMessage : isBoolean2(options.warnHtmlMessage) ? options.warnHtmlMessage : true;
   const _escapeParameter = !!options.escapeParameter;
-  const _modifiers = isLocale ? root.modifiers : isPlainObject2(options.modifiers) ? options.modifiers : {};
-  const _pluralRules = options.pluralRules || isLocale && root.pluralRules;
+  const _modifiers = isLocalScope ? root.modifiers : isPlainObject2(options.modifiers) ? options.modifiers : {};
+  const _pluralRules = options.pluralRules || isLocalScope && root.pluralRules;
   function trackReactivityValues() {
     return [
       _locale.value,
@@ -28386,29 +28757,29 @@ function useI18nForLegacy(instance, scope, root, options = {}) {
   function getDateTimeFormat(locale2) {
     return _composer.value ? _composer.value.getDateTimeFormat(locale2) : {};
   }
-  function setDateTimeFormat(locale2, format2) {
+  function setDateTimeFormat(locale2, format4) {
     if (_composer.value) {
-      _composer.value.setDateTimeFormat(locale2, format2);
-      _datetimeFormats.value[locale2] = format2;
+      _composer.value.setDateTimeFormat(locale2, format4);
+      _datetimeFormats.value[locale2] = format4;
     }
   }
-  function mergeDateTimeFormat(locale2, format2) {
+  function mergeDateTimeFormat(locale2, format4) {
     if (_composer.value) {
-      _composer.value.mergeDateTimeFormat(locale2, format2);
+      _composer.value.mergeDateTimeFormat(locale2, format4);
     }
   }
   function getNumberFormat(locale2) {
     return _composer.value ? _composer.value.getNumberFormat(locale2) : {};
   }
-  function setNumberFormat(locale2, format2) {
+  function setNumberFormat(locale2, format4) {
     if (_composer.value) {
-      _composer.value.setNumberFormat(locale2, format2);
-      _numberFormats.value[locale2] = format2;
+      _composer.value.setNumberFormat(locale2, format4);
+      _numberFormats.value[locale2] = format4;
     }
   }
-  function mergeNumberFormat(locale2, format2) {
+  function mergeNumberFormat(locale2, format4) {
     if (_composer.value) {
-      _composer.value.mergeNumberFormat(locale2, format2);
+      _composer.value.mergeNumberFormat(locale2, format4);
     }
   }
   const wrapper = {
@@ -28538,7 +28909,7 @@ function useI18nForLegacy(instance, scope, root, options = {}) {
       _messages.value = composer.messages.value;
       _datetimeFormats.value = composer.datetimeFormats.value;
       _numberFormats.value = composer.numberFormats.value;
-    } else if (isLocale) {
+    } else if (isLocalScope) {
       sync(composer);
     }
   });
@@ -28549,7 +28920,7 @@ var globalExportProps = [
   "fallbackLocale",
   "availableLocales"
 ];
-var globalExportMethods = ["t", "rt", "d", "n", "tm"];
+var globalExportMethods = ["t", "rt", "d", "n", "tm", "te"];
 function injectGlobalFields(app, composer) {
   const i18n = /* @__PURE__ */ Object.create(null);
   globalExportProps.forEach((prop) => {
@@ -28580,13 +28951,24 @@ function injectGlobalFields(app, composer) {
     }
     Object.defineProperty(app.config.globalProperties, `$${method}`, desc);
   });
+  const dispose = () => {
+    delete app.config.globalProperties.$i18n;
+    globalExportMethods.forEach((method) => {
+      delete app.config.globalProperties[`$${method}`];
+    });
+  };
+  return dispose;
 }
-registerMessageCompiler(compileToFunction2);
+{
+  initFeatureFlags3();
+}
+if (__INTLIFY_JIT_COMPILATION__) {
+  registerMessageCompiler(compile3);
+} else {
+  registerMessageCompiler(compileToFunction2);
+}
 registerMessageResolver(resolveValue);
 registerLocaleFallbacker(fallbackWithLocaleChain);
-{
-  initFeatureFlags2();
-}
 if (true) {
   const target = getGlobalThis2();
   target.__INTLIFY__ = true;
@@ -28630,7 +29012,8 @@ var en_default = {
       lookForTagsForTimeline: "Look into note tags",
       lookForInlineEventsInNotes: "Look for events in note body",
       advancedDateFormatsTokenConfiguration: "Configure the tokens",
-      applyAdditonalConditionFormatting: "Apply additonal condition based formatting"
+      applyAdditonalConditionFormatting: "Apply additonal condition based formatting",
+      accessibility: "Accessibility settings"
     },
     label: {
       dateDisplayFormat: "Date display format",
@@ -28650,6 +29033,9 @@ var en_default = {
       lookForTagsForTimeline: "Check to include a notes tags into the values used to assign notes to a timeline",
       lookForInlineEventsInNotes: "Check to ennable the inline event feature. This allows to define events for any timeline from inside a note.",
       applyAdditonalConditionFormatting: "Toggle on to allow date tokens conditional formatting to be allowed. When set to false this feature will be skipped. This could save you a few milliseconds off every card render.",
+      dateFontSize: "Override the font size of the date in the timeline cards (value in pixels)",
+      titleFontSize: "Override the font size of the title in the timeline cards (value in pixels)",
+      bodyFontSize: "Override the font size of the body in the timeline cards (value in pixels)",
       configureSingleDateToken: {
         type: "The type of the token",
         conditionalFormatting: "Add additional formatting"
@@ -28746,11 +29132,10 @@ var i18n_config_default = () => createI18n({
   fallbackLocale: "en",
   messages: {
     en: en_default
-  },
-  allowComposition: true
+  }
 });
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VNav.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VNav.vue?type=script
 var VNav_default = /* @__PURE__ */ defineComponent({
   __name: "VNav",
   props: {
@@ -28766,7 +29151,7 @@ var VNav_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VNav.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VNav.vue?type=template
 var _hoisted_1 = { class: "v-nav" };
 var _hoisted_2 = ["onClick"];
 function render2(_ctx, _cache, $props, $setup, $data, $options) {
@@ -28793,7 +29178,7 @@ VNav_default.render = render2;
 VNav_default.__file = "src/components/VNav.vue";
 var VNav_default2 = VNav_default;
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VHeader.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VHeader.vue?type=template
 var _hoisted_12 = { class: "v-header" };
 function render3(_ctx, _cache) {
   return openBlock(), createElementBlock("h2", _hoisted_12, [
@@ -28820,7 +29205,7 @@ function hasSlot(slot, slotProps = {}) {
   });
 }
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VLabel.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VLabel.vue?type=script
 var VLabel_default = /* @__PURE__ */ defineComponent({
   __name: "VLabel",
   props: {
@@ -28837,7 +29222,7 @@ var VLabel_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VLabel.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VLabel.vue?type=template
 var _hoisted_13 = { key: 0 };
 var _hoisted_22 = ["for"];
 var _hoisted_3 = {
@@ -28864,7 +29249,7 @@ VLabel_default.render = render4;
 VLabel_default.__file = "src/components/VLabel.vue";
 var VLabel_default2 = VLabel_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VInput.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VInput.vue?type=script
 var VInput_default = /* @__PURE__ */ defineComponent({
   __name: "VInput",
   props: {
@@ -28903,7 +29288,7 @@ var VInput_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VInput.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VInput.vue?type=template
 var _hoisted_14 = ["role"];
 var _hoisted_23 = ["id", "min", "max", "placeholder", "value", "type"];
 function render5(_ctx, _cache, $props, $setup, $data, $options) {
@@ -28938,7 +29323,7 @@ VInput_default.render = render5;
 VInput_default.__file = "src/components/VInput.vue";
 var VInput_default2 = VInput_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCheckbox.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VCheckbox.vue?type=script
 var VCheckbox_default = /* @__PURE__ */ defineComponent({
   __name: "VCheckbox",
   props: {
@@ -28958,7 +29343,7 @@ var VCheckbox_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCheckbox.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VCheckbox.vue?type=template
 var _hoisted_15 = { class: "v-input-wrap v-checkbox" };
 var _hoisted_24 = ["for"];
 var _hoisted_32 = {
@@ -29004,7 +29389,216 @@ VCheckbox_default.render = render6;
 VCheckbox_default.__file = "src/components/VCheckbox.vue";
 var VCheckbox_default2 = VCheckbox_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/views/VSettings.vue?type=script
+// node_modules/vue-collapsed/dist/index.mjs
+var _ = "--vc-auto-duration";
+var T = `height var(${_}) cubic-bezier(0.33, 1, 0.68, 1)`;
+var v = { padding: 0 };
+var j = { position: "absolute", width: "1px", height: "1px", padding: "0", margin: "-1px", overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: "0" };
+function b(t) {
+  var _a;
+  return { height: `${(_a = t == null ? void 0 : t.scrollHeight) != null ? _a : 0}px` };
+}
+function $(t) {
+  if (!t)
+    return {};
+  const { transition: n } = getComputedStyle(t);
+  return n === "all 0s ease 0s" ? { transition: T } : { transition: n };
+}
+function H(t) {
+  if (!t)
+    return true;
+  const { transition: n } = getComputedStyle(t);
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches || n.includes("none") || n.includes("height 0s");
+}
+defineComponent({ inheritAttrs: true });
+var G = defineComponent({ __name: "Collapse", props: { when: { type: Boolean }, baseHeight: { default: 0 }, as: { default: "div" } }, emits: ["collapse", "expand", "collapsed", "expanded"], setup(t, { emit: n }) {
+  const p2 = t, u = toRef(p2, "when"), o = toRef(p2, "baseHeight"), d = computed2(() => ({ overflow: "hidden", height: `${o.value}px` })), g = computed2(() => ({ ...v, ...o.value === 0 ? { display: "none" } : d.value })), l = ref(null), i = ref(u.value ? "expanded" : "collapsed"), e = shallowRef({}), f = ref(300), m = computed2(() => ({ [_]: `${f.value}ms` }));
+  function x() {
+    e.value = v, i.value = "expanded", n("expanded");
+  }
+  function w() {
+    e.value = g.value, i.value = "collapsed", n("collapsed");
+  }
+  function k(a) {
+    var s, r;
+    a.target === l.value && a.propertyName === "height" && (u.value ? ((s = l.value) == null ? void 0 : s.scrollHeight) === parseFloat(a.target.style.height) && x() : ((r = l.value) == null ? void 0 : r.style.height) === `${o.value}px` && w());
+  }
+  return onMounted(() => {
+    if (!l.value)
+      return;
+    u.value || o.value !== 0 || (e.value = j);
+    const a = function(s = 0) {
+      if (s === 0)
+        return 0;
+      const r = s / 36;
+      return Math.round(10 * (4 + 15 * r ** 0.25 + r / 5));
+    }(l.value.scrollHeight - o.value);
+    f.value = a <= 0 ? 300 : a, e.value = u.value ? v : g.value;
+  }), watch(u, (a) => {
+    if (a) {
+      if (H(l.value))
+        return x();
+      i.value = "expanding", n("expand"), e.value = { ...v, ...d.value, ...m.value, willChange: "height" }, requestAnimationFrame(() => {
+        e.value = { ...e.value, ...b(l.value), ...$(l.value) };
+      });
+    } else {
+      if (H(l.value))
+        return w();
+      i.value = "collapsing", n("collapse"), e.value = { ...e.value, ...m.value, ...b(l.value), willChange: "height" }, requestAnimationFrame(() => {
+        e.value = { ...e.value, ...d.value, ...$(l.value) };
+      });
+    }
+  }), watch(o, (a) => {
+    u.value || (e.value = { ...e.value, ...a === 0 ? { display: "none" } : { transition: "none", height: `${a}px` } });
+  }), (a, s) => (openBlock(), createBlock(resolveDynamicComponent(p2.as), { ref_key: "collapseRef", ref: l, style: normalizeStyle(e.value), onTransitionend: k, "data-collapse": i.value }, { default: withCtx(() => [renderSlot(a.$slots, "default", normalizeProps(guardReactiveProps({ state: i.value })))]), _: 3 }, 40, ["style", "data-collapse"]));
+} });
+
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VDetails.vue?type=script
+var VDetails_default = /* @__PURE__ */ defineComponent({
+  __name: "VDetails",
+  props: {
+    startOpened: { type: Boolean, required: false, default: false },
+    overrideOpen: { type: Boolean, required: false, default: void 0 }
+  },
+  setup(__props, { expose: __expose }) {
+    __expose();
+    const props = __props;
+    const localIsOpen = ref(props.startOpened);
+    console.log(props.overrideOpen);
+    const isOpen = computed2(
+      () => isDefined(props.overrideOpen) ? props.overrideOpen : localIsOpen.value
+    );
+    const __returned__ = { props, localIsOpen, isOpen, get Collapse() {
+      return G;
+    } };
+    Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
+    return __returned__;
+  }
+});
+
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VDetails.vue?type=template
+var _withScopeId = (n) => (pushScopeId("data-v-b71f4981"), n = n(), popScopeId(), n);
+var _hoisted_16 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode(
+  "span",
+  { role: "icon" },
+  "\u25B8",
+  -1
+  /* HOISTED */
+));
+var _hoisted_25 = { style: { "padding-top": "8px" } };
+function render7(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock(
+    "div",
+    {
+      role: "article",
+      class: normalizeClass(["v-details", { isOpen: $setup.isOpen }])
+    },
+    [
+      createBaseVNode("div", {
+        class: "heading",
+        role: "heading",
+        "aria-level": "2",
+        onClick: _cache[0] || (_cache[0] = ($event) => $setup.localIsOpen = !$setup.localIsOpen)
+      }, [
+        _hoisted_16,
+        createBaseVNode("span", null, [
+          renderSlot(_ctx.$slots, "summary", {}, void 0, true)
+        ])
+      ]),
+      createVNode($setup["Collapse"], { when: $setup.isOpen }, {
+        default: withCtx(() => [
+          createBaseVNode("div", _hoisted_25, [
+            renderSlot(_ctx.$slots, "details", {}, void 0, true)
+          ])
+        ]),
+        _: 3
+        /* FORWARDED */
+      }, 8, ["when"])
+    ],
+    2
+    /* CLASS */
+  );
+}
+
+// src/components/VDetails.vue
+VDetails_default.render = render7;
+VDetails_default.__file = "src/components/VDetails.vue";
+VDetails_default.__scopeId = "data-v-b71f4981";
+var VDetails_default2 = VDetails_default;
+
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VToggleNumber.vue?type=script
+var VToggleNumber_default = /* @__PURE__ */ defineComponent({
+  __name: "VToggleNumber",
+  props: {
+    inputId: { type: String, required: true },
+    modelValue: { type: Number, required: true }
+  },
+  emits: ["update:modelValue"],
+  setup(__props, { expose: __expose, emit: emit2 }) {
+    __expose();
+    const props = __props;
+    const optInNumber = ref(props.modelValue >= 0);
+    function handleOptInNumberUpdate(value) {
+      if (value)
+        emit2("update:modelValue", 16);
+      else
+        emit2("update:modelValue", -1);
+      optInNumber.value = value;
+    }
+    const __returned__ = { props, emit: emit2, optInNumber, handleOptInNumberUpdate, VCheckbox: VCheckbox_default2, VInput: VInput_default2, VDetails: VDetails_default2 };
+    Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
+    return __returned__;
+  }
+});
+
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VToggleNumber.vue?type=template
+function render8(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createBlock($setup["VDetails"], { "override-open": $setup.optInNumber }, {
+    summary: withCtx(() => [
+      createVNode($setup["VCheckbox"], {
+        value: $setup.optInNumber,
+        "input-id": `${$props.inputId}-checkbox`,
+        "onUpdate:value": $setup.handleOptInNumberUpdate
+      }, {
+        description: withCtx(() => [
+          renderSlot(_ctx.$slots, "checkbox-description")
+        ]),
+        label: withCtx(() => [
+          renderSlot(_ctx.$slots, "checkbox-label")
+        ]),
+        _: 3
+        /* FORWARDED */
+      }, 8, ["value", "input-id"])
+    ]),
+    details: withCtx(() => [
+      createVNode($setup["VInput"], {
+        value: $props.modelValue,
+        type: "number",
+        min: 0,
+        "onUpdate:value": _cache[0] || (_cache[0] = ($event) => $setup.emit("update:modelValue", $event)),
+        "input-id": `${$props.inputId}-number-input`
+      }, {
+        description: withCtx(() => [
+          renderSlot(_ctx.$slots, "input-description")
+        ]),
+        label: withCtx(() => [
+          renderSlot(_ctx.$slots, "input-label")
+        ]),
+        _: 3
+        /* FORWARDED */
+      }, 8, ["value", "input-id"])
+    ]),
+    _: 3
+    /* FORWARDED */
+  }, 8, ["override-open"]);
+}
+
+// src/components/VToggleNumber.vue
+VToggleNumber_default.render = render8;
+VToggleNumber_default.__file = "src/components/VToggleNumber.vue";
+var VToggleNumber_default2 = VToggleNumber_default;
+
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/views/VSettings.vue?type=script
 var VSettings_default = /* @__PURE__ */ defineComponent({
   __name: "VSettings",
   props: {
@@ -29054,15 +29648,16 @@ var VSettings_default = /* @__PURE__ */ defineComponent({
       "lookForTagsForTimeline",
       "applyAdditonalConditionFormatting"
     ];
-    const __returned__ = { props, emit: emit2, generalSettingKeys, fantasyCalendarPreset, fantasyCalendarKeys, keysAreCompliantWithFcPreset, handleUpdateValueFantasyCalendarCheckbox, checkboxKeys, VHeader: VHeader_default, VInput: VInput_default2, VCheckbox: VCheckbox_default2 };
+    const fontSizeOverrides = ["bodyFontSize", "dateFontSize", "titleFontSize"];
+    const __returned__ = { props, emit: emit2, generalSettingKeys, fantasyCalendarPreset, fantasyCalendarKeys, keysAreCompliantWithFcPreset, handleUpdateValueFantasyCalendarCheckbox, checkboxKeys, fontSizeOverrides, VHeader: VHeader_default, VInput: VInput_default2, VCheckbox: VCheckbox_default2, VToggleNumber: VToggleNumber_default2 };
     Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
     return __returned__;
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/views/VSettings.vue?type=template
-var _hoisted_16 = { class: "v-grid-display" };
-var _hoisted_25 = { class: "v-grid-display" };
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/views/VSettings.vue?type=template
+var _hoisted_17 = { class: "v-grid-display" };
+var _hoisted_26 = { class: "v-grid-display" };
 var _hoisted_33 = /* @__PURE__ */ createBaseVNode(
   "hr",
   null,
@@ -29087,10 +29682,18 @@ var _hoisted_8 = /* @__PURE__ */ createBaseVNode(
   -1
   /* HOISTED */
 );
-function render7(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_9 = /* @__PURE__ */ createBaseVNode(
+  "hr",
+  null,
+  null,
+  -1
+  /* HOISTED */
+);
+var _hoisted_10 = { class: "v-grid-display" };
+function render9(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_i18n_t = resolveComponent("i18n-t");
-  return openBlock(), createElementBlock("div", _hoisted_16, [
-    createBaseVNode("section", _hoisted_25, [
+  return openBlock(), createElementBlock("div", _hoisted_17, [
+    createBaseVNode("section", _hoisted_26, [
       (openBlock(), createElementBlock(
         Fragment,
         null,
@@ -29225,16 +29828,53 @@ function render7(_ctx, _cache, $props, $setup, $data, $options) {
         _: 1
         /* STABLE */
       }, 8, ["value"])
+    ]),
+    _hoisted_9,
+    createBaseVNode("section", _hoisted_10, [
+      createVNode($setup["VHeader"], null, {
+        default: withCtx(() => [
+          createTextVNode(
+            toDisplayString(_ctx.$t("settings.title.accessibility")),
+            1
+            /* TEXT */
+          )
+        ]),
+        _: 1
+        /* STABLE */
+      }),
+      (openBlock(), createElementBlock(
+        Fragment,
+        null,
+        renderList($setup.fontSizeOverrides, (key) => {
+          return createVNode($setup["VToggleNumber"], {
+            modelValue: $props.value[key],
+            "onUpdate:modelValue": ($event) => $setup.emit("update:value", { [key]: $event }),
+            "input-id": key
+          }, {
+            "checkbox-label": withCtx(() => [
+              createTextVNode(
+                toDisplayString(_ctx.$t(`settings.label.${key}`)),
+                1
+                /* TEXT */
+              )
+            ]),
+            _: 2
+            /* DYNAMIC */
+          }, 1032, ["modelValue", "onUpdate:modelValue", "input-id"]);
+        }),
+        64
+        /* STABLE_FRAGMENT */
+      ))
     ])
   ]);
 }
 
 // src/views/VSettings.vue
-VSettings_default.render = render7;
+VSettings_default.render = render9;
 VSettings_default.__file = "src/views/VSettings.vue";
 var VSettings_default2 = VSettings_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VButton.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VButton.vue?type=script
 var VButton_default = /* @__PURE__ */ defineComponent({
   __name: "VButton",
   props: {
@@ -29257,26 +29897,26 @@ var VButton_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VButton.vue?type=template
-var _hoisted_17 = ["disabled"];
-function render8(_ctx, _cache, $props, $setup, $data, $options) {
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VButton.vue?type=template
+var _hoisted_18 = ["disabled"];
+function render10(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("button", {
     disabled: $props.disabled,
     class: normalizeClass({ "mod-cta": $props.hasAccent })
   }, [
     !!_ctx.$slots.default ? renderSlot(_ctx.$slots, "default", { key: 0 }) : createCommentVNode("v-if", true)
-  ], 10, _hoisted_17);
+  ], 10, _hoisted_18);
 }
 
 // src/components/VButton.vue
-VButton_default.render = render8;
+VButton_default.render = render10;
 VButton_default.__file = "src/components/VButton.vue";
 var VButton_default2 = VButton_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenConditionalFormatting.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenConditionalFormatting.vue?type=script
 var import_lodash = __toESM(require_lodash());
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCard.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VCard.vue?type=script
 var VCard_default = /* @__PURE__ */ defineComponent({
   __name: "VCard",
   props: {
@@ -29290,8 +29930,8 @@ var VCard_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCard.vue?type=template
-function render9(_ctx, _cache, $props, $setup, $data, $options) {
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VCard.vue?type=template
+function render11(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock(
     "article",
     {
@@ -29306,12 +29946,12 @@ function render9(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VCard.vue
-VCard_default.render = render9;
+VCard_default.render = render11;
 VCard_default.__file = "src/components/VCard.vue";
 VCard_default.__scopeId = "data-v-7469b424";
 var VCard_default2 = VCard_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VSelect.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VSelect.vue?type=script
 var VSelect_default = /* @__PURE__ */ defineComponent({
   __name: "VSelect",
   props: {
@@ -29335,15 +29975,15 @@ var VSelect_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VSelect.vue?type=template
-var _hoisted_18 = {
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VSelect.vue?type=template
+var _hoisted_19 = {
   role: "select",
   class: "v-input-wrap"
 };
-var _hoisted_26 = ["value"];
+var _hoisted_27 = ["value"];
 var _hoisted_34 = ["value"];
-function render10(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("div", _hoisted_18, [
+function render12(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", _hoisted_19, [
     createVNode($setup["VLabel"], { "input-id": $props.inputId }, {
       label: withCtx(() => [
         renderSlot(_ctx.$slots, "label")
@@ -29367,16 +30007,16 @@ function render10(_ctx, _cache, $props, $setup, $data, $options) {
         256
         /* UNKEYED_FRAGMENT */
       ))
-    ], 40, _hoisted_26)
+    ], 40, _hoisted_27)
   ]);
 }
 
 // src/components/VSelect.vue
-VSelect_default.render = render10;
+VSelect_default.render = render12;
 VSelect_default.__file = "src/components/VSelect.vue";
 var VSelect_default2 = VSelect_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureEvaluation.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureEvaluation.vue?type=script
 var VConfigureEvaluation_default = /* @__PURE__ */ defineComponent({
   __name: "VConfigureEvaluation",
   props: {
@@ -29394,11 +30034,11 @@ var VConfigureEvaluation_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureEvaluation.vue?type=template
-var _hoisted_19 = { class: "v-inline-flex-display" };
-var _hoisted_27 = { class: "slim v-grid-display-2" };
-function render11(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("div", _hoisted_19, [
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureEvaluation.vue?type=template
+var _hoisted_110 = { class: "v-inline-flex-display" };
+var _hoisted_28 = { class: "slim v-grid-display-2" };
+function render13(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", _hoisted_110, [
     createVNode($setup["VButton"], {
       onClick: _cache[0] || (_cache[0] = ($event) => $setup.emit("delete"))
     }, {
@@ -29408,7 +30048,7 @@ function render11(_ctx, _cache, $props, $setup, $data, $options) {
       _: 1
       /* STABLE */
     }),
-    createBaseVNode("div", _hoisted_27, [
+    createBaseVNode("div", _hoisted_28, [
       createVNode($setup["VSelect"], {
         options: $setup.availableConditionArray,
         "model-value": $props.modelValue.condition,
@@ -29430,11 +30070,11 @@ function render11(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VConfigureEvaluation.vue
-VConfigureEvaluation_default.render = render11;
+VConfigureEvaluation_default.render = render13;
 VConfigureEvaluation_default.__file = "src/components/VConfigureEvaluation.vue";
 var VConfigureEvaluation_default2 = VConfigureEvaluation_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenConditionalFormatting.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenConditionalFormatting.vue?type=script
 var VConfigureSingleDateTokenConditionalFormatting_default = /* @__PURE__ */ defineComponent({
   __name: "VConfigureSingleDateTokenConditionalFormatting",
   props: {
@@ -29497,9 +30137,9 @@ var VConfigureSingleDateTokenConditionalFormatting_default = /* @__PURE__ */ def
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenConditionalFormatting.vue?type=template
-var _hoisted_110 = { class: "v-grid-display" };
-var _hoisted_28 = { class: "v-grid-display" };
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenConditionalFormatting.vue?type=template
+var _hoisted_111 = { class: "v-grid-display" };
+var _hoisted_29 = { class: "v-grid-display" };
 var _hoisted_35 = { class: "v-inline-flex-display" };
 var _hoisted_43 = { class: "v-grid-display slim" };
 var _hoisted_52 = /* @__PURE__ */ createBaseVNode(
@@ -29509,8 +30149,8 @@ var _hoisted_52 = /* @__PURE__ */ createBaseVNode(
   -1
   /* HOISTED */
 );
-function render12(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("div", _hoisted_110, [
+function render14(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", _hoisted_111, [
     createVNode($setup["VButton"], { onClick: $setup.addFormatting }, {
       default: withCtx(() => [
         createTextVNode(
@@ -29525,13 +30165,13 @@ function render12(_ctx, _cache, $props, $setup, $data, $options) {
     (openBlock(true), createElementBlock(
       Fragment,
       null,
-      renderList($props.modelValue.formatting, ({ format: format2, conditionsAreExclusive, evaluations }, index) => {
+      renderList($props.modelValue.formatting, ({ format: format4, conditionsAreExclusive, evaluations }, index) => {
         return openBlock(), createBlock(
           $setup["VCard"],
           null,
           {
             default: withCtx(() => [
-              createBaseVNode("div", _hoisted_28, [
+              createBaseVNode("div", _hoisted_29, [
                 createBaseVNode("div", _hoisted_35, [
                   $setup.moreThanOneEntry ? (openBlock(), createBlock($setup["VButton"], {
                     key: 0,
@@ -29592,7 +30232,7 @@ function render12(_ctx, _cache, $props, $setup, $data, $options) {
                   }, 1032, ["input-id", "value", "onUpdate:value"]),
                   createVNode($setup["VInput"], {
                     "input-id": `configure-single-date-token-format-condition-are-exclusive-${index}`,
-                    value: format2,
+                    value: format4,
                     type: "text",
                     "onUpdate:value": ($event) => $setup.editFormattingAtIndex(index, {
                       format: $event
@@ -29674,11 +30314,11 @@ function render12(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VConfigureSingleDateTokenConditionalFormatting.vue
-VConfigureSingleDateTokenConditionalFormatting_default.render = render12;
+VConfigureSingleDateTokenConditionalFormatting_default.render = render14;
 VConfigureSingleDateTokenConditionalFormatting_default.__file = "src/components/VConfigureSingleDateTokenConditionalFormatting.vue";
 var VConfigureSingleDateTokenConditionalFormatting_default2 = VConfigureSingleDateTokenConditionalFormatting_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenType.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenType.vue?type=script
 var import_lodash2 = __toESM(require_lodash());
 var VConfigureSingleDateTokenType_default = /* @__PURE__ */ defineComponent({
   __name: "VConfigureSingleDateTokenType",
@@ -29735,9 +30375,9 @@ var VConfigureSingleDateTokenType_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenType.vue?type=template
-var _hoisted_111 = { class: "v-grid-display" };
-var _hoisted_29 = {
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateTokenType.vue?type=template
+var _hoisted_112 = { class: "v-grid-display" };
+var _hoisted_210 = {
   key: "number",
   class: "v-grid-display slim"
 };
@@ -29745,8 +30385,8 @@ var _hoisted_36 = {
   class: "v-grid-display",
   key: "string"
 };
-function render13(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("div", _hoisted_111, [
+function render15(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", _hoisted_112, [
     createVNode($setup["VSelect"], {
       "model-value": $props.modelValue.type,
       "input-id": `configure-date-token-${$props.modelValue.name}`,
@@ -29768,7 +30408,7 @@ function render13(_ctx, _cache, $props, $setup, $data, $options) {
     }, 8, ["model-value", "input-id", "options"]),
     createVNode(Transition, { mode: "out-in" }, {
       default: withCtx(() => [
-        $setup.dateTokenConfigurationIsTypeNumber($props.modelValue) ? (openBlock(), createElementBlock("div", _hoisted_29, [
+        $setup.dateTokenConfigurationIsTypeNumber($props.modelValue) ? (openBlock(), createElementBlock("div", _hoisted_210, [
           createVNode($setup["VInput"], {
             "input-id": `configure-single-date-token-min-length-edit-${$props.modelValue.name}`,
             value: $props.modelValue.minLeght,
@@ -29896,139 +30536,12 @@ function render13(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VConfigureSingleDateTokenType.vue
-VConfigureSingleDateTokenType_default.render = render13;
+VConfigureSingleDateTokenType_default.render = render15;
 VConfigureSingleDateTokenType_default.__file = "src/components/VConfigureSingleDateTokenType.vue";
 VConfigureSingleDateTokenType_default.__scopeId = "data-v-06def973";
 var VConfigureSingleDateTokenType_default2 = VConfigureSingleDateTokenType_default;
 
-// node_modules/vue-collapsed/dist/index.mjs
-var _ = "--vc-auto-duration";
-var T = `height var(${_}) cubic-bezier(0.33, 1, 0.68, 1)`;
-var r = { padding: 0 };
-var j = { position: "absolute", width: "1px", height: "1px", padding: "0", margin: "-1px", overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: "0" };
-function b(t) {
-  var _a;
-  return { height: `${(_a = t == null ? void 0 : t.scrollHeight) != null ? _a : 0}px` };
-}
-function $(t) {
-  if (!t)
-    return {};
-  const { transition: n } = getComputedStyle(t);
-  return n === "all 0s ease 0s" ? { transition: T } : { transition: n };
-}
-function H(t) {
-  if (!t)
-    return true;
-  const { transition: n } = getComputedStyle(t);
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches || n.includes("none") || n.includes("height 0s");
-}
-defineComponent({ inheritAttrs: true });
-var G = defineComponent({ __name: "Collapse", props: { when: { type: Boolean }, baseHeight: { default: 0 }, as: { default: "div" } }, emits: ["collapse", "expand", "collapsed", "expanded"], setup(t, { emit: n }) {
-  const v = t, u = toRef(v, "when"), o = toRef(v, "baseHeight"), p2 = computed2(() => ({ overflow: "hidden", height: `${o.value}px` })), h2 = computed2(() => ({ ...r, ...o.value === 0 ? { display: "none" } : p2.value })), l = ref(null), i = ref(u.value ? "expanded" : "collapsed"), e = shallowRef({}), g = ref(300), f = computed2(() => ({ [_]: `${g.value}ms` }));
-  function m() {
-    e.value = r, i.value = "expanded", n("expanded");
-  }
-  function x() {
-    e.value = h2.value, i.value = "collapsed", n("collapsed");
-  }
-  function k(a) {
-    var s, w;
-    a.target === l.value && a.propertyName === "height" && (u.value ? ((s = l.value) == null ? void 0 : s.scrollHeight) === parseFloat(a.target.style.height) && m() : ((w = l.value) == null ? void 0 : w.style.height) === `${o.value}px` && x());
-  }
-  return onMounted(() => {
-    l.value && (u.value || o.value !== 0 || (e.value = j), g.value = function(a = 0) {
-      if (a === 0)
-        return 0;
-      const s = a / 36;
-      return Math.round(10 * (4 + 15 * s ** 0.25 + s / 5));
-    }(l.value.scrollHeight - o.value), e.value = u.value ? r : h2.value);
-  }), watch(u, (a) => {
-    if (a) {
-      if (H(l.value))
-        return m();
-      i.value = "expanding", n("expand"), e.value = { ...r, ...p2.value, ...f.value, willChange: "height" }, requestAnimationFrame(() => {
-        e.value = { ...e.value, ...b(l.value), ...$(l.value) };
-      });
-    } else {
-      if (H(l.value))
-        return x();
-      i.value = "collapsing", n("collapse"), e.value = { ...e.value, ...f.value, ...b(l.value), willChange: "height" }, requestAnimationFrame(() => {
-        e.value = { ...e.value, ...p2.value, ...$(l.value) };
-      });
-    }
-  }), watch(o, (a) => {
-    u.value || (e.value = { ...e.value, ...a === 0 ? { display: "none" } : { transition: "none", height: `${a}px` } });
-  }), (a, s) => (openBlock(), createBlock(resolveDynamicComponent(v.as), { ref_key: "collapseRef", ref: l, style: normalizeStyle(e.value), onTransitionend: k, "data-collapse": i.value }, { default: withCtx(() => [renderSlot(a.$slots, "default", normalizeProps(guardReactiveProps({ state: i.value })))]), _: 3 }, 40, ["style", "data-collapse"]));
-} });
-
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VDetails.vue?type=script
-var VDetails_default = /* @__PURE__ */ defineComponent({
-  __name: "VDetails",
-  props: {
-    startOpened: { type: Boolean, required: false, default: false }
-  },
-  setup(__props, { expose: __expose }) {
-    __expose();
-    const props = __props;
-    const isOpen = ref(props.startOpened);
-    const __returned__ = { props, isOpen, get Collapse() {
-      return G;
-    } };
-    Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
-    return __returned__;
-  }
-});
-
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VDetails.vue?type=template
-var _withScopeId = (n) => (pushScopeId("data-v-b71f4981"), n = n(), popScopeId(), n);
-var _hoisted_112 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode(
-  "span",
-  { role: "icon" },
-  "\u25B8",
-  -1
-  /* HOISTED */
-));
-var _hoisted_210 = { style: { "padding-top": "8px" } };
-function render14(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock(
-    "div",
-    {
-      role: "article",
-      class: normalizeClass(["v-details", { isOpen: $setup.isOpen }])
-    },
-    [
-      createBaseVNode("div", {
-        role: "heading",
-        "aria-level": "2",
-        onClick: _cache[0] || (_cache[0] = ($event) => $setup.isOpen = !$setup.isOpen)
-      }, [
-        _hoisted_112,
-        createBaseVNode("span", null, [
-          renderSlot(_ctx.$slots, "summary", {}, void 0, true)
-        ])
-      ]),
-      createVNode($setup["Collapse"], { when: $setup.isOpen }, {
-        default: withCtx(() => [
-          createBaseVNode("div", _hoisted_210, [
-            renderSlot(_ctx.$slots, "details", {}, void 0, true)
-          ])
-        ]),
-        _: 3
-        /* FORWARDED */
-      }, 8, ["when"])
-    ],
-    2
-    /* CLASS */
-  );
-}
-
-// src/components/VDetails.vue
-VDetails_default.render = render14;
-VDetails_default.__file = "src/components/VDetails.vue";
-VDetails_default.__scopeId = "data-v-b71f4981";
-var VDetails_default2 = VDetails_default;
-
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateToken.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateToken.vue?type=script
 var VConfigureSingleDateToken_default = /* @__PURE__ */ defineComponent({
   __name: "VConfigureSingleDateToken",
   props: {
@@ -30045,9 +30558,9 @@ var VConfigureSingleDateToken_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateToken.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureSingleDateToken.vue?type=template
 var _hoisted_113 = { class: "v-grid-display" };
-function render15(_ctx, _cache, $props, $setup, $data, $options) {
+function render16(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("div", _hoisted_113, [
     $props.allowDelete ? (openBlock(), createBlock($setup["VButton"], {
       key: 0,
@@ -30124,11 +30637,11 @@ function render15(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VConfigureSingleDateToken.vue
-VConfigureSingleDateToken_default.render = render15;
+VConfigureSingleDateToken_default.render = render16;
 VConfigureSingleDateToken_default.__file = "src/components/VConfigureSingleDateToken.vue";
 var VConfigureSingleDateToken_default2 = VConfigureSingleDateToken_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureDateTokenArray.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureDateTokenArray.vue?type=script
 var VConfigureDateTokenArray_default = /* @__PURE__ */ defineComponent({
   __name: "VConfigureDateTokenArray",
   props: {
@@ -30156,9 +30669,9 @@ var VConfigureDateTokenArray_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureDateTokenArray.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VConfigureDateTokenArray.vue?type=template
 var _hoisted_114 = { class: "v-grid-display" };
-function render16(_ctx, _cache, $props, $setup, $data, $options) {
+function render17(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("section", _hoisted_114, [
     (openBlock(true), createElementBlock(
       Fragment,
@@ -30190,11 +30703,11 @@ function render16(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VConfigureDateTokenArray.vue
-VConfigureDateTokenArray_default.render = render16;
+VConfigureDateTokenArray_default.render = render17;
 VConfigureDateTokenArray_default.__file = "src/components/VConfigureDateTokenArray.vue";
 var VConfigureDateTokenArray_default2 = VConfigureDateTokenArray_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VWarningBlock.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VWarningBlock.vue?type=script
 var VWarningBlock_default = /* @__PURE__ */ defineComponent({
   __name: "VWarningBlock",
   setup(__props, { expose: __expose }) {
@@ -30205,9 +30718,9 @@ var VWarningBlock_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VWarningBlock.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VWarningBlock.vue?type=template
 var _hoisted_115 = { class: "warning v-warning-block v-grid-display" };
-function render17(_ctx, _cache, $props, $setup, $data, $options) {
+function render18(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("figure", _hoisted_115, [
     createBaseVNode("figcaption", null, [
       renderSlot(_ctx.$slots, "title")
@@ -30219,11 +30732,11 @@ function render17(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VWarningBlock.vue
-VWarningBlock_default.render = render17;
+VWarningBlock_default.render = render18;
 VWarningBlock_default.__file = "src/components/VWarningBlock.vue";
 var VWarningBlock_default2 = VWarningBlock_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VAdvancedDateFormats.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VAdvancedDateFormats.vue?type=script
 var VAdvancedDateFormats_default = /* @__PURE__ */ defineComponent({
   __name: "VAdvancedDateFormats",
   props: {
@@ -30274,10 +30787,10 @@ var VAdvancedDateFormats_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VAdvancedDateFormats.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VAdvancedDateFormats.vue?type=template
 var _hoisted_116 = { class: "v-grid-display" };
 var _hoisted_211 = { style: { "margin": "0px" } };
-function render18(_ctx, _cache, $props, $setup, $data, $options) {
+function render19(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("section", _hoisted_116, [
     createVNode($setup["VButton"], { onClick: $setup.handleResetToDefault }, {
       default: withCtx(() => [
@@ -30398,11 +30911,11 @@ function render18(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VAdvancedDateFormats.vue
-VAdvancedDateFormats_default.render = render18;
+VAdvancedDateFormats_default.render = render19;
 VAdvancedDateFormats_default.__file = "src/components/VAdvancedDateFormats.vue";
 var VAdvancedDateFormats_default2 = VAdvancedDateFormats_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateDateTokens.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateDateTokens.vue?type=script
 var VCreateDateTokens_default = /* @__PURE__ */ defineComponent({
   __name: "VCreateDateTokens",
   props: {
@@ -30440,10 +30953,10 @@ var VCreateDateTokens_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateDateTokens.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateDateTokens.vue?type=template
 var _hoisted_117 = { class: "v-grid-display" };
 var _hoisted_212 = { class: "v-inline-flex-display" };
-function render19(_ctx, _cache, $props, $setup, $data, $options) {
+function render20(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("div", _hoisted_117, [
     createBaseVNode(
       "p",
@@ -30492,11 +31005,11 @@ function render19(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VCreateDateTokens.vue
-VCreateDateTokens_default.render = render19;
+VCreateDateTokens_default.render = render20;
 VCreateDateTokens_default.__file = "src/components/VCreateDateTokens.vue";
 var VCreateDateTokens_default2 = VCreateDateTokens_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateInputFormat.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateInputFormat.vue?type=script
 var VCreateInputFormat_default = /* @__PURE__ */ defineComponent({
   __name: "VCreateInputFormat",
   props: {
@@ -30546,7 +31059,7 @@ var VCreateInputFormat_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateInputFormat.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateInputFormat.vue?type=template
 var _hoisted_118 = { class: "v-grid-display" };
 var _hoisted_213 = /* @__PURE__ */ createBaseVNode(
   "hr",
@@ -30567,7 +31080,7 @@ var _hoisted_53 = {
   key: 1,
   style: { "color": "var(--color-red)" }
 };
-function render20(_ctx, _cache, $props, $setup, $data, $options) {
+function render21(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("section", _hoisted_118, [
     createVNode($setup["VInput"], {
       value: $setup.template,
@@ -30651,11 +31164,11 @@ function render20(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VCreateInputFormat.vue
-VCreateInputFormat_default.render = render20;
+VCreateInputFormat_default.render = render21;
 VCreateInputFormat_default.__file = "src/components/VCreateInputFormat.vue";
 var VCreateInputFormat_default2 = VCreateInputFormat_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateOutputFormat.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateOutputFormat.vue?type=script
 var VCreateOutputFormat_default = /* @__PURE__ */ defineComponent({
   __name: "VCreateOutputFormat",
   props: {
@@ -30689,7 +31202,7 @@ var VCreateOutputFormat_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateOutputFormat.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateOutputFormat.vue?type=template
 var _hoisted_119 = { class: "v-grid-display" };
 var _hoisted_214 = /* @__PURE__ */ createBaseVNode(
   "hr",
@@ -30703,7 +31216,7 @@ var _hoisted_45 = {
   key: 1,
   style: { "color": "var(--color-red)" }
 };
-function render21(_ctx, _cache, $props, $setup, $data, $options) {
+function render22(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_i18n_t = resolveComponent("i18n-t");
   return openBlock(), createElementBlock("section", _hoisted_119, [
     createVNode($setup["VInput"], {
@@ -30784,11 +31297,11 @@ function render21(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VCreateOutputFormat.vue
-VCreateOutputFormat_default.render = render21;
+VCreateOutputFormat_default.render = render22;
 VCreateOutputFormat_default.__file = "src/components/VCreateOutputFormat.vue";
 var VCreateOutputFormat_default2 = VCreateOutputFormat_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VDateFormatCreationConfirmation.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VDateFormatCreationConfirmation.vue?type=script
 var VDateFormatCreationConfirmation_default = /* @__PURE__ */ defineComponent({
   __name: "VDateFormatCreationConfirmation",
   props: {
@@ -30805,7 +31318,7 @@ var VDateFormatCreationConfirmation_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VDateFormatCreationConfirmation.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VDateFormatCreationConfirmation.vue?type=template
 var _hoisted_120 = { class: "v-grid-display" };
 var _hoisted_215 = /* @__PURE__ */ createBaseVNode(
   "hr",
@@ -30821,7 +31334,7 @@ var _hoisted_39 = /* @__PURE__ */ createBaseVNode(
   -1
   /* HOISTED */
 );
-function render22(_ctx, _cache, $props, $setup, $data, $options) {
+function render23(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("section", _hoisted_120, [
     createBaseVNode("div", null, [
       createBaseVNode(
@@ -30901,11 +31414,11 @@ function render22(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VDateFormatCreationConfirmation.vue
-VDateFormatCreationConfirmation_default.render = render22;
+VDateFormatCreationConfirmation_default.render = render23;
 VDateFormatCreationConfirmation_default.__file = "src/components/VDateFormatCreationConfirmation.vue";
 var VDateFormatCreationConfirmation_default2 = VDateFormatCreationConfirmation_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateDateFormatFlow.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateDateFormatFlow.vue?type=script
 var FlowState = /* @__PURE__ */ ((FlowState2) => {
   FlowState2[FlowState2["not-started"] = 0] = "not-started";
   FlowState2[FlowState2["token-creation"] = 1] = "token-creation";
@@ -30975,7 +31488,7 @@ var VCreateDateFormatFlow_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateDateFormatFlow.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/components/VCreateDateFormatFlow.vue?type=template
 var _hoisted_121 = {
   key: 0,
   class: "v-grid-display"
@@ -30986,7 +31499,7 @@ var _hoisted_216 = {
 };
 var _hoisted_310 = { class: "v-grid-display-2" };
 var _hoisted_46 = { key: 2 };
-function render23(_ctx, _cache, $props, $setup, $data, $options) {
+function render24(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_i18n_t = resolveComponent("i18n-t");
   return openBlock(), createBlock(Transition, { mode: "out-in" }, {
     default: withCtx(() => [
@@ -31102,11 +31615,11 @@ function render23(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/components/VCreateDateFormatFlow.vue
-VCreateDateFormatFlow_default.render = render23;
+VCreateDateFormatFlow_default.render = render24;
 VCreateDateFormatFlow_default.__file = "src/components/VCreateDateFormatFlow.vue";
 var VCreateDateFormatFlow_default2 = VCreateDateFormatFlow_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/views/VDateFormats.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/views/VDateFormats.vue?type=script
 var VDateFormats_default = /* @__PURE__ */ defineComponent({
   __name: "VDateFormats",
   props: {
@@ -31122,9 +31635,9 @@ var VDateFormats_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/views/VDateFormats.vue?type=template
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/views/VDateFormats.vue?type=template
 var _hoisted_122 = { class: "v-grid-display" };
-function render24(_ctx, _cache, $props, $setup, $data, $options) {
+function render25(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("article", _hoisted_122, [
     createVNode($setup["VHeader"], null, {
       default: withCtx(() => [
@@ -31179,11 +31692,11 @@ function render24(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/views/VDateFormats.vue
-VDateFormats_default.render = render24;
+VDateFormats_default.render = render25;
 VDateFormats_default.__file = "src/views/VDateFormats.vue";
 var VDateFormats_default2 = VDateFormats_default;
 
-// sfc-script:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/views/App.vue?type=script
+// sfc-script:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/views/App.vue?type=script
 var App_default = /* @__PURE__ */ defineComponent({
   __name: "App",
   props: {
@@ -31208,8 +31721,8 @@ var App_default = /* @__PURE__ */ defineComponent({
   }
 });
 
-// sfc-template:/home/mgras/book/Book/.obsidian/plugins/obsidian-auto-timelines/src/views/App.vue?type=template
-function render25(_ctx, _cache, $props, $setup, $data, $options) {
+// sfc-template:/home/mgras/book/Dev/.obsidian/plugins/obsidian-auto-timelines/src/views/App.vue?type=template
+function render26(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("div", null, [
     createVNode($setup["VNav"], {
       value: $setup.currentRoute,
@@ -31229,7 +31742,7 @@ function render25(_ctx, _cache, $props, $setup, $data, $options) {
 }
 
 // src/views/App.vue
-App_default.render = render25;
+App_default.render = render26;
 App_default.__file = "src/views/App.vue";
 var App_default2 = App_default;
 
@@ -31249,6 +31762,9 @@ var SETTINGS_DEFAULT = {
   lookForTagsForTimeline: false,
   lookForInlineEventsInNotes: true,
   applyAdditonalConditionFormatting: true,
+  dateFontSize: -1,
+  titleFontSize: -1,
+  bodyFontSize: -1,
   dateTokenConfiguration: [
     createNumberDateTokenConfiguration({ name: "year", minLeght: 4 }),
     createNumberDateTokenConfiguration({ name: "month" }),
@@ -31314,16 +31830,24 @@ function parseMarkdownBlockSource(source) {
 }
 var acceptedSettingsOverride = [
   "dateDisplayFormat",
-  "applyAdditonalConditionFormatting"
+  "applyAdditonalConditionFormatting",
+  "dateFontSize",
+  "titleFontSize",
+  "bodyFontSize"
 ];
 function isOverridableSettingsKey(value) {
   return acceptedSettingsOverride.includes(value);
 }
 function formatValueFromKey(key, value) {
+  console.log(value);
   if (!isOverridableSettingsKey(key))
     return void 0;
   if (isDefinedAsString(SETTINGS_DEFAULT[key]))
     return value;
+  if (isDefinedAsNonNaNNumber(SETTINGS_DEFAULT[key])) {
+    const out = Number(value);
+    return isNaN(out) ? void 0 : out;
+  }
   if (isDefinedAsBoolean(SETTINGS_DEFAULT[key])) {
     const validBooleanStrings = ["true", "false"];
     if (!validBooleanStrings.includes(value.toLocaleLowerCase()))
@@ -31344,11 +31868,31 @@ function parseSingleLine(line) {
   return { [key]: value };
 }
 
+// src/watchFileChange.ts
+function watchFiles(app, filesToWatch, callback, fileWatcher = null, timerClampTime = 100) {
+  if (fileWatcher)
+    app.vault.offref(fileWatcher);
+  let timerClamp = null;
+  fileWatcher = app.vault.on("modify", (file) => {
+    if (!filesToWatch.some((usedFile) => usedFile.path === file.path))
+      return false;
+    if (timerClamp)
+      clearTimeout(timerClamp);
+    timerClamp = setTimeout(callback, timerClampTime);
+    return true;
+  });
+  return fileWatcher;
+}
+
 // src/main.ts
 var AprilsAutomaticTimelinesPlugin = class extends import_obsidian4.Plugin {
   constructor() {
     super(...arguments);
     __publicField(this, "settings");
+    /**
+     * Native file watcher that triggers on file edit and re-renders timelines
+     */
+    __publicField(this, "fileWatcher");
   }
   /**
    * The default onload method of a obsidian plugin
@@ -31364,6 +31908,8 @@ var AprilsAutomaticTimelinesPlugin = class extends import_obsidian4.Plugin {
     );
   }
   onunload() {
+    if (this.fileWatcher)
+      this.app.vault.offref(this.fileWatcher);
   }
   /**
    * Main runtime function to process a single timeline.
@@ -31374,6 +31920,7 @@ var AprilsAutomaticTimelinesPlugin = class extends import_obsidian4.Plugin {
    * @param param2.sourcePath - A string representing the fs path of a note.
    */
   async run(source, element, { sourcePath }) {
+    element.empty();
     const runtimeTime = measureTime("Run time");
     const { app } = this;
     const { tagsToFind, settingsOverride } = parseMarkdownBlockSource(source);
@@ -31399,11 +31946,8 @@ var AprilsAutomaticTimelinesPlugin = class extends import_obsidian4.Plugin {
       events.push(...inlineEvents);
     }
     events.sort(
-      ({ cardData: { startDate: a, endDate: aE } }, { cardData: { startDate: b2, endDate: bE } }) => {
-        const score = compareAbstractDates(a, b2);
-        if (score)
-          return score;
-        return compareAbstractDates(aE, bE);
+      ({ cardData: { startDate: a, endDate: aE, title: titleA } }, { cardData: { startDate: b2, endDate: bE, title: titleB } }) => {
+        return compareAbstractDates(a, b2) || compareAbstractDates(aE, bE) || titleA.localeCompare(titleB);
       }
     );
     cardDataTime();
@@ -31418,6 +31962,14 @@ var AprilsAutomaticTimelinesPlugin = class extends import_obsidian4.Plugin {
     const rangeRenderTime = measureTime("Range Render");
     renderRanges(ranges, element);
     rangeRenderTime();
+    const watcherSetupTime = measureTime("File change watcher setup");
+    this.fileWatcher = watchFiles(
+      this.app,
+      events.map(({ context: { file } }) => file),
+      () => this.run(source, element, { sourcePath }),
+      this.fileWatcher
+    );
+    watcherSetupTime();
     runtimeTime();
   }
   /**
@@ -31443,45 +31995,31 @@ var AprilsAutomaticTimelinesPlugin = class extends import_obsidian4.Plugin {
 };
 /*! Bundled license information:
 
-@intlify/shared/dist/shared.esm-bundler.js:
+@intlify/shared/dist/shared.mjs:
   (*!
-    * shared v9.2.2
-    * (c) 2022 kazuya kawaguchi
+    * shared v9.4.1
+    * (c) 2023 kazuya kawaguchi
     * Released under the MIT License.
     *)
 
-@intlify/message-compiler/dist/message-compiler.esm-bundler.js:
+@intlify/message-compiler/dist/message-compiler.esm-browser.js:
   (*!
-    * message-compiler v9.2.2
-    * (c) 2022 kazuya kawaguchi
+    * message-compiler v9.4.1
+    * (c) 2023 kazuya kawaguchi
     * Released under the MIT License.
     *)
 
-@intlify/devtools-if/dist/devtools-if.esm-bundler.js:
+@intlify/core-base/dist/core-base.mjs:
   (*!
-    * devtools-if v9.2.2
-    * (c) 2022 kazuya kawaguchi
+    * core-base v9.4.1
+    * (c) 2023 kazuya kawaguchi
     * Released under the MIT License.
     *)
 
-@intlify/core-base/dist/core-base.esm-bundler.js:
+vue-i18n/dist/vue-i18n.mjs:
   (*!
-    * core-base v9.2.2
-    * (c) 2022 kazuya kawaguchi
-    * Released under the MIT License.
-    *)
-
-@intlify/vue-devtools/dist/vue-devtools.esm-bundler.js:
-  (*!
-    * vue-devtools v9.2.2
-    * (c) 2022 kazuya kawaguchi
-    * Released under the MIT License.
-    *)
-
-vue-i18n/dist/vue-i18n.esm-bundler.js:
-  (*!
-    * vue-i18n v9.2.2
-    * (c) 2022 kazuya kawaguchi
+    * vue-i18n v9.4.1
+    * (c) 2023 kazuya kawaguchi
     * Released under the MIT License.
     *)
 */

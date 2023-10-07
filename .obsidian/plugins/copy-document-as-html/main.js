@@ -242,8 +242,7 @@ var documentRendererDefaults = {
   footnoteHandling: 2 /* REMOVE_LINK */
 };
 var DocumentRenderer = class {
-  constructor(view, app, options = documentRendererDefaults) {
-    this.view = view;
+  constructor(app, options = documentRendererDefaults) {
     this.app = app;
     this.options = options;
     this.optionRenderSettlingDelay = 100;
@@ -251,38 +250,36 @@ var DocumentRenderer = class {
       ["svg", "image/svg+xml"],
       ["jpg", "image/jpeg"]
     ]);
-    this.imageExtensions = ["gif", "png", "jpg", "jpeg", "bmp", "png", "webp", "tiff", "svg"];
     this.externalSchemes = ["http", "https"];
     this.vaultPath = this.app.vault.getRoot().vault.adapter.getBasePath().replace(/\\/g, "/");
     this.vaultUriPrefix = `app://local/${this.vaultPath}`;
+    this.view = new import_obsidian.Component();
   }
-  async renderDocument(onlySelected) {
+  async renderDocument(markdown, path) {
     this.modal = new CopyingToHtmlModal(this.app);
     this.modal.open();
     try {
-      const topNode = await this.renderMarkdown(onlySelected);
+      const topNode = await this.renderMarkdown(markdown, path);
       return await this.transformHTML(topNode);
     } finally {
       this.modal.close();
     }
   }
-  async renderMarkdown(onlySelected) {
-    const inputFile = this.view.file;
-    const markdown = onlySelected ? this.view.editor.getSelection() : this.view.data;
+  async renderMarkdown(markdown, path) {
     const processedMarkdown = this.preprocessMarkdown(markdown);
     const wrapper = document.createElement("div");
     wrapper.style.display = "hidden";
     document.body.appendChild(wrapper);
-    await import_obsidian.MarkdownRenderer.renderMarkdown(processedMarkdown, wrapper, inputFile.path, this.view);
+    await import_obsidian.MarkdownRenderer.render(this.app, processedMarkdown, wrapper, path, this.view);
     await this.untilRendered();
-    await this.replaceEmbeds(wrapper);
     const result = wrapper.cloneNode(true);
     document.body.removeChild(wrapper);
+    this.view.unload();
     return result;
   }
   preprocessMarkdown(markdown) {
     let processed = markdown;
-    if (this.options.removeFrontMatter) {
+    if (this.options.removeDataviewMetadataLines) {
       processed = processed.replace(/^[^ \t:#`<>][^:#`<>]+::.*$/gm, "");
     }
     return processed;
@@ -294,72 +291,6 @@ var DocumentRenderer = class {
       }
       await delay(20);
     }
-  }
-  async replaceEmbeds(rootNode) {
-    var _a;
-    for (const node of Array.from(rootNode.querySelectorAll(".internal-embed"))) {
-      const src = node.getAttr("src");
-      const alt = node.getAttr("alt");
-      if (!src) {
-        node.remove();
-        continue;
-      }
-      const { path, extension, heading, blockReference } = this.getLinkParts(src);
-      if (extension === "" || extension === "md") {
-        const file = this.getEmbeddedFile(path);
-        if (file) {
-          let markdown = await this.app.vault.cachedRead(file);
-          if (heading) {
-            markdown = (_a = this.extractSection(markdown, heading)) != null ? _a : markdown;
-          } else if (blockReference) {
-          }
-          if (this.options.removeLinkText) {
-            node.innerHTML = "";
-          }
-          await import_obsidian.MarkdownRenderer.renderMarkdown(markdown, node, file.path, this.view);
-        }
-      } else if (this.imageExtensions.includes(extension)) {
-        const file = this.getEmbeddedFile(src);
-        if (file) {
-          const replacement = document.createElement("img");
-          replacement.setAttribute("src", `${this.vaultUriPrefix}/${file.path}`);
-          if (alt) {
-            replacement.setAttribute("alt", alt);
-          }
-          node.replaceWith(replacement);
-        }
-      } else {
-        node.remove();
-      }
-    }
-  }
-  getEmbeddedFile(src) {
-    const subfolder = src.substring(this.vaultPath.length);
-    const file = this.app.metadataCache.getFirstLinkpathDest(src, subfolder);
-    if (!file) {
-      console.error(`Could not load ${src}, not found in metadataCache`);
-      return void 0;
-    }
-    if (!(file instanceof import_obsidian.TFile)) {
-      console.error(`Embedded element '${src}' is not a file`);
-      return void 0;
-    }
-    return file;
-  }
-  extractSection(markdown, heading) {
-    const escapedHeading = heading.split(" ").join("[ |]+");
-    const matchSectionStart = new RegExp(`(#*) (?:\\[*${escapedHeading}\\]*[ ]*\\n)`);
-    let res = markdown.match(matchSectionStart);
-    if (!res || res.length <= 1) {
-      return void 0;
-    }
-    const headingLevel = res[1].length;
-    const matchSectionEnd = new RegExp(`#* (?:\\[*${escapedHeading}\\]*[ ]*\\n)((?:.|\\n(?!#{1,${headingLevel}} ))*)`);
-    res = markdown.match(matchSectionEnd);
-    if (!res || res.length <= 1) {
-      return void 0;
-    }
-    return res[1];
   }
   async transformHTML(element) {
     const node = element.cloneNode(true);
@@ -392,12 +323,10 @@ var DocumentRenderer = class {
   }
   replaceInternalLinks(node) {
     node.querySelectorAll("a.internal-link").forEach((node2) => {
-      console.log(node2.getText());
       const textNode = node2.parentNode.createEl("span");
       textNode.innerText = node2.getText();
       textNode.className = "internal-link";
       node2.parentNode.replaceChild(textNode, node2);
-      console.log(`replacing with`, textNode);
     });
   }
   makeCheckboxesReadOnly(node) {
@@ -450,7 +379,7 @@ var DocumentRenderer = class {
   removeAllFootnotes(node) {
     node.querySelectorAll("section.footnotes").forEach((section) => section.parentNode.removeChild(section));
     node.querySelectorAll(".footnote-link").forEach((link) => {
-      const span = link.parentNode.parentNode.removeChild(link.parentNode);
+      link.parentNode.parentNode.removeChild(link.parentNode);
     });
   }
   removeFootnoteLinks(node) {
@@ -569,16 +498,6 @@ var DocumentRenderer = class {
     const fileName = filePath.slice(filePath.lastIndexOf("/") + 1);
     return fileName.slice(fileName.lastIndexOf(".") + 1 || fileName.length).toLowerCase();
   }
-  getLinkParts(path) {
-    const hashIndex = path.lastIndexOf("#");
-    const [file, anchor] = hashIndex > 0 ? [path.slice(0, hashIndex), path.slice(hashIndex + 1)] : [path, ""];
-    return {
-      path: file,
-      extension: this.getExtension(file),
-      heading: !(anchor == null ? void 0 : anchor.startsWith("^")) ? anchor : void 0,
-      blockReference: (anchor == null ? void 0 : anchor.startsWith("^")) ? anchor : void 0
-    };
-  }
   isSvg(mimeType) {
     return mimeType === "image/svg+xml";
   }
@@ -625,7 +544,15 @@ var _CopyDocumentAsHTMLSettingsTab = class extends import_obsidian.PluginSetting
       await this.plugin.saveSettings();
     }));
     containerEl.createEl("h3", { text: "Rendering" });
-    new import_obsidian.Setting(containerEl).setName("Remove front-matter sections").setDesc("If checked, the YAML content between --- lines at the front of the document are removed. If you don't know what this means, leave it on.").addToggle((toggle) => toggle.setValue(this.plugin.settings.removeFrontMatter).onChange(async (value) => {
+    new import_obsidian.Setting(containerEl).setName("Include filename as header").setDesc("If checked, the filename is inserted as a level 1 header. (only if an entire document is copied)").addToggle((toggle) => toggle.setValue(this.plugin.settings.fileNameAsHeader).onChange(async (value) => {
+      this.plugin.settings.fileNameAsHeader = value;
+      await this.plugin.saveSettings();
+    }));
+    new import_obsidian.Setting(containerEl).setName("Copy HTML fragment only").setDesc("If checked, only generate a HTML fragment and not a full HTML document. This excludes the header, and effectively disables all styling.").addToggle((toggle) => toggle.setValue(this.plugin.settings.bareHtmlOnly).onChange(async (value) => {
+      this.plugin.settings.bareHtmlOnly = value;
+      await this.plugin.saveSettings();
+    }));
+    new import_obsidian.Setting(containerEl).setName("Remove properties / front-matter sections").setDesc("If checked, the YAML content between --- lines at the front of the document are removed. If you don't know what this means, leave it on.").addToggle((toggle) => toggle.setValue(this.plugin.settings.removeFrontMatter).onChange(async (value) => {
       this.plugin.settings.removeFrontMatter = value;
       await this.plugin.saveSettings();
     }));
@@ -690,7 +617,9 @@ var DEFAULT_SETTINGS = {
   removeDataviewMetadataLines: false,
   formatAsTables: false,
   footnoteHandling: 2 /* REMOVE_LINK */,
-  styleSheet: DEFAULT_STYLESHEET
+  styleSheet: DEFAULT_STYLESHEET,
+  bareHtmlOnly: false,
+  fileNameAsHeader: false
 };
 var CopyDocumentAsHTMLPlugin = class extends import_obsidian.Plugin {
   async onload() {
@@ -698,17 +627,17 @@ var CopyDocumentAsHTMLPlugin = class extends import_obsidian.Plugin {
     this.addCommand({
       id: "smart-copy-as-html",
       name: "Copy selection or document to clipboard",
-      checkCallback: this.buildCheckCallback((view) => this.doCopy(view, view.editor.somethingSelected()))
+      checkCallback: this.buildCheckCallback((view) => this.copyFromView(view, view.editor.somethingSelected()))
     });
     this.addCommand({
       id: "copy-as-html",
       name: "Copy entire document to clipboard",
-      checkCallback: this.buildCheckCallback((view) => this.doCopy(view, false))
+      checkCallback: this.buildCheckCallback((view) => this.copyFromView(view, false))
     });
     this.addCommand({
       id: "copy-selection-as-html",
       name: "Copy current selection to clipboard",
-      checkCallback: this.buildCheckCallback((view) => this.doCopy(view, true))
+      checkCallback: this.buildCheckCallback((view) => this.copyFromView(view, true))
     });
     const beforeAllPostProcessor = this.registerMarkdownPostProcessor(async () => {
       ppIsProcessing = true;
@@ -748,15 +677,47 @@ var CopyDocumentAsHTMLPlugin = class extends import_obsidian.Plugin {
       return true;
     };
   }
-  async doCopy(activeView, onlySelected) {
-    console.log(`Copying "${activeView.file.path}" to clipboard...`);
-    const copier = new DocumentRenderer(activeView, this.app, this.settings);
+  async copyFromView(activeView, onlySelected) {
+    if (!activeView.editor) {
+      console.error("No editor in active view, nothing to copy");
+      return;
+    }
+    if (!activeView.file) {
+      console.error("No file in active view, nothing to copy");
+      return;
+    }
+    const markdown = onlySelected ? activeView.editor.getSelection() : activeView.data;
+    const path = activeView.file.path;
+    const name = activeView.file.name;
+    return this.doCopy(markdown, path, name, !onlySelected);
+  }
+  async copyFromFile(file) {
+    if (!(file instanceof import_obsidian.TFile)) {
+      console.log(`cannot copy folder to HTML: ${file.path}`);
+      return;
+    }
+    if (file.extension.toLowerCase() !== "md") {
+      console.log(`cannot only copy .md files to HTML: ${file.path}`);
+      return;
+    }
+    const markdown = await file.vault.cachedRead(file);
+    return this.doCopy(markdown, file.path, file.name, true);
+  }
+  async doCopy(markdown, path, name, isFullDocument) {
+    console.log(`Copying "${path}" to clipboard...`);
+    const title = name.replace(/\.md$/i, "");
+    const copier = new DocumentRenderer(this.app, this.settings);
     try {
       copyIsRunning = true;
       ppLastBlockDate = Date.now();
       ppIsProcessing = true;
-      const htmlBody = await copier.renderDocument(onlySelected);
-      const htmlDocument = htmlTemplate(this.settings.styleSheet, htmlBody.outerHTML, activeView.file.name);
+      let htmlBody = await copier.renderDocument(markdown, path);
+      if (this.settings.fileNameAsHeader && isFullDocument) {
+        const h1 = htmlBody.createEl("h1");
+        h1.innerHTML = title;
+        htmlBody.insertBefore(h1, htmlBody.firstChild);
+      }
+      const htmlDocument = this.settings.bareHtmlOnly ? htmlBody.outerHTML : htmlTemplate(this.settings.styleSheet, htmlBody.outerHTML, title);
       const data = new ClipboardItem({
         "text/html": new Blob([htmlDocument], {
           type: ["text/html", "text/plain"]
@@ -766,8 +727,8 @@ var CopyDocumentAsHTMLPlugin = class extends import_obsidian.Plugin {
         })
       });
       await navigator.clipboard.write([data]);
-      console.log(`Copied ${onlySelected ? "selection" : "document"} to clipboard`);
-      new import_obsidian.Notice(`${onlySelected ? "selection" : "document"} copied to clipboard`);
+      console.log(`Copied to clipboard as HTML`);
+      new import_obsidian.Notice(`Copied to clipboard as HTML`);
     } catch (error) {
       new import_obsidian.Notice(`copy failed: ${error}`);
       console.error("copy failed", error);
@@ -779,17 +740,7 @@ var CopyDocumentAsHTMLPlugin = class extends import_obsidian.Plugin {
     this.registerEvent(this.app.workspace.on("file-menu", (menu, file, view) => {
       menu.addItem((item) => {
         item.setTitle("Copy as HTML").setIcon("clipboard-copy").onClick(async () => {
-          this.app.commands.executeCommandById("copy-document-as-html:smart-copy-as-html");
-        });
-      });
-      menu.addItem((item) => {
-        item.setTitle("Copy entire document as HTML").setIcon("clipboard-copy").onClick(async () => {
-          this.app.commands.executeCommandById("copy-document-as-html:copy-as-html");
-        });
-      });
-      menu.addItem((item) => {
-        item.setTitle("Copy selection as HTML").setIcon("clipboard-copy").onClick(async () => {
-          this.app.commands.executeCommandById("copy-document-as-html:copy-selection-as-html");
+          return this.copyFromFile(file);
         });
       });
     }));

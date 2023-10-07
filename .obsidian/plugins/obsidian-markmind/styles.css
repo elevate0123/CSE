@@ -93,6 +93,7 @@
   min-width: 10px;
   border-radius: 4px;
 }
+
 .mm-node.node-wireFrame .mm-node-content {
   border-radius: 6px;
   border-bottom-left-radius: 0;
@@ -353,12 +354,19 @@
   position: absolute;
   background: #333;
   border: 1px solid #000;
-  width: 212px;
+  width: 240px;
   border-radius: 0.25rem;
   z-index: 6000;
-  padding-top: 5px;
-  height: 28px;
+  height: 32px;
   box-sizing: border-box;
+  display: none;
+  /* justify-content: center; */
+  align-items: center;
+  flex-direction: row;
+}
+
+.mm-node-menu.reverse {
+  flex-direction: row-reverse;
 }
 
 .theme-light .mm-node-menu {
@@ -369,7 +377,10 @@
 .mm-node-menu span {
   vertical-align: middle;
   cursor: pointer;
-  margin: 0 5px
+  padding: 6px 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .mm-node-menu span svg {
@@ -636,8 +647,8 @@
   background-color: purple
 }
 
-.mm-assist-delete ,
-.mm-assist-group-name{
+.mm-assist-delete,
+.mm-assist-group-name {
   padding: 4px;
   cursor: pointer;
 }
@@ -1582,16 +1593,16 @@ th {
 }
 
 .theme-light .mm-table th {
-   background-color: rgb(16, 151, 232);
-   color:#fff;
+  background-color: rgb(16, 151, 232);
+  color: #fff;
 }
 
 .theme-dark .mm-table th {
   background-color: #fff;
 }
 
-.theme-dark .mm-table th .mm-node{
-   color: #333;
+.theme-dark .mm-table th .mm-node {
+  color: #333;
 }
 
 .mm-table td {
@@ -1902,7 +1913,7 @@ th {
   width: 100px;
 }
 
-.mm-translate-container{
+.mm-translate-container {
   width: 100%;
   overflow-y: auto;
   box-sizing: border-box;
@@ -1913,12 +1924,12 @@ th {
   width: 100%;
 }
 
-.mm-translate-item{
+.mm-translate-item {
   margin-bottom: 20px;
   cursor: pointer;
 }
 
-.mm-translate-item:hover{
+.mm-translate-item:hover {
   opacity: 0.9;
 }
 

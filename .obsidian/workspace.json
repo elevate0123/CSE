@@ -8,7 +8,7 @@
         "type": "tabs",
         "children": [
           {
-            "id": "5771c5f11a525abb",
+            "id": "f6d79ad4a1737b9f",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -49,7 +49,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "font",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": true,
                 "collapseAll": true,
@@ -66,7 +66,8 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -174,11 +175,11 @@
         "currentTab": 1
       },
       {
-        "id": "20736ddf48fd8777",
+        "id": "35af6773895ccd7b",
         "type": "tabs",
         "children": [
           {
-            "id": "da9c5c7ed9a3587d",
+            "id": "1d7f1a7c19412ba6",
             "type": "leaf",
             "state": {
               "type": "map-of-content",
@@ -205,12 +206,13 @@
       "workspaces:Manage workspace layouts": false,
       "omnisearch:Omnisearch": false,
       "obsidian-advanced-slides:Show Slide Preview": false,
+      "breadcrumbs:Breadcrumbs Visualisation": false,
       "obsidian-excalidraw-plugin:Create new drawing": false,
       "homepage:Open homepage": false,
       "map-of-content:Update Map of Content": false
     }
   },
-  "active": "5771c5f11a525abb",
+  "active": "1d7f1a7c19412ba6",
   "lastOpenFiles": [
     "X Misc/Fonts.md",
     "Home.md",
