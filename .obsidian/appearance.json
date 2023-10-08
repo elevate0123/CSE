@@ -3,6 +3,7 @@
   "theme": "obsidian",
   "baseFontSize": 16,
   "cssTheme": "Dracula for Obsidian",
-  "textFontFamily": "Trebuchet MS",
-  "accentColor": "#23bafb"
+  "textFontFamily": "Montserrat,Trebuchet MS",
+  "accentColor": "#23bafb",
+  "interfaceFontFamily": ""
 }

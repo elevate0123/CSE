@@ -1,12 +1,15 @@
 ---
-aliases: [01 Introduction, Unit 01, 01]
-
+aliases:
+  - 01 Introduction
+  - Unit 01
 tags:
   - discipline
   - introduction
   - modernity
   - scope
   - commonsense
+subject: socio, sociology, optional, p1
+PromptInfo:
 ---
 
 ***

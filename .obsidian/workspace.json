@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "10c9e479efdf3741",
+        "id": "a61f9162ba2b9745",
         "type": "tabs",
         "children": [
           {
-            "id": "f6d79ad4a1737b9f",
+            "id": "f77e758fd1e047cb",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -66,12 +66,12 @@
               "state": {}
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "437852c2768e1d8b",
@@ -175,11 +175,11 @@
         "currentTab": 1
       },
       {
-        "id": "35af6773895ccd7b",
+        "id": "272eb168cb826886",
         "type": "tabs",
         "children": [
           {
-            "id": "1d7f1a7c19412ba6",
+            "id": "de9fed15f53542f4",
             "type": "leaf",
             "state": {
               "type": "map-of-content",
@@ -190,7 +190,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 370.5
+    "width": 370.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -206,13 +207,13 @@
       "workspaces:Manage workspace layouts": false,
       "omnisearch:Omnisearch": false,
       "obsidian-advanced-slides:Show Slide Preview": false,
-      "breadcrumbs:Breadcrumbs Visualisation": false,
-      "obsidian-excalidraw-plugin:Create new drawing": false,
       "homepage:Open homepage": false,
-      "map-of-content:Update Map of Content": false
+      "obsidian-excalidraw-plugin:Create new drawing": false,
+      "map-of-content:Update Map of Content": false,
+      "breadcrumbs:Breadcrumbs Visualisation": false
     }
   },
-  "active": "1d7f1a7c19412ba6",
+  "active": "f77e758fd1e047cb",
   "lastOpenFiles": [
     "X Misc/Fonts.md",
     "Home.md",

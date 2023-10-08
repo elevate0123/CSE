@@ -1306,6 +1306,9 @@
   width: 20px;
   height: 20px;
   font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 20;
 }
 
 .mm-node-note-tab {
@@ -1315,9 +1318,9 @@
   max-width: 500px;
   max-height: 400px;
   border-radius: 5px;
-  background-color: wheat;
+  background-color: #FFD;
   color: #333;
-  overflow: auto;
+  overflow: hidden;
   z-index: 6000;
   display: none;
 }
@@ -1326,8 +1329,40 @@
   padding: 10px;
   box-sizing: border-box;
   font-size: 14px;
-  white-space: pre-wrap;
+  position: absolute;
+  left: 0;
+  top:20px;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  /* white-space: pre-wrap; */
 }
+
+
+.mm-node-note-container h1,
+.mm-node-note-container h2,
+.mm-node-note-container h3,
+.mm-node-note-container h4,
+.mm-node-note-container h5,
+.mm-node-note-container h6 {
+  margin-block-start: 0;
+}
+
+.mm-node-note-container ul,
+.mm-node-note-container ol {
+  margin: 6px;
+}
+
+.mm-node-note-container ul li,
+.mm-node-note-container ol li {
+  line-height: 20px;
+}
+
+.mm-node-note-container img {
+  max-width: 100%;
+}
+
+
 
 .block-language-mindmap {
   height: 600px;

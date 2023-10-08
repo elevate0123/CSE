@@ -155,6 +155,8 @@ Historical
 Holocaust
 Have
 Hedgewar
+Head
+Highlighted
 Kitaab
 Kitaabe
 Kitab
@@ -295,6 +297,10 @@ similar
 separate
 speeches
 sustained
+scope
+subject
+sociology
+sciences
 mai
 mehsoos
 ma
@@ -355,6 +361,7 @@ movement
 mass
 may
 moder
+methods
 Tehreer
 Taha
 Tarjame
@@ -470,6 +477,7 @@ Increasing
 Invisible
 Ideological
 Islami
+Intro
 Likhne
 Lekis
 Lock
@@ -524,6 +532,7 @@ Modernisation
 More
 ML
 Maulana
+Modernity
 Sahih
 Surah
 Shaikh
@@ -585,6 +594,8 @@ Stresses
 Strong
 Supremacy
 Socio
+Sociology
+Scope
 Bukhari
 Bache
 Budhe
@@ -689,6 +700,7 @@ protective
 psyche
 peaceful
 particular
+pointers
 nazar
 naam
 ne
@@ -884,6 +896,7 @@ ethnicity
 exclusionary
 establish
 eruption
+easy
 bade
 bhi
 ba
@@ -1073,6 +1086,8 @@ consider
 conflicts
 communalise
 created
+commonsense
+chapters
 isme
 iss
 isliye
@@ -1125,6 +1140,7 @@ instead
 indicates
 interest
 insecurity
+introduction
 tashreeh
 topic
 thodi
@@ -1249,6 +1265,7 @@ decline
 declined
 dogmas
 during
+discipline
 wo
 wajah
 waqt
@@ -1383,6 +1400,8 @@ Crisis
 Communist
 Communalist
 Communalists
+Crux
+Contents
 guftagu
 group
 ghaans
@@ -1516,6 +1535,8 @@ Rationalism
 Reactive
 RSS
 Relgion
+Relationship
+Research
 Namaaz
 Naamo
 Namak
@@ -1635,6 +1656,7 @@ Evolutionary
 Exclusivism
 Erdogan
 Establish
+Europe
 Jannat
 Jahannam
 Jab
@@ -1644,6 +1666,7 @@ James
 Jews
 Jamat
 Journalist
+Judgements
 Qqabid
 Quran
 Questions

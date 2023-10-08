@@ -667,7 +667,7 @@ __export(main_exports, {
   default: () => AprilsAutomaticTimelinesPlugin
 });
 module.exports = __toCommonJS(main_exports);
-var import_obsidian4 = require("obsidian");
+var import_obsidian5 = require("obsidian");
 
 // src/types.ts
 var DateTokenType = /* @__PURE__ */ ((DateTokenType2) => {
@@ -805,6 +805,27 @@ function evalNumericalCondition(condition, a, b2) {
     case "LESSOREQUAL" /* LessOrEqual */:
       return a <= b2;
   }
+}
+function isOrderedSubArray(source, subset) {
+  let endsWithWildstar = false;
+  if (!subset.length)
+    return true;
+  const target = subset[0];
+  const builtRegex = target.includes("*") ? new RegExp(target.replace(/\*/gi, ".*")) : null;
+  const index = source.findIndex((el) => {
+    if (!builtRegex)
+      return el === target;
+    const hasMatch = builtRegex.test(el);
+    if (!hasMatch)
+      return false;
+    if (target[target.length - 1] === "*")
+      endsWithWildstar = true;
+    return true;
+  });
+  return index === -1 ? false : endsWithWildstar || isOrderedSubArray(source.slice(index + 1), subset.slice(1));
+}
+function generateNumberArray(start, size2 = 10) {
+  return [...Array(size2).keys()].map((i) => start + i);
 }
 
 // node_modules/yaml/browser/dist/nodes/identity.js
@@ -7052,12 +7073,12 @@ async function getDataFromNoteBody(body, context, tagsToFind) {
     context.cachedMetadata.frontmatter = fakeFrontmatter;
     if (!isDefinedAsObject(fakeFrontmatter))
       continue;
-    const timelineTags = getTagsFromMetadataOrTagObject(
+    const noteTags = getTagsFromMetadataOrTagObject(
       settings,
       fakeFrontmatter,
       context.cachedMetadata.tags
     );
-    if (!extractedTagsAreValid(timelineTags, tagsToFind))
+    if (!extractedTagsAreValid(noteTags, tagsToFind))
       continue;
     const matchPositionInBody = body.indexOf(block);
     output.push({
@@ -7071,8 +7092,14 @@ async function getDataFromNoteBody(body, context, tagsToFind) {
   context.cachedMetadata.frontmatter = originalFrontmatter;
   return output;
 }
-function extractedTagsAreValid(timelineTags, tagsToFind) {
-  return timelineTags.some((tag) => tagsToFind.includes(tag));
+function extractedTagsAreValid(noteTags, tagsToFind) {
+  const noteTagCollection = noteTags.map((e) => e.split("/"));
+  return tagsToFind.some((tag) => {
+    const timelineTag = tag.split("/");
+    return noteTagCollection.some(
+      (fileTag) => isOrderedSubArray(fileTag, timelineTag)
+    );
+  });
 }
 async function extractCardData(context, rawFileContent) {
   var _a, _b;
@@ -7265,7 +7292,7 @@ function createCardFromBuiltContext({
 function formatBodyForCard(body) {
   if (!body)
     return "No body for this note :(";
-  return body.replace(/!\[.*\]\(.*\)/gi, "").replace(/#[a-zA-Z\d-_]*/gi, "").replace(/!\[\[.*\]\]/gi, "").replace(/```aat-vertical\n(.|\n)*\n```/gi, "").trim();
+  return body.replace(/!\[.*\]\(.*\)/gi, "").replace(/#[a-zA-Z\d-_/]*/gi, "").replace(/!\[\[.*\]\]/gi, "").replace(/```aat-vertical\n(.|\n)*\n```/gi, "").trim();
 }
 function getDateText({ startDate, endDate }, settings) {
   if (!isDefined(startDate))
@@ -25537,6 +25564,13 @@ var warnMessages = {
 function getWarnMessage(code3, ...args) {
   return format(warnMessages[code3], ...args);
 }
+function getLocale(context, options) {
+  return options.locale != null ? resolveLocale(options.locale) : resolveLocale(context.locale);
+}
+var _resolveLocale;
+function resolveLocale(locale) {
+  return isString2(locale) ? locale : _resolveLocale != null && locale.resolvedOnce ? _resolveLocale : _resolveLocale = locale();
+}
 function fallbackWithSimple(ctx, fallback, start) {
   return [.../* @__PURE__ */ new Set([
     start,
@@ -25600,7 +25634,7 @@ function appendItemToChain(chain, target, blocks) {
   }
   return follow;
 }
-var VERSION = "9.4.1";
+var VERSION = "9.5.0";
 var NOT_REOSLVED = -1;
 var DEFAULT_LOCALE = "en-US";
 var MISSING_RESOLVE_VALUE = "";
@@ -25644,11 +25678,12 @@ var _cid = 0;
 function createCoreContext(options = {}) {
   const onWarn = isFunction2(options.onWarn) ? options.onWarn : warn4;
   const version2 = isString2(options.version) ? options.version : VERSION;
-  const locale = isString2(options.locale) ? options.locale : DEFAULT_LOCALE;
-  const fallbackLocale = isArray2(options.fallbackLocale) || isPlainObject2(options.fallbackLocale) || isString2(options.fallbackLocale) || options.fallbackLocale === false ? options.fallbackLocale : locale;
-  const messages = isPlainObject2(options.messages) ? options.messages : { [locale]: {} };
-  const datetimeFormats = isPlainObject2(options.datetimeFormats) ? options.datetimeFormats : { [locale]: {} };
-  const numberFormats = isPlainObject2(options.numberFormats) ? options.numberFormats : { [locale]: {} };
+  const locale = isString2(options.locale) || isFunction2(options.locale) ? options.locale : DEFAULT_LOCALE;
+  const _locale = isFunction2(locale) ? DEFAULT_LOCALE : locale;
+  const fallbackLocale = isArray2(options.fallbackLocale) || isPlainObject2(options.fallbackLocale) || isString2(options.fallbackLocale) || options.fallbackLocale === false ? options.fallbackLocale : _locale;
+  const messages = isPlainObject2(options.messages) ? options.messages : { [_locale]: {} };
+  const datetimeFormats = isPlainObject2(options.datetimeFormats) ? options.datetimeFormats : { [_locale]: {} };
+  const numberFormats = isPlainObject2(options.numberFormats) ? options.numberFormats : { [_locale]: {} };
   const modifiers = assign({}, options.modifiers || {}, getDefaultLinkedModifiers());
   const pluralRules = options.pluralRules || {};
   const missing = isFunction2(options.missing) ? options.missing : null;
@@ -25784,7 +25819,7 @@ function formatMessagePart(ctx, node) {
       return ctx.interpolate(ctx.named(named.k || named.key));
     case 5:
       const list = node;
-      return ctx.interpolate(ctx.list(list.i || list.index));
+      return ctx.interpolate(ctx.list(list.i != null ? list.i : list.index));
     case 6:
       const linked = node;
       const modifier = linked.m || linked.modifier;
@@ -25899,7 +25934,7 @@ function translate(context, ...args) {
   const resolvedMessage = !!options.resolvedMessage;
   const defaultMsgOrKey = isString2(options.default) || isBoolean2(options.default) ? !isBoolean2(options.default) ? options.default : !messageCompiler ? () => key : key : fallbackFormat ? !messageCompiler ? () => key : key : "";
   const enableDefaultMsg = fallbackFormat || defaultMsgOrKey !== "";
-  const locale = isString2(options.locale) ? options.locale : context.locale;
+  const locale = getLocale(context, options);
   escapeParameter && escapeParams(options);
   let [formatScope, targetLocale, message] = !resolvedMessage ? resolveMessageFormat(context, key, locale, fallbackLocale, fallbackWarn, missingWarn) : [
     key,
@@ -26230,7 +26265,7 @@ function datetime(context, ...args) {
   const missingWarn = isBoolean2(options.missingWarn) ? options.missingWarn : context.missingWarn;
   const fallbackWarn = isBoolean2(options.fallbackWarn) ? options.fallbackWarn : context.fallbackWarn;
   const part = !!options.part;
-  const locale = isString2(options.locale) ? options.locale : context.locale;
+  const locale = getLocale(context, options);
   const locales = localeFallbacker(
     context,
     // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -26378,7 +26413,7 @@ function number(context, ...args) {
   const missingWarn = isBoolean2(options.missingWarn) ? options.missingWarn : context.missingWarn;
   const fallbackWarn = isBoolean2(options.fallbackWarn) ? options.fallbackWarn : context.fallbackWarn;
   const part = !!options.part;
-  const locale = isString2(options.locale) ? options.locale : context.locale;
+  const locale = getLocale(context, options);
   const locales = localeFallbacker(
     context,
     // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -26658,7 +26693,7 @@ function setupDevtoolsPlugin(pluginDescriptor, setupFn) {
 }
 
 // node_modules/vue-i18n/dist/vue-i18n.mjs
-var VERSION2 = "9.4.1";
+var VERSION2 = "9.5.0";
 function initFeatureFlags3() {
   if (typeof __VUE_I18N_FULL_INSTALL__ !== "boolean") {
     getGlobalThis2().__VUE_I18N_FULL_INSTALL__ = true;
@@ -27127,6 +27162,8 @@ function createComposer(options = {}, VueI18nLegacy) {
     _context.pluralRules = _pluralRules;
   }
   function te(key, locale2) {
+    if (!key)
+      return false;
     const targetLocale = isString2(locale2) ? locale2 : _locale.value;
     const message = getLocaleMessage(targetLocale);
     return _context.messageResolver(message, key) !== null;
@@ -29391,27 +29428,27 @@ var VCheckbox_default2 = VCheckbox_default;
 
 // node_modules/vue-collapsed/dist/index.mjs
 var _ = "--vc-auto-duration";
-var T = `height var(${_}) cubic-bezier(0.33, 1, 0.68, 1)`;
+var j = `height var(${_}) cubic-bezier(0.33, 1, 0.68, 1)`;
 var v = { padding: 0 };
-var j = { position: "absolute", width: "1px", height: "1px", padding: "0", margin: "-1px", overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: "0" };
+var E = { position: "absolute", width: "1px", height: "1px", padding: "0", margin: "-1px", overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: "0" };
 function b(t) {
   var _a;
   return { height: `${(_a = t == null ? void 0 : t.scrollHeight) != null ? _a : 0}px` };
 }
-function $(t) {
+function H(t) {
   if (!t)
     return {};
   const { transition: n } = getComputedStyle(t);
-  return n === "all 0s ease 0s" ? { transition: T } : { transition: n };
+  return n === "all 0s ease 0s" ? { transition: j } : { transition: n };
 }
-function H(t) {
+function S(t) {
   if (!t)
     return true;
   const { transition: n } = getComputedStyle(t);
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches || n.includes("none") || n.includes("height 0s");
 }
 defineComponent({ inheritAttrs: true });
-var G = defineComponent({ __name: "Collapse", props: { when: { type: Boolean }, baseHeight: { default: 0 }, as: { default: "div" } }, emits: ["collapse", "expand", "collapsed", "expanded"], setup(t, { emit: n }) {
+var I = defineComponent({ __name: "Collapse", props: { when: { type: Boolean }, baseHeight: { default: 0 }, as: { default: "div" } }, emits: ["collapse", "expand", "collapsed", "expanded"], setup(t, { emit: n }) {
   const p2 = t, u = toRef(p2, "when"), o = toRef(p2, "baseHeight"), d = computed2(() => ({ overflow: "hidden", height: `${o.value}px` })), g = computed2(() => ({ ...v, ...o.value === 0 ? { display: "none" } : d.value })), l = ref(null), i = ref(u.value ? "expanded" : "collapsed"), e = shallowRef({}), f = ref(300), m = computed2(() => ({ [_]: `${f.value}ms` }));
   function x() {
     e.value = v, i.value = "expanded", n("expanded");
@@ -29426,26 +29463,26 @@ var G = defineComponent({ __name: "Collapse", props: { when: { type: Boolean }, 
   return onMounted(() => {
     if (!l.value)
       return;
-    u.value || o.value !== 0 || (e.value = j);
+    u.value || o.value !== 0 || (e.value = E);
     const a = function(s = 0) {
       if (s === 0)
         return 0;
-      const r = s / 36;
-      return Math.round(10 * (4 + 15 * r ** 0.25 + r / 5));
+      const r = s / 36, y = Math.round(10 * (4 + 15 * r ** 0.25 + r / 5));
+      return Number.isFinite(y) ? y : 0;
     }(l.value.scrollHeight - o.value);
     f.value = a <= 0 ? 300 : a, e.value = u.value ? v : g.value;
   }), watch(u, (a) => {
     if (a) {
-      if (H(l.value))
+      if (S(l.value))
         return x();
       i.value = "expanding", n("expand"), e.value = { ...v, ...d.value, ...m.value, willChange: "height" }, requestAnimationFrame(() => {
-        e.value = { ...e.value, ...b(l.value), ...$(l.value) };
+        e.value = { ...e.value, ...b(l.value), ...H(l.value) };
       });
     } else {
-      if (H(l.value))
+      if (S(l.value))
         return w();
       i.value = "collapsing", n("collapse"), e.value = { ...e.value, ...m.value, ...b(l.value), willChange: "height" }, requestAnimationFrame(() => {
-        e.value = { ...e.value, ...d.value, ...$(l.value) };
+        e.value = { ...e.value, ...d.value, ...H(l.value) };
       });
     }
   }), watch(o, (a) => {
@@ -29464,12 +29501,11 @@ var VDetails_default = /* @__PURE__ */ defineComponent({
     __expose();
     const props = __props;
     const localIsOpen = ref(props.startOpened);
-    console.log(props.overrideOpen);
     const isOpen = computed2(
       () => isDefined(props.overrideOpen) ? props.overrideOpen : localIsOpen.value
     );
     const __returned__ = { props, localIsOpen, isOpen, get Collapse() {
-      return G;
+      return I;
     } };
     Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
     return __returned__;
@@ -31747,6 +31783,7 @@ App_default.__file = "src/views/App.vue";
 var App_default2 = App_default;
 
 // src/settings.ts
+var verticalTimelineToken = "aat-vertical";
 var SETTINGS_DEFAULT = {
   metadataKeyEventStartDate: "aat-event-start-date",
   metadataKeyEventEndDate: "aat-event-end-date",
@@ -31813,7 +31850,7 @@ var TimelineSettingTab = class extends import_obsidian3.PluginSettingTab {
 
 // src/markdownBlockData.ts
 function parseMarkdownBlockSource(source) {
-  const sourceEntries = source.split("\n");
+  const sourceEntries = isDefinedAsArray(source) ? source : source.split("\n");
   if (!source.length)
     return { tagsToFind: [], settingsOverride: {} };
   const tagsToFind = sourceEntries[0].split(SETTINGS_DEFAULT.markdownBlockTagsToFindSeparator).map((e) => e.trim());
@@ -31839,9 +31876,6 @@ function isOverridableSettingsKey(value) {
   return acceptedSettingsOverride.includes(value);
 }
 function formatValueFromKey(key, value) {
-  console.log(value);
-  if (!isOverridableSettingsKey(key))
-    return void 0;
   if (isDefinedAsString(SETTINGS_DEFAULT[key]))
     return value;
   if (isDefinedAsNonNaNNumber(SETTINGS_DEFAULT[key])) {
@@ -31851,7 +31885,7 @@ function formatValueFromKey(key, value) {
   if (isDefinedAsBoolean(SETTINGS_DEFAULT[key])) {
     const validBooleanStrings = ["true", "false"];
     if (!validBooleanStrings.includes(value.toLocaleLowerCase()))
-      throw new Error(`${value} is supposed to be a boolean`);
+      return void 0;
     return value.toLocaleLowerCase() === "true" ? true : false;
   }
   return void 0;
@@ -31862,6 +31896,8 @@ function parseSingleLine(line) {
   if (!matches2 || !matches2.groups || !isDefinedAsString(matches2.groups.key) || !isDefined(matches2.groups.value))
     return {};
   const key = matches2.groups.key.trim();
+  if (!isOverridableSettingsKey(key))
+    return {};
   const value = formatValueFromKey(key, matches2.groups.value.trim());
   if (!isDefined(value))
     return {};
@@ -31884,8 +31920,254 @@ function watchFiles(app, filesToWatch, callback, fileWatcher = null, timerClampT
   return fileWatcher;
 }
 
+// src/suggester.ts
+var import_obsidian4 = require("obsidian");
+var TimelineMarkdownSuggester = class extends import_obsidian4.EditorSuggest {
+  constructor(plugin) {
+    super(plugin.app);
+    __publicField(this, "app");
+    __publicField(this, "pluginSettings");
+    __publicField(this, "onTriggerParsedContent");
+    this.pluginSettings = plugin.settings;
+    this.app = plugin.app;
+    this.onTriggerParsedContent = null;
+    this.limit = 10;
+  }
+  onTrigger(cursor, editor, _2) {
+    this.onTriggerParsedContent = null;
+    const textBeforeCurrentCursorPosition = editor.getRange(
+      { line: 0, ch: 0 },
+      cursor
+    );
+    const startOfMarkdownBlock = getMarkdownblockStartPosition(
+      textBeforeCurrentCursorPosition
+    );
+    if (!isDefinedAsNonNaNNumber(startOfMarkdownBlock))
+      return null;
+    const allTheDocumentLines = editor.getValue().split("\n");
+    const endOfMarkdownBlock = allTheDocumentLines.findIndex(
+      checkIfLineIsClosingMarkdownBlock
+    );
+    const timelineMarkdownCodeBlock = allTheDocumentLines.slice(
+      startOfMarkdownBlock + 1,
+      endOfMarkdownBlock < 0 ? allTheDocumentLines.length : endOfMarkdownBlock
+    );
+    const line = editor.getLine(cursor.line);
+    this.onTriggerParsedContent = {
+      block: parseMarkdownBlockSource(timelineMarkdownCodeBlock),
+      type: getSuggestionType(cursor, startOfMarkdownBlock, line)
+    };
+    const startCharacter = suggestionTypeIsOptionValue(
+      this.onTriggerParsedContent.type
+    ) ? line.indexOf(":") + 1 : 0;
+    return {
+      end: cursor,
+      start: {
+        ch: startCharacter,
+        line: cursor.line
+      },
+      query: line.slice(startCharacter)
+    };
+  }
+  getSuggestions(context) {
+    if (!this.onTriggerParsedContent)
+      return [];
+    switch (this.onTriggerParsedContent.type) {
+      case 0 /* TagToFind */: {
+        return getTagToFindSuggestion(
+          this.app,
+          this.pluginSettings,
+          context.query
+        );
+      }
+      case 1 /* AnyOption */: {
+        return filterAndSortSuggestionResults(
+          [...acceptedSettingsOverride],
+          context.query,
+          Object.keys(
+            this.onTriggerParsedContent.block.settingsOverride
+          )
+        );
+      }
+      case 6 /* ApplyConditionalFormatingOption */: {
+        return filterAndSortSuggestionResults(
+          ["true", "false"],
+          context.query
+        );
+      }
+      case 5 /* FontSizeDateOption */:
+      case 4 /* FontSizeBodyOption */:
+      case 3 /* FontSizeTitleOption */: {
+        const defaultSet = generateNumberArray(10, 10).map(
+          (e) => e.toString()
+        );
+        if (!context.query.trim().length)
+          return defaultSet;
+        const currentPotentialValidNumber = Number(
+          context.query.trim()
+        );
+        if (!isDefinedAsNonNaNNumber(currentPotentialValidNumber))
+          return defaultSet;
+        return generateNumberArray(currentPotentialValidNumber).map(
+          (e) => e.toString()
+        );
+      }
+      case 2 /* DateFormatOption */: {
+        const tokens = this.pluginSettings.dateTokenConfiguration.map(
+          (e) => e.name
+        );
+        const allreadyUsedQueries = (context.query.trim().match(/{[a-z0-9\s]*}/gi) || []).map((str) => str.slice(1, -1));
+        return filterAndSortSuggestionResults(
+          tokens,
+          "",
+          allreadyUsedQueries
+        );
+      }
+    }
+  }
+  renderSuggestion(text, el) {
+    if (!this.onTriggerParsedContent)
+      return;
+    el.createSpan({ text });
+  }
+  selectSuggestion(value, _2) {
+    if (!this.onTriggerParsedContent || !this.context)
+      return;
+    let { query } = this.context;
+    switch (this.onTriggerParsedContent.type) {
+      case 0 /* TagToFind */: {
+        const splitToken = this.pluginSettings.markdownBlockTagsToFindSeparator;
+        const hasEndToken = this.context.query.trim().endsWith(splitToken);
+        const list = query.split(splitToken).map((e) => e.trim()).filter((e) => e !== "");
+        if (!hasEndToken)
+          list.pop();
+        query = `${[...list, value].join(
+          `${splitToken} `
+        )}${splitToken} `.trimStart();
+        break;
+      }
+      case 1 /* AnyOption */: {
+        query = `${value}: `;
+        break;
+      }
+      case 6 /* ApplyConditionalFormatingOption */:
+      case 4 /* FontSizeBodyOption */:
+      case 5 /* FontSizeDateOption */:
+      case 3 /* FontSizeTitleOption */: {
+        query = ` ${value}
+`;
+        break;
+      }
+      case 2 /* DateFormatOption */: {
+        query += `{${value}}`;
+        break;
+      }
+    }
+    this.context.editor.replaceRange(
+      query,
+      this.context.start,
+      {
+        ...this.context.end,
+        ch: this.context.start.ch + this.context.query.length
+      },
+      "aprils-automatic-timeline"
+    );
+    if (suggestionTypeIsOptionValue(this.onTriggerParsedContent.type) && this.onTriggerParsedContent.type !== 2 /* DateFormatOption */)
+      this.context.editor.setCursor(this.context.start.line + 1, 0);
+    else
+      this.context.editor.setCursor(
+        this.context.start.line,
+        this.context.editor.getLine(this.context.start.line).length
+      );
+    this.close();
+  }
+};
+function getSuggestionType(cursor, startOfMarkdownBlock, line) {
+  var _a, _b;
+  if (cursor.line === startOfMarkdownBlock + 1)
+    return 0 /* TagToFind */;
+  const reg = /((?<key>(\s|\d|[a-z])*):.*)/i;
+  const key = (_b = (_a = line.match(reg)) == null ? void 0 : _a.groups) == null ? void 0 : _b.key;
+  if (!key || !isOverridableSettingsKey(key))
+    return 1 /* AnyOption */;
+  switch (key) {
+    case "applyAdditonalConditionFormatting":
+      return 6 /* ApplyConditionalFormatingOption */;
+    case "bodyFontSize":
+      return 4 /* FontSizeBodyOption */;
+    case "dateDisplayFormat":
+      return 2 /* DateFormatOption */;
+    case "dateFontSize":
+      return 5 /* FontSizeDateOption */;
+    case "titleFontSize":
+      return 3 /* FontSizeTitleOption */;
+  }
+}
+function getTagToFindSuggestion(app, settings, query) {
+  const unfilteredRestults = app.vault.getMarkdownFiles().reduce((accumulator, file) => {
+    const cachedMetadata = app.metadataCache.getFileCache(file);
+    if (!cachedMetadata || !cachedMetadata.frontmatter)
+      return accumulator;
+    accumulator.push(
+      ...getTagsFromMetadataOrTagObject(
+        settings,
+        cachedMetadata.frontmatter,
+        cachedMetadata.tags
+      )
+    );
+    return accumulator;
+  }, []);
+  const allQueries = query.split(settings.markdownBlockTagsToFindSeparator);
+  const currentQuery = allQueries[allQueries.length - 1];
+  const allreadyUsedQueries = allQueries.slice(0, -1);
+  return filterAndSortSuggestionResults(
+    unfilteredRestults,
+    currentQuery,
+    allreadyUsedQueries
+  );
+}
+function filterAndSortSuggestionResults(unfilteredRestults, currentQuery, allreadyUsedQueries = []) {
+  currentQuery = currentQuery.trim().toLowerCase();
+  allreadyUsedQueries = allreadyUsedQueries.map(
+    (e) => e.trim().toLowerCase()
+  );
+  return unfilteredRestults.filter((suggestionText, index) => {
+    const cleanedSuggestion = suggestionText.toLowerCase().trim();
+    return unfilteredRestults.indexOf(suggestionText) === index && !allreadyUsedQueries.includes(cleanedSuggestion) && cleanedSuggestion.includes(currentQuery) && cleanedSuggestion !== currentQuery;
+  }).sort((a, b2) => a.localeCompare(b2));
+}
+function getMarkdownblockStartPosition(textBeforeCurrentCursorPosition) {
+  const linesBeforeCurrentCursorPosition = textBeforeCurrentCursorPosition.split("\n");
+  for (let index = linesBeforeCurrentCursorPosition.length - 1; index >= 0; index--) {
+    const line = linesBeforeCurrentCursorPosition[index];
+    if (checkIfLineIsClosingMarkdownBlock(line))
+      return null;
+    if (checkIfLineIsOpeningMarkdownBlock(line))
+      return index;
+  }
+  return null;
+}
+function checkIfLineIsClosingMarkdownBlock(line) {
+  return line.trim() === "```";
+}
+function checkIfLineIsOpeningMarkdownBlock(line) {
+  return [verticalTimelineToken].some(
+    (token) => line.trim() === `\`\`\`${token}`
+  );
+}
+var optionValueSuggestionSet = [
+  6 /* ApplyConditionalFormatingOption */,
+  2 /* DateFormatOption */,
+  4 /* FontSizeBodyOption */,
+  5 /* FontSizeDateOption */,
+  3 /* FontSizeTitleOption */
+];
+function suggestionTypeIsOptionValue(suggestion) {
+  return optionValueSuggestionSet.includes(suggestion);
+}
+
 // src/main.ts
-var AprilsAutomaticTimelinesPlugin = class extends import_obsidian4.Plugin {
+var AprilsAutomaticTimelinesPlugin = class extends import_obsidian5.Plugin {
   constructor() {
     super(...arguments);
     __publicField(this, "settings");
@@ -31900,8 +32182,9 @@ var AprilsAutomaticTimelinesPlugin = class extends import_obsidian4.Plugin {
    */
   async onload() {
     await this.loadSettings();
+    this.registerEditorSuggest(new TimelineMarkdownSuggester(this));
     this.registerMarkdownCodeBlockProcessor(
-      "aat-vertical",
+      verticalTimelineToken,
       (source, element, context) => {
         this.run(source, element, context);
       }
@@ -31997,28 +32280,28 @@ var AprilsAutomaticTimelinesPlugin = class extends import_obsidian4.Plugin {
 
 @intlify/shared/dist/shared.mjs:
   (*!
-    * shared v9.4.1
+    * shared v9.5.0
     * (c) 2023 kazuya kawaguchi
     * Released under the MIT License.
     *)
 
 @intlify/message-compiler/dist/message-compiler.esm-browser.js:
   (*!
-    * message-compiler v9.4.1
+    * message-compiler v9.5.0
     * (c) 2023 kazuya kawaguchi
     * Released under the MIT License.
     *)
 
 @intlify/core-base/dist/core-base.mjs:
   (*!
-    * core-base v9.4.1
+    * core-base v9.5.0
     * (c) 2023 kazuya kawaguchi
     * Released under the MIT License.
     *)
 
 vue-i18n/dist/vue-i18n.mjs:
   (*!
-    * vue-i18n v9.4.1
+    * vue-i18n v9.5.0
     * (c) 2023 kazuya kawaguchi
     * Released under the MIT License.
     *)
