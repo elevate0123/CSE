@@ -8,7 +8,11 @@ tags:
   - modernity
   - scope
   - commonsense
-subject: socio, sociology, optional, p1
+subject:
+  - Socio
+  - Sociology
+  - Paper 1
+  - Optional
 PromptInfo:
 ---
 
