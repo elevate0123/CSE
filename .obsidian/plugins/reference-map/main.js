@@ -48736,8 +48736,8 @@ var require_lodash = __commonJS({
           return object[key];
         });
       }
-      function cacheHas(cache2, key) {
-        return cache2.has(key);
+      function cacheHas(cache, key) {
+        return cache.has(key);
       }
       function charsStartIndex(strSymbols, chrSymbols) {
         var index = -1, length = strSymbols.length;
@@ -49510,8 +49510,8 @@ var require_lodash = __commonJS({
               if (!(seen ? cacheHas(seen, computed) : includes2(result2, computed, comparator))) {
                 othIndex = othLength;
                 while (--othIndex) {
-                  var cache2 = caches[othIndex];
-                  if (!(cache2 ? cacheHas(cache2, computed) : includes2(arrays[othIndex], computed, comparator))) {
+                  var cache = caches[othIndex];
+                  if (!(cache ? cacheHas(cache, computed) : includes2(arrays[othIndex], computed, comparator))) {
                     continue outer;
                   }
                 }
@@ -51063,12 +51063,12 @@ var require_lodash = __commonJS({
         }
         function memoizeCapped(func) {
           var result2 = memoize(func, function(key) {
-            if (cache2.size === MAX_MEMOIZE_SIZE) {
-              cache2.clear();
+            if (cache.size === MAX_MEMOIZE_SIZE) {
+              cache.clear();
             }
             return key;
           });
-          var cache2 = result2.cache;
+          var cache = result2.cache;
           return result2;
         }
         function mergeData(data, source) {
@@ -52022,12 +52022,12 @@ var require_lodash = __commonJS({
             throw new TypeError2(FUNC_ERROR_TEXT);
           }
           var memoized = function() {
-            var args = arguments, key = resolver ? resolver.apply(this, args) : args[0], cache2 = memoized.cache;
-            if (cache2.has(key)) {
-              return cache2.get(key);
+            var args = arguments, key = resolver ? resolver.apply(this, args) : args[0], cache = memoized.cache;
+            if (cache.has(key)) {
+              return cache.get(key);
             }
             var result2 = func.apply(this, args);
-            memoized.cache = cache2.set(key, result2) || cache2;
+            memoized.cache = cache.set(key, result2) || cache;
             return result2;
           };
           memoized.cache = new (memoize.Cache || MapCache)();
@@ -53639,6 +53639,7 @@ var DEFAULT_SETTINGS = {
   searchFrontMatterLimit: 3,
   searchCiteKey: false,
   searchCiteKeyPath: "My Library.json",
+  citeKeyFilter: ",",
   linkCiteKey: false,
   findZoteroCiteKeyFromID: false,
   findCiteKeyFromLinksWithoutPrefix: false,
@@ -53913,7 +53914,6 @@ var getPaperIds = (content) => {
   if (pmcidMatches) {
     for (const match of pmcidMatches) {
       output.push(`PMCID:${match[1]}`);
-      console.log(match[1]);
     }
   }
   if (urlMatches) {
@@ -53942,13 +53942,17 @@ var sanitizeDOI = (dirtyDOI) => {
 var sanitizeCiteKey = (dirtyCiteKey) => {
   return dirtyCiteKey.replace(/^@+|\)+$|\]+$|\*+$|_+$|`+$|'+$|"+$/, "").replace(/\s+/g, "");
 };
-var getCiteKeys = (content, findCiteKeyFromLinksWithoutPrefix) => {
+var getCiteKeys = (content, findCiteKeyFromLinksWithoutPrefix, filterChars) => {
   const output = [];
   const citekeyRegex = /@([^\s]+)/gi;
   const matches = content.replaceAll(/[\])*`]+/gi, " ").matchAll(citekeyRegex);
   if (matches) {
     for (const match of matches) {
-      output.push(sanitizeCiteKey(match[1]));
+      let citeKey = sanitizeCiteKey(match[1]);
+      if (filterChars) {
+        citeKey = citeKey.replaceAll(new RegExp(`[${filterChars}]`, "g"), "");
+      }
+      output.push(citeKey);
     }
   }
   if (findCiteKeyFromLinksWithoutPrefix) {
@@ -53957,7 +53961,11 @@ var getCiteKeys = (content, findCiteKeyFromLinksWithoutPrefix) => {
     if (matches2) {
       for (const match of matches2) {
         const trial = match[1].trim().split(" ")[0];
-        output.push(sanitizeCiteKey(trial));
+        let citeKey = sanitizeCiteKey(trial);
+        if (filterChars) {
+          citeKey = citeKey.replaceAll(new RegExp(`[${filterChars}]`, "g"), "");
+        }
+        output.push(citeKey);
       }
     }
     const citekeyRegex3 = /\[([^\][]*)]/gi;
@@ -53965,7 +53973,11 @@ var getCiteKeys = (content, findCiteKeyFromLinksWithoutPrefix) => {
     if (matches3) {
       for (const match of matches3) {
         const trial = match[1].trim().split(" ")[0];
-        output.push(sanitizeCiteKey(trial));
+        let citeKey = sanitizeCiteKey(trial);
+        if (filterChars) {
+          citeKey = citeKey.replaceAll(new RegExp(`[${filterChars}]`, "g"), "");
+        }
+        output.push(citeKey);
       }
     }
   }
@@ -54277,8 +54289,10 @@ var en_default = {
   SEARCH_CITEKEY_DESC: "Find references using the <code>@citekey</code> included in the markdown file in addition to reference IDs.<br><b>Toggle ON:</b> Enable citekey detection<br><b>Toggle OFF:</b> Disable citekey detection",
   SEARCH_CITEKEY_PATH: "Library File Path",
   SEARCH_CITEKEY_PATH_DESC: "Path to your CSL JSON file  with <code>.json</code> extension or BibTex file with <code>.bib</code> extension. Usually exported from reference manager such as Zotero or BibDesk.<br>Path must be relative to the vaults root",
-  FIND_CITEKEY_WITHOUT_PREFIX: "Find CiteKey in Links Without <code>@</code>",
-  FIND_CITEKEY_WITHOUT_PREFIX_DESC: "Find citekey without <code>@</code> prefix in WikiLinks and Markdown Links. This does NOT disable citekey detection with <code>@</code> prefix.<br><b>Toggle ON:</b> Find citekey without <code>@</code> prefix<br><b>Toggle OFF:</b> Do not find citekey without <code>@</code> prefix",
+  CITEKEY_FILTER: "CiteKey Filter Characters",
+  CITEKEY_FILTER_DESC: "Give the characters that are not part of the citekey. For Example if you have page numbers associated with a citekey in the markdown like <code>[@citekey, p. 101]</code>, you might want to give <code>,</code> as the filter character. If you have multiple filter characters give all of them without any separators(Eg: <code>,.</code> which will recognize <code>,</code> and <code>.</code> as NOT part of the <code>citekey</code>). Default is set to <code>,</code>",
+  FIND_CITEKEY_WITHOUT_PREFIX: "Process Citations in Links Without <code>@</code> Prefix",
+  FIND_CITEKEY_WITHOUT_PREFIX_DESC: "Find citekey without <code>@</code> prefix in WikiLinks and Markdown Links. This <b>does NOT disable</b> citekey detection with <code>@</code> prefix.<br><b>Toggle ON:</b> Find citekey without <code>@</code> prefix<br><b>Toggle OFF:</b> Do not find citekey without <code>@</code> prefix",
   CITEKEY_ZOTERO_LINK: "Hide or Show Link to Zotero Library",
   CITEKEY_ZOTERO_LINK_DESC: "Hide or Show the <code>@citekey</code> link in the index cards to show reference in Zotero library.<br><b>Toggle ON:</b> Show link in the index card<br><b>Toggle OFF:</b> Hide link in the index card",
   FIND_ZOTERO_CITEKEY_FROM_ID: "Find CiteKey from ID",
@@ -54555,6 +54569,13 @@ var ReferenceMapSettingTab = class extends import_obsidian4.PluginSettingTab {
         cls: "orm-PathSuccess d-none",
         text: "Successfully Loaded Library Containing References."
       });
+      new import_obsidian4.Setting(containerEl).setName(fragWithHTML(t("CITEKEY_FILTER"))).setDesc(fragWithHTML(t("CITEKEY_FILTER_DESC"))).addText((text) => text.setValue(this.plugin.settings.citeKeyFilter).onChange(async (value) => {
+        this.plugin.settings.citeKeyFilter = value;
+        this.plugin.saveSettings().then(() => {
+          if (this.plugin.view)
+            this.plugin.view.reload(RELOAD.SOFT);
+        });
+      }));
       new import_obsidian4.Setting(containerEl).setName(t("CITEKEY_ZOTERO_LINK")).setDesc(fragWithHTML(t("CITEKEY_ZOTERO_LINK_DESC"))).addToggle((toggle) => toggle.setValue(this.plugin.settings.linkCiteKey).onChange(async (value) => {
         this.plugin.settings.linkCiteKey = value;
         this.plugin.saveSettings().then(() => {
@@ -55811,16 +55832,7 @@ var getCitationItems = async (paperId, debugMode = false) => {
   const citations = response.json.data.map((item) => item.citingPaper);
   return citations;
 };
-var cache = new lru_cache_default({
-  max: 500,
-  maxAge: 1e3 * 60 * 60
-});
 var getSearchItems = async (query, limit, debugMode = false) => {
-  const cacheKey = `${query}-${limit}`;
-  const cachedResponse = cache.get(cacheKey);
-  if (cachedResponse) {
-    return cachedResponse;
-  }
   const url = `${SEMANTICSCHOLAR_API_URL}/paper/search?query=${query}&fields=${SEMANTIC_FIELDS.join(",")}&offset=0&limit=${limit}`;
   const response = await (0, import_obsidian5.requestUrl)(url);
   if (response.status !== 200) {
@@ -55829,7 +55841,6 @@ var getSearchItems = async (query, limit, debugMode = false) => {
     return [];
   }
   const responseData = response.json.data;
-  cache.set(cacheKey, responseData);
   return responseData;
 };
 
@@ -55867,7 +55878,7 @@ var ViewManager = class {
         return e.status;
       }
     };
-    this.searchIndexPapers = async (query, limit = 0, cache2 = true) => {
+    this.searchIndexPapers = async (query, limit = 0, cache = true) => {
       const cacheKey = `${query}${limit}`;
       const cachedSearch = this.searchCache.get(cacheKey);
       if (cachedSearch) {
@@ -55876,7 +55887,7 @@ var ViewManager = class {
       const debugMode = this.plugin.settings.debugMode;
       try {
         const indexCardsList = await getSearchItems(query, limit, debugMode);
-        if (cache2) {
+        if (cache) {
           this.searchCache.set(cacheKey, indexCardsList);
         }
         return indexCardsList;
@@ -56382,13 +56393,17 @@ var ReferenceMapList = (props) => {
   const Search = (isSearchList) => {
     const searchFieldName = isSearchList ? "orm-index-search" : "orm-index-no-search";
     return /* @__PURE__ */ import_react9.default.createElement("div", {
-      className: "orm-search-form index-search"
+      className: "orm-search-form"
+    }, /* @__PURE__ */ import_react9.default.createElement("div", {
+      className: "index-search"
     }, /* @__PURE__ */ import_react9.default.createElement("input", {
       type: "search",
       className: `orm-search-input ${searchFieldName}`,
-      placeholder: "Reference Map",
+      placeholder: `Reference Map`,
       onChange: (e) => setQuery(e.target.value)
-    }));
+    }), isSearchList && /* @__PURE__ */ import_react9.default.createElement("div", {
+      className: "cardCount"
+    }, papers.length > 0 ? papers.length : "")));
   };
   if (!props.basename) {
     return /* @__PURE__ */ import_react9.default.createElement("div", {
@@ -56400,7 +56415,8 @@ var ReferenceMapList = (props) => {
     return /* @__PURE__ */ import_react9.default.createElement("div", {
       className: "orm-reference-map"
     }, Search(true), iSearch(papers, query).map((paper, index) => {
-      const activeIndexCardClass = paper.id === props.selection || paper.id === `@${props.selection}` || `https://doi.org/${paper.id}` === props.selection ? "orm-active-index" : "";
+      const paperId = paper.id.replace("@", "");
+      const activeIndexCardClass = props.selection.includes(paperId) ? "orm-active-index" : "";
       const ref = activeIndexCardClass ? activeRef : null;
       return /* @__PURE__ */ import_react9.default.createElement("div", {
         key: `${paper.paper.paperId}${index}${props.basename}`,
@@ -56436,8 +56452,18 @@ var ReferenceMapView = class extends import_obsidian6.ItemView {
         return;
       const editor = activeView.editor;
       const selection = activeView.getMode() === "source" ? editor.getSelection().trim() : (_a = window.getSelection()) == null ? void 0 : _a.toString().trim();
-      const isInIDs = this.paperIDs.has(selection != null ? selection : "") || this.paperIDs.has(`https://doi.org/${selection}`);
-      const isInCiteKeys = import_lodash.default.map(this.citeKeyMap, "citeKey").includes(selection != null ? selection : "") || import_lodash.default.map(this.citeKeyMap, "citeKey").includes(`@${selection}`);
+      const isInIDs = Array.from(this.paperIDs).map((id) => {
+        id = id.replace("https://doi.org/", "");
+        return selection == null ? void 0 : selection.includes(id);
+      });
+      let isInCiteKeys = false;
+      for (const key in this.citeKeyMap) {
+        const value = String(this.citeKeyMap[key]);
+        if ((selection == null ? void 0 : selection.includes(key)) || (selection == null ? void 0 : selection.includes(value))) {
+          isInCiteKeys = true;
+          break;
+        }
+      }
       if (isInIDs || isInCiteKeys) {
         this.prepareIDs().then(() => this.processReferences(selection != null ? selection : ""));
       }
@@ -56499,7 +56525,7 @@ var ReferenceMapView = class extends import_obsidian6.ItemView {
         const fileContent = activeView.file ? await app.vault.cachedRead(activeView.file) : "";
         paperIDs = getPaperIds(fileContent);
         if (isLibrary && activeView.file) {
-          const citeKeys = getCiteKeys(fileContent, this.plugin.settings.findCiteKeyFromLinksWithoutPrefix);
+          const citeKeys = getCiteKeys(fileContent, this.plugin.settings.findCiteKeyFromLinksWithoutPrefix, this.plugin.settings.citeKeyFilter);
           citeKeyMap = getCiteKeyIds(citeKeys, this.library);
         }
         if (this.plugin.settings.searchFrontMatter) {
@@ -56655,12 +56681,11 @@ var import_obsidian7 = require("obsidian");
 var ReferenceSearchModal = class extends import_obsidian7.Modal {
   constructor(plugin, query, mode, callback) {
     super(plugin.app);
+    this.plugin = plugin;
     this.query = query;
     this.mode = mode;
     this.callback = callback;
     this.isBusy = false;
-    this.plugin = plugin;
-    this.viewManager = new ViewManager(plugin);
   }
   setBusy(busy) {
     var _a, _b;
@@ -56675,13 +56700,25 @@ var ReferenceSearchModal = class extends import_obsidian7.Modal {
     if (!this.isBusy) {
       try {
         this.setBusy(true);
-        const searchResults = await this.viewManager.searchIndexPapers(this.query, this.plugin.settings.modalSearchLimit, false);
-        this.setBusy(false);
-        if (!(searchResults == null ? void 0 : searchResults.length)) {
-          new import_obsidian7.Notice(`No results found for "${this.query}"`);
-          return;
+        const paperIds = getPaperIds(this.query);
+        if (paperIds.size > 0) {
+          const paperPromises = Array.from(paperIds).map((paperId) => new ViewManager(this.plugin).getIndexPaper(paperId));
+          const papers = await Promise.all(paperPromises);
+          const validPapers = papers.filter((paper) => paper !== null);
+          if (validPapers.length > 0) {
+            this.callback(null, validPapers);
+            this.close();
+            return;
+          }
+        } else {
+          const searchResults = await new ViewManager(this.plugin).searchIndexPapers(this.query, this.plugin.settings.modalSearchLimit, false);
+          this.setBusy(false);
+          if (!(searchResults == null ? void 0 : searchResults.length)) {
+            new import_obsidian7.Notice(`No results found for "${this.query}"`);
+            return;
+          }
+          this.callback(null, searchResults);
         }
-        this.callback(null, searchResults);
       } catch (err) {
         this.callback(err);
       }
@@ -56698,7 +56735,7 @@ var ReferenceSearchModal = class extends import_obsidian7.Modal {
     const search_heading = contentEl.createDiv({ cls: "orm-search-modal-input-heading", text: "Search References" });
     search_heading.createDiv({ cls: "orm-search-modal-input-heading-mode", text: `${this.mode}` });
     contentEl.createDiv({ cls: "orm-search-modal-input" }, (settingItem) => {
-      new import_obsidian7.TextComponent(settingItem).setValue(this.query).setPlaceholder("Search by keyword, title, authors, journal, abstract, etc.").onChange((value) => this.query = value).inputEl.addEventListener("keydown", this.submitEnterCallback.bind(this));
+      new import_obsidian7.TextComponent(settingItem).setValue(this.query).setPlaceholder("Search by keyword, title, authors, journal, abstract, ID, DOI, etc.").onChange((value) => this.query = value).inputEl.addEventListener("keydown", this.submitEnterCallback.bind(this));
     });
     new import_obsidian7.Setting(contentEl).setClass("orm-search-modal-input-button").addButton((btn) => {
       return this.okBtnRef = btn.setButtonText("Search").setCta().onClick(() => {
@@ -56719,8 +56756,7 @@ var ReferenceSuggestModal = class extends import_obsidian7.SuggestModal {
   getSuggestions(query) {
     return this.suggestion.filter((reference) => {
       var _a;
-      const searchQuery = query == null ? void 0 : query.toLowerCase();
-      return (_a = reference.title) == null ? void 0 : _a.toLowerCase().includes(searchQuery);
+      return (_a = reference.title) == null ? void 0 : _a.toLowerCase().includes(query == null ? void 0 : query.toLowerCase());
     });
   }
   renderSuggestion(reference, el) {
@@ -56817,17 +56853,14 @@ var ReferenceMap = class extends import_obsidian8.Plugin {
   async createNewReferenceNote() {
     try {
       const markdownView = this.app.workspace.getActiveViewOfType(import_obsidian8.MarkdownView);
-      let selection = "";
-      if (markdownView) {
-        if (markdownView.getMode() === "source") {
-          selection = markdownView.editor.getSelection().trim();
-        }
+      if (!markdownView || markdownView.getMode() !== "source") {
+        new import_obsidian8.Notice("No active markdown view OR in Reading view");
+        return;
       }
+      const selection = markdownView.editor.getSelection().trim();
       const metaData = await this.searchReferenceMetadata(selection, "create");
       const activeLeaf = this.app.workspace.getLeaf();
       if (!activeLeaf) {
-        if (this.settings.debugMode)
-          console.warn("No active leaf");
         new import_obsidian8.Notice("No active leaf");
         return;
       }
@@ -56840,35 +56873,24 @@ var ReferenceMap = class extends import_obsidian8.Plugin {
       activeLeaf.setEphemeralState({ rename: "all" });
       await new CursorJumper(this.app).jumpToNextCursorLocation();
     } catch (err) {
-      if (this.settings.debugMode)
-        console.warn(err);
       new import_obsidian8.Notice("Sorry, something went wrong.");
     }
   }
   async insertMetadata() {
     try {
       const markdownView = this.app.workspace.getActiveViewOfType(import_obsidian8.MarkdownView);
-      if (!markdownView) {
-        if (this.settings.debugMode)
-          console.warn("Can not find an active markdown view");
-        new import_obsidian8.Notice("No active markdown view");
+      if (!markdownView || markdownView.getMode() !== "source") {
+        new import_obsidian8.Notice("No active markdown view OR in Reading view");
         return;
       }
-      let selection = "";
-      if (markdownView.getMode() === "source") {
-        selection = markdownView.editor.getSelection().trim();
-      }
+      const selection = markdownView.editor.getSelection().trim();
       const reference = await this.searchReferenceMetadata(selection, "insert");
       if (!markdownView.editor) {
-        if (this.settings.debugMode)
-          console.warn("Can not find editor from the active markdown view");
         return;
       }
       const renderedContents = await this.getRenderedContentsForInsert(reference);
       markdownView.editor.replaceRange(renderedContents, markdownView.editor.getCursor());
     } catch (err) {
-      if (this.settings.debugMode)
-        console.warn(err);
       new import_obsidian8.Notice("Sorry, something went wrong.");
     }
   }
@@ -56878,24 +56900,24 @@ var ReferenceMap = class extends import_obsidian8.Plugin {
   }
   async openReferenceSearchModal(query = "", mode = "insert") {
     return new Promise((resolve, reject) => {
-      return new ReferenceSearchModal(this, query, mode, (error, results) => {
-        return error ? reject(error) : resolve(results);
+      new ReferenceSearchModal(this, query, mode, (error, results) => {
+        error ? reject(error) : resolve(results);
       }).open();
     });
   }
   async openReferenceSuggestModal(references) {
     return new Promise((resolve, reject) => {
-      return new ReferenceSuggestModal(this.app, references, (error, selectedReference) => {
-        return error ? reject(error) : resolve(selectedReference);
+      new ReferenceSuggestModal(this.app, references, (error, selectedReference) => {
+        error ? reject(error) : resolve(selectedReference);
       }).open();
     });
   }
   async getRenderedContentsForInsert(metaData) {
-    const template = this.settings.modalInsertTemplate ? this.settings.modalInsertTemplate : METADATA_MODAL_INSERT_TEMPLATE;
+    const template = this.settings.modalInsertTemplate || METADATA_MODAL_INSERT_TEMPLATE;
     return templateReplace(template, metaData);
   }
   async getRenderedContentsForCreate(metaData) {
-    const template = this.settings.modalCreateTemplate ? this.settings.modalCreateTemplate : METADATA_MODAL_CREATE_TEMPLATE;
+    const template = this.settings.modalCreateTemplate || METADATA_MODAL_CREATE_TEMPLATE;
     return templateReplace(template, metaData);
   }
 };

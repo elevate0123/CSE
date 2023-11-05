@@ -59,7 +59,8 @@
   line-height: 1.3;
 }
 
-.obsidian-icon-folder-modal.prompt-results .suggestion-item.suggestion-item__center {
+.obsidian-icon-folder-modal.prompt-results
+  .suggestion-item.suggestion-item__center {
   justify-content: center;
 }
 

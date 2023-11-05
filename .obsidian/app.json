@@ -20,5 +20,6 @@
   "newFileLocation": "current",
   "communityThemeSortOrder": "download",
   "trashOption": "local",
-  "rightToLeft": false
+  "rightToLeft": false,
+  "showUnsupportedFiles": true
 }
