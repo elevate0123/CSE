@@ -3,7 +3,7 @@
   "theme": "obsidian",
   "baseFontSize": 16,
   "cssTheme": "Shimmering Focus",
-  "textFontFamily": "Montserrat,Trebuchet MS",
+  "textFontFamily": "Montserrat,Trebuchet MS,Liberation Mono,MS Reference Sans Serif",
   "accentColor": "#23bafb",
   "interfaceFontFamily": ""
 }

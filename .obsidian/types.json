@@ -3,6 +3,8 @@
     "aliases": "aliases",
     "cssclasses": "multitext",
     "tags": "tags",
-    "subject": "multitext"
+    "subject": "multitext",
+    "Paper": "text",
+    "Unit": "text"
   }
 }

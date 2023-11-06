@@ -1,6 +1,7 @@
 ---
-aliases: [Economy, Work]
-
+aliases:
+  - Economy
+  - Work
 tags:
   - work
   - economy
@@ -9,6 +10,8 @@ tags:
 sr-due: 2022-08-20
 sr-interval: 2
 sr-ease: 230
+Paper: Socio 1
+Unit: Work - Economy
 ---
 
 ***

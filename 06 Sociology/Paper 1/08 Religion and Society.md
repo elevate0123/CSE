@@ -11,7 +11,7 @@ tags:
 ***
 Sociologist try to understand Religion in the form of an institution. Consider it as a Collective Human Activity & not as a supernatural thing. Study relationship of Religion with other social institutions 
 - Functionalist - <ins>Beneficial entity</ins>
-- Conflict Theorist - Device of the haves to ideologically subdue the have nots
+- Conflict Theorist - Device of the haves to ideologically subdue the have-nots
 Earlier it was a speculative activity, but now Religion is seen in terms of functions - dysfunctions & present forms
 
 Religion - A Cultural system of commonly shred beliefs & rituals that provide a sense of ultimate meaning & purpose by creating an idea of reality that is sacred, super natural & all encompassing

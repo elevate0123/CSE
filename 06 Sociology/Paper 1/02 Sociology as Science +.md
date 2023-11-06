@@ -1,10 +1,12 @@
 ---
-aliases: [02 Sociology as Science, Unit 02, Science]
-
+aliases:
+  - 02 Sociology as Science
+  - Unit 02
+  - Science
 tags:
   - science
   - humanities
-  - Socio/Science 
+  - Socio/Science
   - Positivists
   - nonpositivist
   - strands
@@ -12,6 +14,8 @@ tags:
 sr-due: 2022-08-21
 sr-interval: 3
 sr-ease: 250
+Paper: Socio 1
+Unit: SaS
 ---
 
 ***

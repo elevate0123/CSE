@@ -1,9 +1,13 @@
 ---
-aliases: [08 Religion & Society, Unit 08, Religion]
-
+aliases:
+  - 08 Religion & Society
+  - Unit 08
+  - Religion
 tags:
   - Religion
   - Islam
+Paper: Socio 1
+Unit: SC
 ---
 
 ***
