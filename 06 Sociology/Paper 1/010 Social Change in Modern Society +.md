@@ -1,11 +1,10 @@
 ---
 aliases:
-  - 08 Religion & Society
-  - Unit 08
-  - Religion
+  - Unit 10
+  - 10 Social Change in Modern Society
+  - SC
 tags:
-  - Religion
-  - Islam
+  - SC
 Paper: Socio 1
 Unit: SC
 ---
@@ -17,6 +16,9 @@ Unit: SC
 #### Concepts related to Social Change
 
 Social Change #SC Wilbert #Moore - Significant alteration in structure over time in behaviour patterns & culture, including norms & values
+
+> [!quote] SC - Zygmunt
+> "Social change is not something that we should fear; it is something that we should embrace." #Zygmunt #Bauman
 
 ##### SC Aspects / Facets Views
 1. #Structural Changes - Affects the whole society fundamentally. #Eg Industrialisation, Urbanisation, Democratisation, GR, Legal rights, occupational mobility
@@ -34,8 +36,8 @@ Social Change #SC Wilbert #Moore - Significant alteration in structure over time
 5. Environmental
 
 ##### Sources of SC based on origin 
-1. Endogenetic
-2. Exogenetic / Equigenetic
+1. Endogenetic - Integrative / Beneath the surface
+2. Exogenetic / Equigenetic - Disintegrative / On the surface
 
 #SC is a complex process, it is important to understand the factors that can lead to it so as to be prepared for the challenges & opportunities that lie ahead  #conclusion 
 
@@ -57,28 +59,27 @@ Adapted from the Biological evolution theory. #Comte #Tylor #Spencer #Marx #ED #
 
 1. #Comte used Progressive Evolutionary Model for new forms of Society in Law of 3 Stages. 
 	- Intellectual development as the basis of all development. 
-	- Law of 3 Stages - 
-	  1. #Theological - Society is an expression of Gods will. Thinking based on religious ideas and beliefs
-	  2. #Metaphysical - Started with #Renaissance Society is seen in natural terms. Imaginative thoughts questioned theological dogmas. These are periods of Stability and upheaval known as Organic & Critical Periods. CP inaugurates new phases
-	  3. Positivistic - Starts with new scientific discoveries
-	    1. Eventually, man would be able to measure empirically and explain conclusively, all forms of social behaviour
-	    2. Aspects of #SC - Social Statics remain constant, Social Dynamics change
-2. #Morgan Moral stages of society - Primitive - Barbaric - Civilised stages of development
-3. #Tylor Evolutionary sequence followed 3 stages - Animism - Polytheism - Monotheism. Principal criteria for cultural growth were growth of industrial arts, scientific knowledge, nature of socio-political organisations
+		- Law of 3 Stages - 
+		  1. #Theological - Society is an expression of God's will. Thinking based on religious ideas and beliefs. #Religion dominates the Collective Civilisations & Social activities
+		  2. #Metaphysical - Started with #Renaissance Society is seen in natural terms. Imaginative thoughts questioned theological dogmas. These are periods of Stability and upheaval known as #Organic & #Critical Periods. CP inaugurates new phases
+		  3. Positivistic - Starts with new scientific discoveries
+		    1. Eventually, man would be able to measure empirically and explain conclusively, all forms of social behaviour
+		    2. Aspects of #SC - Social #Statics remain constant, Social #Dynamics change
+2. #Morgan Moral stages of society - Primitive -> Barbaric -> Civilised stages of development
+3. #Tylor Evolutionary sequence followed 3 stages of #Religion - Animism - Polytheism - Monotheism. Principal criteria for cultural growth were growth of industrial arts, scientific knowledge, nature of socio-political organisations
 4. #ED Evolutionary typology of SC - Society evolves from highly UNdifferentiated (mechanical-simple society) to Highly Differentiated (Organic-complex)
-5. LT #Hobhouse SC based on Human Development
+5. LT #Hobhouse SC based on Human Social Development
 	- 5 Stages of Human Society Development
 		1. Preliterate
 		2. Literacy & Proto Science
 		3. Reflective Thought
 		4. Critical Thought
 		5. Modern Science
-6. #Spencer Social Darwinist - Idea of survival of the fittest. Evolution is a twin process of Differentiation & Integration from simple things to complex. Reality is governed by Cosmic Law
+6. #Spencer Social Darwinist - Classical Evolutionary Theory in real material world - Idea of survival of the fittest. Evolution is a twin process of Differentiation & Integration from simple things to complex. Reality is governed by Cosmic Law.
 	1. Stages of Evolution of societies - Simple - Compound - Doubly compound - Trebly Compound
 	2. Theory of Evolution from Militant Societies (involved in warfare) to Industrial Societies (based on friendship, altruism, elaborate specialisation, recognition for achievements)
 	3. *Comte* focussed on larger units like family, Spencer on individual. #Comte evolution is in realm of ideas, Intellectual development, while Spencer is in real material world.
-7. #Tonnies Ferdinand 
-- 
+7. #Tonnies Ferdinand
 
 
 1. Spencer - 
@@ -93,6 +94,7 @@ Adapted from the Biological evolution theory. #Comte #Tylor #Spencer #Marx #ED #
 
 ### Structure Functionalist Theory of SC of Parsons
 Concept of Dynamic/moving Equilibrium - Change is seen progressing from a stage of moving equilibrium to another
+Neo-evolutionary theory of SC - Recent Popularity
 
 #Parsons takes a systems view of society, where equilibrium is a dynamic
 1. Flux in the external situation tends to throw system off balance
@@ -241,3 +243,5 @@ It is a complex and ever-evolving topic, & there is no single answer to the ques
 
 ***
 ***
+
+

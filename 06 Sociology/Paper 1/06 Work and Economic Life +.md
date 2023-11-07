@@ -11,12 +11,15 @@ sr-due: 2022-08-20
 sr-interval: 2
 sr-ease: 230
 Paper: Socio 1
-Unit: Work - Economy
+Unit: Work & Economic Life
 ---
 
 ***
 # Unit 06 Work and Economic Life
 ***
+
+> [!quote] Work - Aristotle
+> "Work is not merely a means to an end; it is an end in itself." - Aristotle
 
 ### Notion of Work
 1. Natural Sciences - Expenditure of Energy
@@ -32,10 +35,9 @@ Study of Work in sociology is important because economy & production influence a
 #Marx Work/Production of goods & services is an avenue of expression of creativity & a way to happiness and satisfaction. When workers loose control they are #alienated
 #ED Work is an integrating force in modern societies and forms the basis of organic #solidarity
 #### Sociological Perspectives on Work
-1. **Functionalist perspective:** The functionalist perspective views work as a social institution that is necessary for the smooth functioning of society. Work provides us with the goods and services we need to survive, and it also helps to create social order and stability
-2. **Conflict perspective:** The conflict perspective views work as a source of inequality and exploitation. Workers are often forced to work long hours for low pay, and they have little control over their work environment
-3. **Symbolic interactionist perspective:** The symbolic interactionist perspective views work as a social process that is shaped by our interactions with others. The meaning of work is negotiated through our interactions with our coworkers, supervisors, and customers
-#left #rephrase #Remaining 
+1. **Functionalist perspective** - Views work as a social institution that is necessary for the smooth functioning of society. Work provides with goods and services needed to survive, and helps to create social order and stability
+2. **Conflict perspective** - Views work as a source of inequality and exploitation. Workers are often forced to work long hours for low pay, and have little control over their work environment
+3. **Symbolic interactionist perspective** - Views work as a social process that is shaped by the interactions with others. Meaning of work is negotiated through interactions with coworkers, supervisors, and customers
 
 ## Need of Work in Society
 ***
@@ -56,11 +58,14 @@ Study of Work in sociology is important because economy & production influence a
 5. Temporal Structure - Proved sense of direction on a daily basis
 6. Social Contracts - Friendship  #significance 
 
-Worker - Enters into a paid employment out of his/her own will, is not in a managerial job, has contractual relations with the employer
-Worker /= Labour; Labour lacks choice for any reason, are forced into work, are in feudal / ritual relations with the employer. #Eg Child labour, bonded labour
+#Worker - Enters into a paid employment out of his/her own will, is not in a managerial job, has contractual relations with the employer
+Worker /= Labour; 
+#Labour lacks choice for any reason, are forced into work, are in feudal / ritual relations with the employer. #Eg Child labour, bonded labour
 Work > Employment (more narrow)
 #Robert #Blauner Increase in use of technology leads to higher degree of alienation
 #Frank Hull also echoes similar views, the relation is more negatively linear than curvilinear
+Work > employment
+As tech pervades workplace, nature of work also changes. #Eg E-commerce, virtual workplaces, cowork spaces, etc
 
 ## Social Organisation of Work
 ***
@@ -87,6 +92,9 @@ Man was overwhelmed by forces of nature, like rains, floods, which determined th
 - 2 Classes 
 	- Masters - Owners of mode of production #MoP  & Slaves
 	- Slaves - often Prisoners of War
+
+> [!quote] Class Struggle - #Marx 
+> "The class struggle is the motor of history." - Karl Marx
 
 #### Features
 1. Major Economic Activity - #Hunting & Food gathering
@@ -129,6 +137,13 @@ Man now controlled Nature. With emergence of industries, family loses its place 
 - #Marx - Exploitation of Workers by Capitalists + Alienation
 - #ED - Complex #DoL > Increased #Organic #Solidarity > High Social #Cohesion
 
+
+> [!quote] Exploitation - Engels
+>"The exploitation of labor is the root of all social problems." - Friedrich Engels
+
+> [!quote] Alienation - #Marx 
+> "Alienation is the experience of being disconnected from one's work, oneself, and others." - Karl Marx
+
 #### Features
 1. Major economic activity - Mass production in factories
 2. Complex division of labour #DoL  - specialisation increases
@@ -137,7 +152,7 @@ Man now controlled Nature. With emergence of industries, family loses its place 
 5. Production based on Competition & not cooperation - Demand increased
 6. High Alienation - Workers lose control over the produce & monotony of work is very high
 7. Multiplicity of economic institutions - New services are needed, so new institutions like factories, bank, markets emerge
-8. High #Surplus
+8. High #Surplus as production is not for self consumption
 9. Money Economy - Money replaces barter system, labour is commoditised
 10. Use of Inanimate #Power - Leads to higher production & less human involvement
 11. High Occupational Mobility - Due to increased means of communication
@@ -156,13 +171,13 @@ Man now controlled Nature. With emergence of industries, family loses its place 
 
 Harry #Braverman - Work in capitalist orgs is exploitative & alienating, workers are coerced into servitude in a factory system (Critical analysis of scientific management at workplace from #Marxist #perspective)
 
-Organisation of Work in modern post-industrial societies cannot be clubbed under any single classification. Diverse service industry, increasing entrepreneurship, automation, etc have opened many new areas of study  #conclusion 
+Organisation of Work in modern post-industrial societies cannot be clubbed under any single classification. Diverse service industry, increasing entrepreneurship, automation, inter-disciplinary working, specialisation, etc have opened many new areas of study  #conclusion 
 
 ### Post Industrial Society
 Post-industrial society is a society that has transitioned from an economy based on the production of goods to an economy based on the provision of services. Transition is accompanied by a shift in the workforce, with more people employed in the service sector and fewer people employed in the manufacturing sector
 
 #### Features - Key Characteristics
-1. Knowledge Economy - Ideas + Info underpin the economic growth
+1. Knowledge Economy - Ideas + Information underpin the economic growth
 2. Based on
 	1. High #Technology
 	2. #Education & Training
@@ -271,12 +286,12 @@ Peter #Blau Informal structures exists even in formal organisations
 #Meyer & #Rowan Formal rules and practices are often quite distant from the practices actually adopted by the members of the organisation
 
 #### 4 Theoretical Strands explaining existence of Informal Sector
-1. `Dualist School` - Informal sector comprises of only a few marginal activities. Informal workers are excluded from modern economic activities
+1. Dualist School - Informal sector comprises of only a few marginal activities. Informal workers are excluded from modern economic activities
 	1. Imbalance between population & economic growth rate
 	2. Mismatch between peoples skills & structure of modern economic opportunities
-2. `Structuralist School` - Views informal sector as subordinated economic activity. It is an essential feature of a Globalised free market system
-3. `Legalist School` - Informal sector is made up of small entrepreneurs who choose to operate informally to avoid costs and registration
-4. `Voluntarist School` - Informal entrepreneurs deliberately seek to avoid regulations & taxation but do not blame Bureaucratic process, but do so based on cost-benefit analysis 
+2. Structuralist School - Views informal sector as subordinated economic activity. It is an essential feature of a Globalised free market system
+3. Legalist School - Informal sector is made up of small entrepreneurs who choose to operate informally to avoid costs and registration
+4. Voluntarist School - Informal entrepreneurs deliberately seek to avoid regulations & taxation but do not blame Bureaucratic process, but do so based on cost-benefit analysis 
 
 ##### Informal in Formal
 Organisation of Work depends on the task to be accomplished. #Eg Mission mode tasks require informal mode as it provides flexibility
@@ -287,7 +302,9 @@ Ad-hoc committees in formal organisations also work in informal ways
   3. Ill consequences - Corporate scams, insider trading, collusive bribery  #limitations 
 
 ### Labour & Society
-#left #Remaining Sangwan 171
+> [!quote] Labour - Adam Smith
+> "Labor is the source of all wealth." - Adam Smith
+
 Labour is a old concept but in modern sense it arrived with the growth of Capitalism. 
 Worker (has a choice) /= Labour (without choice, due to lack of work or social exploitation)
 Labour lacks choice due to lack of alternate work or Social #exploitation
@@ -306,7 +323,7 @@ Labour lacks choice due to lack of alternate work or Social #exploitation
 3. Workspaces shifted from home to workplaces
 4. Labour is sold in market and not necessarily be of domestic nature
 
-#### Labour & Karl Marx
+#### Labour - Society & Karl Marx
 Labour is a process in which both man and nature participate, man starts regulating & controlling the material reaction between himself and nature. (Here L is not limited to only economic activities but all productive actions that transform material aspects of nature with our purpose)
 Objectification of Human purpose - Labour is peculiar to human beings only as animals cannot produce. Labour creates something in reality that previously existed only in human imagination
 Labour is material, as it works with more material aspects of nature
@@ -316,19 +333,26 @@ Labour in capitalism is not owned by workers!
 Workers are forced to sell their labour time to capitalists for survival
 #Hegel viewed L in non material terms, in form of idea - Mental labour
 
+- KM eye for #Labour 
+	1. Labour - Elementary Factors 
+		- Work itself
+		- Work subject
+		- Work instruments
+	2. L Power - Aggregate of Mental + Physical capabilities of a human
+
 Harry #Braverman - Fordism & automation led to Deskilling of labour force. L lost control over its skills due to specialised production as they learn only a small part of the process thus becoming more dependent on capitalist system
 Michael #Burawoy rejects Marxian idea - Labour Unions have challenged the arbitrary power of management
 
-Robert #Blauner Technology & Alienation - Different forms of tech provide different attitudes to Worker, so varying degree of alienation
+Robert #Blauner #Technology & #Alienation - Different forms of tech provide different attitudes to Worker, so varying degree of alienation
 
 #ED #DoL is a process of evolutions in society and leads to interdependency which integrates the modern society. In Industrial society, mechanical solidarity is poor, so labour relations & interdependency creates new forms of integration
 
-- Fordism & Taylorism
+##### Fordism & Taylorism
 High #DoL in factory and workplaces, suitable for mass production. Work process is standardised, more defined, less flexible
-Post Fordism Era - Focus is on customised production, so more flexibility & differentiation of work
-Critic - Post Fordism - Neo Fordism - It is nor complete transformation but exaggerated that mass production is replaced by flexible production
+Post #Fordism Era - Focus is on customised production, so more flexibility & differentiation of work
+#Critic - Post Fordism - #Neo Fordism - It is not complete transformation but exaggerated that mass production is replaced by flexible production
 
-- Feminist perspective - Labour in society in terms of Female participation
+##### Feminist perspective - Labour in society in terms of Female participation
 Ann #Oakley Industrialisation confined women at home, forced to take role of housewife.
 Women participation is increasing but there is Occupational Segregation
 House work has become invisible, as real work is the one which brings direct wages
@@ -340,7 +364,7 @@ Paid work brings in money which brings power divide and creates inequality, wome
 	2. Changes in Domestic DoL - Male breadwinner model broke, Women mainly responsible for Care stereotypes broken
 
 Arlie #Hochsild Service industry requires manipulation of emotions. So labour is not just physical labour
-Commodification of labour power
+#Marxist - Commodification of labour power
 Decline of trade-union movements have eroded the bargaining power of labour in modern world. Flexible production, liberal labour laws, intense global competition have also eroded the bargaining power
 
 #Handy Flexible Labour as now multiple skills are required, Portfolio Workers have a multiple skill portfolio instead of a single specialisation
@@ -356,5 +380,3 @@ Globalisation of Labour in post modern times - High mobility, trans-boundary mov
 Rise of service sector due to decline of older factory production
 Blue Collar manufacturing to White Collar Service
 Technological Determinist - +ve advocates of Tech
-
-#left 

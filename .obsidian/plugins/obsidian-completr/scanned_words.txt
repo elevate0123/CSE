@@ -3417,6 +3417,7 @@ Alone
 Albert
 Andy
 Applying
+Aristotle
 al
 agar
 asani
@@ -13410,6 +13411,7 @@ serving
 suggestions
 semantics
 slight
+spaces
 mai
 mehsoos
 ma
@@ -15079,6 +15081,7 @@ master
 monographic
 methodical
 modeling
+motor
 Tehreer
 Taha
 Tarjame
@@ -23934,6 +23937,7 @@ Lower
 Lloyd
 Luhmann
 Like
+Legalist
 Maqsad
 Mubarak
 Moosa
@@ -27924,6 +27928,9 @@ Saskia
 Sassen
 Students
 Subcultural
+Struggle
+School
+Structuralist
 Bukhari
 Bache
 Budhe
@@ -31198,6 +31205,7 @@ prompting
 pressures
 particularly
 partly
+pervades
 nazar
 naam
 ne
@@ -32548,6 +32556,7 @@ recommendation
 regard
 retained
 retention
+root
 hue
 hua
 ho
@@ -39885,6 +39894,8 @@ could
 cards
 comments
 concludes
+commerce
+cowork
 isme
 iss
 isliye
@@ -49340,6 +49351,8 @@ derived
 diffusion
 documentation
 densely
+disconnected
+disciplinary
 wo
 wajah
 waqt
@@ -62388,6 +62401,7 @@ French
 Fraser
 Further
 From
+Friedrich
 Rozana
 Revision
 Roti
@@ -71633,6 +71647,7 @@ DeO
 Donati
 Diane
 Dutch
+Dualist
 vast
 various
 vision
@@ -72409,6 +72424,7 @@ via
 virtue
 valuation
 vandalism
+virtual
 of
 on
 operates
@@ -73520,6 +73536,7 @@ offender
 overrides
 obstructs
 occur
+oneself
 Examples
 Empowering
 Educational
@@ -75366,6 +75383,7 @@ ECd
 EYw
 ERw
 Ethnocentrism
+Engels
 Jannat
 Jahannam
 Jab
@@ -79128,6 +79146,7 @@ VdX
 VjBYc
 Viviana
 Vaughan
+Voluntarist
 Our
 One
 Optimization

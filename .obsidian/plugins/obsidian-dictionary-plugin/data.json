@@ -1,7 +1,7 @@
 {
   "getLangFromFile": true,
-  "defaultLanguage": "en_US",
-  "normalLang": "en_US",
+  "defaultLanguage": "en_GB",
+  "normalLang": "en_GB",
   "shouldShowSynonymPopover": true,
   "shouldShowCustomContextMenu": true,
   "apiSettings": {
