@@ -380,3 +380,65 @@ Globalisation of Labour in post modern times - High mobility, trans-boundary mov
 Rise of service sector due to decline of older factory production
 Blue Collar manufacturing to White Collar Service
 Technological Determinist - +ve advocates of Tech
+
+
+
+***
+***
+***
+### Contemporary
+
+#Prompt 
+Give some unique Questions as per the UPSC CSE Mains pattern, specifically for this unit. Also tell me what additional themes, pointers, topics, etc can be added to the notes but in alignment with the subject.
+
+Unique Questions for UPSC CSE Mains (Sociology - Work & Society Unit):
+
+1. Discuss the role of informal organizations of work in perpetuating social inequalities. Provide examples to support your argument.
+
+2. Compare and contrast the views of the Dualist, Structuralist, Legalist, and Voluntarist schools in explaining the existence of the informal sector. Which perspective do you find most convincing, and why?
+
+3. Analyze the impact of globalization on labor mobility and the changing dynamics of the global workforce. How has this influenced gender inequalities in the labor market?
+
+4. In the context of labor and society, elaborate on Karl Marx's concept of labor as a social activity. How does this concept differ from the conventional view of labor as merely an economic activity?
+
+5. Discuss the evolution of labor in the post-Fordism era. How has technology played a role in reshaping the nature of work and labor relations?
+
+Additional Themes/Pointers for Your Notes:
+
+1. Environmental Sustainability: Consider adding a section on how the organization of work and labor practices impact environmental sustainability, aligning with the growing focus on green and sustainable jobs.
+
+2. Gig Economy: Explore the rise of the gig economy and its implications for labor and society, including issues related to job security, benefits, and the changing nature of work relationships.
+
+3. Automation and Artificial Intelligence: Discuss the impact of automation and AI on the labor market, including both opportunities and challenges for workers.
+
+4. Occupational Health and Safety: Highlight the importance of occupational health and safety regulations and their role in safeguarding workers in different sectors.
+
+5. Informal Work and the Informal Economy: Delve deeper into the characteristics and challenges of informal work and its significance in the informal economy.
+
+6. Contemporary Labor Movements: Include a section on modern labor movements, such as protests and advocacy for workers' rights, and their impact on labor relations.
+
+7. Global Supply Chains: Examine the role of global supply chains in shaping work arrangements and the implications for labor in various parts of the world.
+
+By incorporating these additional themes and pointers into your notes, you can provide a more comprehensive overview of the subject while aligning with the evolving dynamics of work and society in the 21st century.
+
+
+  
+Sure, here are some unique questions as per the UPSC CSE Mains pattern, specifically for the unit of Work and Economic Life:
+
+**1.** Critically examine the impact of globalization on the nature of work and employment in India.
+
+**2.** Analyze the challenges and opportunities posed by the informal sector in India's economic development.
+
+**3.** Discuss the role of social mobility in fostering inclusive economic growth.
+
+**4.** Evaluate the effectiveness of government policies and programs aimed at enhancing skill development and employability in India.
+
+**5.** Examine the gender dimensions of work and economic participation in India.
+
+**Additional themes, pointers, and topics that can be added to the notes include:**
+
+- The changing nature of work in the digital age
+- The rise of the gig economy and its implications for workers' rights and protections
+- The impact of automation on employment and the need for reskilling and upskilling
+- The challenges and opportunities of the Fourth Industrial Revolution
+- The role of technology in promoting inclusive and sustainable economic growth

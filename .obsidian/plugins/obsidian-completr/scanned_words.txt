@@ -3418,6 +3418,8 @@ Albert
 Andy
 Applying
 Aristotle
+Adam
+Aggregate
 al
 agar
 asani
@@ -13412,6 +13414,7 @@ suggestions
 semantics
 slight
 spaces
+surface
 mai
 mehsoos
 ma
@@ -18752,6 +18755,7 @@ Pierpaolo
 Pierre
 Polish
 Putnam
+Popularity
 Iss
 Inn
 Imam
@@ -23938,6 +23942,7 @@ Lloyd
 Luhmann
 Like
 Legalist
+Labor
 Maqsad
 Mubarak
 Moosa
@@ -27931,6 +27936,7 @@ Subcultural
 Struggle
 School
 Structuralist
+Smith
 Bukhari
 Bache
 Budhe
@@ -30049,6 +30055,7 @@ Becker
 Believing
 Brander
 Bargaining
+Beneath
 points
 par
 paas
@@ -35518,6 +35525,7 @@ extended
 encouraged
 elites
 effective
+eye
 bade
 bhi
 ba
@@ -39896,6 +39904,7 @@ comments
 concludes
 commerce
 cowork
+capabilities
 isme
 iss
 isliye
@@ -58401,6 +58410,7 @@ Critics
 Cohen
 Cloward
 Criminal
+Civilisations
 guftagu
 group
 ghaans
@@ -60244,6 +60254,7 @@ father
 friend
 fulfilling
 finding
+fear
 Yaad
 Yeh
 Yaa
@@ -71648,6 +71659,7 @@ Donati
 Diane
 Dutch
 Dualist
+Disintegrative
 vast
 various
 vision

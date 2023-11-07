@@ -1,9 +1,9 @@
 {
   "translucency": true,
-  "theme": "moonstone",
-  "baseFontSize": 16,
-  "cssTheme": "Shimmering Focus",
-  "textFontFamily": "Montserrat,Trebuchet MS,Liberation Mono,MS Reference Sans Serif",
+  "theme": "obsidian",
+  "baseFontSize": 14,
+  "cssTheme": "Deep Work",
+  "textFontFamily": "MS Reference Sans Serif,Montserrat,Trebuchet MS,Liberation Mono",
   "accentColor": "#23bafb",
   "interfaceFontFamily": ""
 }
