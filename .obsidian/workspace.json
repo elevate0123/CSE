@@ -4,20 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "8c33093cbe719e1b",
+        "id": "edb127f7b56358c6",
         "type": "tabs",
         "children": [
           {
-            "id": "ce37b15dbfce637b",
+            "id": "1f4061038e45e74d",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "06 Sociology/Paper 1/010 Social Change in Modern Society +.md",
-                "mode": "source",
-                "backlinks": true,
-                "source": false
-              }
+              "type": "home-tab-view",
+              "state": {}
             }
           }
         ]
@@ -185,11 +180,10 @@
       "obsidian-advanced-slides:Show Slide Preview": false,
       "homepage:Open homepage": false,
       "omnisearch:Omnisearch": false,
-      "obsidian-excalidraw-plugin:Create new drawing": false,
-      "breadcrumbs:Breadcrumbs Visualisation": false
+      "obsidian-excalidraw-plugin:Create new drawing": false
     }
   },
-  "active": "ce37b15dbfce637b",
+  "active": "1f4061038e45e74d",
   "lastOpenFiles": [
     "06 Sociology/Paper 1/06 Work and Economic Life +.md",
     "06 Sociology/Paper 1/02 Sociology as Science +.md",

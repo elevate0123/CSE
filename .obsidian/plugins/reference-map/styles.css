@@ -341,23 +341,24 @@ body {
 	border-radius: 0.25rem;
 }
 
-.orm-loading-puff {
-	text-align: center;
-}
-
 .orm-paper-list-buttons {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
 
-.orm-paper-list .orm-references-2, .orm-paper-list .orm-citations-2 {
+.orm-paper-list .orm-references-2, 
+.orm-paper-list .orm-citations-2, 
+.orm-paper-list .orm-influential,
+.orm-influential
+{
 	opacity: var(--orm-paper-disable-opacity)
 }
 
 .orm-search-form {
 	width: 100%;
 	position: relative;
+	margin-bottom: 0.5rem;
 }
 
 .orm-search-input {
@@ -368,6 +369,15 @@ body {
 
 .orm-search-input::placeholder {
 	text-align: center;
+}
+
+.orm-plugin-global-search{
+	position: absolute;
+	top: 0;
+	left: 5px;
+	padding: 0.4rem 0.25rem 0.15rem 0.25rem;
+	border-right: var(--orm-paper-line-thickness) solid var(--orm-paper-line-color);
+	color: var(--orm-paper-buttons-color); 
 }
 
 .search-icon {
@@ -414,20 +424,20 @@ body {
 
 .orm-loading {
 	text-align: center;
+	width: 70%;
+	margin: 0 auto;
 }
 
 .orm-loading-puff {
 	display: block;
 	text-align: center;
-	width: 100%;
-	height: 20px;
+	width: 100%
 }
 
 /** Settings Dialog **/
 .d-none {
 	display: none;
 }
-
 .orm-PathLoading,
 .orm-PathError,
 .orm-PathSuccess {
@@ -526,4 +536,17 @@ body {
 
 .orm-group-toggle .setting-item-description {
 	padding-top: 0;
+}
+
+
+/* GRAPH */
+.orm-graph-content{
+	width: 100%;
+	position: relative;
+	z-index: 1;
+}
+.orm-graph-paper-card{
+	width: 100%;
+	position: absolute;
+	top: 0;
 }
