@@ -4,7 +4,15 @@
 
 ## Family, household, marriage.
 
+#left 
+
+
+
+
 ## Types and forms of family.
+
+#left 
+
 
 ## Lineage & Descent
 ***
@@ -45,6 +53,7 @@ Descent Group Functions
 *** 
 ## Patriarchy & Sexual Division of Labour (SDoL)
 
+#left 
 
 
 
@@ -101,6 +110,7 @@ Divorce leads to separate homes and doubling of resource requirements.
 Marital Breakdowns create a general feeling that integration of society as a whole is affected. But welfare measures like family allowances, old age pensions, health security, helped family in tiding over the challenges posed by forces of change.
 
 ***
+### AI Contemporary Trends
 ***Bard***
 
 **Contemporary Trends in Systems Kinship**
