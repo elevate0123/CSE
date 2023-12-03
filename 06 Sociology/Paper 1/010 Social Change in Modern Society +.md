@@ -186,7 +186,7 @@ WF #Ogburn - Tech & SC are related in a cyclical fashion. He argued that technol
 
 ## Agents of Social Change
 ***
-#left #Remaining 
+
 Agents of social change are the people, groups, or institutions that initiate or facilitate social change. Agents of social change can be motivated by a variety of factors, such as a desire to improve society, to challenge the status quo, or to promote their own interests
 
 ### Factors of Social Change - Classification

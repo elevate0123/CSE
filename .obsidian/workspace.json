@@ -4,15 +4,20 @@
     "type": "split",
     "children": [
       {
-        "id": "edb127f7b56358c6",
+        "id": "49bda9949af79b0e",
         "type": "tabs",
         "children": [
           {
-            "id": "1f4061038e45e74d",
+            "id": "ac69f7d8fae33160",
             "type": "leaf",
             "state": {
-              "type": "home-tab-view",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "06 Sociology/Paper 1/09 Systems of Kinship.md",
+                "mode": "source",
+                "backlinks": true,
+                "source": false
+              }
             }
           }
         ]
@@ -44,7 +49,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#left",
+                "query": "tag:#Noble",
                 "matchingCase": false,
                 "explainSearch": true,
                 "collapseAll": true,
@@ -82,7 +87,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "06 Sociology/Paper 1/010 Social Change in Modern Society +.md",
+                "file": "06 Sociology/Paper 1/09 Systems of Kinship.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -110,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "06 Sociology/Paper 1/010 Social Change in Modern Society +.md",
+                "file": "06 Sociology/Paper 1/09 Systems of Kinship.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -122,7 +127,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "06 Sociology/Paper 1/010 Social Change in Modern Society +.md"
+                "file": "06 Sociology/Paper 1/09 Systems of Kinship.md"
               }
             }
           },
@@ -168,7 +173,6 @@
   "left-ribbon": {
     "hiddenItems": {
       "dbfolder:Create a new database table": false,
-      "obsidian-extract-pdf-highlights:PDF Highlights": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -177,21 +181,23 @@
       "markdown-importer:Open format converter": false,
       "audio-recorder:Start/stop recording": false,
       "workspaces:Manage workspace layouts": false,
-      "obsidian-advanced-slides:Show Slide Preview": false,
       "homepage:Open homepage": false,
       "omnisearch:Omnisearch": false,
-      "obsidian-excalidraw-plugin:Create new drawing": false
+      "obsidian-excalidraw-plugin:Create new drawing": false,
+      "breadcrumbs:Breadcrumbs Visualisation": false
     }
   },
-  "active": "1f4061038e45e74d",
+  "active": "14e2afbccb58fcee",
   "lastOpenFiles": [
+    "06 Sociology/Paper 1/08 Religion and Society.md",
     "06 Sociology/Paper 1/06 Work and Economic Life +.md",
+    "06 Sociology/Paper 1/09 Systems of Kinship.md",
+    "06 Sociology/Paper 1/010 Social Change in Modern Society +.md",
+    "Home.md",
     "06 Sociology/Paper 1/02 Sociology as Science +.md",
     "06 Sociology/Sociology Index.md",
     "06 Sociology/Paper 1/~$ Work and Economic Life +.docx",
-    "06 Sociology/Paper 1/010 Social Change in Modern Society +.md",
     "06 Sociology/Paper 1/Contemporary Scholars.md",
-    "06 Sociology/Paper 1/09 Systems of Kinship.md",
     "06 Sociology/Paper 1/~WRL0002.tmp",
     "06 Sociology/Paper 1/~WRD0001.tmp",
     "06 Sociology/Paper 1/~WRD0000.tmp",
@@ -203,7 +209,6 @@
     "Git Sample.md",
     "05 Essay/Quotes.md",
     "06 Sociology/Paper 1/01 Sociology - The Discipline.md",
-    "Home.md",
     "X Misc/Fonts.md",
     "28 SITrust/2 Pager Intro.md",
     "28 SITrust/Asma al-Husna Preface.md",
