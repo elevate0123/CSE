@@ -53,9 +53,33 @@ Descent Group Functions
 *** 
 ## Patriarchy & Sexual Division of Labour (SDoL)
 
+Family - Bedrock of society, but composition varies based on various socio-cultural factors
+Various #Forms of Family
+1. On the basis of Residence - Matrilocal, Patrilocal, Duolocal (both places for sometime), Neolocal (new place). #Eg Matrilocal in some Matriarchal families of NE India
+2. Basis of Authority - Matriarchal & Patriarchal. True Matriarchal forms are rare, even in purportedly matriarchal societies
+3. Descent / Rule of Inheritance - Patrilineal, Matrilineal, Ambilineal
+4. Basis of Marriage - Monogamy, Polyandry, Polygyny. Polygamous marriages are declining over the years
+5. Household Size - Joint, Nuclear, Single person, Institutional Household 
+6. Size - Nuclear ~ Conjugal family, Extended ~ Joint family
+7. Membership type - Conjugal family by marriage or Consanguine by blood relation
+8. On basis of Role - Family of Orientation - birth where one is a child, Family of Procreation - where on is a parent
+9. On basis of Volatility - `Serial Monogamy`  Anthony #Giddens - In modern societies, person goes through multiple divorces followed by multiple marriages and so nuclear households are formed in succession
+10. Family of #Choice - based on the recognition of alternative sex-orientations #LGBTQ
+11. Cohabitation without Marriage - Civil Partnerships, Live-ins - Govt provides legal recognition & safeguards
+/comm
+
+xxx
+
+
+
+### Isolated Nuclear Family of Parsons
+
+
 #left 
 
+### Household 
 
+#left 
 
 ## Contemporary Trends
 ***

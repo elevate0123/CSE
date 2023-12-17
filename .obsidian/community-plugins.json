@@ -1,5 +1,4 @@
 [
-  "obsidian-style-settings",
   "obsidian-git",
   "obsidian-mind-map",
   "obsidian-outliner",
@@ -8,8 +7,6 @@
   "obsidian-reading-time",
   "better-word-count",
   "obsidian-dictionary-plugin",
-  "obsidian-excalidraw-plugin",
-  "dbfolder",
   "homepage",
   "home-tab",
   "remember-cursor-position",
@@ -18,7 +15,5 @@
   "obsidian-hover-editor",
   "omnisearch",
   "breadcrumbs",
-  "highlightr-plugin",
-  "obsidian-completr",
-  "obsidian42-strange-new-worlds"
+  "obsidian-completr"
 ]
