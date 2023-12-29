@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "d9cbaa590a9250e1",
+        "id": "65c4ae040cfa1003",
         "type": "tabs",
         "children": [
           {
-            "id": "284b88deb91ccd9b",
+            "id": "46bbf75dbc48608a",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -49,7 +49,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#left",
+                "query": "tag:#definition",
                 "matchingCase": false,
                 "explainSearch": true,
                 "collapseAll": true,
@@ -164,11 +164,11 @@
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
-    "width": 370.5
+    "width": 372.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -181,19 +181,20 @@
       "audio-recorder:Start/stop recording": false,
       "workspaces:Manage workspace layouts": false,
       "homepage:Open homepage": false,
-      "omnisearch:Omnisearch": false,
-      "breadcrumbs:Breadcrumbs Visualisation": false
+      "breadcrumbs:Breadcrumbs Visualisation": false,
+      "omnisearch:Omnisearch": false
     }
   },
-  "active": "284b88deb91ccd9b",
+  "active": "14e2afbccb58fcee",
   "lastOpenFiles": [
-    "06 Sociology/Paper 1/010 Social Change in Modern Society +.md",
-    "06 Sociology/Paper 1/01 Sociology - The Discipline.md",
     "06 Sociology/Paper 1/08 Religion and Society.md",
-    "06 Sociology/Paper 1/06 Work and Economic Life +.md",
+    "06 Sociology/Paper 1/01 Sociology - The Discipline.md",
     "06 Sociology/Paper 1/09 Systems of Kinship.md",
-    "Home.md",
+    "06 Sociology/Paper 1/06 Work and Economic Life +.md",
+    "06 Sociology/Paper 1/03 Research Methods and Analysis.md",
     "06 Sociology/Paper 1/02 Sociology as Science +.md",
+    "06 Sociology/Paper 1/010 Social Change in Modern Society +.md",
+    "Home.md",
     "06 Sociology/Sociology Index.md",
     "06 Sociology/Paper 1/~$ Work and Economic Life +.docx",
     "06 Sociology/Paper 1/Contemporary Scholars.md",
@@ -219,7 +220,6 @@
     "11 Finance & Data/Research Workflow Setup.md",
     "My Library/mrunalpatelPCB01.md",
     "mrunalpatelPCB01.md",
-    "11 Finance & Data/Zot Template.md",
     "TM Test.canvas",
     "Untitled",
     "My Library/files/3/Test Sample.pdf",

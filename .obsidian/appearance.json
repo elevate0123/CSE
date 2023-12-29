@@ -2,8 +2,8 @@
   "translucency": true,
   "theme": "obsidian",
   "baseFontSize": 14,
-  "cssTheme": "Atom",
+  "cssTheme": "",
   "textFontFamily": "MS Reference Sans Serif,Montserrat,Trebuchet MS,Liberation Mono",
-  "accentColor": "#27ff24",
+  "accentColor": "#1c59e9",
   "interfaceFontFamily": ""
 }

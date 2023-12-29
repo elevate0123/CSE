@@ -209,6 +209,12 @@ body {
 	display: block;
 }
 
+/* .orm-plugin-name{
+	position: sticky;
+    top: 0;
+	z-index: 1000;
+} */
+
 /* RootPaperCard */
 .orm-root-paper {
 	border: var(--orm-paper-line-thickness) solid var(--orm-paper-line-color);
@@ -309,7 +315,7 @@ body {
 	padding: var(--size-4-1) var(--size-4-2);
 	border-radius: 0.2rem;
 	background-color: rgba(var(--mono-rgb-100), 0.05);
-	line-height: 1;
+	line-height: 2;
 	font-size: var(--font-ui-smaller);
 	margin-right: 0.2rem;
 }
@@ -327,7 +333,7 @@ body {
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
-	margin-top: 0.5rem;
+	margin-top: 0.2rem;
 }
 
 .orm-paper-buttons > div {
@@ -350,14 +356,6 @@ body {
 	opacity: var(--orm-paper-disable-opacity);
 }
 
-.orm-paper-buttons > .orm-copy-metadata-one,
-.orm-copy-metadata-two,
-.orm-copy-metadata-three,
-.orm-button-references,
-.orm-button-citations {
-	cursor: pointer;
-}
-
 .orm-paper-buttons > .orm-copy-metadata-one:hover,
 .orm-copy-metadata-two:hover,
 .orm-copy-metadata-three:hover,
@@ -372,12 +370,12 @@ body {
 
 /* Paper List */
 .orm-paper-list {
-	margin: 0.5rem 0;
+	margin: 0.5rem 0 0 0;
 }
 
 .orm-paper-list .orm-paper-heading {
 	padding-top: 0.5rem 0;
-	margin-top: 0.5rem 0;
+	margin-top: 0.5rem 0 0 0;
 }
 
 .orm-paper-card {
@@ -401,7 +399,6 @@ body {
 .orm-search-form {
 	width: 100%;
 	position: relative;
-	margin-bottom: 0.5rem;
 }
 
 .orm-search-input {
@@ -414,7 +411,7 @@ body {
 	text-align: center;
 }
 
-.orm-plugin-global-search {
+.orm-plugin-global-copy {
 	position: absolute;
 	top: 0;
 	left: 5px;
@@ -424,10 +421,25 @@ body {
 	color: var(--orm-paper-buttons-color);
 }
 
+.orm-plugin-global-copy:hover {
+	color: var(--orm-paper-buttons-hover-color);
+}
+
+.orm-plugin-global-copy-disabled {
+	position: absolute;
+	top: 0;
+	left: 5px;
+	padding: 0.4rem 0.25rem 0.15rem 0.25rem;
+	border-right: var(--orm-paper-line-thickness) solid
+		var(--orm-paper-line-color);
+	color: var(--orm-paper-buttons-color);
+	opacity: var(--orm-paper-disable-opacity);
+}
+
 .search-icon {
 	position: absolute;
-	top: 50%;
-	left: 10px;
+	top: 55%;
+	left: 7px;
 	transform: translateY(-50%);
 	color: var(--orm-paper-buttons-color);
 }
@@ -464,9 +476,13 @@ body {
 }
 
 .orm-loading-puff {
+	position: absolute;
+	bottom: 0;
+	right: 0;
 	display: block;
 	text-align: center;
 	width: 100%;
+	height: 20px;
 }
 
 /** Settings Dialog **/
@@ -583,4 +599,8 @@ body {
 	width: 100%;
 	position: absolute;
 	top: 0;
+}
+
+.orm-csl-search{
+	width: calc(100% - 20px);
 }

@@ -19,7 +19,7 @@ Unit: Work & Economic Life
 ***
 
 > [!quote] Work - Aristotle
-> "Work is not merely a means to an end; it is an end in itself." - Aristotle
+> "Work is not merely a means to an end; it is an end in itself"
 
 ### Notion of Work
 1. Natural Sciences - Expenditure of Energy
@@ -94,7 +94,7 @@ Man was overwhelmed by forces of nature, like rains, floods, which determined th
 	- Slaves - often Prisoners of War
 
 > [!quote] Class Struggle - #Marx 
-> "The class struggle is the motor of history." - Karl Marx
+> "The class struggle is the motor of history"
 
 #### Features
 1. Major Economic Activity - #Hunting & Food gathering
@@ -142,7 +142,7 @@ Man now controlled Nature. With emergence of industries, family loses its place 
 >"The exploitation of labor is the root of all social problems." - Friedrich Engels
 
 > [!quote] Alienation - #Marx 
-> "Alienation is the experience of being disconnected from one's work, oneself, and others." - Karl Marx
+> "Alienation is the experience of being disconnected from one's work, oneself, and others"
 
 #### Features
 1. Major economic activity - Mass production in factories
@@ -303,7 +303,7 @@ Ad-hoc committees in formal organisations also work in informal ways
 
 ### Labour & Society
 > [!quote] Labour - Adam Smith
-> "Labor is the source of all wealth." - Adam Smith
+> "Labor is the source of all wealth"
 
 Labour is a old concept but in modern sense it arrived with the growth of Capitalism. 
 Worker (has a choice) /= Labour (without choice, due to lack of work or social exploitation)
@@ -386,7 +386,7 @@ Technological Determinist - +ve advocates of Tech
 ***
 ***
 ***
-### Contemporary
+# Contemporary
 
 #Prompt 
 Give some unique Questions as per the UPSC CSE Mains pattern, specifically for this unit. Also tell me what additional themes, pointers, topics, etc can be added to the notes but in alignment with the subject.

@@ -1,15 +1,115 @@
 
 # Unit 09 Systems of Kinship
 
+Family - Has stood the test of times & is a Universal Social Institution. Cornerstone of society, Cradle of socialization & learning where formative human personalities are shaped into social members 
 
+#left 
 ## Family, household, marriage.
+
+#FHM basic building blocks of the architecture of social organisation. Humans are differentiated from other animals due to their ability to marry & form a family in a household
+Family - a social unit
+Household - a dwelling unit
+Marriage - a union of two or more adults
+
+### Family 
+
+Man was not a social animal in true sense. #Morgan & #Frazer, man lived in wild & exhibited promiscus behaviour. Family began when social relations stabilised. This evolutionary view is now rejected
+Family is viewed  as a universal social institution, as it existed in al kinds of societies, from hunter gathering to industrial societies
+
+Classical #defn #Family is a group based on marriage, emotinal bonds, common residence & stipulation of domestic services
+Group based on marital relations, rights duties of parenthood, common habitation, reciprocal relation between parents & children
+
+#Functionalists #Murdock #Family is a social group characterised by common residence, economic cooperation, biological reproduction. It includes adult of both sexes, at least two of whom maintain a socially approved sexual relationship, and one or more children, own or adopted, of the sexually cohabiting adults
+
+General #defn Family is a primary social institution, consisting of some adults, reproductive relationship, children, emotional bond, relations consangual & affinal, household, economic cooperation, and so on
+Due to various structural & functinal changes in family, the classical defn are no longer valid today, due to same sex marriage, live-ins, etc
+
+#### Characteristics - Distinct Features of family
+Due to these characteristics Family enjoys a unique position in society. #McIver & #Page 
+1. Universality - found n all hitherto existing societies
+2. Affective Affinity - provides emotional basis for existence of members
+3. Limited Size - smallest social unit or kin group
+4. Nuclear Position - Key place as cornerstone of socialisation
+5. Members Responsibilities - perfrom certain roles & are assigned responsibilities
+6. Social Regulation - Lays down early values that are supposed to be followed
+7. Formative Influence - shapes personality & moulds character of child
+
+#### Essential Functions 
+1. #Murdock enlists 4 basic universal functions to solve 4 major problems
+	1. Regulate sexual relations
+	2. Controls reproduction
+	3. Accounts for economic survival
+	4. Socialise & Educate children
+2. #Ogburn & #Nimkoff 
+	1. Affectional
+	2. Economic
+	3. Recreation
+	4. Protective
+	5. Educational
+3. Ronald #Fletcher Functions haven't decreased significantly due to industrialisation. Parents play a decisive role in guiding, encouraging, supporting their children. Parents role has increased with increasing scope of social life - health, media, etc
+4. #Parsons Family performs some 'basic & irreducible functions' #left 
+
+#### Societal/Latent - Individual/Manifest Functions
+1. Manifest Functions
+	1. #Parsons Personality Stabilisation - "Families are factories which produce human Personalities" - emotional support in modern world where other kinship bonds are not strong
+	2. Physical Security - for the young and old
+	3. Financial Security & Placement - helps in setting business or acquiring skills, provides shelter
+	4. Sexual gratification & regulates sexual behaviour
+	5. Early Learning - Imparts life skills
+	6. Entertainment function
+	7. Provides Social Status & Identity to individuals - even in achieved socity, family gives ascribes status
+2. Latent Functions
+	1. Member replacement Reproduction -  for physical maintenance of society
+	2. Cultural Transmission - Society Values trasnmitted dueing upbringing
+	3. Primary Socialisation - #Parsons basic irreducible function
+	4. Mechanism of Social Contro - rules & punishments to ensure adherence to accepted social norms
+	5. Physical & Emotional Care - for Geriatrics & Disabled
+	6. Unit of Economic cooperation
 
 #left 
 
 
 
 
-## Types and forms of family.
+#left 
+
+
+
+
+## Types and forms of Family
+
+Family - Bedrock of society, but composition varies based on various socio-cultural factors
+Various #Forms of Family
+1. On the basis of Residence - Matrilocal, Patrilocal, Duolocal (both places for sometime), Neolocal (new place). #Eg Matrilocal in some Matriarchal families of NE India
+2. Basis of Authority - Matriarchal & Patriarchal. True Matriarchal forms are rare, even in purportedly matriarchal societies
+3. Descent / Rule of Inheritance - Patrilineal, Matrilineal, Ambilineal
+4. Basis of Marriage - Monogamy, Polyandry, Polygyny. Polygamous marriages are declining over the years
+5. Household Size - Joint, Nuclear, Single person, Institutional Household 
+6. Size - Nuclear ~ Conjugal family, Extended ~ Joint family
+7. Membership type - Conjugal family by marriage or Consanguine by blood relation
+8. On basis of Role - Family of Orientation - birth where one is a child, Family of Procreation - where on is a parent
+9. On basis of Volatility - `Serial Monogamy`  Anthony #Giddens - In modern societies, person goes through multiple divorces followed by multiple marriages and so nuclear households are formed in succession
+10. Family of #Choice - based on the recognition of alternative sex-orientations #LGBTQ
+11. Cohabitation without Marriage - Civil Partnerships, Live-ins - Govt provides legal recognition & safeguards
+
+### Isolated Nuclear Family of Parsons (extension of wider evolutionary theory of societies)
+
+Talcott #Parsons #INF is a family of modern industrial societies. Doesn't form a part of wider system of kinship relations, so it is structurally isolated. There are some relations with the kingroup, but they are a matter of choice and not obligations. As society undergoes a process of structural differentiation, new specialised institutions perform the erstwhile functions of a family
+1. Functional Relationship
+	1. INF & economic system in Industrial societies - INF evolves to meet the needs of new economic system as it requires a geographically mobile family. Production shifts to industries, so INF is not an economic unit
+	2. INF is best form of family in modern industrialised societies where status is achieved & not ascribed as indivudals are judged on Universalistic values
+2. Roles of Members 
+	1. Fathers / Husbands play instrumental role of breadwinners 
+	2. Mothers/Wives affectional role of raising children
+	3. Status inside family is ascribed, though outside is achieved
+3. Structural Isolation 
+	1. Stabilisation of Personalities & others are still some irreducible functions of a family
+	2. Conjugal bond is strengthened as spouses depend on each other esp for emotional support
+4. Criticism #criticism 
+	1. Simplistic & far from reality
+	2. #Feminist branding of male-female roles is prejudiced
+	3. William #Goode growth of nuclear family is not due to 
+
 
 #left 
 
@@ -53,20 +153,7 @@ Descent Group Functions
 *** 
 ## Patriarchy & Sexual Division of Labour (SDoL)
 
-Family - Bedrock of society, but composition varies based on various socio-cultural factors
-Various #Forms of Family
-1. On the basis of Residence - Matrilocal, Patrilocal, Duolocal (both places for sometime), Neolocal (new place). #Eg Matrilocal in some Matriarchal families of NE India
-2. Basis of Authority - Matriarchal & Patriarchal. True Matriarchal forms are rare, even in purportedly matriarchal societies
-3. Descent / Rule of Inheritance - Patrilineal, Matrilineal, Ambilineal
-4. Basis of Marriage - Monogamy, Polyandry, Polygyny. Polygamous marriages are declining over the years
-5. Household Size - Joint, Nuclear, Single person, Institutional Household 
-6. Size - Nuclear ~ Conjugal family, Extended ~ Joint family
-7. Membership type - Conjugal family by marriage or Consanguine by blood relation
-8. On basis of Role - Family of Orientation - birth where one is a child, Family of Procreation - where on is a parent
-9. On basis of Volatility - `Serial Monogamy`  Anthony #Giddens - In modern societies, person goes through multiple divorces followed by multiple marriages and so nuclear households are formed in succession
-10. Family of #Choice - based on the recognition of alternative sex-orientations #LGBTQ
-11. Cohabitation without Marriage - Civil Partnerships, Live-ins - Govt provides legal recognition & safeguards
-/comm
+
 
 xxx
 
@@ -119,7 +206,7 @@ Marital Breakdowns
 Factors for rise in marital breakdown in post-industrial society
 1. Easy to get divorced due to Legislative reforms and uniform civil code 
 2. Nicky #Hart Opportunities to escape marriage are more, Divorce is no more a social stigma
-3. #Fletcher Over expectations & more demands from marriage leads to breakdown
+3. #Fletcher Over expectations & more demands from marriage leads to breakdown | Pull less, Bend more!
 4. William #Goode Social units become relatively fragile, as nuclear families carry heavier emotional burden
 5. #Goode argues tat as a result of relative isolation of the nuclear family from the wider kinship network family carries a heavier emotional burden and as a consequence this unit is relatively fragile. In an industrial society, family performs fewer functions and as a result there are fewer bonds to unite
 6. Marriage is no longer a sacrament, as life is becoming more secular 

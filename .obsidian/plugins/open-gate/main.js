@@ -27,7 +27,7 @@ __export(main_exports, {
   default: () => OpenGatePlugin
 });
 module.exports = __toCommonJS(main_exports);
-var import_obsidian10 = require("obsidian");
+var import_obsidian12 = require("obsidian");
 
 // src/SetingTab.ts
 var import_obsidian3 = require("obsidian");
@@ -35,7 +35,7 @@ var import_obsidian3 = require("obsidian");
 // src/ModalEditGate.ts
 var import_obsidian2 = require("obsidian");
 
-// src/fns/formEditGate.ts
+// src/fns/createFormEditGate.ts
 var import_obsidian = require("obsidian");
 
 // src/fns/getSvgIcon.ts
@@ -46,9 +46,13 @@ var getSvgIcon = (siteUrl) => {
 
 // src/fns/normalizeGateOption.ts
 var normalizeGateOption = (gate) => {
-  if (gate.id === "") {
+  var _a;
+  if (gate.url === "" || gate.url === void 0) {
+    throw new Error("URL is required");
+  }
+  if (gate.id === "" || gate.id === void 0) {
     let seedString = gate.url;
-    if (gate.profileKey !== "open-gate" && gate.profileKey !== "") {
+    if (gate.profileKey != void 0 && gate.profileKey !== "open-gate" && gate.profileKey !== "") {
       seedString += gate.profileKey;
     }
     gate.id = btoa(seedString);
@@ -59,17 +63,17 @@ var normalizeGateOption = (gate) => {
   if (gate.zoomFactor === 0 || gate.zoomFactor === void 0) {
     gate.zoomFactor = 1;
   }
-  if (gate.icon === "") {
-    gate.icon = getSvgIcon(gate.url);
+  if (gate.icon === "" || gate.icon === void 0) {
+    gate.icon = ((_a = gate.url) == null ? void 0 : _a.startsWith("http")) ? getSvgIcon(gate.url) : "globe";
   }
-  if (gate.title === "") {
+  if (gate.title === "" || gate.title === void 0) {
     gate.title = gate.url;
   }
   return gate;
 };
 
-// src/fns/formEditGate.ts
-var formEditGate = (contentEl, gateOptions, onSubmit) => {
+// src/fns/createFormEditGate.ts
+var createFormEditGate = (contentEl, gateOptions, onSubmit) => {
   new import_obsidian.Setting(contentEl).setName("URL").setClass("open-gate--form-field").addText((text) => text.setPlaceholder("https://example.com").setValue(gateOptions.url).onChange(async (value) => {
     gateOptions.url = value;
   }));
@@ -127,7 +131,7 @@ var formEditGate = (contentEl, gateOptions, onSubmit) => {
   });
   new import_obsidian.Setting(contentEl).addButton((btn) => btn.setButtonText(gateOptions.id ? "Update the gate" : "Create new gate").setCta().onClick(async () => {
     gateOptions = normalizeGateOption(gateOptions);
-    onSubmit(gateOptions);
+    onSubmit && onSubmit(gateOptions);
   }));
 };
 
@@ -141,7 +145,7 @@ var ModalEditGate = class extends import_obsidian2.Modal {
   onOpen() {
     const { contentEl } = this;
     contentEl.createEl("h3", { text: "Open Gate" });
-    formEditGate(contentEl, this.gateOptions, (result) => {
+    createFormEditGate(contentEl, this.gateOptions, (result) => {
       this.onSubmit(result);
       this.close();
     });
@@ -225,7 +229,7 @@ var SettingTab = class extends import_obsidian3.PluginSettingTab {
       attr: {
         style: "display: block; margin-bottom: 5px"
       },
-      text: "When delete or edit a gate, you need to reload Obsidian to see the changes."
+      text: "When you delete or edit a gate, you need to reload Obsidian to see the changes."
     });
     containerEl.createEl("small", {
       attr: {
@@ -251,7 +255,7 @@ var import_obsidian4 = require("obsidian");
 var DEFAULT_URL = "about:blank";
 var GOOGLE_URL = "https://google.com";
 var OPEN_GATE_WEBVIEW_CLASS = "open-gate-webview";
-var createWebviewTag = (params) => {
+var createWebviewTag = (params, onReady) => {
   var _a, _b;
   const webviewTag = document.createElement("webview");
   webviewTag.setAttribute("partition", "persist:" + params.profileKey);
@@ -271,6 +275,7 @@ var createWebviewTag = (params) => {
     if (params == null ? void 0 : params.css) {
       await webviewTag.insertCSS(params.css);
     }
+    onReady == null ? void 0 : onReady.call(null);
   });
   return webviewTag;
 };
@@ -279,7 +284,7 @@ var createWebviewTag = (params) => {
 var import_obsidian5 = require("obsidian");
 
 // src/fns/createIframe.ts
-var createIframe = (params) => {
+var createIframe = (params, onReady) => {
   var _a;
   const iframe = document.createElement("iframe");
   iframe.setAttribute("allowpopups", "");
@@ -289,6 +294,9 @@ var createIframe = (params) => {
   iframe.setAttribute("sandbox", "allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts allow-top-navigation-by-user-activation");
   iframe.setAttribute("allow", "encrypted-media; fullscreen; oversized-images; picture-in-picture; sync-xhr; geolocation");
   iframe.addClass("open-gate-iframe");
+  iframe.addEventListener("load", () => {
+    onReady == null ? void 0 : onReady.call(null);
+  });
   return iframe;
 };
 
@@ -298,14 +306,17 @@ var GateView = class extends import_obsidian4.ItemView {
   constructor(leaf, options) {
     super(leaf);
     this.useIframe = false;
+    this.isFrameReady = false;
     this.navigation = false;
     this.options = options;
     this.useIframe = import_obsidian5.Platform.isMobileApp;
+    this.frameReadyCallbacks = [];
   }
   addActions() {
     this.addAction("refresh-ccw", "Reload", () => {
+      var _a;
       if (this.frame instanceof HTMLIFrameElement) {
-        this.frame.src = this.frame.src;
+        (_a = this.frame.contentWindow) == null ? void 0 : _a.location.reload();
       } else {
         this.frame.reload();
       }
@@ -327,42 +338,22 @@ var GateView = class extends import_obsidian4.ItemView {
     this.addActions();
     this.contentEl.empty();
     this.contentEl.addClass("open-gate-view");
+    const onReady = () => {
+      if (!this.isFrameReady) {
+        this.isFrameReady = true;
+        this.frameReadyCallbacks.forEach((callback) => callback());
+      }
+    };
     if (this.useIframe) {
-      this.frame = createIframe(this.options);
+      this.frame = createIframe(this.options, onReady);
     } else {
-      this.frame = createWebviewTag(this.options);
+      this.frame = createWebviewTag(this.options, onReady);
     }
     this.contentEl.appendChild(this.frame);
-    if (this.frame instanceof HTMLIFrameElement) {
-    } else {
-      this.frame.addEventListener("will-navigate", this.webViewWillNavigate.bind(this));
-      this.frame.addEventListener("console-message", async (event) => {
-        if (event.message.startsWith("open-gate-open:")) {
-          const url = event.message.replace("open-gate-open:", "");
-          window.open(url);
-        }
-      });
-      this.frame.addEventListener("dom-ready", async () => {
-        const frame = this.frame;
-        await frame.executeJavaScript(`
-                document.addEventListener('click', (e) => {
-                    if (e.target instanceof HTMLAnchorElement && e.target.target === '_blank') {
-                        e.preventDefault();
-                        console.log('open-gate-open:'+e.target.href);
-                    }
-                });`);
-      });
-    }
   }
   onunload() {
     this.frame.remove();
-    if (this.frame instanceof HTMLIFrameElement) {
-    } else {
-      this.frame.removeEventListener("will-navigate", this.webViewWillNavigate.bind(this));
-    }
     super.onunload();
-  }
-  webViewWillNavigate(event, url) {
   }
   onPaneMenu(menu, source) {
     super.onPaneMenu(menu, source);
@@ -370,8 +361,9 @@ var GateView = class extends import_obsidian4.ItemView {
       item.setTitle("Reload");
       item.setIcon("refresh-ccw");
       item.onClick(() => {
+        var _a;
         if (this.frame instanceof HTMLIFrameElement) {
-          this.frame.src = this.frame.src;
+          (_a = this.frame.contentWindow) == null ? void 0 : _a.location.reload();
         } else {
           this.frame.reload();
         }
@@ -380,12 +372,12 @@ var GateView = class extends import_obsidian4.ItemView {
     menu.addItem((item) => {
       item.setTitle("Home page");
       item.setIcon("home");
-      item.onClick(() => {
+      item.onClick(async () => {
         var _a, _b, _c, _d;
         if (this.frame instanceof HTMLIFrameElement) {
           this.frame.src = (_b = (_a = this.options) == null ? void 0 : _a.url) != null ? _b : "about:blank";
         } else {
-          this.frame.loadURL((_d = (_c = this.options) == null ? void 0 : _c.url) != null ? _d : "about:blank");
+          await this.frame.loadURL((_d = (_c = this.options) == null ? void 0 : _c.url) != null ? _d : "about:blank");
         }
       });
     });
@@ -408,9 +400,21 @@ var GateView = class extends import_obsidian4.ItemView {
       item.setIcon("clipboard-copy");
       item.onClick(() => {
         if (this.frame instanceof HTMLIFrameElement) {
+          import_electron.clipboard.writeText(this.frame.src);
           return;
         }
         import_electron.clipboard.writeText(this.frame.getURL());
+      });
+    });
+    menu.addItem((item) => {
+      item.setTitle("Open in browser");
+      item.setIcon("globe");
+      item.onClick(() => {
+        if (this.frame instanceof HTMLIFrameElement) {
+          window.open(this.frame.src);
+          return;
+        }
+        window.open(this.frame.getURL());
       });
     });
   }
@@ -429,6 +433,23 @@ var GateView = class extends import_obsidian4.ItemView {
     }
     return (_c = (_b = this.options) == null ? void 0 : _b.icon) != null ? _c : "globe";
   }
+  onFrameReady(callback) {
+    if (this.isFrameReady) {
+      callback();
+    } else {
+      this.frameReadyCallbacks.push(callback);
+    }
+  }
+  async setUrl(url) {
+    if (this.frame instanceof HTMLIFrameElement) {
+      this.frame.src = url;
+    } else {
+      if (this.frame.isLoading()) {
+        this.frame.stop();
+      }
+      await this.frame.loadURL(url);
+    }
+  }
 };
 
 // src/fns/openView.ts
@@ -437,11 +458,11 @@ var openView = async (workspace, id, position) => {
   let leafs = workspace.getLeavesOfType(id);
   if (leafs.length > 0) {
     workspace.revealLeaf(leafs[0]);
-    return;
+    return leafs[0];
   }
   leaf = await createView(workspace, id, position);
   workspace.revealLeaf(leaf);
-  return;
+  return leaf;
 };
 var createView = async (workspace, id, position) => {
   let leaf;
@@ -499,7 +520,7 @@ var ModalOnBoarding = class extends import_obsidian7.Modal {
     contentEl.createEl("p", {
       text: "But now you have to create your first gate."
     });
-    formEditGate(contentEl, this.gateOptions, (result) => {
+    createFormEditGate(contentEl, this.gateOptions, (result) => {
       this.onSubmit(result);
       this.close();
     });
@@ -6508,24 +6529,122 @@ function registerCodeBlockProcessor(plugin) {
   });
 }
 
+// src/fns/setupLinkConvertMenu.ts
+var import_obsidian10 = require("obsidian");
+var setupLinkConvertMenu = (plugin) => {
+  plugin.registerEvent(plugin.app.workspace.on("editor-menu", createMenu));
+};
+var parseLink = (text) => {
+  const markdownLinkMatch = text.match(/\[([^\]]+)\]\(([^)]+)\)/);
+  if (markdownLinkMatch) {
+    return {
+      title: markdownLinkMatch[1],
+      url: markdownLinkMatch[2]
+    };
+  }
+  const urlMatch = text.match(/https?:\/\/[^ ]+/);
+  if (urlMatch) {
+    return {
+      title: urlMatch[0],
+      url: urlMatch[0]
+    };
+  }
+};
+var createMenu = (menu, editor) => {
+  const selection = editor.getSelection();
+  if (selection.length === 0)
+    return;
+  const parsedLink = parseLink(selection);
+  if (!parsedLink)
+    return;
+  if (parsedLink.url.startsWith("obsidian://opengate")) {
+    menu.addItem((item) => {
+      item.setTitle("Convert to normal link").onClick(async () => {
+        const urlMatch = parsedLink.url.match(/url=([^&]+)/);
+        if (!urlMatch) {
+          new import_obsidian10.Notice("Can not convert the pre-configured gate link to normal link.");
+          return;
+        }
+        const url = decodeURIComponent(urlMatch[1]);
+        const normalLink = `[${parsedLink.title}](${url})`;
+        editor.replaceSelection(normalLink);
+      });
+    });
+  } else {
+    menu.addItem((item) => {
+      item.setTitle("Convert to Gate Link").onClick(async () => {
+        const gateLink = `[${parsedLink.title}](obsidian://opengate?title=${encodeURIComponent(parsedLink.title)}&url=${encodeURIComponent(parsedLink.url)})`;
+        editor.replaceSelection(gateLink);
+      });
+    });
+  }
+};
+
+// src/ModalInsertLink.ts
+var import_obsidian11 = require("obsidian");
+var ModalInsertLink = class extends import_obsidian11.Modal {
+  constructor(app, onSubmit) {
+    super(app);
+    this.onSubmit = onSubmit;
+  }
+  onOpen() {
+    this.titleEl.setText("Insert Link");
+    this.createFormInsertLink();
+  }
+  onClose() {
+    const { contentEl } = this;
+    contentEl.empty();
+  }
+  createFormInsertLink() {
+    let gateOptions = createEmptyGateOption();
+    new import_obsidian11.Setting(this.contentEl).setName("URL").setClass("open-gate--form-field").addText((text) => text.setPlaceholder("https://example.com").onChange(async (value) => {
+      gateOptions.url = value;
+    }));
+    new import_obsidian11.Setting(this.contentEl).setName("Title").setClass("open-gate--form-field").addText((text) => text.onChange(async (value) => {
+      gateOptions.title = value;
+    }));
+    new import_obsidian11.Setting(this.contentEl).addButton((btn) => btn.setButtonText("Insert Link").setCta().onClick(async () => {
+      gateOptions = normalizeGateOption(gateOptions);
+      this.onSubmit(gateOptions);
+    }));
+  }
+};
+
+// src/fns/setupInsertLinkMenu.ts
+var setupInsertLinkMenu = (plugin) => {
+  plugin.registerEvent(plugin.app.workspace.on("editor-menu", (menu, editor) => createMenu2(plugin.app, menu, editor)));
+};
+var createMenu2 = (app, menu, editor) => {
+  menu.addItem((item) => {
+    item.setTitle("Insert Gate Link").onClick(async () => {
+      const modal = new ModalInsertLink(app, async (gate) => {
+        const gateLink = `[${gate.title}](obsidian://opengate?title=${encodeURIComponent(gate.title)}&url=${encodeURIComponent(gate.url)})`;
+        editor.replaceSelection(gateLink);
+        modal.close();
+      });
+      modal.open();
+    });
+  });
+};
+
 // src/main.ts
 var DEFAULT_SETTINGS = {
   uuid: "",
   gates: {}
 };
-var defaultGateOption = {
-  profileKey: "open-gate",
-  zoomFactor: 1
-};
-var OpenGatePlugin = class extends import_obsidian10.Plugin {
+var OpenGatePlugin = class extends import_obsidian12.Plugin {
   async onload() {
     await this.loadSettings();
-    await this.initFrames();
+    await this.mayShowOnboardingDialog();
+    await this.initGates();
     this.addSettingTab(new SettingTab(this.app, this));
     this.registerCommands();
+    this.registerProtocol();
+    setupLinkConvertMenu(this);
+    setupInsertLinkMenu(this);
     registerCodeBlockProcessor(this);
   }
-  async initFrames() {
+  async mayShowOnboardingDialog() {
     if (this.settings.uuid === "") {
       this.settings.uuid = this.generateUuid();
       await this.saveSettings();
@@ -6535,10 +6654,18 @@ var OpenGatePlugin = class extends import_obsidian10.Plugin {
         }).open();
       }
     }
+  }
+  async initGates() {
     for (const gateId in this.settings.gates) {
       const gate = this.settings.gates[gateId];
       registerGate(this, gate);
     }
+    registerGate(this, normalizeGateOption({
+      id: "temp-gate",
+      title: "Temp Gate",
+      icon: "globe",
+      url: "about:blank"
+    }));
   }
   registerCommands() {
     this.addCommand({
@@ -6561,32 +6688,62 @@ var OpenGatePlugin = class extends import_obsidian10.Plugin {
       }
     });
   }
-  onunload() {
+  registerProtocol() {
+    this.registerObsidianProtocolHandler("opengate", this.handleCustomProtocol.bind(this));
+  }
+  getGateOptionFromProtocolData(data) {
+    const { title, url, id } = data;
+    let targetGate;
+    if (id && this.settings.gates[id]) {
+      targetGate = this.settings.gates[id];
+    }
+    if (targetGate === void 0 && title) {
+      targetGate = Object.values(this.settings.gates).find((gate) => gate.title.toLowerCase() === title.toLowerCase());
+    }
+    if (targetGate === void 0 && url) {
+      targetGate = Object.values(this.settings.gates).find((gate) => gate.url.toLowerCase() === url.toLowerCase());
+    }
+    if (targetGate !== void 0 && url) {
+      targetGate.url = url;
+    }
+    return targetGate;
+  }
+  findGateBy(field, value) {
+    return Object.values(this.settings.gates).find((gate) => gate[field].toLowerCase() === value.toLowerCase());
+  }
+  async handleCustomProtocol(data) {
+    let targetGate = this.getGateOptionFromProtocolData(data);
+    if (targetGate === void 0) {
+      if (!data.url) {
+        new import_obsidian12.Notice("Missing url parameter");
+        return;
+      }
+    }
+    const gate = await openView(this.app.workspace, (targetGate == null ? void 0 : targetGate.id) || "temp-gate", targetGate == null ? void 0 : targetGate.position);
+    const gateView = gate.view;
+    gateView == null ? void 0 : gateView.onFrameReady(() => {
+      gateView.setUrl(data.url);
+    });
   }
   async addGate(gate) {
-    if (!this.settings.gates.hasOwnProperty(gate.id)) {
-      registerGate(this, gate);
+    const normalizedGate = normalizeGateOption(gate);
+    if (!this.settings.gates.hasOwnProperty(normalizedGate.id)) {
+      registerGate(this, normalizedGate);
     } else {
-      new import_obsidian10.Notice("This change will take effect after you reload Obsidian.");
+      new import_obsidian12.Notice("This change will take effect after you reload Obsidian.");
     }
-    if (gate.profileKey === "" || gate.profileKey === void 0) {
-      gate.profileKey = defaultGateOption.profileKey;
-    }
-    if (gate.zoomFactor === 0 || gate.zoomFactor === void 0) {
-      gate.zoomFactor = defaultGateOption.zoomFactor;
-    }
-    this.settings.gates[gate.id] = gate;
+    this.settings.gates[normalizedGate.id] = normalizedGate;
     await this.saveSettings();
   }
   async removeGate(gateId) {
     if (!this.settings.gates[gateId]) {
-      new import_obsidian10.Notice("Gate not found");
+      new import_obsidian12.Notice("Gate not found");
     }
     const gate = this.settings.gates[gateId];
     await unloadView(this.app.workspace, gate);
     delete this.settings.gates[gateId];
     await this.saveSettings();
-    new import_obsidian10.Notice("This change will take effect after you reload Obsidian.");
+    new import_obsidian12.Notice("This change will take effect after you reload Obsidian.");
   }
   async loadSettings() {
     this.settings = await this.loadData();

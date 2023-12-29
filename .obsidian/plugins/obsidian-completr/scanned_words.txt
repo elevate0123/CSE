@@ -3434,6 +3434,10 @@ Affiliates
 Alternative
 Arrival
 Anne
+Authority
+Applied
+Applies
+Advantages
 al
 agar
 asani
@@ -5648,6 +5652,10 @@ assuming
 adapting
 aspect
 alike
+applicable
+almaas
+ascribed
+affectional
 Husna
 Hazrat
 Hashr
@@ -8239,6 +8247,7 @@ Household
 Health
 Highlight
 Hochschild
+Husbands
 Kitaab
 Kitaabe
 Kitab
@@ -12679,6 +12688,7 @@ kinds
 keywords
 kinsmen
 kingroups
+kingroup
 shuruat
 sochaa
 sabhi
@@ -13498,6 +13508,13 @@ spheres
 second
 socialization
 summarized
+sometime
+succession
+safeguards
+sampling
+scales
+structurally
+strengthened
 mai
 mehsoos
 ma
@@ -15194,6 +15211,11 @@ myth
 motherhood
 manner
 mediated
+matriarchal
+marriages
+measurement
+meet
+mobile
 Tehreer
 Taha
 Tarjame
@@ -16855,6 +16877,8 @@ Traditional
 Ties
 Transnational
 Turkle
+Techniques
+Technique
 Points
 Pehle
 Parehsaniya
@@ -18897,6 +18921,17 @@ Parenthood
 Patterns
 Polity
 Press
+Patrilocal
+Patriarchal
+Polyandry
+Polygyny
+Polygamous
+Procreation
+Partnerships
+Primarily
+Picture
+Pull
+Personalities
 Iss
 Inn
 Imam
@@ -22950,6 +22985,10 @@ Instances
 Inverse
 Implications
 Individualization
+Institutional
+Isolated
+INF
+Isolation
 Likhne
 Lekis
 Lock
@@ -24102,6 +24141,8 @@ Lineage
 Limited
 Live
 Legislative
+LGBTQ
+Less
 Maqsad
 Mubarak
 Moosa
@@ -26721,6 +26762,13 @@ Merely
 Machung
 Margaret
 Mediated
+Matrilocal
+Matriarchal
+Monogamy
+Membership
+Mostly
+Members
+Mothers
 Sahih
 Surah
 Shaikh
@@ -28129,6 +28177,8 @@ Status
 Single
 Stacey
 Sherry
+Sampling
+Simplistic
 Bukhari
 Bache
 Budhe
@@ -30259,6 +30309,9 @@ Blended
 Barry
 Basic
 Bales
+Bedrock
+Basis
+Bend
 points
 par
 paas
@@ -31439,6 +31492,10 @@ prevalence
 platforms
 policymakers
 prominent
+purportedly
+prescriptive
+procedure
+prejudiced
 nazar
 naam
 ne
@@ -31989,6 +32046,8 @@ negotiation
 networked
 navigate
 name
+nominal
+numbers
 rakhte
 rehte
 rahe
@@ -32816,6 +32875,8 @@ reduced
 resulted
 responsibilities
 raises
+representative
+raising
 hue
 hua
 ho
@@ -34554,6 +34615,9 @@ heavier
 homes
 highlighted
 housework
+households
+hypothesis
+hello
 ek
 esi
 etc
@@ -35803,6 +35867,9 @@ expectations
 expected
 elderly
 explored
+extension
+erstwhile
+esp
 bade
 bhi
 ba
@@ -36558,6 +36625,9 @@ bonds
 blood
 borders
 blended
+before
+breadwinners
+branding
 level
 likhi
 lekin
@@ -37440,6 +37510,7 @@ lines
 linking
 lacking
 lorry
+loosely
 jisme
 jaye
 jo
@@ -38492,6 +38563,7 @@ jrW
 justified
 judgement
 jobs
+judged
 yaad
 yeh
 ya
@@ -43140,6 +43212,9 @@ individualism
 isolation
 increasingly
 intimacy
+interview
+indivudals
+irreducible
 tashreeh
 topic
 thodi
@@ -44380,6 +44455,7 @@ threatened
 tiding
 trends
 transnational
+technique
 zamane
 zaruri
 zariye
@@ -48270,6 +48346,7 @@ Group
 Gotra
 Groups
 Guilford
+Govt
 dusre
 diya
 door
@@ -49764,6 +49841,9 @@ disabled
 dispersed
 diminish
 discontents
+declining
+divorces
+deductive
 wo
 wajah
 waqt
@@ -55536,6 +55616,7 @@ Understood
 Units
 Understanding
 University
+Universalistic
 Wird
 Wazifa
 Welcome
@@ -57098,6 +57179,7 @@ Weaning
 Wifes
 Wellman
 Working
+Wives
 Chahte
 Communities
 Community
@@ -58850,6 +58932,10 @@ Chosen
 Caregiving
 Connections
 Cambridge
+Conjugal
+Consanguine
+Cohabitation
+Comparison
 guftagu
 group
 ghaans
@@ -59924,6 +60010,7 @@ giving
 grew
 getting
 geographically
+goes
 filhal
 fa
 for
@@ -60721,6 +60808,8 @@ forming
 facilitated
 fundamental
 fictive
+formulated
+far
 Yaad
 Yeh
 Yaa
@@ -61610,6 +61699,7 @@ YTRie
 YXa
 YKC
 York
+Yield
 Fayada
 Family
 Fostering
@@ -62889,6 +62979,7 @@ Fletcher
 Families
 Forms
 Fictive
+Fathers
 Rozana
 Revision
 Roti
@@ -65009,6 +65100,10 @@ Redefinition
 Roles
 References
 Rethinking
+Residence
+Rule
+Replication
+Reliability
 Namaaz
 Naamo
 Namak
@@ -65877,6 +65972,8 @@ Nuclearisation
 Nicky
 Noble
 Nuclearization
+Neolocal
+Not
 Zuban
 Zikr
 Zindagi
@@ -72165,6 +72262,9 @@ Duolineal
 Divorce
 Declining
 Diversification
+Duolocal
+Difficult
+Doesn
 vast
 various
 vision
@@ -72944,6 +73044,7 @@ vandalism
 virtual
 vent
 voluntary
+varies
 of
 on
 operates
@@ -74060,6 +74161,8 @@ occupies
 opposite
 occasions
 occupations
+orientations
+outside
 Examples
 Empowering
 Educational
@@ -75917,6 +76020,7 @@ Experience
 Evolving
 Eds
 Essays
+Extended
 Jannat
 Jahannam
 Jab
@@ -78758,6 +78862,8 @@ QuX
 QbFf
 QMJ
 QMl
+Qualitative
+Quantitative
 Vehicle
 Vision
 Volunteer
@@ -79688,6 +79794,10 @@ Vansha
 Very
 Virtual
 Viking
+Various
+Volatility
+Variables
+Validity
 Our
 One
 Optimization
@@ -81957,6 +82067,9 @@ qSi
 qualifications
 questionable
 questions
+questionnaire
+quantitative
+qualitative
 XXXXXXXXXX
 XR
 XJ
