@@ -1,19 +1,14 @@
 [
   "obsidian-git",
   "obsidian-mind-map",
-  "obsidian-outliner",
-  "obsidian-pandoc",
   "tag-wrangler",
   "obsidian-reading-time",
   "better-word-count",
-  "obsidian-dictionary-plugin",
   "homepage",
   "home-tab",
   "remember-cursor-position",
   "obsidian-mindmap-nextgen",
   "excalibrain",
-  "obsidian-hover-editor",
-  "omnisearch",
-  "breadcrumbs",
-  "obsidian-completr"
+  "obsidian-completr",
+  "obsidian-outliner"
 ]
