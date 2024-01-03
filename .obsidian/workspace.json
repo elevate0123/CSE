@@ -13,14 +13,28 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "06 Sociology/Paper 1/09 Systems of Kinship.md",
+                "file": "06 Sociology/Paper 1/Miscellaneous.md",
+                "mode": "source",
+                "backlinks": true,
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "2b36bb2b93add6d5",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "06 Sociology/Paper 1/Thinkers - Contemporary.md",
                 "mode": "source",
                 "backlinks": true,
                 "source": false
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -66,8 +80,7 @@
               "state": {}
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -87,6 +100,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "06 Sociology/Paper 1/Thinkers - Contemporary.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,6 +128,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "06 Sociology/Paper 1/Thinkers - Contemporary.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -124,7 +139,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "06 Sociology/Paper 1/Thinkers - Contemporary.md"
+              }
             }
           },
           {
@@ -134,17 +151,9 @@
               "type": "git-history-view",
               "state": {}
             }
-          },
-          {
-            "id": "2df80ee257534e2f",
-            "type": "leaf",
-            "state": {
-              "type": "Strange New Worlds",
-              "state": {}
-            }
           }
         ],
-        "currentTab": 5
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
@@ -160,12 +169,14 @@
       "markdown-importer:Open format converter": false,
       "audio-recorder:Start/stop recording": false,
       "workspaces:Manage workspace layouts": false,
-      "homepage:Open homepage": false,
-      "omnisearch:Omnisearch": false
+      "homepage:Open homepage": false
     }
   },
-  "active": "2df80ee257534e2f",
+  "active": "2b36bb2b93add6d5",
   "lastOpenFiles": [
+    "06 Sociology/Paper 1/Miscellaneous.md",
+    "06 Sociology/Paper 1/Thinkers - Contemporary.md",
+    "06 Sociology/Paper 1/Other Imp Topics.md",
     "06 Sociology/Paper 1/09 Systems of Kinship.md",
     "06 Sociology/Paper 1/08 Religion and Society.md",
     "06 Sociology/Paper 1/01 Sociology - The Discipline.md",
@@ -181,8 +192,6 @@
     "06 Sociology/Paper 1/~WRD0001.tmp",
     "06 Sociology/Paper 1/~WRD0000.tmp",
     "06 Sociology/Paper 1/~$ Religion and Society.docx",
-    "06 Sociology/Paper 1/Miscellaneous.md",
-    "06 Sociology/Paper 1/Other Imp Topics.md",
     "My Library/files/771/_.pdf",
     "My Library/files/769/_.pdf",
     "Git Sample.md",
@@ -198,7 +207,6 @@
     "28 SITrust/UCC and India.md",
     "11 Finance & Data/Research Workflow Setup.md",
     "My Library/mrunalpatelPCB01.md",
-    "mrunalpatelPCB01.md",
     "TM Test.canvas",
     "Untitled",
     "My Library/files/3/Test Sample.pdf",
