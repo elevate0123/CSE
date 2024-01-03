@@ -13540,6 +13540,7 @@ supporting
 setting
 shelter
 socity
+scdf
 mai
 mehsoos
 ma
@@ -15244,6 +15245,7 @@ mobile
 marry
 moulds
 maintenance
+mindmap
 Tehreer
 Taha
 Tarjame
@@ -16907,6 +16909,7 @@ Transnational
 Turkle
 Techniques
 Technique
+Tradition
 Points
 Pehle
 Parehsaniya
@@ -18964,6 +18967,7 @@ Position
 Protective
 Parents
 Personality
+Prosperity
 Iss
 Inn
 Imam
@@ -23024,6 +23028,7 @@ Isolation
 Institution
 Influence
 Imparts
+Indology
 Likhne
 Lekis
 Lock
@@ -26810,6 +26815,7 @@ Murdock
 McIver
 Member
 Mechanism
+Modernization
 Sahih
 Surah
 Shaikh
@@ -28223,6 +28229,11 @@ Simplistic
 Socialise
 Security
 Socialisation
+Srinivas
+Singh
+Skewed
+Subsdcc
+Sub
 Bukhari
 Bache
 Budhe
@@ -31546,6 +31557,8 @@ parenthood
 perfrom
 personality
 punishments
+plugin
+produc
 nazar
 naam
 ne
@@ -44532,6 +44545,7 @@ trends
 transnational
 technique
 trasnmitted
+title
 zamane
 zaruri
 zariye
@@ -48424,6 +48438,7 @@ Groups
 Guilford
 Govt
 Geriatrics
+Ghurye
 dusre
 diya
 door
@@ -51006,6 +51021,7 @@ western
 wills
 weakening
 wild
+womens
 uss
 unn
 uski
@@ -61795,6 +61811,7 @@ YXa
 YKC
 York
 Yield
+Yogendra
 Fayada
 Family
 Fostering
@@ -72371,6 +72388,7 @@ Duolocal
 Difficult
 Doesn
 Disabled
+Desai
 vast
 various
 vision
