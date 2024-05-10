@@ -18,7 +18,7 @@ Unit: Work & Economic Life
 # Unit 06 Work and Economic Life
 ***
 
-> [!quote] Work - Aristotle
+> [!quote] Work - #Aristotle
 > "Work is not merely a means to an end; it is an end in itself"
 
 ### Notion of Work
@@ -90,8 +90,8 @@ Different societies have difference organisation of work at different times
 ### Primitive Slave Societies
 Man was overwhelmed by forces of nature, like rains, floods, which determined the social organisation. Forces of production were at lowest level and material density was low. Family was self-sufficient unit of production & consumption
 - 2 Classes 
-	- Masters - Owners of mode of production #MoP  & Slaves
-	- Slaves - often Prisoners of War
+  - Masters - Owners of mode of production #MoP  & Slaves
+  - Slaves - often Prisoners of War
 
 > [!quote] Class Struggle - #Marx 
 > "The class struggle is the motor of history"
@@ -134,11 +134,11 @@ Agriculture became a dominant, Land got slowly privatised, though ownership was 
 ### Modern Capitalist / Industrial Society
 Production increased, Surplus-trade - increased, usage of mechanical instruments increased, new markets emerged. Industries/Factories were setup.
 Man now controlled Nature. With emergence of industries, family loses its place as primary production unit
-- #Marx - Exploitation of Workers by Capitalists + Alienation
-- #ED - Complex #DoL > Increased #Organic #Solidarity > High Social #Cohesion
+1. #Marx - Exploitation of Workers by Capitalists + Alienation
+2. #ED - Complex #DoL > Increased #Organic #Solidarity > High Social #Cohesion
 
 
-> [!quote] Exploitation - Engels
+> [!quote] Exploitation - #Engels
 >"The exploitation of labor is the root of all social problems." - Friedrich Engels
 
 > [!quote] Alienation - #Marx 
@@ -302,7 +302,7 @@ Ad-hoc committees in formal organisations also work in informal ways
   3. Ill consequences - Corporate scams, insider trading, collusive bribery  #limitations 
 
 ### Labour & Society
-> [!quote] Labour - Adam Smith
+> [!quote] Labour - Adam #Smith
 > "Labor is the source of all wealth"
 
 Labour is a old concept but in modern sense it arrived with the growth of Capitalism. 

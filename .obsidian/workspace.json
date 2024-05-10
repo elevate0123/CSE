@@ -4,37 +4,23 @@
     "type": "split",
     "children": [
       {
-        "id": "65c4ae040cfa1003",
+        "id": "39d69b53519a1c7d",
         "type": "tabs",
         "children": [
           {
-            "id": "46bbf75dbc48608a",
+            "id": "5b4823449bf4a2a5",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "06 Sociology/Paper 1/Miscellaneous.md",
-                "mode": "source",
-                "backlinks": true,
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "2b36bb2b93add6d5",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "X Misc/Untitled mindmap 1.md",
+                "file": "X Misc/Misc.md",
                 "mode": "source",
                 "backlinks": true,
                 "source": false
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -100,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "X Misc/Untitled mindmap 1.md",
+                "file": "X Misc/Misc.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -128,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "X Misc/Untitled mindmap 1.md",
+                "file": "X Misc/Misc.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -140,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "X Misc/Untitled mindmap 1.md"
+                "file": "X Misc/Misc.md"
               }
             }
           },
@@ -153,7 +139,7 @@
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -172,24 +158,24 @@
       "homepage:Open homepage": false
     }
   },
-  "active": "2b36bb2b93add6d5",
+  "active": "5b4823449bf4a2a5",
   "lastOpenFiles": [
-    "X Misc/Untitled mindmap.md",
+    "06 Sociology/Paper 1/09 Systems of Kinship.md",
+    "06 Sociology/Paper 1/02 Sociology as Science +.md",
+    "06 Sociology/Paper 1/06 Work and Economic Life +.md",
     "06 Sociology/Paper 2/01 Perspectives on study of Indian Society.md",
+    "06 Sociology/Sociology Index.md",
+    "06 Sociology/Paper 1/01 Sociology - The Discipline.md",
+    "X Misc/Untitled mindmap.md",
     "06 Sociology/Paper 2/02 Colonial Rule.md",
     "06 Sociology/Paper 2/Colonial Rule.md",
     "06 Sociology/Paper 1/Thinkers - Contemporary.md",
     "06 Sociology/Paper 1/Miscellaneous.md",
     "06 Sociology/Paper 1/Other Imp Topics.md",
-    "06 Sociology/Paper 1/09 Systems of Kinship.md",
     "06 Sociology/Paper 1/08 Religion and Society.md",
-    "06 Sociology/Paper 1/01 Sociology - The Discipline.md",
-    "06 Sociology/Paper 1/06 Work and Economic Life +.md",
     "06 Sociology/Paper 1/03 Research Methods and Analysis.md",
-    "06 Sociology/Paper 1/02 Sociology as Science +.md",
     "06 Sociology/Paper 1/010 Social Change in Modern Society +.md",
     "Home.md",
-    "06 Sociology/Sociology Index.md",
     "06 Sociology/Paper 1/~$ Work and Economic Life +.docx",
     "06 Sociology/Paper 1/Contemporary Scholars.md",
     "06 Sociology/Paper 1/~WRL0002.tmp",
