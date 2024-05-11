@@ -24,14 +24,28 @@
   "unresolvedLinks": false,
   "recentFilesStore": [
     {
+<<<<<<< Updated upstream
       "filepath": "X Misc/Misc.md",
       "timestamp": 1715335992884
+=======
+      "filepath": "06 Sociology/Paper 1/06 Work and Economic Life +.md",
+      "timestamp": 1715438024983
+    },
+    {
+      "filepath": "Home.md",
+      "timestamp": 1715437938167
+    },
+    {
+      "filepath": "X Misc/Untitled mindmap 1.md",
+      "timestamp": 1704283930603
+>>>>>>> Stashed changes
     },
     {
       "filepath": "04 GS 4 Ethics/Case Study.md",
       "timestamp": 1713777483495
     },
     {
+<<<<<<< Updated upstream
       "filepath": "06 Sociology/Paper 1/09 Systems of Kinship.md",
       "timestamp": 1713777368470
     },
@@ -42,6 +56,10 @@
     {
       "filepath": "06 Sociology/Paper 1/06 Work and Economic Life +.md",
       "timestamp": 1713777108053
+=======
+      "filepath": "06 Sociology/Paper 2/01 Perspectives on study of Indian Society.md",
+      "timestamp": 1704283886481
+>>>>>>> Stashed changes
     }
   ],
   "starredFileStore": [],
