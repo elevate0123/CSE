@@ -8,27 +8,13 @@
         "type": "tabs",
         "children": [
           {
-            "id": "e7a7b303c61786dc",
+            "id": "8c814c0bcdaafbb2",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Home.md",
-                "mode": "source",
-                "source": false,
-                "backlinks": true,
-                "backlinkOpts": {
-                  "collapseAll": false,
-                  "extraContext": false,
-                  "sortOrder": "alphabetical",
-                  "showSearch": false,
-                  "searchQuery": "",
-                  "backlinkCollapsed": false,
-                  "unlinkedCollapsed": true
-                }
-              },
-              "icon": "lucide-file",
-              "title": "Home"
+              "type": "home-tab-view",
+              "state": {},
+              "icon": "search",
+              "title": "Home tab"
             }
           }
         ]
@@ -152,13 +138,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Home.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Home"
+              "title": "Outline"
             }
           },
           {
@@ -192,8 +177,9 @@
       "homepage:Open homepage": false
     }
   },
-  "active": "e7a7b303c61786dc",
+  "active": "8c814c0bcdaafbb2",
   "lastOpenFiles": [
+    "Home.md",
     "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
     "06 Sociology/Paper 2/MSO 04 Gemini Notes.md",
     "06 Sociology/Value Addition/Socio Dataset, Cases & Schemes.md",
@@ -207,7 +193,6 @@
     "06 Sociology/Paper 2/01 Perspectives on study of Indian Society.md",
     "06 Sociology/Paper 2/02 Colonial Rule.md",
     "06 Sociology/Paper 2/Colonial Rule.md",
-    "Home.md",
     "06 Sociology/Sociology Index.md",
     "11 Finance & Data/Zot Template.md",
     "11 Finance & Data/Research Workflow Setup.md",
