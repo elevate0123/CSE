@@ -1,26 +1,20 @@
-var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __export = (target, all) => {
-  __markAsModule(target);
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
-var __reExport = (target, module2, desc) => {
-  if (module2 && typeof module2 === "object" || typeof module2 === "function") {
-    for (let key of __getOwnPropNames(module2))
-      if (!__hasOwnProp.call(target, key) && key !== "default")
-        __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
   }
-  return target;
+  return to;
 };
-var __toModule = (module2) => {
-  return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, "default", module2 && module2.__esModule && "default" in module2 ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
-};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
     var fulfilled = (value) => {
@@ -43,15 +37,18 @@ var __async = (__this, __arguments, generator) => {
 };
 
 // src/main.ts
-__export(exports, {
+var main_exports = {};
+__export(main_exports, {
   ZoteroItem: () => ZoteroItem,
   default: () => main_default
 });
+module.exports = __toCommonJS(main_exports);
 
 // src/ZoteroBridge.ts
-var import_obsidian4 = __toModule(require("obsidian"));
+var import_obsidian6 = require("obsidian");
 
 // node_modules/@vanakat/plugin-api/index.js
+var import_obsidian = require("obsidian");
 function registerAPI(name, api, plugin) {
   window["PluginApi"] = window["PluginApi"] || {};
   window["PluginApi"][name] = api;
@@ -62,24 +59,36 @@ function registerAPI(name, api, plugin) {
 
 // src/ZoteroBridgeSettings.ts
 var DEFAULT_SETTINGS = {
+  connectionType: 1 /* ZotServer */,
+  userOrGroup: "users/0",
   host: "localhost",
   port: "23119"
 };
 
 // src/ZoteroAdapter.ts
-var import_obsidian2 = __toModule(require("obsidian"));
+var import_obsidian3 = require("obsidian");
 
 // src/ZoteroItem.ts
-var import_obsidian = __toModule(require("obsidian"));
+var import_obsidian2 = require("obsidian");
 var ZoteroItem = class {
   constructor(raw) {
     this.raw = raw;
   }
   getKey() {
-    return this.raw.key;
+    return this.raw.data.key;
   }
   getTitle() {
-    return this.raw.shortTitle || this.raw.title || this.getNoteExcerpt() || "[No Title]";
+    return this.raw.data.title || this.raw.data.shortTitle || this.getNoteExcerpt() || "[No Title]";
+  }
+  getShortTitle() {
+    return this.raw.data.shortTitle;
+  }
+  getCreatorSummary() {
+    if (this.raw.hasOwnProperty("meta") && this.raw.meta.hasOwnProperty("creatorSummary")) {
+      return this.raw.meta.creatorSummary;
+    } else {
+      return this.getAuthor() ? this.getAuthor().fullName : "";
+    }
   }
   getAuthors() {
     return this.getCreators().filter((creator) => creator.creatorType === "author").map(this.normalizeName);
@@ -88,15 +97,19 @@ var ZoteroItem = class {
     return this.getAuthors()[0];
   }
   getCreators() {
-    return this.raw.creators || [];
+    return this.raw.data.creators || [];
   }
   getDate() {
-    return this.raw.date ? this.formatDate(this.raw.date) : "";
+    let date = this.raw.data.date;
+    if (this.raw.hasOwnProperty("meta") && this.raw.meta.hasOwnProperty("parsedDate")) {
+      date = this.raw.meta.parsedDate;
+    }
+    return date ? this.formatDate(date) : { year: null, month: null, day: null };
   }
   getNoteExcerpt() {
-    if (this.raw.note) {
+    if (this.raw.data.note) {
       const div = document.createElement("div");
-      div.appendChild((0, import_obsidian.sanitizeHTMLToDom)(this.raw.note));
+      div.appendChild((0, import_obsidian2.sanitizeHTMLToDom)(this.raw.data.note));
       return (div.textContent || div.innerText || "").trim().substring(0, 50) + "...";
     }
     return "";
@@ -119,64 +132,114 @@ var ZoteroItem = class {
   }
   formatDate(date) {
     const dateObject = new Date(date);
+    if (isNaN(dateObject.getTime())) {
+      return null;
+    }
     return {
-      year: dateObject.getFullYear(),
-      month: dateObject.getMonth(),
-      day: dateObject.getDate()
+      year: dateObject.getUTCFullYear(),
+      month: dateObject.getUTCMonth() + 1,
+      day: dateObject.getUTCDate()
     };
   }
   getValues() {
     return {
       key: this.getKey(),
       title: this.getTitle(),
+      shortTitle: this.getShortTitle(),
       date: this.getDate(),
       authors: this.getAuthors(),
-      firstAuthor: this.getAuthor()
+      firstAuthor: this.getAuthor(),
+      creatorSummary: this.getCreatorSummary()
     };
   }
 };
 
 // src/ZoteroAdapter.ts
-var ZoteroAdapter = class {
+var LocalAPIV3Adapter = class {
+  constructor(settings) {
+    this.settings = settings;
+  }
+  get baseUrl() {
+    return `http://${this.settings.host}:${this.settings.port}/api/${this.settings.userOrGroup}`;
+  }
+  search(query) {
+    return this.items({
+      itemType: "-attachment",
+      q: query
+    });
+  }
+  groups() {
+    return (0, import_obsidian3.request)({
+      url: `http://${this.settings.host}:${this.settings.port}/api/users/0/groups`,
+      method: "get",
+      contentType: "application/json"
+    }).then(JSON.parse).then((groups) => groups.map((group) => group.data));
+  }
+  items(parameters) {
+    return (0, import_obsidian3.request)({
+      url: `${this.baseUrl}/items?` + new URLSearchParams(parameters).toString(),
+      method: "get",
+      contentType: "application/json"
+    }).then(JSON.parse).then((items) => items.filter((item) => !["attachment", "note"].includes(item.data.itemType)).map((item) => new ZoteroItem(item))).catch(() => {
+      new import_obsidian3.Notice(`Couldn't connect to Zotero, please check the app is open and Zotero Local API is enabled`);
+      return [];
+    });
+  }
+};
+var ZotServerAdapter = class {
   constructor(settings) {
     this.settings = settings;
   }
   get baseUrl() {
     return `http://${this.settings.host}:${this.settings.port}/zotserver`;
   }
-  searchEverything(query) {
-    return this.search([{
-      condition: "quicksearch-everything",
-      value: query
-    }]);
+  search(query) {
+    return this.items({
+      q: query
+    });
   }
-  search(conditions) {
-    return (0, import_obsidian2.request)({
+  items(parameters) {
+    return (0, import_obsidian3.request)({
       url: `${this.baseUrl}/search`,
       method: "post",
       contentType: "application/json",
-      body: JSON.stringify(conditions)
-    }).then(JSON.parse).then((items) => items.filter((item) => !["attachment", "note"].includes(item.itemType)).map((item) => new ZoteroItem(item))).catch(() => {
-      new import_obsidian2.Notice(`Couldn't connect to Zotero, please check the app is open and ZotServer is installed`);
+      body: JSON.stringify([{
+        condition: "quicksearch-titleCreatorYear",
+        value: parameters.q
+      }])
+    }).then(JSON.parse).then((items) => items.filter((item) => !["attachment", "note"].includes(item.itemType)).map((item) => new ZoteroItem({ data: item }))).catch(() => {
+      new import_obsidian3.Notice(`Couldn't connect to Zotero, please check the app is open and ZotServer is installed`);
       return [];
     });
   }
 };
+var ZoteroAdapters = {
+  [1 /* ZotServer */]: ZotServerAdapter,
+  [2 /* LocalAPIV3 */]: LocalAPIV3Adapter
+};
 
 // src/ZoteroSuggestModal.ts
-var import_obsidian3 = __toModule(require("obsidian"));
-var ZoteroSuggestModal = class extends import_obsidian3.SuggestModal {
+var import_obsidian4 = require("obsidian");
+var ZoteroSuggestModal = class extends import_obsidian4.SuggestModal {
   constructor(app, adapter, onSelect) {
     super(app);
     this.adapter = adapter;
     this.onSelect = onSelect;
   }
   getSuggestions(query) {
-    return this.adapter.searchEverything(query);
+    return this.adapter.search(query);
   }
   renderSuggestion(item, el) {
+    const creator = item.getCreatorSummary();
     el.createEl("div", { text: item.getTitle() });
-    el.createEl("small", { text: item.getKey() });
+    if (creator) {
+      el.createEl("small", { text: `${creator} ` });
+    }
+    const year = item.getDate().year;
+    if (year) {
+      el.createEl("small", { text: `(${year}) ` });
+    }
+    el.createEl("small", { text: `[${item.getKey()}]`, cls: "zotero-bridge__text-secondary" });
   }
   onChooseSuggestion(item) {
     this.onSelect(item);
@@ -212,12 +275,52 @@ var ZoteroBridgeApi = class {
   }
 };
 
+// src/ZoteroBridgeSettingTab.ts
+var import_obsidian5 = require("obsidian");
+var ZoteroBridgeSettingTab = class extends import_obsidian5.PluginSettingTab {
+  constructor(app, plugin) {
+    super(app, plugin);
+    this.plugin = plugin;
+  }
+  display() {
+    this.containerEl.empty();
+    new import_obsidian5.Setting(this.containerEl).setName("Connection type").setDesc("Note that you either need to install ZotServer plugin in Zotero 6 or enable Local API support in Zotero 7 advanced settings.").addDropdown((dropdown) => {
+      dropdown.addOption(1 /* ZotServer */.toString(), "Zotero 6 ZotServer Plugin").addOption(2 /* LocalAPIV3 */.toString(), "Zotero 7 Local API (v3)").setValue(this.plugin.settings.connectionType.toString()).onChange((value) => __async(this, null, function* () {
+        yield this.plugin.saveSettings({
+          connectionType: +value
+        });
+      }));
+    });
+    new import_obsidian5.Setting(this.containerEl).setName("User or group").setDesc("This parameter only works with Zotero 7 connection type.").addDropdown((dropdown) => __async(this, null, function* () {
+      const adapter = new LocalAPIV3Adapter(this.plugin.settings);
+      const groups = yield adapter.groups();
+      dropdown.addOption(`users/0`, "My Library");
+      groups.forEach((group) => {
+        dropdown.addOption(`groups/${group.id}`, group.name);
+      });
+      dropdown.setValue(this.plugin.settings.userOrGroup).onChange((value) => __async(this, null, function* () {
+        yield this.plugin.saveSettings({
+          userOrGroup: value
+        });
+      }));
+    }));
+    new import_obsidian5.Setting(this.containerEl).setName("Zotero server port").setDesc(`Don't change unless you really know what you are doing`).addText((txt) => {
+      txt.setValue(this.plugin.settings.port.toString()).onChange((value) => __async(this, null, function* () {
+        yield this.plugin.saveSettings({
+          port: value
+        });
+      }));
+    });
+  }
+};
+
 // src/ZoteroBridge.ts
-var ZoteroBridge = class extends import_obsidian4.Plugin {
+var ZoteroBridge = class extends import_obsidian6.Plugin {
   onload() {
     return __async(this, null, function* () {
       this.settings = Object.assign({}, DEFAULT_SETTINGS, yield this.loadData());
-      this.zoteroAdapter = new ZoteroAdapter(this.settings);
+      this.zoteroAdapter = new ZoteroAdapters[this.settings.connectionType](this.settings);
+      this.addSettingTab(new ZoteroBridgeSettingTab(this.app, this));
       registerAPI("ZoteroBridge", new ZoteroBridgeApi(this), this);
     });
   }
@@ -231,3 +334,5 @@ var ZoteroBridge = class extends import_obsidian4.Plugin {
 
 // src/main.ts
 var main_default = ZoteroBridge;
+
+/* nosourcemap */

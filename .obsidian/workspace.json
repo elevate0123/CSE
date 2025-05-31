@@ -1,35 +1,34 @@
 {
   "main": {
-    "id": "654835352da675e0",
+    "id": "5324373015726ba8",
     "type": "split",
     "children": [
       {
-<<<<<<< Updated upstream
-        "id": "39d69b53519a1c7d",
+        "id": "4509724f8bf84da7",
         "type": "tabs",
         "children": [
           {
-            "id": "5b4823449bf4a2a5",
-=======
-        "id": "5405b9ba49e7a4bc",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "bca80e09564b0e01",
->>>>>>> Stashed changes
+            "id": "e7a7b303c61786dc",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-<<<<<<< Updated upstream
-                "file": "X Misc/Misc.md",
-=======
-                "file": "06 Sociology/Paper 1/06 Work and Economic Life +.md",
->>>>>>> Stashed changes
+                "file": "Home.md",
                 "mode": "source",
+                "source": false,
                 "backlinks": true,
-                "source": false
-              }
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "Home"
             }
           }
         ]
@@ -38,136 +37,146 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "3e07818f66369182",
+    "id": "acc1907a4f210204",
     "type": "split",
     "children": [
       {
-        "id": "280992b595d97b8d",
+        "id": "2709fd588cfd6cee",
         "type": "tabs",
         "children": [
           {
-            "id": "8ac7585ea10a8106",
+            "id": "e459e1e86db6a176",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical"
-              }
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
             }
           },
           {
-            "id": "14e2afbccb58fcee",
+            "id": "4b3aff04f04048ec",
             "type": "leaf",
             "state": {
               "type": "search",
               "state": {
                 "query": "",
                 "matchingCase": false,
-                "explainSearch": true,
-                "collapseAll": true,
-                "extraContext": true,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
                 "sortOrder": "alphabetical"
-              }
+              },
+              "icon": "lucide-search",
+              "title": "Search"
             }
           },
           {
-            "id": "65824f1a92eb42c9",
+            "id": "014f51d6bed575cd",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
-              "state": {}
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
             }
           }
         ]
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 258.5
   },
   "right": {
-    "id": "437852c2768e1d8b",
+    "id": "22799904aa594e76",
     "type": "split",
     "children": [
       {
-        "id": "b498463462145297",
+        "id": "88aca48b50649f88",
         "type": "tabs",
         "children": [
           {
-            "id": "88ba671d124db152",
+            "id": "b080918cf8118186",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-<<<<<<< Updated upstream
-                "file": "X Misc/Misc.md",
-=======
-                "file": "06 Sociology/Paper 1/06 Work and Economic Life +.md",
->>>>>>> Stashed changes
+                "file": "06 Sociology/Paper 2/MSO 04 Gemini Notes.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
                 "showSearch": false,
                 "searchQuery": "",
                 "backlinkCollapsed": false,
-                "unlinkedCollapsed": false
-              }
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for MSO 04 Gemini Notes"
             }
           },
           {
-            "id": "95384ff3be13410d",
-            "type": "leaf",
-            "state": {
-              "type": "tag",
-              "state": {
-                "sortOrder": "alphabetical",
-                "useHierarchy": true
-              }
-            }
-          },
-          {
-            "id": "fc8f8463ca4fc201",
+            "id": "8a8967a5645235d5",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-<<<<<<< Updated upstream
-                "file": "X Misc/Misc.md",
-=======
-                "file": "06 Sociology/Paper 1/06 Work and Economic Life +.md",
->>>>>>> Stashed changes
+                "file": "06 Sociology/Paper 2/MSO 04 Gemini Notes.md",
                 "linksCollapsed": false,
-                "unlinkedCollapsed": false
-              }
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from MSO 04 Gemini Notes"
             }
           },
           {
-            "id": "17e97ce4a44f90c5",
+            "id": "ee35402f92e5eda6",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "7f0ce033e711d5fa",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-<<<<<<< Updated upstream
-                "file": "X Misc/Misc.md"
-=======
-                "file": "06 Sociology/Paper 1/06 Work and Economic Life +.md"
->>>>>>> Stashed changes
-              }
+                "file": "Home.md",
+                "followCursor": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Home"
             }
           },
           {
-            "id": "135129795ee186df",
+            "id": "2496c23131af77ed",
             "type": "leaf",
             "state": {
-              "type": "git-history-view",
-              "state": {}
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
-    "width": 372.5
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -179,59 +188,36 @@
       "markdown-importer:Open format converter": false,
       "audio-recorder:Start/stop recording": false,
       "workspaces:Manage workspace layouts": false,
+      "obsidian-git:Open Git source control": false,
       "homepage:Open homepage": false
     }
   },
-<<<<<<< Updated upstream
-  "active": "5b4823449bf4a2a5",
+  "active": "e7a7b303c61786dc",
   "lastOpenFiles": [
-    "06 Sociology/Paper 1/09 Systems of Kinship.md",
-    "06 Sociology/Paper 1/02 Sociology as Science +.md",
-    "06 Sociology/Paper 1/06 Work and Economic Life +.md",
-=======
-  "active": "bca80e09564b0e01",
-  "lastOpenFiles": [
-    "Home.md",
-    "X Misc/Untitled mindmap.md",
->>>>>>> Stashed changes
+    "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
+    "06 Sociology/Paper 2/MSO 04 Gemini Notes.md",
+    "06 Sociology/Value Addition/Socio Dataset, Cases & Schemes.md",
+    "06 Sociology/Paper 2/~~$MSO 04 Gemini Notes.pdf",
+    "06 Sociology/Paper 2/MSO 01 Gemini.md",
+    "06 Sociology/Paper 2/MSO 04 Gemini Notes.pdf",
+    "Untitled 1.md",
+    "Random Notes.md",
+    "Untitled.md",
+    "Argument Map - Arg Down.md",
     "06 Sociology/Paper 2/01 Perspectives on study of Indian Society.md",
-    "06 Sociology/Sociology Index.md",
-    "06 Sociology/Paper 1/01 Sociology - The Discipline.md",
-    "X Misc/Untitled mindmap.md",
     "06 Sociology/Paper 2/02 Colonial Rule.md",
     "06 Sociology/Paper 2/Colonial Rule.md",
-    "06 Sociology/Paper 1/Thinkers - Contemporary.md",
-    "06 Sociology/Paper 1/Miscellaneous.md",
-    "06 Sociology/Paper 1/Other Imp Topics.md",
-    "06 Sociology/Paper 1/08 Religion and Society.md",
-    "06 Sociology/Paper 1/03 Research Methods and Analysis.md",
-    "06 Sociology/Paper 1/010 Social Change in Modern Society +.md",
-<<<<<<< Updated upstream
     "Home.md",
-=======
     "06 Sociology/Sociology Index.md",
->>>>>>> Stashed changes
-    "06 Sociology/Paper 1/~$ Work and Economic Life +.docx",
-    "06 Sociology/Paper 1/Contemporary Scholars.md",
-    "06 Sociology/Paper 1/~WRL0002.tmp",
-    "06 Sociology/Paper 1/~WRD0001.tmp",
-    "06 Sociology/Paper 1/~WRD0000.tmp",
-    "06 Sociology/Paper 1/~$ Religion and Society.docx",
-    "My Library/files/771/_.pdf",
-    "My Library/files/769/_.pdf",
-    "Git Sample.md",
-    "05 Essay/Quotes.md",
-    "X Misc/Fonts.md",
-    "28 SITrust/2 Pager Intro.md",
-    "28 SITrust/Asma al-Husna Preface.md",
-    "28 SITrust/SITrust Introduction.md",
-    "X Misc/PDF Exporting.md",
-    "28 SITrust/Elocution Competition.md",
-    "28 SITrust/40 Hadith of Shah Waliullah Dehlawi.md",
+    "11 Finance & Data/Zot Template.md",
+    "11 Finance & Data/Research Workflow Setup.md",
+    "11 Finance & Data/Foundations of Modern Finance 2.md",
+    "11 Finance & Data/Foundations of Modern Finance 1.md",
     "TM Test.canvas",
-    "Untitled",
-    "My Library/files/3/Test Sample.pdf",
-    "My Library/files/771",
-    "01 GS 1/GS 1 Syllabus.canvas"
+    "X Misc/Untitled.canvas",
+    "X Misc/Fonts.md",
+    "Recording 20250530213147.webm",
+    "Said al Khatir!.md",
+    "mrunalpatelPCB01.md"
   ]
 }

@@ -1,9 +1,10 @@
 {
   "translucency": true,
-  "theme": "obsidian",
-  "baseFontSize": 14,
-  "cssTheme": "",
+  "theme": "moonstone",
+  "baseFontSize": 13,
+  "cssTheme": "Obsidian Nord",
   "textFontFamily": "MS Reference Sans Serif,Montserrat,Trebuchet MS,Liberation Mono",
-  "accentColor": "#1c59e9",
-  "interfaceFontFamily": ""
+  "accentColor": "#1ce933",
+  "interfaceFontFamily": "",
+  "baseFontSizeAction": true
 }

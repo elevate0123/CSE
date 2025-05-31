@@ -73350,7 +73350,7 @@ __export(main_exports, {
 });
 module.exports = __toCommonJS(main_exports);
 var import_path4 = __toESM(require("path"));
-var import_obsidian14 = require("obsidian");
+var import_obsidian15 = require("obsidian");
 
 // src/types.ts
 var RELOAD = {
@@ -89776,10 +89776,13 @@ var ReferenceMapSettingTab = class extends import_obsidian7.PluginSettingTab {
     __publicField(this, "citationPathLoadingEl");
     __publicField(this, "citationPathErrorEl");
     __publicField(this, "citationPathSuccessEl");
+    __publicField(this, "warningEl");
     this.plugin = plugin;
     this.citationPathLoadingEl = document.createElement("div");
     this.citationPathErrorEl = document.createElement("div");
     this.citationPathSuccessEl = document.createElement("div");
+    this.warningEl = document.createElement("div");
+    this.warningEl.addClass("orm-Warning");
   }
   async checkCitationExportPath(filePath) {
     this.citationPathLoadingEl.addClass("d-none");
@@ -90075,6 +90078,10 @@ var ReferenceMapSettingTab = class extends import_obsidian7.PluginSettingTab {
       el.style.textAlign = "right";
       el.innerText = ` ${this.plugin.settings.citedLimit.toString()}`;
     });
+    this.warningEl = containerEl.createEl("p", {
+      cls: "orm-Warning",
+      text: "WARNING: Increasing this value may substantially slowdown rendering and therefore performance of Obsidian itself for documents containing large number of citations."
+    });
     let citingMaxLimit;
     new import_obsidian7.Setting(containerEl).setName(t2("CITING_MAX_LIMIT")).setDesc(fragWithHTML(t2("CITING_MAX_LIMIT_DESC"))).addSlider((slider) => slider.setLimits(50, 1e3, 50).setValue(this.plugin.settings.citingLimit).onChange(async (value) => {
       citingMaxLimit.innerText = ` ${value.toString()}`;
@@ -90088,6 +90095,10 @@ var ReferenceMapSettingTab = class extends import_obsidian7.PluginSettingTab {
       el.style.minWidth = "2.3em";
       el.style.textAlign = "right";
       el.innerText = ` ${this.plugin.settings.citingLimit.toString()}`;
+    });
+    this.warningEl = containerEl.createEl("p", {
+      cls: "orm-Warning",
+      text: "WARNING: Increasing this value may substantially slowdown rendering and therefore performance of Obsidian itself for documents containing large number of citations."
     });
     new import_obsidian7.Setting(containerEl).setName(t2("HIDE_SHOW_REDUNDANT_REFERENCES")).setDesc(fragWithHTML(t2("HIDE_SHOW_REDUNDANT_REFERENCES_DESC"))).addToggle((toggle) => toggle.setValue(this.plugin.settings.filterRedundantReferences).onChange(async (value) => {
       this.plugin.settings.filterRedundantReferences = value;
@@ -101914,8 +101925,10 @@ var GraphView = class extends import_obsidian10.ItemView {
   }
 };
 
-// src/search/modals.ts
-var import_obsidian12 = require("obsidian");
+// src/data/data.ts
+var fs4 = __toESM(require("fs"));
+var import_bibtex_parser = __toESM(require_bibtex_parser());
+var import_lodash3 = __toESM(require_lodash());
 
 // node_modules/.pnpm/lru-cache@7.18.3/node_modules/lru-cache/index.mjs
 var perf = typeof performance === "object" && performance && typeof performance.now === "function" ? performance : Date;
@@ -103069,105 +103082,6 @@ var ViewManager = class {
   }
 };
 
-// src/search/modals.ts
-var ReferenceSearchModal = class extends import_obsidian12.Modal {
-  constructor(plugin, query, mode, callback) {
-    super(plugin.app);
-    this.plugin = plugin;
-    this.query = query;
-    this.mode = mode;
-    this.callback = callback;
-    __publicField(this, "isBusy", false);
-    __publicField(this, "okBtnRef");
-  }
-  setBusy(busy) {
-    var _a, _b;
-    this.isBusy = busy;
-    (_a = this.okBtnRef) == null ? void 0 : _a.setDisabled(busy);
-    (_b = this.okBtnRef) == null ? void 0 : _b.setButtonText(busy ? "Requesting..." : "Search");
-  }
-  async searchReference() {
-    if (!this.query) {
-      throw new Error("ORM: No query entered.");
-    }
-    if (!this.isBusy) {
-      try {
-        this.setBusy(true);
-        const paperIds = getPaperIds(this.query);
-        if (paperIds.size > 0) {
-          const paperPromises = Array.from(paperIds).map((paperId) => new ViewManager(this.plugin).getIndexPaper(paperId));
-          const papers = await Promise.all(paperPromises);
-          const validPapers = papers.filter((paper) => paper !== null);
-          if (validPapers.length > 0) {
-            this.callback(null, validPapers);
-            this.close();
-            return;
-          }
-        } else {
-          const searchResults = await new ViewManager(this.plugin).searchIndexPapers(this.query, this.plugin.settings.modalSearchLimit, false);
-          this.setBusy(false);
-          if (!(searchResults == null ? void 0 : searchResults.length)) {
-            new import_obsidian12.Notice(`No results found for "${this.query}"`);
-            return;
-          }
-          this.callback(null, searchResults);
-        }
-      } catch (err) {
-        this.callback(err);
-      }
-      this.close();
-    }
-  }
-  submitEnterCallback(event) {
-    if (event.key === "Enter" && !event.isComposing) {
-      this.searchReference();
-    }
-  }
-  onOpen() {
-    const { contentEl } = this;
-    const search_heading = contentEl.createDiv({ cls: "orm-search-modal-input-heading", text: "Search References" });
-    search_heading.createDiv({ cls: "orm-search-modal-input-heading-mode", text: `${this.mode}` });
-    contentEl.createDiv({ cls: "orm-search-modal-input" }, (settingItem) => {
-      new import_obsidian12.TextComponent(settingItem).setValue(this.query).setPlaceholder("Search by keyword, title, authors, journal, abstract, ID, DOI, etc.").onChange((value) => this.query = value).inputEl.addEventListener("keydown", this.submitEnterCallback.bind(this));
-    });
-    new import_obsidian12.Setting(contentEl).setClass("orm-search-modal-input-button").addButton((btn) => {
-      return this.okBtnRef = btn.setButtonText("Search").setCta().onClick(() => {
-        this.searchReference();
-      });
-    });
-  }
-  onClose() {
-    this.contentEl.empty();
-  }
-};
-var ReferenceSuggestModal = class extends import_obsidian12.SuggestModal {
-  constructor(app2, suggestion, onChoose) {
-    super(app2);
-    this.suggestion = suggestion;
-    this.onChoose = onChoose;
-  }
-  getSuggestions(query) {
-    return this.suggestion.filter((reference2) => {
-      var _a;
-      return (_a = reference2.title) == null ? void 0 : _a.toLowerCase().includes(query == null ? void 0 : query.toLowerCase());
-    });
-  }
-  renderSuggestion(reference2, el) {
-    const data = makeMetaData({ id: reference2.paperId, location: null, paper: reference2 });
-    el.createEl("div", { cls: "orm-modal-paper-title", text: data.title });
-    el.createEl("div", { cls: "orm-modal-paper-authors", text: data.authors });
-    el.createEl("div", { cls: "orm-modal-paper-year", text: `${data.year}, ${data.journal}, ${data.volume}, ${data.pages}` });
-  }
-  onChooseSuggestion(reference2) {
-    this.onChoose(null, makeMetaData({ id: reference2.paperId, location: null, paper: reference2 }));
-  }
-};
-
-// src/data/data.ts
-var fs4 = __toESM(require("fs"));
-var import_bibtex_parser = __toESM(require_bibtex_parser());
-var import_lodash3 = __toESM(require_lodash());
-
 // src/utils/cslHelpers.ts
 var import_https = __toESM(require("https"));
 var import_fs3 = __toESM(require("fs"));
@@ -103560,7 +103474,7 @@ var ReferenceMapData = class {
 };
 
 // src/data/updateChecker.ts
-var import_obsidian13 = require("obsidian");
+var import_obsidian12 = require("obsidian");
 var import_citeproc = __toESM(require_citeproc_commonjs());
 var import_lodash4 = __toESM(require_lodash());
 var UpdateChecker = class {
@@ -103648,7 +103562,7 @@ var UpdateChecker = class {
       const bibHtml = this.cslEngine.makeBibliography();
       const bibMetadataIds = (_a = bibHtml[0]) == null ? void 0 : _a.entry_ids;
       const cslData = bibMetadataIds.map((id2, index6) => {
-        const bib = (0, import_obsidian13.htmlToMarkdown)(fragWithHTML(bibHtml[1][index6])).replace(/\n/, " ");
+        const bib = (0, import_obsidian12.htmlToMarkdown)(fragWithHTML(bibHtml[1][index6])).replace(/\n/, " ");
         const index_ = index6 + 1;
         return { id: id2[0], index: index_, bib };
       });
@@ -103667,8 +103581,106 @@ var UpdateChecker = class {
   }
 };
 
+// src/search/SearchModal.tsx
+var import_obsidian13 = require("obsidian");
+var ReferenceSearchModal = class extends import_obsidian13.Modal {
+  constructor(plugin, query, mode, callback) {
+    super(plugin.app);
+    this.plugin = plugin;
+    this.query = query;
+    this.mode = mode;
+    this.callback = callback;
+    __publicField(this, "isBusy", false);
+    __publicField(this, "okBtnRef");
+  }
+  setBusy(busy) {
+    var _a, _b;
+    this.isBusy = busy;
+    (_a = this.okBtnRef) == null ? void 0 : _a.setDisabled(busy);
+    (_b = this.okBtnRef) == null ? void 0 : _b.setButtonText(busy ? "Requesting..." : "Search");
+  }
+  async searchReference() {
+    if (!this.query) {
+      throw new Error("ORM: No query entered.");
+    }
+    if (!this.isBusy) {
+      try {
+        this.setBusy(true);
+        const paperIds = getPaperIds(this.query);
+        if (paperIds.size > 0) {
+          const paperPromises = Array.from(paperIds).map((paperId) => new ViewManager(this.plugin).getIndexPaper(paperId));
+          const papers = await Promise.all(paperPromises);
+          const validPapers = papers.filter((paper) => paper !== null);
+          if (validPapers.length > 0) {
+            this.callback(null, validPapers);
+            this.close();
+            return;
+          }
+        } else {
+          const searchResults = await new ViewManager(this.plugin).searchIndexPapers(this.query, this.plugin.settings.modalSearchLimit, false);
+          this.setBusy(false);
+          if (!(searchResults == null ? void 0 : searchResults.length)) {
+            new import_obsidian13.Notice(`No results found for "${this.query}"`);
+            return;
+          }
+          this.callback(null, searchResults);
+        }
+      } catch (err) {
+        this.callback(err);
+      }
+      this.close();
+    }
+  }
+  submitEnterCallback(event) {
+    if (event.key === "Enter" && !event.isComposing) {
+      this.searchReference();
+    }
+  }
+  onOpen() {
+    const { contentEl } = this;
+    const search_heading = contentEl.createDiv({ cls: "orm-search-modal-input-heading", text: "Search References" });
+    search_heading.createDiv({ cls: "orm-search-modal-input-heading-mode", text: `${this.mode}` });
+    contentEl.createDiv({ cls: "orm-search-modal-input" }, (settingItem) => {
+      new import_obsidian13.TextComponent(settingItem).setValue(this.query).setPlaceholder("Search by keyword, title, authors, journal, abstract, ID, DOI, etc.").onChange((value) => this.query = value).inputEl.addEventListener("keydown", this.submitEnterCallback.bind(this));
+    });
+    new import_obsidian13.Setting(contentEl).setClass("orm-search-modal-input-button").addButton((btn) => {
+      return this.okBtnRef = btn.setButtonText("Search").setCta().onClick(() => {
+        this.searchReference();
+      });
+    });
+  }
+  onClose() {
+    this.contentEl.empty();
+  }
+};
+
+// src/search/SuggestModal.tsx
+var import_obsidian14 = require("obsidian");
+var ReferenceSuggestModal = class extends import_obsidian14.SuggestModal {
+  constructor(app2, suggestion, onChoose) {
+    super(app2);
+    this.suggestion = suggestion;
+    this.onChoose = onChoose;
+  }
+  getSuggestions(query) {
+    return this.suggestion.filter((reference2) => {
+      var _a;
+      return (_a = reference2.title) == null ? void 0 : _a.toLowerCase().includes(query == null ? void 0 : query.toLowerCase());
+    });
+  }
+  renderSuggestion(reference2, el) {
+    const data = makeMetaData({ id: reference2.paperId, location: null, paper: reference2 });
+    el.createEl("div", { cls: "orm-modal-paper-title", text: data.title });
+    el.createEl("div", { cls: "orm-modal-paper-authors", text: data.authors });
+    el.createEl("div", { cls: "orm-modal-paper-year", text: `${data.year}, ${data.journal}, ${data.volume}, ${data.pages}` });
+  }
+  onChooseSuggestion(reference2) {
+    this.onChoose(null, makeMetaData({ id: reference2.paperId, location: null, paper: reference2 }));
+  }
+};
+
 // src/main.ts
-var ReferenceMap = class extends import_obsidian14.Plugin {
+var ReferenceMap = class extends import_obsidian15.Plugin {
   constructor() {
     super(...arguments);
     __publicField(this, "settings");
@@ -103788,16 +103800,16 @@ var ReferenceMap = class extends import_obsidian14.Plugin {
   }
   async createNewReferenceNote() {
     try {
-      const markdownView = this.app.workspace.getActiveViewOfType(import_obsidian14.MarkdownView);
+      const markdownView = this.app.workspace.getActiveViewOfType(import_obsidian15.MarkdownView);
       if (!markdownView || markdownView.getMode() !== "source") {
-        new import_obsidian14.Notice("No active markdown view OR in Reading view");
+        new import_obsidian15.Notice("No active markdown view OR in Reading view");
         return;
       }
       const selection2 = markdownView.editor.getSelection().trim();
       const metaData = await this.searchReferenceMetadata(selection2, "create");
       const activeLeaf = this.app.workspace.getLeaf();
       if (!activeLeaf) {
-        new import_obsidian14.Notice("No active leaf");
+        new import_obsidian15.Notice("No active leaf");
         return;
       }
       const renderedContents = await this.getRenderedContentsForCreate(metaData);
@@ -103811,14 +103823,14 @@ var ReferenceMap = class extends import_obsidian14.Plugin {
       const targetFile = await this.app.vault.create(filePath, renderedContents);
       await activeLeaf.openFile(targetFile, { state: { mode: "source" } });
     } catch (err) {
-      new import_obsidian14.Notice("Sorry, something went wrong.");
+      new import_obsidian15.Notice("Sorry, something went wrong.");
     }
   }
   async insertMetadata() {
     try {
-      const markdownView = this.app.workspace.getActiveViewOfType(import_obsidian14.MarkdownView);
+      const markdownView = this.app.workspace.getActiveViewOfType(import_obsidian15.MarkdownView);
       if (!markdownView || markdownView.getMode() !== "source") {
-        new import_obsidian14.Notice("No active markdown view OR in Reading view");
+        new import_obsidian15.Notice("No active markdown view OR in Reading view");
         return;
       }
       const selection2 = markdownView.editor.getSelection().trim();
@@ -103829,7 +103841,7 @@ var ReferenceMap = class extends import_obsidian14.Plugin {
       const renderedContents = await this.getRenderedContentsForInsert(reference2);
       markdownView.editor.replaceRange(renderedContents, markdownView.editor.getCursor());
     } catch (err) {
-      new import_obsidian14.Notice("Sorry, something went wrong.");
+      new import_obsidian15.Notice("Sorry, something went wrong.");
     }
   }
   async searchReferenceMetadata(query, mode) {
@@ -103887,12 +103899,12 @@ var ReferenceMap = class extends import_obsidian14.Plugin {
   async convertSelectionToZoteroLink() {
     try {
       if (!this.settings.searchCiteKey) {
-        new import_obsidian14.Notice("Please enable Get references using citeKey in the settings.");
+        new import_obsidian15.Notice("Please enable Get references using citeKey in the settings.");
         return;
       }
-      const markdownView = this.app.workspace.getActiveViewOfType(import_obsidian14.MarkdownView);
+      const markdownView = this.app.workspace.getActiveViewOfType(import_obsidian15.MarkdownView);
       if (!markdownView || markdownView.getMode() !== "source") {
-        new import_obsidian14.Notice("No active markdown view OR in Reading view");
+        new import_obsidian15.Notice("No active markdown view OR in Reading view");
         return;
       }
       const selection2 = markdownView.editor.getSelection().trim();
@@ -103905,11 +103917,11 @@ var ReferenceMap = class extends import_obsidian14.Plugin {
         markdownView.editor.replaceRange(renderedContents, from, to);
         return;
       } else {
-        new import_obsidian14.Notice("No citekey found in the selection.");
+        new import_obsidian15.Notice("No citekey found in the selection.");
         return;
       }
     } catch (err) {
-      new import_obsidian14.Notice("Sorry, something went wrong.");
+      new import_obsidian15.Notice("Sorry, something went wrong.");
     }
   }
 };
@@ -103984,3 +103996,5 @@ object-assign
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/* nosourcemap */

@@ -3172,7 +3172,7 @@ var require_lib = __commonJS({
     function mapMonths2(f) {
       const ms = [];
       for (let i = 1; i <= 12; i++) {
-        const dt = DateTime2.utc(2009, i, 1);
+        const dt = DateTime2.utc(2016, i, 1);
         ms.push(f(dt));
       }
       return ms;
@@ -3185,8 +3185,8 @@ var require_lib = __commonJS({
       }
       return ms;
     }
-    function listStuff2(loc, length, englishFn, intlFn) {
-      const mode = loc.listingMode();
+    function listStuff2(loc, length, defaultOK, englishFn, intlFn) {
+      const mode = loc.listingMode(defaultOK);
       if (mode === "error") {
         return null;
       } else if (mode === "en") {
@@ -3227,11 +3227,8 @@ var require_lib = __commonJS({
     var PolyDateFormatter2 = class {
       constructor(dt, intl, opts) {
         this.opts = opts;
-        this.originalZone = void 0;
         let z = void 0;
-        if (this.opts.timeZone) {
-          this.dt = dt;
-        } else if (dt.zone.type === "fixed") {
+        if (dt.zone.isUniversal) {
           const gmtOffset = -1 * (dt.offset / 60);
           const offsetZ = gmtOffset >= 0 ? `Etc/GMT+${gmtOffset}` : `Etc/GMT${gmtOffset}`;
           if (dt.offset !== 0 && IANAZone2.create(offsetZ).valid) {
@@ -3239,47 +3236,27 @@ var require_lib = __commonJS({
             this.dt = dt;
           } else {
             z = "UTC";
-            this.dt = dt.offset === 0 ? dt : dt.setZone("UTC").plus({ minutes: dt.offset });
-            this.originalZone = dt.zone;
+            if (opts.timeZoneName) {
+              this.dt = dt;
+            } else {
+              this.dt = dt.offset === 0 ? dt : DateTime2.fromMillis(dt.ts + dt.offset * 60 * 1e3);
+            }
           }
         } else if (dt.zone.type === "system") {
           this.dt = dt;
-        } else if (dt.zone.type === "iana") {
+        } else {
           this.dt = dt;
           z = dt.zone.name;
-        } else {
-          z = "UTC";
-          this.dt = dt.setZone("UTC").plus({ minutes: dt.offset });
-          this.originalZone = dt.zone;
         }
         const intlOpts = __spreadValues({}, this.opts);
         intlOpts.timeZone = intlOpts.timeZone || z;
         this.dtf = getCachedDTF2(intl, intlOpts);
       }
       format() {
-        if (this.originalZone) {
-          return this.formatToParts().map(({ value }) => value).join("");
-        }
         return this.dtf.format(this.dt.toJSDate());
       }
       formatToParts() {
-        const parts = this.dtf.formatToParts(this.dt.toJSDate());
-        if (this.originalZone) {
-          return parts.map((part) => {
-            if (part.type === "timeZoneName") {
-              const offsetName = this.originalZone.offsetName(this.dt.ts, {
-                locale: this.dt.locale,
-                format: this.opts.timeZoneName
-              });
-              return __spreadProps(__spreadValues({}, part), {
-                value: offsetName
-              });
-            } else {
-              return part;
-            }
-          });
-        }
-        return parts;
+        return this.dtf.formatToParts(this.dt.toJSDate());
       }
       resolvedOptions() {
         return this.dtf.resolvedOptions();
@@ -3369,8 +3346,8 @@ var require_lib = __commonJS({
       redefaultToSystem(alts = {}) {
         return this.clone(__spreadProps(__spreadValues({}, alts), { defaultToEN: false }));
       }
-      months(length, format = false) {
-        return listStuff2(this, length, months2, () => {
+      months(length, format = false, defaultOK = true) {
+        return listStuff2(this, length, defaultOK, months2, () => {
           const intl = format ? { month: length, day: "numeric" } : { month: length }, formatStr = format ? "format" : "standalone";
           if (!this.monthsCache[formatStr][length]) {
             this.monthsCache[formatStr][length] = mapMonths2((dt) => this.extract(dt, intl, "month"));
@@ -3378,8 +3355,8 @@ var require_lib = __commonJS({
           return this.monthsCache[formatStr][length];
         });
       }
-      weekdays(length, format = false) {
-        return listStuff2(this, length, weekdays2, () => {
+      weekdays(length, format = false, defaultOK = true) {
+        return listStuff2(this, length, defaultOK, weekdays2, () => {
           const intl = format ? { weekday: length, year: "numeric", month: "long", day: "numeric" } : { weekday: length }, formatStr = format ? "format" : "standalone";
           if (!this.weekdaysCache[formatStr][length]) {
             this.weekdaysCache[formatStr][length] = mapWeekdays2(
@@ -3389,10 +3366,11 @@ var require_lib = __commonJS({
           return this.weekdaysCache[formatStr][length];
         });
       }
-      meridiems() {
+      meridiems(defaultOK = true) {
         return listStuff2(
           this,
           void 0,
+          defaultOK,
           () => meridiems2,
           () => {
             if (!this.meridiemCache) {
@@ -3405,8 +3383,8 @@ var require_lib = __commonJS({
           }
         );
       }
-      eras(length) {
-        return listStuff2(this, length, eras2, () => {
+      eras(length, defaultOK = true) {
+        return listStuff2(this, length, defaultOK, eras2, () => {
           const intl = { era: length };
           if (!this.eraCache[length]) {
             this.eraCache[length] = [DateTime2.utc(-40, 1, 1), DateTime2.utc(2017, 1, 1)].map(
@@ -3575,7 +3553,7 @@ var require_lib = __commonJS({
           return FixedOffsetZone2.parseSpecifier(lowered) || IANAZone2.create(input);
       } else if (isNumber3(input)) {
         return FixedOffsetZone2.instance(input);
-      } else if (typeof input === "object" && "offset" in input && typeof input.offset === "function") {
+      } else if (typeof input === "object" && input.offset && typeof input.offset === "number") {
         return input;
       } else {
         return new InvalidZone2(input);
@@ -3674,10 +3652,10 @@ var require_lib = __commonJS({
       /**
        * Set the cutoff year after which a string encoding a year as two digits is interpreted to occur in the current century.
        * @type {number}
-       * @example Settings.twoDigitCutoffYear = 0 // cut-off year is 0, so all 'yy' are interpreted as current century
+       * @example Settings.twoDigitCutoffYear = 0 // cut-off year is 0, so all 'yy' are interpretted as current century
        * @example Settings.twoDigitCutoffYear = 50 // '49' -> 1949; '50' -> 2050
-       * @example Settings.twoDigitCutoffYear = 1950 // interpreted as 50
-       * @example Settings.twoDigitCutoffYear = 2050 // ALSO interpreted as 50
+       * @example Settings.twoDigitCutoffYear = 1950 // interpretted as 50
+       * @example Settings.twoDigitCutoffYear = 2050 // ALSO interpretted as 50
        */
       static set twoDigitCutoffYear(cutoffYear) {
         twoDigitCutoffYear2 = cutoffYear % 100;
@@ -3822,7 +3800,7 @@ var require_lib = __commonJS({
       );
       if (obj.year < 100 && obj.year >= 0) {
         d = new Date(d);
-        d.setUTCFullYear(obj.year, obj.month - 1, obj.day);
+        d.setUTCFullYear(d.getUTCFullYear() - 1900);
       }
       return +d;
     }
@@ -4062,7 +4040,7 @@ var require_lib = __commonJS({
           const c = fmt.charAt(i);
           if (c === "'") {
             if (currentFull.length > 0) {
-              splits.push({ literal: bracketed || /^\s+$/.test(currentFull), val: currentFull });
+              splits.push({ literal: bracketed, val: currentFull });
             }
             current = null;
             currentFull = "";
@@ -4073,14 +4051,14 @@ var require_lib = __commonJS({
             currentFull += c;
           } else {
             if (currentFull.length > 0) {
-              splits.push({ literal: /^\s+$/.test(currentFull), val: currentFull });
+              splits.push({ literal: false, val: currentFull });
             }
             currentFull = c;
             current = c;
           }
         }
         if (currentFull.length > 0) {
-          splits.push({ literal: bracketed || /^\s+$/.test(currentFull), val: currentFull });
+          splits.push({ literal: bracketed, val: currentFull });
         }
         return splits;
       }
@@ -4099,21 +4077,21 @@ var require_lib = __commonJS({
         const df = this.systemLoc.dtFormatter(dt, __spreadValues(__spreadValues({}, this.opts), opts));
         return df.format();
       }
-      dtFormatter(dt, opts = {}) {
-        return this.loc.dtFormatter(dt, __spreadValues(__spreadValues({}, this.opts), opts));
+      formatDateTime(dt, opts = {}) {
+        const df = this.loc.dtFormatter(dt, __spreadValues(__spreadValues({}, this.opts), opts));
+        return df.format();
       }
-      formatDateTime(dt, opts) {
-        return this.dtFormatter(dt, opts).format();
+      formatDateTimeParts(dt, opts = {}) {
+        const df = this.loc.dtFormatter(dt, __spreadValues(__spreadValues({}, this.opts), opts));
+        return df.formatToParts();
       }
-      formatDateTimeParts(dt, opts) {
-        return this.dtFormatter(dt, opts).formatToParts();
-      }
-      formatInterval(interval, opts) {
-        const df = this.dtFormatter(interval.start, opts);
+      formatInterval(interval, opts = {}) {
+        const df = this.loc.dtFormatter(interval.start, __spreadValues(__spreadValues({}, this.opts), opts));
         return df.dtf.formatRange(interval.start.toJSDate(), interval.end.toJSDate());
       }
-      resolvedOptions(dt, opts) {
-        return this.dtFormatter(dt, opts).resolvedOptions();
+      resolvedOptions(dt, opts = {}) {
+        const df = this.loc.dtFormatter(dt, __spreadValues(__spreadValues({}, this.opts), opts));
+        return df.resolvedOptions();
       }
       num(n3, p = 0) {
         if (this.opts.forceSimple) {
@@ -4645,38 +4623,19 @@ var require_lib = __commonJS({
       };
       return new Duration2(conf);
     }
-    function durationToMillis2(matrix, vals) {
-      var _a2;
-      let sum = (_a2 = vals.milliseconds) != null ? _a2 : 0;
-      for (const unit of reverseUnits2.slice(1)) {
-        if (vals[unit]) {
-          sum += vals[unit] * matrix[unit]["milliseconds"];
-        }
-      }
-      return sum;
+    function antiTrunc(n3) {
+      return n3 < 0 ? Math.floor(n3) : Math.ceil(n3);
+    }
+    function convert(matrix, fromMap, fromUnit, toMap, toUnit) {
+      const conv = matrix[toUnit][fromUnit], raw = fromMap[fromUnit] / conv, sameSign = Math.sign(raw) === Math.sign(toMap[toUnit]), added = !sameSign && toMap[toUnit] !== 0 && Math.abs(raw) <= 1 ? antiTrunc(raw) : Math.trunc(raw);
+      toMap[toUnit] += added;
+      fromMap[fromUnit] -= added * conv;
     }
     function normalizeValues2(matrix, vals) {
-      const factor = durationToMillis2(matrix, vals) < 0 ? -1 : 1;
-      orderedUnits$1.reduceRight((previous, current) => {
+      reverseUnits2.reduce((previous, current) => {
         if (!isUndefined3(vals[current])) {
           if (previous) {
-            const previousVal = vals[previous] * factor;
-            const conv = matrix[current][previous];
-            const rollUp = Math.floor(previousVal / conv);
-            vals[current] += rollUp * factor;
-            vals[previous] -= rollUp * conv * factor;
-          }
-          return current;
-        } else {
-          return previous;
-        }
-      }, null);
-      orderedUnits$1.reduce((previous, current) => {
-        if (!isUndefined3(vals[current])) {
-          if (previous) {
-            const fraction = vals[previous] % 1;
-            vals[previous] -= fraction;
-            vals[current] += fraction * matrix[previous][current];
+            convert(matrix, vals, previous, vals, current);
           }
           return current;
         } else {
@@ -4934,8 +4893,6 @@ var require_lib = __commonJS({
        * ```
        */
       toHuman(opts = {}) {
-        if (!this.isValid)
-          return INVALID$2;
         const l3 = orderedUnits$1.map((unit) => {
           const val = this.values[unit];
           if (isUndefined3(val)) {
@@ -5011,16 +4968,25 @@ var require_lib = __commonJS({
         const millis = this.toMillis();
         if (millis < 0 || millis >= 864e5)
           return null;
-        opts = __spreadProps(__spreadValues({
+        opts = __spreadValues({
           suppressMilliseconds: false,
           suppressSeconds: false,
           includePrefix: false,
           format: "extended"
-        }, opts), {
-          includeOffset: false
-        });
-        const dateTime = DateTime2.fromMillis(millis, { zone: "UTC" });
-        return dateTime.toISOTime(opts);
+        }, opts);
+        const value = this.shiftTo("hours", "minutes", "seconds", "milliseconds");
+        let fmt = opts.format === "basic" ? "hhmm" : "hh:mm";
+        if (!opts.suppressSeconds || value.seconds !== 0 || value.milliseconds !== 0) {
+          fmt += opts.format === "basic" ? "ss" : ":ss";
+          if (!opts.suppressMilliseconds || value.milliseconds !== 0) {
+            fmt += ".SSS";
+          }
+        }
+        let str = value.toFormat(fmt);
+        if (opts.includePrefix) {
+          str = "T" + str;
+        }
+        return str;
       }
       /**
        * Returns an ISO 8601 representation of this Duration appropriate for use in JSON.
@@ -5041,9 +5007,7 @@ var require_lib = __commonJS({
        * @return {number}
        */
       toMillis() {
-        if (!this.isValid)
-          return NaN;
-        return durationToMillis2(this.matrix, this.values);
+        return this.as("milliseconds");
       }
       /**
        * Returns an milliseconds value of this Duration. Alias of {@link toMillis}
@@ -5142,17 +5106,8 @@ var require_lib = __commonJS({
       }
       /**
        * Reduce this Duration to its canonical representation in its current units.
-       * Assuming the overall value of the Duration is positive, this means:
-       * - excessive values for lower-order units are converted to higher-order units (if possible, see first and second example)
-       * - negative lower-order units are converted to higher order units (there must be such a higher order unit, otherwise
-       *   the overall value would be negative, see second example)
-       * - fractional values for higher-order units are converted to lower-order units (if possible, see fourth example)
-       *
-       * If the overall value is negative, the result of this method is equivalent to `this.negate().normalize().negate()`.
        * @example Duration.fromObject({ years: 2, days: 5000 }).normalize().toObject() //=> { years: 15, days: 255 }
-       * @example Duration.fromObject({ days: 5000 }).normalize().toObject() //=> { days: 5000 }
        * @example Duration.fromObject({ hours: 12, minutes: -45 }).normalize().toObject() //=> { hours: 11, minutes: 15 }
-       * @example Duration.fromObject({ years: 2.5, days: 0, hours: 0 }).normalize().toObject() //=> { years: 2, days: 182, hours: 12 }
        * @return {Duration}
        */
       normalize() {
@@ -5201,6 +5156,11 @@ var require_lib = __commonJS({
             const i = Math.trunc(own);
             built[k] = i;
             accumulated[k] = (own * 1e3 - i * 1e3) / 1e3;
+            for (const down in vals) {
+              if (orderedUnits$1.indexOf(down) > orderedUnits$1.indexOf(k)) {
+                convert(this.matrix, vals, down, built, k);
+              }
+            }
           } else if (isNumber3(vals[k])) {
             accumulated[k] = vals[k];
           }
@@ -5210,8 +5170,7 @@ var require_lib = __commonJS({
             built[lastUnit] += key === lastUnit ? accumulated[key] : accumulated[key] / this.matrix[lastUnit][key];
           }
         }
-        normalizeValues2(this.matrix, built);
-        return clone$1(this, { values: built }, true);
+        return clone$1(this, { values: built }, true).normalize();
       }
       /**
        * Shift this Duration to all available units.
@@ -5541,7 +5500,7 @@ var require_lib = __commonJS({
         if (!this.isValid)
           return NaN;
         const start2 = this.start.startOf(unit), end2 = this.end.startOf(unit);
-        return Math.floor(end2.diff(start2, unit).get(unit)) + (end2.valueOf() !== this.end.valueOf());
+        return Math.floor(end2.diff(start2, unit).get(unit)) + 1;
       }
       /**
        * Returns whether this Interval's start and end are both in the same unit of time
@@ -6061,11 +6020,6 @@ var require_lib = __commonJS({
           if (highWater > later) {
             results[unit]--;
             cursor = earlier.plus(results);
-            if (cursor > later) {
-              highWater = cursor;
-              results[unit]--;
-              cursor = earlier.plus(results);
-            }
           } else {
             cursor = highWater;
           }
@@ -6203,9 +6157,9 @@ var require_lib = __commonJS({
         }
         switch (t.val) {
           case "G":
-            return oneOf2(loc.eras("short"), 0);
+            return oneOf2(loc.eras("short", false), 0);
           case "GG":
-            return oneOf2(loc.eras("long"), 0);
+            return oneOf2(loc.eras("long", false), 0);
           case "y":
             return intUnit2(oneToSix);
           case "yy":
@@ -6221,17 +6175,17 @@ var require_lib = __commonJS({
           case "MM":
             return intUnit2(two);
           case "MMM":
-            return oneOf2(loc.months("short", true), 1);
+            return oneOf2(loc.months("short", true, false), 1);
           case "MMMM":
-            return oneOf2(loc.months("long", true), 1);
+            return oneOf2(loc.months("long", true, false), 1);
           case "L":
             return intUnit2(oneOrTwo);
           case "LL":
             return intUnit2(two);
           case "LLL":
-            return oneOf2(loc.months("short", false), 1);
+            return oneOf2(loc.months("short", false, false), 1);
           case "LLLL":
-            return oneOf2(loc.months("long", false), 1);
+            return oneOf2(loc.months("long", false, false), 1);
           case "d":
             return intUnit2(oneOrTwo);
           case "dd":
@@ -6284,13 +6238,13 @@ var require_lib = __commonJS({
           case "c":
             return intUnit2(one);
           case "EEE":
-            return oneOf2(loc.weekdays("short", false), 1);
+            return oneOf2(loc.weekdays("short", false, false), 1);
           case "EEEE":
-            return oneOf2(loc.weekdays("long", false), 1);
+            return oneOf2(loc.weekdays("long", false, false), 1);
           case "ccc":
-            return oneOf2(loc.weekdays("short", true), 1);
+            return oneOf2(loc.weekdays("short", true, false), 1);
           case "cccc":
-            return oneOf2(loc.weekdays("long", true), 1);
+            return oneOf2(loc.weekdays("long", true, false), 1);
           case "Z":
           case "ZZ":
             return offset3(new RegExp(`([+-]${oneOrTwo.source})(?::(${two.source}))?`), 2);
@@ -6298,8 +6252,6 @@ var require_lib = __commonJS({
             return offset3(new RegExp(`([+-]${oneOrTwo.source})(${two.source})?`), 2);
           case "z":
             return simple2(/[a-z_+-/]{1,256}?/i);
-          case " ":
-            return simple2(/[^\S\n\r]/);
           default:
             return literal(t);
         }
@@ -6331,13 +6283,9 @@ var require_lib = __commonJS({
       },
       dayperiod: "a",
       dayPeriod: "a",
-      hour12: {
+      hour: {
         numeric: "h",
         "2-digit": "hh"
-      },
-      hour24: {
-        numeric: "H",
-        "2-digit": "HH"
       },
       minute: {
         numeric: "m",
@@ -6352,31 +6300,16 @@ var require_lib = __commonJS({
         short: "ZZZ"
       }
     };
-    function tokenForPart2(part, formatOpts, resolvedOpts) {
+    function tokenForPart2(part, formatOpts) {
       const { type, value } = part;
       if (type === "literal") {
-        const isSpace = /^\s+$/.test(value);
         return {
-          literal: !isSpace,
-          val: isSpace ? " " : value
+          literal: true,
+          val: value
         };
       }
       const style = formatOpts[type];
-      let actualType = type;
-      if (type === "hour") {
-        if (formatOpts.hour12 != null) {
-          actualType = formatOpts.hour12 ? "hour12" : "hour24";
-        } else if (formatOpts.hourCycle != null) {
-          if (formatOpts.hourCycle === "h11" || formatOpts.hourCycle === "h12") {
-            actualType = "hour12";
-          } else {
-            actualType = "hour24";
-          }
-        } else {
-          actualType = resolvedOpts.hour12 ? "hour12" : "hour24";
-        }
-      }
-      let val = partTypeStyleToTokenVal2[actualType];
+      let val = partTypeStyleToTokenVal2[type];
       if (typeof val === "object") {
         val = val[style];
       }
@@ -6525,10 +6458,8 @@ var require_lib = __commonJS({
         return null;
       }
       const formatter = Formatter2.create(locale, formatOpts);
-      const df = formatter.dtFormatter(getDummyDateTime2());
-      const parts = df.formatToParts();
-      const resolvedOpts = df.resolvedOptions();
-      return parts.map((p) => tokenForPart2(p, formatOpts, resolvedOpts));
+      const parts = formatter.formatDateTimeParts(getDummyDateTime2());
+      return parts.map((p) => tokenForPart2(p, formatOpts));
     }
     var nonLeapLadder2 = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
     var leapLadder2 = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
@@ -6713,7 +6644,7 @@ var require_lib = __commonJS({
     }
     function parseDataToDateTime2(parsed, parsedZone, opts, format, text2, specificOffset) {
       const { setZone, zone } = opts;
-      if (parsed && Object.keys(parsed).length !== 0 || parsedZone) {
+      if (parsed && Object.keys(parsed).length !== 0) {
         const interpretationZone = parsedZone || zone, inst = DateTime2.fromObject(parsed, __spreadProps(__spreadValues({}, opts), {
           zone: interpretationZone,
           specificOffset
@@ -6753,13 +6684,13 @@ var require_lib = __commonJS({
       if (extended) {
         c += ":";
         c += padStart2(o.c.minute);
-        if (o.c.millisecond !== 0 || o.c.second !== 0 || !suppressSeconds) {
+        if (o.c.second !== 0 || !suppressSeconds) {
           c += ":";
         }
       } else {
         c += padStart2(o.c.minute);
       }
-      if (o.c.millisecond !== 0 || o.c.second !== 0 || !suppressSeconds) {
+      if (o.c.second !== 0 || !suppressSeconds) {
         c += padStart2(o.c.second);
         if (o.c.millisecond !== 0 || !suppressMilliseconds) {
           c += ".";
@@ -7272,7 +7203,7 @@ var require_lib = __commonJS({
       }
       /**
        * Create an invalid DateTime.
-       * @param {string} reason - simple string of why this DateTime is invalid. Should not contain parameters or anything else data-dependent.
+       * @param {DateTime} reason - simple string of why this DateTime is invalid. Should not contain parameters or anything else data-dependent
        * @param {string} [explanation=null] - longer explanation, may include parameters and other useful debugging information
        * @return {DateTime}
        */
@@ -7580,36 +7511,6 @@ var require_lib = __commonJS({
         } else {
           return this.offset > this.set({ month: 1, day: 1 }).offset || this.offset > this.set({ month: 5 }).offset;
         }
-      }
-      /**
-       * Get those DateTimes which have the same local time as this DateTime, but a different offset from UTC
-       * in this DateTime's zone. During DST changes local time can be ambiguous, for example
-       * `2023-10-29T02:30:00` in `Europe/Berlin` can have offset `+01:00` or `+02:00`.
-       * This method will return both possible DateTimes if this DateTime's local time is ambiguous.
-       * @returns {DateTime[]}
-       */
-      getPossibleOffsets() {
-        if (!this.isValid || this.isOffsetFixed) {
-          return [this];
-        }
-        const dayMs = 864e5;
-        const minuteMs = 6e4;
-        const localTS = objToLocalTS2(this.c);
-        const oEarlier = this.zone.offset(localTS - dayMs);
-        const oLater = this.zone.offset(localTS + dayMs);
-        const o1 = this.zone.offset(localTS - oEarlier * minuteMs);
-        const o2 = this.zone.offset(localTS - oLater * minuteMs);
-        if (o1 === o2) {
-          return [this];
-        }
-        const ts1 = localTS - o1 * minuteMs;
-        const ts2 = localTS - o2 * minuteMs;
-        const c1 = tsToObj2(ts1, o1);
-        const c2 = tsToObj2(ts2, o2);
-        if (c1.hour === c2.hour && c1.minute === c2.minute && c1.second === c2.second && c1.millisecond === c2.millisecond) {
-          return [clone3(this, { ts: ts1 }), clone3(this, { ts: ts2 })];
-        }
-        return [this];
       }
       /**
        * Returns true if this DateTime is in a leap year, false otherwise
@@ -8590,7 +8491,6 @@ var require_lib = __commonJS({
     })(Result || (Result = {}));
     var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
     var parsimmon_umd_min = { exports: {} };
-    parsimmon_umd_min.exports;
     (function(module3, exports2) {
       !function(n3, t) {
         module3.exports = t();
@@ -9213,10 +9113,9 @@ var require_lib = __commonJS({
           }) }, n3.exports = e;
         }]);
       });
-    })(parsimmon_umd_min, parsimmon_umd_min.exports);
-    var parsimmon_umd_minExports = parsimmon_umd_min.exports;
+    })(parsimmon_umd_min);
     var emojiRegex = () => {
-      return /[#*0-9]\uFE0F?\u20E3|[\xA9\xAE\u203C\u2049\u2122\u2139\u2194-\u2199\u21A9\u21AA\u231A\u231B\u2328\u23CF\u23ED-\u23EF\u23F1\u23F2\u23F8-\u23FA\u24C2\u25AA\u25AB\u25B6\u25C0\u25FB\u25FC\u25FE\u2600-\u2604\u260E\u2611\u2614\u2615\u2618\u2620\u2622\u2623\u2626\u262A\u262E\u262F\u2638-\u263A\u2640\u2642\u2648-\u2653\u265F\u2660\u2663\u2665\u2666\u2668\u267B\u267E\u267F\u2692\u2694-\u2697\u2699\u269B\u269C\u26A0\u26A7\u26AA\u26B0\u26B1\u26BD\u26BE\u26C4\u26C8\u26CF\u26D1\u26D3\u26E9\u26F0-\u26F5\u26F7\u26F8\u26FA\u2702\u2708\u2709\u270F\u2712\u2714\u2716\u271D\u2721\u2733\u2734\u2744\u2747\u2757\u2763\u27A1\u2934\u2935\u2B05-\u2B07\u2B1B\u2B1C\u2B55\u3030\u303D\u3297\u3299]\uFE0F?|[\u261D\u270C\u270D](?:\uFE0F|\uD83C[\uDFFB-\uDFFF])?|[\u270A\u270B](?:\uD83C[\uDFFB-\uDFFF])?|[\u23E9-\u23EC\u23F0\u23F3\u25FD\u2693\u26A1\u26AB\u26C5\u26CE\u26D4\u26EA\u26FD\u2705\u2728\u274C\u274E\u2753-\u2755\u2795-\u2797\u27B0\u27BF\u2B50]|\u26F9(?:\uFE0F|\uD83C[\uDFFB-\uDFFF])?(?:\u200D[\u2640\u2642]\uFE0F?)?|\u2764\uFE0F?(?:\u200D(?:\uD83D\uDD25|\uD83E\uDE79))?|\uD83C(?:[\uDC04\uDD70\uDD71\uDD7E\uDD7F\uDE02\uDE37\uDF21\uDF24-\uDF2C\uDF36\uDF7D\uDF96\uDF97\uDF99-\uDF9B\uDF9E\uDF9F\uDFCD\uDFCE\uDFD4-\uDFDF\uDFF5\uDFF7]\uFE0F?|[\uDF85\uDFC2\uDFC7](?:\uD83C[\uDFFB-\uDFFF])?|[\uDFC3\uDFC4\uDFCA](?:\uD83C[\uDFFB-\uDFFF])?(?:\u200D[\u2640\u2642]\uFE0F?)?|[\uDFCB\uDFCC](?:\uFE0F|\uD83C[\uDFFB-\uDFFF])?(?:\u200D[\u2640\u2642]\uFE0F?)?|[\uDCCF\uDD8E\uDD91-\uDD9A\uDE01\uDE1A\uDE2F\uDE32-\uDE36\uDE38-\uDE3A\uDE50\uDE51\uDF00-\uDF20\uDF2D-\uDF35\uDF37-\uDF7C\uDF7E-\uDF84\uDF86-\uDF93\uDFA0-\uDFC1\uDFC5\uDFC6\uDFC8\uDFC9\uDFCF-\uDFD3\uDFE0-\uDFF0\uDFF8-\uDFFF]|\uDDE6\uD83C[\uDDE8-\uDDEC\uDDEE\uDDF1\uDDF2\uDDF4\uDDF6-\uDDFA\uDDFC\uDDFD\uDDFF]|\uDDE7\uD83C[\uDDE6\uDDE7\uDDE9-\uDDEF\uDDF1-\uDDF4\uDDF6-\uDDF9\uDDFB\uDDFC\uDDFE\uDDFF]|\uDDE8\uD83C[\uDDE6\uDDE8\uDDE9\uDDEB-\uDDEE\uDDF0-\uDDF5\uDDF7\uDDFA-\uDDFF]|\uDDE9\uD83C[\uDDEA\uDDEC\uDDEF\uDDF0\uDDF2\uDDF4\uDDFF]|\uDDEA\uD83C[\uDDE6\uDDE8\uDDEA\uDDEC\uDDED\uDDF7-\uDDFA]|\uDDEB\uD83C[\uDDEE-\uDDF0\uDDF2\uDDF4\uDDF7]|\uDDEC\uD83C[\uDDE6\uDDE7\uDDE9-\uDDEE\uDDF1-\uDDF3\uDDF5-\uDDFA\uDDFC\uDDFE]|\uDDED\uD83C[\uDDF0\uDDF2\uDDF3\uDDF7\uDDF9\uDDFA]|\uDDEE\uD83C[\uDDE8-\uDDEA\uDDF1-\uDDF4\uDDF6-\uDDF9]|\uDDEF\uD83C[\uDDEA\uDDF2\uDDF4\uDDF5]|\uDDF0\uD83C[\uDDEA\uDDEC-\uDDEE\uDDF2\uDDF3\uDDF5\uDDF7\uDDFC\uDDFE\uDDFF]|\uDDF1\uD83C[\uDDE6-\uDDE8\uDDEE\uDDF0\uDDF7-\uDDFB\uDDFE]|\uDDF2\uD83C[\uDDE6\uDDE8-\uDDED\uDDF0-\uDDFF]|\uDDF3\uD83C[\uDDE6\uDDE8\uDDEA-\uDDEC\uDDEE\uDDF1\uDDF4\uDDF5\uDDF7\uDDFA\uDDFF]|\uDDF4\uD83C\uDDF2|\uDDF5\uD83C[\uDDE6\uDDEA-\uDDED\uDDF0-\uDDF3\uDDF7-\uDDF9\uDDFC\uDDFE]|\uDDF6\uD83C\uDDE6|\uDDF7\uD83C[\uDDEA\uDDF4\uDDF8\uDDFA\uDDFC]|\uDDF8\uD83C[\uDDE6-\uDDEA\uDDEC-\uDDF4\uDDF7-\uDDF9\uDDFB\uDDFD-\uDDFF]|\uDDF9\uD83C[\uDDE6\uDDE8\uDDE9\uDDEB-\uDDED\uDDEF-\uDDF4\uDDF7\uDDF9\uDDFB\uDDFC\uDDFF]|\uDDFA\uD83C[\uDDE6\uDDEC\uDDF2\uDDF3\uDDF8\uDDFE\uDDFF]|\uDDFB\uD83C[\uDDE6\uDDE8\uDDEA\uDDEC\uDDEE\uDDF3\uDDFA]|\uDDFC\uD83C[\uDDEB\uDDF8]|\uDDFD\uD83C\uDDF0|\uDDFE\uD83C[\uDDEA\uDDF9]|\uDDFF\uD83C[\uDDE6\uDDF2\uDDFC]|\uDFF3\uFE0F?(?:\u200D(?:\u26A7\uFE0F?|\uD83C\uDF08))?|\uDFF4(?:\u200D\u2620\uFE0F?|\uDB40\uDC67\uDB40\uDC62\uDB40(?:\uDC65\uDB40\uDC6E\uDB40\uDC67|\uDC73\uDB40\uDC63\uDB40\uDC74|\uDC77\uDB40\uDC6C\uDB40\uDC73)\uDB40\uDC7F)?)|\uD83D(?:[\uDC08\uDC26](?:\u200D\u2B1B)?|[\uDC3F\uDCFD\uDD49\uDD4A\uDD6F\uDD70\uDD73\uDD76-\uDD79\uDD87\uDD8A-\uDD8D\uDDA5\uDDA8\uDDB1\uDDB2\uDDBC\uDDC2-\uDDC4\uDDD1-\uDDD3\uDDDC-\uDDDE\uDDE1\uDDE3\uDDE8\uDDEF\uDDF3\uDDFA\uDECB\uDECD-\uDECF\uDEE0-\uDEE5\uDEE9\uDEF0\uDEF3]\uFE0F?|[\uDC42\uDC43\uDC46-\uDC50\uDC66\uDC67\uDC6B-\uDC6D\uDC72\uDC74-\uDC76\uDC78\uDC7C\uDC83\uDC85\uDC8F\uDC91\uDCAA\uDD7A\uDD95\uDD96\uDE4C\uDE4F\uDEC0\uDECC](?:\uD83C[\uDFFB-\uDFFF])?|[\uDC6E\uDC70\uDC71\uDC73\uDC77\uDC81\uDC82\uDC86\uDC87\uDE45-\uDE47\uDE4B\uDE4D\uDE4E\uDEA3\uDEB4-\uDEB6](?:\uD83C[\uDFFB-\uDFFF])?(?:\u200D[\u2640\u2642]\uFE0F?)?|[\uDD74\uDD90](?:\uFE0F|\uD83C[\uDFFB-\uDFFF])?|[\uDC00-\uDC07\uDC09-\uDC14\uDC16-\uDC25\uDC27-\uDC3A\uDC3C-\uDC3E\uDC40\uDC44\uDC45\uDC51-\uDC65\uDC6A\uDC79-\uDC7B\uDC7D-\uDC80\uDC84\uDC88-\uDC8E\uDC90\uDC92-\uDCA9\uDCAB-\uDCFC\uDCFF-\uDD3D\uDD4B-\uDD4E\uDD50-\uDD67\uDDA4\uDDFB-\uDE2D\uDE2F-\uDE34\uDE37-\uDE44\uDE48-\uDE4A\uDE80-\uDEA2\uDEA4-\uDEB3\uDEB7-\uDEBF\uDEC1-\uDEC5\uDED0-\uDED2\uDED5-\uDED7\uDEDC-\uDEDF\uDEEB\uDEEC\uDEF4-\uDEFC\uDFE0-\uDFEB\uDFF0]|\uDC15(?:\u200D\uD83E\uDDBA)?|\uDC3B(?:\u200D\u2744\uFE0F?)?|\uDC41\uFE0F?(?:\u200D\uD83D\uDDE8\uFE0F?)?|\uDC68(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?\uDC68|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D(?:[\uDC68\uDC69]\u200D\uD83D(?:\uDC66(?:\u200D\uD83D\uDC66)?|\uDC67(?:\u200D\uD83D[\uDC66\uDC67])?)|[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uDC66(?:\u200D\uD83D\uDC66)?|\uDC67(?:\u200D\uD83D[\uDC66\uDC67])?)|\uD83E[\uDDAF-\uDDB3\uDDBC\uDDBD])|\uD83C(?:\uDFFB(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?\uDC68\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D\uDC68\uD83C[\uDFFC-\uDFFF])))?|\uDFFC(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?\uDC68\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D\uDC68\uD83C[\uDFFB\uDFFD-\uDFFF])))?|\uDFFD(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?\uDC68\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D\uDC68\uD83C[\uDFFB\uDFFC\uDFFE\uDFFF])))?|\uDFFE(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?\uDC68\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D\uDC68\uD83C[\uDFFB-\uDFFD\uDFFF])))?|\uDFFF(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?\uDC68\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D\uDC68\uD83C[\uDFFB-\uDFFE])))?))?|\uDC69(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?[\uDC68\uDC69]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D(?:[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uDC66(?:\u200D\uD83D\uDC66)?|\uDC67(?:\u200D\uD83D[\uDC66\uDC67])?|\uDC69\u200D\uD83D(?:\uDC66(?:\u200D\uD83D\uDC66)?|\uDC67(?:\u200D\uD83D[\uDC66\uDC67])?))|\uD83E[\uDDAF-\uDDB3\uDDBC\uDDBD])|\uD83C(?:\uDFFB(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:[\uDC68\uDC69]|\uDC8B\u200D\uD83D[\uDC68\uDC69])\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D[\uDC68\uDC69]\uD83C[\uDFFC-\uDFFF])))?|\uDFFC(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:[\uDC68\uDC69]|\uDC8B\u200D\uD83D[\uDC68\uDC69])\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D[\uDC68\uDC69]\uD83C[\uDFFB\uDFFD-\uDFFF])))?|\uDFFD(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:[\uDC68\uDC69]|\uDC8B\u200D\uD83D[\uDC68\uDC69])\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D[\uDC68\uDC69]\uD83C[\uDFFB\uDFFC\uDFFE\uDFFF])))?|\uDFFE(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:[\uDC68\uDC69]|\uDC8B\u200D\uD83D[\uDC68\uDC69])\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D[\uDC68\uDC69]\uD83C[\uDFFB-\uDFFD\uDFFF])))?|\uDFFF(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:[\uDC68\uDC69]|\uDC8B\u200D\uD83D[\uDC68\uDC69])\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D[\uDC68\uDC69]\uD83C[\uDFFB-\uDFFE])))?))?|\uDC6F(?:\u200D[\u2640\u2642]\uFE0F?)?|\uDD75(?:\uFE0F|\uD83C[\uDFFB-\uDFFF])?(?:\u200D[\u2640\u2642]\uFE0F?)?|\uDE2E(?:\u200D\uD83D\uDCA8)?|\uDE35(?:\u200D\uD83D\uDCAB)?|\uDE36(?:\u200D\uD83C\uDF2B\uFE0F?)?)|\uD83E(?:[\uDD0C\uDD0F\uDD18-\uDD1F\uDD30-\uDD34\uDD36\uDD77\uDDB5\uDDB6\uDDBB\uDDD2\uDDD3\uDDD5\uDEC3-\uDEC5\uDEF0\uDEF2-\uDEF8](?:\uD83C[\uDFFB-\uDFFF])?|[\uDD26\uDD35\uDD37-\uDD39\uDD3D\uDD3E\uDDB8\uDDB9\uDDCD-\uDDCF\uDDD4\uDDD6-\uDDDD](?:\uD83C[\uDFFB-\uDFFF])?(?:\u200D[\u2640\u2642]\uFE0F?)?|[\uDDDE\uDDDF](?:\u200D[\u2640\u2642]\uFE0F?)?|[\uDD0D\uDD0E\uDD10-\uDD17\uDD20-\uDD25\uDD27-\uDD2F\uDD3A\uDD3F-\uDD45\uDD47-\uDD76\uDD78-\uDDB4\uDDB7\uDDBA\uDDBC-\uDDCC\uDDD0\uDDE0-\uDDFF\uDE70-\uDE7C\uDE80-\uDE88\uDE90-\uDEBD\uDEBF-\uDEC2\uDECE-\uDEDB\uDEE0-\uDEE8]|\uDD3C(?:\u200D[\u2640\u2642]\uFE0F?|\uD83C[\uDFFB-\uDFFF])?|\uDDD1(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\uD83C[\uDF3E\uDF73\uDF7C\uDF84\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83E\uDDD1))|\uD83C(?:\uDFFB(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D(?:\uD83D\uDC8B\u200D)?\uD83E\uDDD1\uD83C[\uDFFC-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF84\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83E\uDDD1\uD83C[\uDFFB-\uDFFF])))?|\uDFFC(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D(?:\uD83D\uDC8B\u200D)?\uD83E\uDDD1\uD83C[\uDFFB\uDFFD-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF84\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83E\uDDD1\uD83C[\uDFFB-\uDFFF])))?|\uDFFD(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D(?:\uD83D\uDC8B\u200D)?\uD83E\uDDD1\uD83C[\uDFFB\uDFFC\uDFFE\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF84\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83E\uDDD1\uD83C[\uDFFB-\uDFFF])))?|\uDFFE(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D(?:\uD83D\uDC8B\u200D)?\uD83E\uDDD1\uD83C[\uDFFB-\uDFFD\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF84\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83E\uDDD1\uD83C[\uDFFB-\uDFFF])))?|\uDFFF(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D(?:\uD83D\uDC8B\u200D)?\uD83E\uDDD1\uD83C[\uDFFB-\uDFFE]|\uD83C[\uDF3E\uDF73\uDF7C\uDF84\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83E\uDDD1\uD83C[\uDFFB-\uDFFF])))?))?|\uDEF1(?:\uD83C(?:\uDFFB(?:\u200D\uD83E\uDEF2\uD83C[\uDFFC-\uDFFF])?|\uDFFC(?:\u200D\uD83E\uDEF2\uD83C[\uDFFB\uDFFD-\uDFFF])?|\uDFFD(?:\u200D\uD83E\uDEF2\uD83C[\uDFFB\uDFFC\uDFFE\uDFFF])?|\uDFFE(?:\u200D\uD83E\uDEF2\uD83C[\uDFFB-\uDFFD\uDFFF])?|\uDFFF(?:\u200D\uD83E\uDEF2\uD83C[\uDFFB-\uDFFE])?))?)/g;
+      return /(?:[#*0-9]\uFE0F?\u20E3|[\xA9\xAE\u203C\u2049\u2122\u2139\u2194-\u2199\u21A9\u21AA\u231A\u231B\u2328\u23CF\u23ED-\u23EF\u23F1\u23F2\u23F8-\u23FA\u24C2\u25AA\u25AB\u25B6\u25C0\u25FB\u25FC\u25FE\u2600-\u2604\u260E\u2611\u2614\u2615\u2618\u2620\u2622\u2623\u2626\u262A\u262E\u262F\u2638-\u263A\u2640\u2642\u2648-\u2653\u265F\u2660\u2663\u2665\u2666\u2668\u267B\u267E\u267F\u2692\u2694-\u2697\u2699\u269B\u269C\u26A0\u26A7\u26AA\u26B0\u26B1\u26BD\u26BE\u26C4\u26C8\u26CF\u26D1\u26D3\u26E9\u26F0-\u26F5\u26F7\u26F8\u26FA\u2702\u2708\u2709\u270F\u2712\u2714\u2716\u271D\u2721\u2733\u2734\u2744\u2747\u2757\u2763\u27A1\u2934\u2935\u2B05-\u2B07\u2B1B\u2B1C\u2B55\u3030\u303D\u3297\u3299]\uFE0F?|[\u261D\u270C\u270D](?:\uFE0F|\uD83C[\uDFFB-\uDFFF])?|[\u270A\u270B](?:\uD83C[\uDFFB-\uDFFF])?|[\u23E9-\u23EC\u23F0\u23F3\u25FD\u2693\u26A1\u26AB\u26C5\u26CE\u26D4\u26EA\u26FD\u2705\u2728\u274C\u274E\u2753-\u2755\u2795-\u2797\u27B0\u27BF\u2B50]|\u26F9(?:\uFE0F|\uD83C[\uDFFB-\uDFFF])?(?:\u200D[\u2640\u2642]\uFE0F?)?|\u2764\uFE0F?(?:\u200D(?:\uD83D\uDD25|\uD83E\uDE79))?|\uD83C(?:[\uDC04\uDD70\uDD71\uDD7E\uDD7F\uDE02\uDE37\uDF21\uDF24-\uDF2C\uDF36\uDF7D\uDF96\uDF97\uDF99-\uDF9B\uDF9E\uDF9F\uDFCD\uDFCE\uDFD4-\uDFDF\uDFF5\uDFF7]\uFE0F?|[\uDF85\uDFC2\uDFC7](?:\uD83C[\uDFFB-\uDFFF])?|[\uDFC3\uDFC4\uDFCA](?:\uD83C[\uDFFB-\uDFFF])?(?:\u200D[\u2640\u2642]\uFE0F?)?|[\uDFCB\uDFCC](?:\uFE0F|\uD83C[\uDFFB-\uDFFF])?(?:\u200D[\u2640\u2642]\uFE0F?)?|[\uDCCF\uDD8E\uDD91-\uDD9A\uDE01\uDE1A\uDE2F\uDE32-\uDE36\uDE38-\uDE3A\uDE50\uDE51\uDF00-\uDF20\uDF2D-\uDF35\uDF37-\uDF7C\uDF7E-\uDF84\uDF86-\uDF93\uDFA0-\uDFC1\uDFC5\uDFC6\uDFC8\uDFC9\uDFCF-\uDFD3\uDFE0-\uDFF0\uDFF8-\uDFFF]|\uDDE6\uD83C[\uDDE8-\uDDEC\uDDEE\uDDF1\uDDF2\uDDF4\uDDF6-\uDDFA\uDDFC\uDDFD\uDDFF]|\uDDE7\uD83C[\uDDE6\uDDE7\uDDE9-\uDDEF\uDDF1-\uDDF4\uDDF6-\uDDF9\uDDFB\uDDFC\uDDFE\uDDFF]|\uDDE8\uD83C[\uDDE6\uDDE8\uDDE9\uDDEB-\uDDEE\uDDF0-\uDDF5\uDDF7\uDDFA-\uDDFF]|\uDDE9\uD83C[\uDDEA\uDDEC\uDDEF\uDDF0\uDDF2\uDDF4\uDDFF]|\uDDEA\uD83C[\uDDE6\uDDE8\uDDEA\uDDEC\uDDED\uDDF7-\uDDFA]|\uDDEB\uD83C[\uDDEE-\uDDF0\uDDF2\uDDF4\uDDF7]|\uDDEC\uD83C[\uDDE6\uDDE7\uDDE9-\uDDEE\uDDF1-\uDDF3\uDDF5-\uDDFA\uDDFC\uDDFE]|\uDDED\uD83C[\uDDF0\uDDF2\uDDF3\uDDF7\uDDF9\uDDFA]|\uDDEE\uD83C[\uDDE8-\uDDEA\uDDF1-\uDDF4\uDDF6-\uDDF9]|\uDDEF\uD83C[\uDDEA\uDDF2\uDDF4\uDDF5]|\uDDF0\uD83C[\uDDEA\uDDEC-\uDDEE\uDDF2\uDDF3\uDDF5\uDDF7\uDDFC\uDDFE\uDDFF]|\uDDF1\uD83C[\uDDE6-\uDDE8\uDDEE\uDDF0\uDDF7-\uDDFB\uDDFE]|\uDDF2\uD83C[\uDDE6\uDDE8-\uDDED\uDDF0-\uDDFF]|\uDDF3\uD83C[\uDDE6\uDDE8\uDDEA-\uDDEC\uDDEE\uDDF1\uDDF4\uDDF5\uDDF7\uDDFA\uDDFF]|\uDDF4\uD83C\uDDF2|\uDDF5\uD83C[\uDDE6\uDDEA-\uDDED\uDDF0-\uDDF3\uDDF7-\uDDF9\uDDFC\uDDFE]|\uDDF6\uD83C\uDDE6|\uDDF7\uD83C[\uDDEA\uDDF4\uDDF8\uDDFA\uDDFC]|\uDDF8\uD83C[\uDDE6-\uDDEA\uDDEC-\uDDF4\uDDF7-\uDDF9\uDDFB\uDDFD-\uDDFF]|\uDDF9\uD83C[\uDDE6\uDDE8\uDDE9\uDDEB-\uDDED\uDDEF-\uDDF4\uDDF7\uDDF9\uDDFB\uDDFC\uDDFF]|\uDDFA\uD83C[\uDDE6\uDDEC\uDDF2\uDDF3\uDDF8\uDDFE\uDDFF]|\uDDFB\uD83C[\uDDE6\uDDE8\uDDEA\uDDEC\uDDEE\uDDF3\uDDFA]|\uDDFC\uD83C[\uDDEB\uDDF8]|\uDDFD\uD83C\uDDF0|\uDDFE\uD83C[\uDDEA\uDDF9]|\uDDFF\uD83C[\uDDE6\uDDF2\uDDFC]|\uDFF3\uFE0F?(?:\u200D(?:\u26A7\uFE0F?|\uD83C\uDF08))?|\uDFF4(?:\u200D\u2620\uFE0F?|\uDB40\uDC67\uDB40\uDC62\uDB40(?:\uDC65\uDB40\uDC6E\uDB40\uDC67|\uDC73\uDB40\uDC63\uDB40\uDC74|\uDC77\uDB40\uDC6C\uDB40\uDC73)\uDB40\uDC7F)?)|\uD83D(?:[\uDC3F\uDCFD\uDD49\uDD4A\uDD6F\uDD70\uDD73\uDD76-\uDD79\uDD87\uDD8A-\uDD8D\uDDA5\uDDA8\uDDB1\uDDB2\uDDBC\uDDC2-\uDDC4\uDDD1-\uDDD3\uDDDC-\uDDDE\uDDE1\uDDE3\uDDE8\uDDEF\uDDF3\uDDFA\uDECB\uDECD-\uDECF\uDEE0-\uDEE5\uDEE9\uDEF0\uDEF3]\uFE0F?|[\uDC42\uDC43\uDC46-\uDC50\uDC66\uDC67\uDC6B-\uDC6D\uDC72\uDC74-\uDC76\uDC78\uDC7C\uDC83\uDC85\uDC8F\uDC91\uDCAA\uDD7A\uDD95\uDD96\uDE4C\uDE4F\uDEC0\uDECC](?:\uD83C[\uDFFB-\uDFFF])?|[\uDC6E\uDC70\uDC71\uDC73\uDC77\uDC81\uDC82\uDC86\uDC87\uDE45-\uDE47\uDE4B\uDE4D\uDE4E\uDEA3\uDEB4-\uDEB6](?:\uD83C[\uDFFB-\uDFFF])?(?:\u200D[\u2640\u2642]\uFE0F?)?|[\uDD74\uDD90](?:\uFE0F|\uD83C[\uDFFB-\uDFFF])?|[\uDC00-\uDC07\uDC09-\uDC14\uDC16-\uDC3A\uDC3C-\uDC3E\uDC40\uDC44\uDC45\uDC51-\uDC65\uDC6A\uDC79-\uDC7B\uDC7D-\uDC80\uDC84\uDC88-\uDC8E\uDC90\uDC92-\uDCA9\uDCAB-\uDCFC\uDCFF-\uDD3D\uDD4B-\uDD4E\uDD50-\uDD67\uDDA4\uDDFB-\uDE2D\uDE2F-\uDE34\uDE37-\uDE44\uDE48-\uDE4A\uDE80-\uDEA2\uDEA4-\uDEB3\uDEB7-\uDEBF\uDEC1-\uDEC5\uDED0-\uDED2\uDED5-\uDED7\uDEDD-\uDEDF\uDEEB\uDEEC\uDEF4-\uDEFC\uDFE0-\uDFEB\uDFF0]|\uDC08(?:\u200D\u2B1B)?|\uDC15(?:\u200D\uD83E\uDDBA)?|\uDC3B(?:\u200D\u2744\uFE0F?)?|\uDC41\uFE0F?(?:\u200D\uD83D\uDDE8\uFE0F?)?|\uDC68(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?\uDC68|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D(?:[\uDC68\uDC69]\u200D\uD83D(?:\uDC66(?:\u200D\uD83D\uDC66)?|\uDC67(?:\u200D\uD83D[\uDC66\uDC67])?)|[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uDC66(?:\u200D\uD83D\uDC66)?|\uDC67(?:\u200D\uD83D[\uDC66\uDC67])?)|\uD83E[\uDDAF-\uDDB3\uDDBC\uDDBD])|\uD83C(?:\uDFFB(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?\uDC68\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D\uDC68\uD83C[\uDFFC-\uDFFF])))?|\uDFFC(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?\uDC68\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D\uDC68\uD83C[\uDFFB\uDFFD-\uDFFF])))?|\uDFFD(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?\uDC68\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D\uDC68\uD83C[\uDFFB\uDFFC\uDFFE\uDFFF])))?|\uDFFE(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?\uDC68\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D\uDC68\uD83C[\uDFFB-\uDFFD\uDFFF])))?|\uDFFF(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?\uDC68\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D\uDC68\uD83C[\uDFFB-\uDFFE])))?))?|\uDC69(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:\uDC8B\u200D\uD83D)?[\uDC68\uDC69]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D(?:[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uDC66(?:\u200D\uD83D\uDC66)?|\uDC67(?:\u200D\uD83D[\uDC66\uDC67])?|\uDC69\u200D\uD83D(?:\uDC66(?:\u200D\uD83D\uDC66)?|\uDC67(?:\u200D\uD83D[\uDC66\uDC67])?))|\uD83E[\uDDAF-\uDDB3\uDDBC\uDDBD])|\uD83C(?:\uDFFB(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:[\uDC68\uDC69]|\uDC8B\u200D\uD83D[\uDC68\uDC69])\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D[\uDC68\uDC69]\uD83C[\uDFFC-\uDFFF])))?|\uDFFC(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:[\uDC68\uDC69]|\uDC8B\u200D\uD83D[\uDC68\uDC69])\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D[\uDC68\uDC69]\uD83C[\uDFFB\uDFFD-\uDFFF])))?|\uDFFD(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:[\uDC68\uDC69]|\uDC8B\u200D\uD83D[\uDC68\uDC69])\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D[\uDC68\uDC69]\uD83C[\uDFFB\uDFFC\uDFFE\uDFFF])))?|\uDFFE(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:[\uDC68\uDC69]|\uDC8B\u200D\uD83D[\uDC68\uDC69])\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D[\uDC68\uDC69]\uD83C[\uDFFB-\uDFFD\uDFFF])))?|\uDFFF(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D\uD83D(?:[\uDC68\uDC69]|\uDC8B\u200D\uD83D[\uDC68\uDC69])\uD83C[\uDFFB-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83D[\uDC68\uDC69]\uD83C[\uDFFB-\uDFFE])))?))?|\uDC6F(?:\u200D[\u2640\u2642]\uFE0F?)?|\uDD75(?:\uFE0F|\uD83C[\uDFFB-\uDFFF])?(?:\u200D[\u2640\u2642]\uFE0F?)?|\uDE2E(?:\u200D\uD83D\uDCA8)?|\uDE35(?:\u200D\uD83D\uDCAB)?|\uDE36(?:\u200D\uD83C\uDF2B\uFE0F?)?)|\uD83E(?:[\uDD0C\uDD0F\uDD18-\uDD1F\uDD30-\uDD34\uDD36\uDD77\uDDB5\uDDB6\uDDBB\uDDD2\uDDD3\uDDD5\uDEC3-\uDEC5\uDEF0\uDEF2-\uDEF6](?:\uD83C[\uDFFB-\uDFFF])?|[\uDD26\uDD35\uDD37-\uDD39\uDD3D\uDD3E\uDDB8\uDDB9\uDDCD-\uDDCF\uDDD4\uDDD6-\uDDDD](?:\uD83C[\uDFFB-\uDFFF])?(?:\u200D[\u2640\u2642]\uFE0F?)?|[\uDDDE\uDDDF](?:\u200D[\u2640\u2642]\uFE0F?)?|[\uDD0D\uDD0E\uDD10-\uDD17\uDD20-\uDD25\uDD27-\uDD2F\uDD3A\uDD3F-\uDD45\uDD47-\uDD76\uDD78-\uDDB4\uDDB7\uDDBA\uDDBC-\uDDCC\uDDD0\uDDE0-\uDDFF\uDE70-\uDE74\uDE78-\uDE7C\uDE80-\uDE86\uDE90-\uDEAC\uDEB0-\uDEBA\uDEC0-\uDEC2\uDED0-\uDED9\uDEE0-\uDEE7]|\uDD3C(?:\u200D[\u2640\u2642]\uFE0F?|\uD83C[\uDFFB-\uDFFF])?|\uDDD1(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\uD83C[\uDF3E\uDF73\uDF7C\uDF84\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83E\uDDD1))|\uD83C(?:\uDFFB(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D(?:\uD83D\uDC8B\u200D)?\uD83E\uDDD1\uD83C[\uDFFC-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF84\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83E\uDDD1\uD83C[\uDFFB-\uDFFF])))?|\uDFFC(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D(?:\uD83D\uDC8B\u200D)?\uD83E\uDDD1\uD83C[\uDFFB\uDFFD-\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF84\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83E\uDDD1\uD83C[\uDFFB-\uDFFF])))?|\uDFFD(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D(?:\uD83D\uDC8B\u200D)?\uD83E\uDDD1\uD83C[\uDFFB\uDFFC\uDFFE\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF84\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83E\uDDD1\uD83C[\uDFFB-\uDFFF])))?|\uDFFE(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D(?:\uD83D\uDC8B\u200D)?\uD83E\uDDD1\uD83C[\uDFFB-\uDFFD\uDFFF]|\uD83C[\uDF3E\uDF73\uDF7C\uDF84\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83E\uDDD1\uD83C[\uDFFB-\uDFFF])))?|\uDFFF(?:\u200D(?:[\u2695\u2696\u2708]\uFE0F?|\u2764\uFE0F?\u200D(?:\uD83D\uDC8B\u200D)?\uD83E\uDDD1\uD83C[\uDFFB-\uDFFE]|\uD83C[\uDF3E\uDF73\uDF7C\uDF84\uDF93\uDFA4\uDFA8\uDFEB\uDFED]|\uD83D[\uDCBB\uDCBC\uDD27\uDD2C\uDE80\uDE92]|\uD83E(?:[\uDDAF-\uDDB3\uDDBC\uDDBD]|\uDD1D\u200D\uD83E\uDDD1\uD83C[\uDFFB-\uDFFF])))?))?|\uDEF1(?:\uD83C(?:\uDFFB(?:\u200D\uD83E\uDEF2\uD83C[\uDFFC-\uDFFF])?|\uDFFC(?:\u200D\uD83E\uDEF2\uD83C[\uDFFB\uDFFD-\uDFFF])?|\uDFFD(?:\u200D\uD83E\uDEF2\uD83C[\uDFFB\uDFFC\uDFFE\uDFFF])?|\uDFFE(?:\u200D\uD83E\uDEF2\uD83C[\uDFFB-\uDFFD\uDFFF])?|\uDFFF(?:\u200D\uD83E\uDEF2\uD83C[\uDFFB-\uDFFE])?))?))/g;
     };
     function normalizeDuration(dur) {
       if (dur === void 0 || dur === null)
@@ -9230,8 +9129,8 @@ var require_lib = __commonJS({
         path = path.substring(0, path.length - 3);
       return path;
     }
-    parsimmon_umd_minExports.alt(parsimmon_umd_minExports.regex(new RegExp(emojiRegex(), "")), parsimmon_umd_minExports.regex(/[0-9\p{Letter}_-]+/u).map((str) => str.toLocaleLowerCase()), parsimmon_umd_minExports.whitespace.map((_) => "-"), parsimmon_umd_minExports.any.map((_) => "")).many().map((result) => result.join(""));
-    var HEADER_CANONICALIZER = parsimmon_umd_minExports.alt(parsimmon_umd_minExports.regex(new RegExp(emojiRegex(), "")), parsimmon_umd_minExports.regex(/[0-9\p{Letter}_-]+/u), parsimmon_umd_minExports.whitespace.map((_) => " "), parsimmon_umd_minExports.any.map((_) => " ")).many().map((result) => {
+    parsimmon_umd_min.exports.alt(parsimmon_umd_min.exports.regex(new RegExp(emojiRegex(), "")), parsimmon_umd_min.exports.regex(/[0-9\p{Letter}_-]+/u).map((str) => str.toLocaleLowerCase()), parsimmon_umd_min.exports.whitespace.map((_) => "-"), parsimmon_umd_min.exports.any.map((_) => "")).many().map((result) => result.join(""));
+    var HEADER_CANONICALIZER = parsimmon_umd_min.exports.alt(parsimmon_umd_min.exports.regex(new RegExp(emojiRegex(), "")), parsimmon_umd_min.exports.regex(/[0-9\p{Letter}_-]+/u), parsimmon_umd_min.exports.whitespace.map((_) => " "), parsimmon_umd_min.exports.any.map((_) => " ")).many().map((result) => {
       return result.join("").split(/\s+/).join(" ").trim();
     });
     function normalizeHeaderForLink(header) {
@@ -9239,7 +9138,7 @@ var require_lib = __commonJS({
     }
     function renderMinimalDuration(dur) {
       dur = normalizeDuration(dur);
-      dur = Duration2.fromObject(Object.fromEntries(Object.entries(dur.toObject()).filter(([, quantity]) => quantity != 0)));
+      dur = Duration2.fromObject(Object.fromEntries(Object.entries(dur.toObject()).filter(([, quantity]) => quantity > 0)));
       return dur.toHuman();
     }
     var Values;
@@ -9551,6 +9450,9 @@ var require_lib = __commonJS({
       Groupings2.count = count;
     })(Groupings || (Groupings = {}));
     var Link = class _Link {
+      constructor(fields) {
+        Object.assign(this, fields);
+      }
       /** Create a link to a specific file. */
       static file(path, embed = false, display) {
         return new _Link({
@@ -9593,9 +9495,6 @@ var require_lib = __commonJS({
       }
       static fromObject(object) {
         return new _Link(object);
-      }
-      constructor(fields) {
-        Object.assign(this, fields);
       }
       /** Checks for link equality (i.e., that the links are pointing to the same exact location). */
       equals(other) {
@@ -9885,7 +9784,7 @@ var require_lib = __commonJS({
       return Link.infer(link, false, display);
     }
     function createBinaryParser(child, sep, combine) {
-      return parsimmon_umd_minExports.seqMap(child, parsimmon_umd_minExports.seq(parsimmon_umd_minExports.optWhitespace, sep, parsimmon_umd_minExports.optWhitespace, child).many(), (first, rest) => {
+      return parsimmon_umd_min.exports.seqMap(child, parsimmon_umd_min.exports.seq(parsimmon_umd_min.exports.optWhitespace, sep, parsimmon_umd_min.exports.optWhitespace, child).many(), (first, rest) => {
         if (rest.length == 0)
           return first;
         let node = combine(first, rest[0][1], rest[0][3]);
@@ -9896,7 +9795,7 @@ var require_lib = __commonJS({
       });
     }
     function chainOpt(base, ...funcs) {
-      return parsimmon_umd_minExports.custom((success, failure) => {
+      return parsimmon_umd_min.exports.custom((success, failure) => {
         return (input, i) => {
           let result = base._(input, i);
           if (!result.status)
@@ -9911,12 +9810,12 @@ var require_lib = __commonJS({
         };
       });
     }
-    var EXPRESSION = parsimmon_umd_minExports.createLanguage({
+    var EXPRESSION = parsimmon_umd_min.exports.createLanguage({
       // A floating point number; the decimal point is optional.
-      number: (q) => parsimmon_umd_minExports.regexp(/-?[0-9]+(\.[0-9]+)?/).map((str) => Number.parseFloat(str)).desc("number"),
+      number: (q) => parsimmon_umd_min.exports.regexp(/-?[0-9]+(\.[0-9]+)?/).map((str) => Number.parseFloat(str)).desc("number"),
       // A quote-surrounded string which supports escape characters ('\').
-      string: (q) => parsimmon_umd_minExports.string('"').then(parsimmon_umd_minExports.alt(q.escapeCharacter, parsimmon_umd_minExports.noneOf('"\\')).atLeast(0).map((chars) => chars.join(""))).skip(parsimmon_umd_minExports.string('"')).desc("string"),
-      escapeCharacter: (_) => parsimmon_umd_minExports.string("\\").then(parsimmon_umd_minExports.any).map((escaped) => {
+      string: (q) => parsimmon_umd_min.exports.string('"').then(parsimmon_umd_min.exports.alt(q.escapeCharacter, parsimmon_umd_min.exports.noneOf('"\\')).atLeast(0).map((chars) => chars.join(""))).skip(parsimmon_umd_min.exports.string('"')).desc("string"),
+      escapeCharacter: (_) => parsimmon_umd_min.exports.string("\\").then(parsimmon_umd_min.exports.any).map((escaped) => {
         if (escaped === '"')
           return '"';
         if (escaped === "\\")
@@ -9925,28 +9824,28 @@ var require_lib = __commonJS({
           return "\\" + escaped;
       }),
       // A boolean true/false value.
-      bool: (_) => parsimmon_umd_minExports.regexp(/true|false|True|False/).map((str) => str.toLowerCase() == "true").desc("boolean ('true' or 'false')"),
+      bool: (_) => parsimmon_umd_min.exports.regexp(/true|false|True|False/).map((str) => str.toLowerCase() == "true").desc("boolean ('true' or 'false')"),
       // A tag of the form '#stuff/hello-there'.
-      tag: (_) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("#"), parsimmon_umd_minExports.alt(parsimmon_umd_minExports.regexp(/[^\u2000-\u206F\u2E00-\u2E7F'!"#$%&()*+,.:;<=>?@^`{|}~\[\]\\\s]/).desc("text")).many(), (start2, rest) => start2 + rest.join("")).desc("tag ('#hello/stuff')"),
+      tag: (_) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("#"), parsimmon_umd_min.exports.alt(parsimmon_umd_min.exports.regexp(/[^\u2000-\u206F\u2E00-\u2E7F'!"#$%&()*+,.:;<=>?@^`{|}~\[\]\\\s]/).desc("text")).many(), (start2, rest) => start2 + rest.join("")).desc("tag ('#hello/stuff')"),
       // A variable identifier, which is alphanumeric and must start with a letter or... emoji.
-      identifier: (_) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.alt(parsimmon_umd_minExports.regexp(new RegExp("\\p{Letter}", "u")), parsimmon_umd_minExports.regexp(EMOJI_REGEX).desc("text")), parsimmon_umd_minExports.alt(parsimmon_umd_minExports.regexp(/[0-9\p{Letter}_-]/u), parsimmon_umd_minExports.regexp(EMOJI_REGEX).desc("text")).many(), (first, rest) => first + rest.join("")).desc("variable identifier"),
+      identifier: (_) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.alt(parsimmon_umd_min.exports.regexp(new RegExp("\\p{Letter}", "u")), parsimmon_umd_min.exports.regexp(EMOJI_REGEX).desc("text")), parsimmon_umd_min.exports.alt(parsimmon_umd_min.exports.regexp(/[0-9\p{Letter}_-]/u), parsimmon_umd_min.exports.regexp(EMOJI_REGEX).desc("text")).many(), (first, rest) => first + rest.join("")).desc("variable identifier"),
       // An Obsidian link of the form [[<link>]].
-      link: (_) => parsimmon_umd_minExports.regexp(/\[\[([^\[\]]*?)\]\]/u, 1).map((linkInner) => parseInnerLink(linkInner)).desc("file link"),
+      link: (_) => parsimmon_umd_min.exports.regexp(/\[\[([^\[\]]*?)\]\]/u, 1).map((linkInner) => parseInnerLink(linkInner)).desc("file link"),
       // An embeddable link which can start with '!'. This overlaps with the normal negation operator, so it is only
       // provided for metadata parsing.
-      embedLink: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("!").atMost(1), q.link, (p, l3) => {
+      embedLink: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("!").atMost(1), q.link, (p, l3) => {
         if (p.length > 0)
           l3.embed = true;
         return l3;
       }).desc("file link"),
       // Binary plus or minus operator.
-      binaryPlusMinus: (_) => parsimmon_umd_minExports.regexp(/\+|-/).map((str) => str).desc("'+' or '-'"),
+      binaryPlusMinus: (_) => parsimmon_umd_min.exports.regexp(/\+|-/).map((str) => str).desc("'+' or '-'"),
       // Binary times or divide operator.
-      binaryMulDiv: (_) => parsimmon_umd_minExports.regexp(/\*|\/|%/).map((str) => str).desc("'*' or '/' or '%'"),
+      binaryMulDiv: (_) => parsimmon_umd_min.exports.regexp(/\*|\/|%/).map((str) => str).desc("'*' or '/' or '%'"),
       // Binary comparison operator.
-      binaryCompareOp: (_) => parsimmon_umd_minExports.regexp(/>=|<=|!=|>|<|=/).map((str) => str).desc("'>=' or '<=' or '!=' or '=' or '>' or '<'"),
+      binaryCompareOp: (_) => parsimmon_umd_min.exports.regexp(/>=|<=|!=|>|<|=/).map((str) => str).desc("'>=' or '<=' or '!=' or '=' or '>' or '<'"),
       // Binary boolean combination operator.
-      binaryBooleanOp: (_) => parsimmon_umd_minExports.regexp(/and|or|&|\|/i).map((str) => {
+      binaryBooleanOp: (_) => parsimmon_umd_min.exports.regexp(/and|or|&|\|/i).map((str) => {
         if (str.toLowerCase() == "and")
           return "&";
         else if (str.toLowerCase() == "or")
@@ -9955,61 +9854,61 @@ var require_lib = __commonJS({
           return str;
       }).desc("'and' or 'or'"),
       // A date which can be YYYY-MM[-DDTHH:mm:ss].
-      rootDate: (_) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.regexp(/\d{4}/), parsimmon_umd_minExports.string("-"), parsimmon_umd_minExports.regexp(/\d{2}/), (year, _2, month) => {
+      rootDate: (_) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.regexp(/\d{4}/), parsimmon_umd_min.exports.string("-"), parsimmon_umd_min.exports.regexp(/\d{2}/), (year, _2, month) => {
         return DateTime2.fromObject({ year: Number.parseInt(year), month: Number.parseInt(month) });
       }).desc("date in format YYYY-MM[-DDTHH-MM-SS.MS]"),
-      dateShorthand: (_) => parsimmon_umd_minExports.alt(...Object.keys(DATE_SHORTHANDS).sort((a, b) => b.length - a.length).map(parsimmon_umd_minExports.string)),
-      date: (q) => chainOpt(q.rootDate, (ym) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("-"), parsimmon_umd_minExports.regexp(/\d{2}/), (_, day) => ym.set({ day: Number.parseInt(day) })), (ymd) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("T"), parsimmon_umd_minExports.regexp(/\d{2}/), (_, hour) => ymd.set({ hour: Number.parseInt(hour) })), (ymdh) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string(":"), parsimmon_umd_minExports.regexp(/\d{2}/), (_, minute) => ymdh.set({ minute: Number.parseInt(minute) })), (ymdhm) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string(":"), parsimmon_umd_minExports.regexp(/\d{2}/), (_, second) => ymdhm.set({ second: Number.parseInt(second) })), (ymdhms) => parsimmon_umd_minExports.alt(
-        parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("."), parsimmon_umd_minExports.regexp(/\d{3}/), (_, millisecond) => ymdhms.set({ millisecond: Number.parseInt(millisecond) })),
-        parsimmon_umd_minExports.succeed(ymdhms)
+      dateShorthand: (_) => parsimmon_umd_min.exports.alt(...Object.keys(DATE_SHORTHANDS).sort((a, b) => b.length - a.length).map(parsimmon_umd_min.exports.string)),
+      date: (q) => chainOpt(q.rootDate, (ym) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("-"), parsimmon_umd_min.exports.regexp(/\d{2}/), (_, day) => ym.set({ day: Number.parseInt(day) })), (ymd) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("T"), parsimmon_umd_min.exports.regexp(/\d{2}/), (_, hour) => ymd.set({ hour: Number.parseInt(hour) })), (ymdh) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string(":"), parsimmon_umd_min.exports.regexp(/\d{2}/), (_, minute) => ymdh.set({ minute: Number.parseInt(minute) })), (ymdhm) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string(":"), parsimmon_umd_min.exports.regexp(/\d{2}/), (_, second) => ymdhm.set({ second: Number.parseInt(second) })), (ymdhms) => parsimmon_umd_min.exports.alt(
+        parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("."), parsimmon_umd_min.exports.regexp(/\d{3}/), (_, millisecond) => ymdhms.set({ millisecond: Number.parseInt(millisecond) })),
+        parsimmon_umd_min.exports.succeed(ymdhms)
         // pass
-      ), (dt) => parsimmon_umd_minExports.alt(parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("+").or(parsimmon_umd_minExports.string("-")), parsimmon_umd_minExports.regexp(/\d{1,2}(:\d{2})?/), (pm, hr) => dt.setZone("UTC" + pm + hr, { keepLocalTime: true })), parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("Z"), () => dt.setZone("utc", { keepLocalTime: true })), parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("["), parsimmon_umd_minExports.regexp(/[0-9A-Za-z+-\/]+/u), parsimmon_umd_minExports.string("]"), (_a2, zone, _b) => dt.setZone(zone, { keepLocalTime: true })))).assert((dt) => dt.isValid, "valid date").desc("date in format YYYY-MM[-DDTHH-MM-SS.MS]"),
+      ), (dt) => parsimmon_umd_min.exports.alt(parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("+").or(parsimmon_umd_min.exports.string("-")), parsimmon_umd_min.exports.regexp(/\d{1,2}(:\d{2})?/), (pm, hr) => dt.setZone("UTC" + pm + hr, { keepLocalTime: true })), parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("Z"), () => dt.setZone("utc", { keepLocalTime: true })), parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("["), parsimmon_umd_min.exports.regexp(/[0-9A-Za-z+-\/]+/u), parsimmon_umd_min.exports.string("]"), (_a2, zone, _b) => dt.setZone(zone, { keepLocalTime: true })))).assert((dt) => dt.isValid, "valid date").desc("date in format YYYY-MM[-DDTHH-MM-SS.MS]"),
       // A date, plus various shorthand times of day it could be.
-      datePlus: (q) => parsimmon_umd_minExports.alt(q.dateShorthand.map((d) => DATE_SHORTHANDS[d]()), q.date).desc("date in format YYYY-MM[-DDTHH-MM-SS.MS] or in shorthand"),
+      datePlus: (q) => parsimmon_umd_min.exports.alt(q.dateShorthand.map((d) => DATE_SHORTHANDS[d]()), q.date).desc("date in format YYYY-MM[-DDTHH-MM-SS.MS] or in shorthand"),
       // A duration of time.
-      durationType: (_) => parsimmon_umd_minExports.alt(...Object.keys(DURATION_TYPES).sort((a, b) => b.length - a.length).map(parsimmon_umd_minExports.string)),
-      duration: (q) => parsimmon_umd_minExports.seqMap(q.number, parsimmon_umd_minExports.optWhitespace, q.durationType, (count, _, t) => DURATION_TYPES[t].mapUnits((x) => x * count)).sepBy1(parsimmon_umd_minExports.string(",").trim(parsimmon_umd_minExports.optWhitespace).or(parsimmon_umd_minExports.optWhitespace)).map((durations) => durations.reduce((p, c) => p.plus(c))).desc("duration like 4hr2min"),
+      durationType: (_) => parsimmon_umd_min.exports.alt(...Object.keys(DURATION_TYPES).sort((a, b) => b.length - a.length).map(parsimmon_umd_min.exports.string)),
+      duration: (q) => parsimmon_umd_min.exports.seqMap(q.number, parsimmon_umd_min.exports.optWhitespace, q.durationType, (count, _, t) => DURATION_TYPES[t].mapUnits((x) => x * count)).sepBy1(parsimmon_umd_min.exports.string(",").trim(parsimmon_umd_min.exports.optWhitespace).or(parsimmon_umd_min.exports.optWhitespace)).map((durations) => durations.reduce((p, c) => p.plus(c))).desc("duration like 4hr2min"),
       // A raw null value.
-      rawNull: (_) => parsimmon_umd_minExports.string("null"),
+      rawNull: (_) => parsimmon_umd_min.exports.string("null"),
       // Source parsing.
       tagSource: (q) => q.tag.map((tag) => Sources.tag(tag)),
-      csvSource: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("csv(").skip(parsimmon_umd_minExports.optWhitespace), q.string, parsimmon_umd_minExports.string(")"), (_1, path, _2) => Sources.csv(path)),
+      csvSource: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("csv(").skip(parsimmon_umd_min.exports.optWhitespace), q.string, parsimmon_umd_min.exports.string(")"), (_1, path, _2) => Sources.csv(path)),
       linkIncomingSource: (q) => q.link.map((link) => Sources.link(link.path, true)),
-      linkOutgoingSource: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("outgoing(").skip(parsimmon_umd_minExports.optWhitespace), q.link, parsimmon_umd_minExports.string(")"), (_1, link, _2) => Sources.link(link.path, false)),
+      linkOutgoingSource: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("outgoing(").skip(parsimmon_umd_min.exports.optWhitespace), q.link, parsimmon_umd_min.exports.string(")"), (_1, link, _2) => Sources.link(link.path, false)),
       folderSource: (q) => q.string.map((str) => Sources.folder(str)),
-      parensSource: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("("), parsimmon_umd_minExports.optWhitespace, q.source, parsimmon_umd_minExports.optWhitespace, parsimmon_umd_minExports.string(")"), (_1, _2, field, _3, _4) => field),
-      negateSource: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.alt(parsimmon_umd_minExports.string("-"), parsimmon_umd_minExports.string("!")), q.atomSource, (_, source) => Sources.negate(source)),
-      atomSource: (q) => parsimmon_umd_minExports.alt(q.parensSource, q.negateSource, q.linkOutgoingSource, q.linkIncomingSource, q.folderSource, q.tagSource, q.csvSource),
+      parensSource: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("("), parsimmon_umd_min.exports.optWhitespace, q.source, parsimmon_umd_min.exports.optWhitespace, parsimmon_umd_min.exports.string(")"), (_1, _2, field, _3, _4) => field),
+      negateSource: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.alt(parsimmon_umd_min.exports.string("-"), parsimmon_umd_min.exports.string("!")), q.atomSource, (_, source) => Sources.negate(source)),
+      atomSource: (q) => parsimmon_umd_min.exports.alt(q.parensSource, q.negateSource, q.linkOutgoingSource, q.linkIncomingSource, q.folderSource, q.tagSource, q.csvSource),
       binaryOpSource: (q) => createBinaryParser(q.atomSource, q.binaryBooleanOp.map((s3) => s3), Sources.binaryOp),
       source: (q) => q.binaryOpSource,
       // Field parsing.
       variableField: (q) => q.identifier.chain((r) => {
         if (KEYWORDS.includes(r.toUpperCase())) {
-          return parsimmon_umd_minExports.fail("Variable fields cannot be a keyword (" + KEYWORDS.join(" or ") + ")");
+          return parsimmon_umd_min.exports.fail("Variable fields cannot be a keyword (" + KEYWORDS.join(" or ") + ")");
         } else {
-          return parsimmon_umd_minExports.succeed(Fields.variable(r));
+          return parsimmon_umd_min.exports.succeed(Fields.variable(r));
         }
       }).desc("variable"),
       numberField: (q) => q.number.map((val) => Fields.literal(val)).desc("number"),
       stringField: (q) => q.string.map((val) => Fields.literal(val)).desc("string"),
       boolField: (q) => q.bool.map((val) => Fields.literal(val)).desc("boolean"),
-      dateField: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("date("), parsimmon_umd_minExports.optWhitespace, q.datePlus, parsimmon_umd_minExports.optWhitespace, parsimmon_umd_minExports.string(")"), (prefix, _1, date, _2, postfix) => Fields.literal(date)).desc("date"),
-      durationField: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("dur("), parsimmon_umd_minExports.optWhitespace, q.duration, parsimmon_umd_minExports.optWhitespace, parsimmon_umd_minExports.string(")"), (prefix, _1, dur, _2, postfix) => Fields.literal(dur)).desc("duration"),
+      dateField: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("date("), parsimmon_umd_min.exports.optWhitespace, q.datePlus, parsimmon_umd_min.exports.optWhitespace, parsimmon_umd_min.exports.string(")"), (prefix, _1, date, _2, postfix) => Fields.literal(date)).desc("date"),
+      durationField: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("dur("), parsimmon_umd_min.exports.optWhitespace, q.duration, parsimmon_umd_min.exports.optWhitespace, parsimmon_umd_min.exports.string(")"), (prefix, _1, dur, _2, postfix) => Fields.literal(dur)).desc("duration"),
       nullField: (q) => q.rawNull.map((_) => Fields.NULL),
       linkField: (q) => q.link.map((f) => Fields.literal(f)),
-      listField: (q) => q.field.sepBy(parsimmon_umd_minExports.string(",").trim(parsimmon_umd_minExports.optWhitespace)).wrap(parsimmon_umd_minExports.string("[").skip(parsimmon_umd_minExports.optWhitespace), parsimmon_umd_minExports.optWhitespace.then(parsimmon_umd_minExports.string("]"))).map((l3) => Fields.list(l3)).desc("list ('[1, 2, 3]')"),
-      objectField: (q) => parsimmon_umd_minExports.seqMap(q.identifier.or(q.string), parsimmon_umd_minExports.string(":").trim(parsimmon_umd_minExports.optWhitespace), q.field, (name, _sep, value) => {
+      listField: (q) => q.field.sepBy(parsimmon_umd_min.exports.string(",").trim(parsimmon_umd_min.exports.optWhitespace)).wrap(parsimmon_umd_min.exports.string("[").skip(parsimmon_umd_min.exports.optWhitespace), parsimmon_umd_min.exports.optWhitespace.then(parsimmon_umd_min.exports.string("]"))).map((l3) => Fields.list(l3)).desc("list ('[1, 2, 3]')"),
+      objectField: (q) => parsimmon_umd_min.exports.seqMap(q.identifier.or(q.string), parsimmon_umd_min.exports.string(":").trim(parsimmon_umd_min.exports.optWhitespace), q.field, (name, _sep, value) => {
         return { name, value };
-      }).sepBy(parsimmon_umd_minExports.string(",").trim(parsimmon_umd_minExports.optWhitespace)).wrap(parsimmon_umd_minExports.string("{").skip(parsimmon_umd_minExports.optWhitespace), parsimmon_umd_minExports.optWhitespace.then(parsimmon_umd_minExports.string("}"))).map((vals) => {
+      }).sepBy(parsimmon_umd_min.exports.string(",").trim(parsimmon_umd_min.exports.optWhitespace)).wrap(parsimmon_umd_min.exports.string("{").skip(parsimmon_umd_min.exports.optWhitespace), parsimmon_umd_min.exports.optWhitespace.then(parsimmon_umd_min.exports.string("}"))).map((vals) => {
         let res = {};
         for (let entry of vals)
           res[entry.name] = entry.value;
         return Fields.object(res);
       }).desc("object ('{ a: 1, b: 2 }')"),
-      atomInlineField: (q) => parsimmon_umd_minExports.alt(q.date, q.duration.map((d) => normalizeDuration(d)), q.string, q.tag, q.embedLink, q.bool, q.number, q.rawNull),
-      inlineFieldList: (q) => q.atomInlineField.sepBy(parsimmon_umd_minExports.string(",").trim(parsimmon_umd_minExports.optWhitespace).lookahead(q.atomInlineField)),
-      inlineField: (q) => parsimmon_umd_minExports.alt(parsimmon_umd_minExports.seqMap(q.atomInlineField, parsimmon_umd_minExports.string(",").trim(parsimmon_umd_minExports.optWhitespace), q.inlineFieldList, (f, _s, l3) => [f].concat(l3)), q.atomInlineField),
-      atomField: (q) => parsimmon_umd_minExports.alt(
+      atomInlineField: (q) => parsimmon_umd_min.exports.alt(q.date, q.duration.map((d) => normalizeDuration(d)), q.string, q.tag, q.embedLink, q.bool, q.number, q.rawNull),
+      inlineFieldList: (q) => q.atomInlineField.sepBy(parsimmon_umd_min.exports.string(",").trim(parsimmon_umd_min.exports.optWhitespace).lookahead(q.atomInlineField)),
+      inlineField: (q) => parsimmon_umd_min.exports.alt(parsimmon_umd_min.exports.seqMap(q.atomInlineField, parsimmon_umd_min.exports.string(",").trim(parsimmon_umd_min.exports.optWhitespace), q.inlineFieldList, (f, _s, l3) => [f].concat(l3)), q.atomInlineField),
+      atomField: (q) => parsimmon_umd_min.exports.alt(
         // Place embed links above negated fields as they are the special parser case '![[thing]]' and are generally unambigious.
         q.embedLink.map((l3) => Fields.literal(l3)),
         q.negatedField,
@@ -10026,7 +9925,7 @@ var require_lib = __commonJS({
         q.nullField,
         q.variableField
       ),
-      indexField: (q) => parsimmon_umd_minExports.seqMap(q.atomField, parsimmon_umd_minExports.alt(q.dotPostfix, q.indexPostfix, q.functionPostfix).many(), (obj, postfixes) => {
+      indexField: (q) => parsimmon_umd_min.exports.seqMap(q.atomField, parsimmon_umd_min.exports.alt(q.dotPostfix, q.indexPostfix, q.functionPostfix).many(), (obj, postfixes) => {
         let result = obj;
         for (let post of postfixes) {
           switch (post.type) {
@@ -10043,18 +9942,18 @@ var require_lib = __commonJS({
         }
         return result;
       }),
-      negatedField: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("!"), q.indexField, (_, field) => Fields.negate(field)).desc("negated field"),
-      parensField: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("("), parsimmon_umd_minExports.optWhitespace, q.field, parsimmon_umd_minExports.optWhitespace, parsimmon_umd_minExports.string(")"), (_1, _2, field, _3, _4) => field),
-      lambdaField: (q) => parsimmon_umd_minExports.seqMap(q.identifier.sepBy(parsimmon_umd_minExports.string(",").trim(parsimmon_umd_minExports.optWhitespace)).wrap(parsimmon_umd_minExports.string("(").trim(parsimmon_umd_minExports.optWhitespace), parsimmon_umd_minExports.string(")").trim(parsimmon_umd_minExports.optWhitespace)), parsimmon_umd_minExports.string("=>").trim(parsimmon_umd_minExports.optWhitespace), q.field, (ident, _ignore, value) => {
+      negatedField: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("!"), q.indexField, (_, field) => Fields.negate(field)).desc("negated field"),
+      parensField: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("("), parsimmon_umd_min.exports.optWhitespace, q.field, parsimmon_umd_min.exports.optWhitespace, parsimmon_umd_min.exports.string(")"), (_1, _2, field, _3, _4) => field),
+      lambdaField: (q) => parsimmon_umd_min.exports.seqMap(q.identifier.sepBy(parsimmon_umd_min.exports.string(",").trim(parsimmon_umd_min.exports.optWhitespace)).wrap(parsimmon_umd_min.exports.string("(").trim(parsimmon_umd_min.exports.optWhitespace), parsimmon_umd_min.exports.string(")").trim(parsimmon_umd_min.exports.optWhitespace)), parsimmon_umd_min.exports.string("=>").trim(parsimmon_umd_min.exports.optWhitespace), q.field, (ident, _ignore, value) => {
         return { type: "lambda", arguments: ident, value };
       }),
-      dotPostfix: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("."), q.identifier, (_, field) => {
+      dotPostfix: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("."), q.identifier, (_, field) => {
         return { type: "dot", field };
       }),
-      indexPostfix: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("["), parsimmon_umd_minExports.optWhitespace, q.field, parsimmon_umd_minExports.optWhitespace, parsimmon_umd_minExports.string("]"), (_, _2, field, _3, _4) => {
+      indexPostfix: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("["), parsimmon_umd_min.exports.optWhitespace, q.field, parsimmon_umd_min.exports.optWhitespace, parsimmon_umd_min.exports.string("]"), (_, _2, field, _3, _4) => {
         return { type: "index", field };
       }),
-      functionPostfix: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.string("("), parsimmon_umd_minExports.optWhitespace, q.field.sepBy(parsimmon_umd_minExports.string(",").trim(parsimmon_umd_minExports.optWhitespace)), parsimmon_umd_minExports.optWhitespace, parsimmon_umd_minExports.string(")"), (_, _1, fields, _2, _3) => {
+      functionPostfix: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.string("("), parsimmon_umd_min.exports.optWhitespace, q.field.sepBy(parsimmon_umd_min.exports.string(",").trim(parsimmon_umd_min.exports.optWhitespace)), parsimmon_umd_min.exports.optWhitespace, parsimmon_umd_min.exports.string(")"), (_, _1, fields, _2, _3) => {
         return { type: "function", fields };
       }),
       // The precedence hierarchy of operators - multiply/divide, add/subtract, compare, and then boolean operations.
@@ -10084,7 +9983,7 @@ var require_lib = __commonJS({
       QueryFields2.sortBy = sortBy;
     })(QueryFields || (QueryFields = {}));
     function captureRaw(base) {
-      return parsimmon_umd_minExports.custom((success, failure) => {
+      return parsimmon_umd_min.exports.custom((success, failure) => {
         return (input, i) => {
           let result = base._(input, i);
           if (!result.status)
@@ -10096,15 +9995,12 @@ var require_lib = __commonJS({
     function stripNewlines(text2) {
       return text2.split(/[\r\n]+/).map((t) => t.trim()).join("");
     }
-    function precededByWhitespaceIfNotEof(if_eof, parser) {
-      return parsimmon_umd_minExports.eof.map(if_eof).or(parsimmon_umd_minExports.whitespace.then(parser));
-    }
-    var QUERY_LANGUAGE = parsimmon_umd_minExports.createLanguage({
+    var QUERY_LANGUAGE = parsimmon_umd_min.exports.createLanguage({
       // Simple atom parsing, like words, identifiers, numbers.
-      queryType: (q) => parsimmon_umd_minExports.alt(parsimmon_umd_minExports.regexp(/TABLE|LIST|TASK|CALENDAR/i)).map((str) => str.toLowerCase()).desc("query type ('TABLE', 'LIST', 'TASK', or 'CALENDAR')"),
-      explicitNamedField: (q) => parsimmon_umd_minExports.seqMap(EXPRESSION.field.skip(parsimmon_umd_minExports.whitespace), parsimmon_umd_minExports.regexp(/AS/i).skip(parsimmon_umd_minExports.whitespace), EXPRESSION.identifier.or(EXPRESSION.string), (field, _as, ident) => QueryFields.named(ident, field)),
-      namedField: (q) => parsimmon_umd_minExports.alt(q.explicitNamedField, captureRaw(EXPRESSION.field).map(([value, text2]) => QueryFields.named(stripNewlines(text2), value))),
-      sortField: (q) => parsimmon_umd_minExports.seqMap(EXPRESSION.field.skip(parsimmon_umd_minExports.optWhitespace), parsimmon_umd_minExports.regexp(/ASCENDING|DESCENDING|ASC|DESC/i).atMost(1), (field, dir) => {
+      queryType: (q) => parsimmon_umd_min.exports.alt(parsimmon_umd_min.exports.regexp(/TABLE|LIST|TASK|CALENDAR/i)).map((str) => str.toLowerCase()).desc("query type ('TABLE', 'LIST', 'TASK', or 'CALENDAR')"),
+      explicitNamedField: (q) => parsimmon_umd_min.exports.seqMap(EXPRESSION.field.skip(parsimmon_umd_min.exports.whitespace), parsimmon_umd_min.exports.regexp(/AS/i).skip(parsimmon_umd_min.exports.whitespace), EXPRESSION.identifier.or(EXPRESSION.string), (field, _as, ident) => QueryFields.named(ident, field)),
+      namedField: (q) => parsimmon_umd_min.exports.alt(q.explicitNamedField, captureRaw(EXPRESSION.field).map(([value, text2]) => QueryFields.named(stripNewlines(text2), value))),
+      sortField: (q) => parsimmon_umd_min.exports.seqMap(EXPRESSION.field.skip(parsimmon_umd_min.exports.optWhitespace), parsimmon_umd_min.exports.regexp(/ASCENDING|DESCENDING|ASC|DESC/i).atMost(1), (field, dir) => {
         let direction = dir.length == 0 ? "ascending" : dir[0].toLowerCase();
         if (direction == "desc")
           direction = "descending";
@@ -10115,54 +10011,53 @@ var require_lib = __commonJS({
           direction
         };
       }),
-      headerClause: (q) => q.queryType.chain((type) => {
-        switch (type) {
-          case "table": {
-            return precededByWhitespaceIfNotEof(() => ({ type, fields: [], showId: true }), parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.regexp(/WITHOUT\s+ID/i).skip(parsimmon_umd_minExports.optWhitespace).atMost(1), parsimmon_umd_minExports.sepBy(q.namedField, parsimmon_umd_minExports.string(",").trim(parsimmon_umd_minExports.optWhitespace)), (withoutId, fields) => {
-              return { type, fields, showId: withoutId.length == 0 };
-            }));
-          }
+      headerClause: (q) => q.queryType.skip(parsimmon_umd_min.exports.whitespace).chain((qtype) => {
+        switch (qtype) {
+          case "table":
+            return parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.regexp(/WITHOUT\s+ID/i).skip(parsimmon_umd_min.exports.optWhitespace).atMost(1), parsimmon_umd_min.exports.sepBy(q.namedField, parsimmon_umd_min.exports.string(",").trim(parsimmon_umd_min.exports.optWhitespace)), (withoutId, fields) => {
+              return { type: "table", fields, showId: withoutId.length == 0 };
+            });
           case "list":
-            return precededByWhitespaceIfNotEof(() => ({ type, format: void 0, showId: true }), parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.regexp(/WITHOUT\s+ID/i).skip(parsimmon_umd_minExports.optWhitespace).atMost(1), EXPRESSION.field.atMost(1), (withoutId, format) => {
+            return parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.regexp(/WITHOUT\s+ID/i).skip(parsimmon_umd_min.exports.optWhitespace).atMost(1), EXPRESSION.field.atMost(1), (withoutId, format) => {
               return {
-                type,
+                type: "list",
                 format: format.length == 1 ? format[0] : void 0,
                 showId: withoutId.length == 0
               };
-            }));
+            });
           case "task":
-            return parsimmon_umd_minExports.succeed({ type });
+            return parsimmon_umd_min.exports.succeed({ type: "task" });
           case "calendar":
-            return parsimmon_umd_minExports.whitespace.then(parsimmon_umd_minExports.seqMap(q.namedField, (field) => {
+            return parsimmon_umd_min.exports.seqMap(q.namedField, (field) => {
               return {
-                type,
+                type: "calendar",
                 showId: true,
                 field
               };
-            }));
+            });
           default:
-            return parsimmon_umd_minExports.fail(`Unrecognized query type '${type}'`);
+            return parsimmon_umd_min.exports.fail(`Unrecognized query type '${qtype}'`);
         }
       }).desc("TABLE or LIST or TASK or CALENDAR"),
-      fromClause: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.regexp(/FROM/i), parsimmon_umd_minExports.whitespace, EXPRESSION.source, (_1, _2, source) => source),
-      whereClause: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.regexp(/WHERE/i), parsimmon_umd_minExports.whitespace, EXPRESSION.field, (where, _, field) => {
+      fromClause: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.regexp(/FROM/i), parsimmon_umd_min.exports.whitespace, EXPRESSION.source, (_1, _2, source) => source),
+      whereClause: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.regexp(/WHERE/i), parsimmon_umd_min.exports.whitespace, EXPRESSION.field, (where, _, field) => {
         return { type: "where", clause: field };
       }).desc("WHERE <expression>"),
-      sortByClause: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.regexp(/SORT/i), parsimmon_umd_minExports.whitespace, q.sortField.sepBy1(parsimmon_umd_minExports.string(",").trim(parsimmon_umd_minExports.optWhitespace)), (sort, _1, fields) => {
+      sortByClause: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.regexp(/SORT/i), parsimmon_umd_min.exports.whitespace, q.sortField.sepBy1(parsimmon_umd_min.exports.string(",").trim(parsimmon_umd_min.exports.optWhitespace)), (sort, _1, fields) => {
         return { type: "sort", fields };
       }).desc("SORT field [ASC/DESC]"),
-      limitClause: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.regexp(/LIMIT/i), parsimmon_umd_minExports.whitespace, EXPRESSION.field, (limit, _1, field) => {
+      limitClause: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.regexp(/LIMIT/i), parsimmon_umd_min.exports.whitespace, EXPRESSION.field, (limit, _1, field) => {
         return { type: "limit", amount: field };
       }).desc("LIMIT <value>"),
-      flattenClause: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.regexp(/FLATTEN/i).skip(parsimmon_umd_minExports.whitespace), q.namedField, (_, field) => {
+      flattenClause: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.regexp(/FLATTEN/i).skip(parsimmon_umd_min.exports.whitespace), q.namedField, (_, field) => {
         return { type: "flatten", field };
       }).desc("FLATTEN <value> [AS <name>]"),
-      groupByClause: (q) => parsimmon_umd_minExports.seqMap(parsimmon_umd_minExports.regexp(/GROUP BY/i).skip(parsimmon_umd_minExports.whitespace), q.namedField, (_, field) => {
+      groupByClause: (q) => parsimmon_umd_min.exports.seqMap(parsimmon_umd_min.exports.regexp(/GROUP BY/i).skip(parsimmon_umd_min.exports.whitespace), q.namedField, (_, field) => {
         return { type: "group", field };
       }).desc("GROUP BY <value> [AS <name>]"),
       // Full query parsing.
-      clause: (q) => parsimmon_umd_minExports.alt(q.fromClause, q.whereClause, q.sortByClause, q.limitClause, q.groupByClause, q.flattenClause),
-      query: (q) => parsimmon_umd_minExports.seqMap(q.headerClause.trim(parsimmon_umd_minExports.optWhitespace), q.fromClause.trim(parsimmon_umd_minExports.optWhitespace).atMost(1), q.clause.trim(parsimmon_umd_minExports.optWhitespace).many(), (header, from, clauses) => {
+      clause: (q) => parsimmon_umd_min.exports.alt(q.fromClause, q.whereClause, q.sortByClause, q.limitClause, q.groupByClause, q.flattenClause),
+      query: (q) => parsimmon_umd_min.exports.seqMap(q.headerClause.trim(parsimmon_umd_min.exports.optWhitespace), q.fromClause.trim(parsimmon_umd_min.exports.optWhitespace).atMost(1), q.clause.trim(parsimmon_umd_min.exports.optWhitespace).many(), (header, from, clauses) => {
         return {
           header,
           source: from.length == 0 ? Sources.folder("") : from[0],
@@ -10643,7 +10538,7 @@ function generateUrlPath(filePath, slugifyPath = true) {
   if (!filePath) {
     return filePath;
   }
-  const extensionLessPath = filePath.substring(0, filePath.lastIndexOf("."));
+  const extensionLessPath = filePath.contains(".") ? filePath.substring(0, filePath.lastIndexOf(".")) : filePath;
   if (!slugifyPath) {
     return extensionLessPath + "/";
   }
@@ -10785,10 +10680,10 @@ var fixMarkdownHeaderSyntax = (rawHeading) => {
 };
 
 // src/utils/regexes.ts
-var FRONTMATTER_REGEX = /^\s*?---\n([\s\S]*?)\n---/g;
-var BLOCKREF_REGEX = /(\^\w+(\n|$))/g;
+var FRONTMATTER_REGEX = /^\s*?---[\r\n]([\s\S]*?)[\r\n]---/g;
+var BLOCKREF_REGEX = /(\^\w+([\r\n]|$))/g;
 var CODE_FENCE_REGEX = /`(.*?)`/g;
-var CODEBLOCK_REGEX = /```.*?\n[\s\S]+?```/g;
+var CODEBLOCK_REGEX = /```.*?[\r\n][\s\S]+?```/g;
 var EXCALIDRAW_REGEX = /:\[\[(\d*?,\d*?)\],.*?\]\]/g;
 var TRANSCLUDED_SVG_REGEX = /!\[\[(.*?)(\.(svg))\|(.*?)\]\]|!\[\[(.*?)(\.(svg))\]\]/g;
 
@@ -10802,7 +10697,7 @@ var import_js_logger = __toESM(require_logger());
 var DataviewCompiler = class {
   constructor() {
     this.compile = (file) => (text2) => __async(this, null, function* () {
-      var _a2;
+      var _a2, _b, _c;
       let replacedText = text2;
       const dataViewRegex = new RegExp("```dataview\\s(.+?)```", "gms");
       const dvApi = (0, import_obsidian_dataview.getAPI)();
@@ -10882,12 +10777,12 @@ var DataviewCompiler = class {
           const code = inlineQuery[0];
           const query = inlineQuery[1];
           const dataviewResult = dvApi.tryEvaluate(query.trim(), {
-            this: dvApi.page(file.getPath())
+            this: (_b = dvApi.page(file.getPath())) != null ? _b : {}
           });
           if (dataviewResult) {
             replacedText = replacedText.replace(
               code,
-              dataviewResult.toString()
+              (_c = dataviewResult.toString()) != null ? _c : ""
             );
           }
         } catch (e) {
@@ -10962,13 +10857,13 @@ var DataviewCompiler = class {
   }
 };
 function tryDVEvaluate(query, file, dvApi) {
-  var _a2;
+  var _a2, _b;
   let result = "";
   try {
     const dataviewResult = dvApi.tryEvaluate(query.trim(), {
-      this: dvApi.page(file.getPath())
+      this: (_a2 = dvApi.page(file.getPath())) != null ? _a2 : {}
     });
-    result = (_a2 = dataviewResult == null ? void 0 : dataviewResult.toString()) != null ? _a2 : "";
+    result = (_b = dataviewResult == null ? void 0 : dataviewResult.toString()) != null ? _b : "";
   } catch (e) {
     import_js_logger.default.warn("dvapi.tryEvaluate did not yield any result", e);
   }
@@ -11104,7 +10999,7 @@ ${frontMatterString}
     const publishedFrontMatter = __spreadValues({}, publishedFrontMatterWithoutTags);
     if (fileFrontMatter) {
       const tags = (typeof fileFrontMatter["tags"] === "string" ? fileFrontMatter["tags"].split(/,\s*/) : fileFrontMatter["tags"]) || [];
-      if (fileFrontMatter["dg-home"]) {
+      if (fileFrontMatter["dg-home"] && !tags.contains("gardenEntry")) {
         tags.push("gardenEntry");
       }
       if (tags.length > 0) {
@@ -17192,6 +17087,35 @@ var CompiledPublishFile = class extends PublishFile {
   }
 };
 
+// src/compiler/replaceBlockIDs.ts
+function replaceBlockIDs(markdown) {
+  const block_pattern = / \^([\w\d-]+)/g;
+  const complex_block_pattern = /[\r\n]\^([\w\d-]+)[\r\n]/g;
+  const codeBlockPattern = /```[\s\S]*?```/g;
+  const codeBlocks = [];
+  markdown = markdown.replace(codeBlockPattern, (match2) => {
+    codeBlocks.push(match2);
+    return `{{CODE_BLOCK_${codeBlocks.length - 1}}}`;
+  });
+  markdown = markdown.replace(
+    complex_block_pattern,
+    (_match, $1) => {
+      return `{ #${$1}}
+
+`;
+    }
+  );
+  markdown = markdown.replace(block_pattern, (_match, $1) => {
+    return `
+{ #${$1}}
+`;
+  });
+  codeBlocks.forEach((block, index) => {
+    markdown = markdown.replace(`{{CODE_BLOCK_${index}}}`, block);
+  });
+  return markdown;
+}
+
 // src/compiler/GardenPageCompiler.ts
 var GardenPageCompiler = class {
   constructor(vault, settings, metadataCache, getFilesMarkedForPublishing) {
@@ -17223,22 +17147,7 @@ var GardenPageCompiler = class {
       return text2;
     };
     this.createBlockIDs = () => (text2) => {
-      const block_pattern = / \^([\w\d-]+)/g;
-      const complex_block_pattern = /\n\^([\w\d-]+)\n/g;
-      text2 = text2.replace(
-        complex_block_pattern,
-        (_match, $1) => {
-          return `{ #${$1}}
-
-`;
-        }
-      );
-      text2 = text2.replace(block_pattern, (match2, $1) => {
-        return `
-{ #${$1}}
-`;
-      });
-      return text2;
+      return replaceBlockIDs(text2);
     };
     this.removeObsidianComments = () => (text2) => {
       const obsidianCommentsRegex = new RegExp("%%.+?%%", "gms");
@@ -17300,6 +17209,9 @@ var GardenPageCompiler = class {
               headerPath = headerSplit.length > 1 ? `#${headerSplit[1]}` : "";
             }
             const fullLinkedFilePath = (0, import_obsidian3.getLinkpath)(linkedFileName);
+            if (fullLinkedFilePath === "") {
+              continue;
+            }
             const linkedFile = this.metadataCache.getFirstLinkpathDest(
               fullLinkedFilePath,
               file.getPath()
@@ -17346,6 +17258,9 @@ var GardenPageCompiler = class {
             transclusionMatch.indexOf("]")
           ).split("|");
           const transclusionFilePath = (0, import_obsidian3.getLinkpath)(transclusionFileName);
+          if (transclusionFilePath === "") {
+            continue;
+          }
           const linkedFile = this.metadataCache.getFirstLinkpathDest(
             transclusionFilePath,
             file.getPath()
@@ -17392,8 +17307,9 @@ var GardenPageCompiler = class {
               }
             } else if (transclusionFileName.includes("#")) {
               const refHeader = transclusionFileName.split("#")[1];
+              const headerSlug = (0, import_slugify2.default)(refHeader);
               const headerInFile = (_a2 = metadata == null ? void 0 : metadata.headings) == null ? void 0 : _a2.find(
-                (header2) => header2.heading === refHeader
+                (header2) => (0, import_slugify2.default)(header2.heading) === headerSlug
               );
               sectionID = `#${(0, import_slugify2.default)(refHeader)}`;
               if (headerInFile && (metadata == null ? void 0 : metadata.headings)) {
@@ -17421,7 +17337,7 @@ var GardenPageCompiler = class {
               headerName,
               linkedFile
             );
-            const headerSection = header ? `$<div class="markdown-embed-title">
+            const headerSection = header ? `<div class="markdown-embed-title">
 
 ${header}
 
@@ -17437,7 +17353,8 @@ ${header}
                 getGardenPathForNote(
                   linkedFile.path,
                   this.rewriteRules
-                )
+                ),
+                this.settings.slugifyEnabled
               )}`;
               embedded_link = `<a class="markdown-embed-link" href="${gardenPath}${sectionID}" aria-label="Open link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a>`;
             }
@@ -17452,6 +17369,11 @@ ${headerSection}
                 currentDepth + 1
               )(publishLinkedFile)(fileText);
             }
+            const withDvCompiledText = yield this.runCompilerSteps(
+              publishLinkedFile,
+              [this.convertDataViews]
+            )(fileText);
+            fileText = withDvCompiledText;
             transcludedText = transcludedText.replace(
               transclusionMatch,
               fileText
@@ -17480,6 +17402,9 @@ ${headerSection}
           try {
             const [imageName, size] = svg.substring(svg.indexOf("[") + 2, svg.indexOf("]")).split("|");
             const imagePath = (0, import_obsidian3.getLinkpath)(imageName);
+            if (imagePath === "") {
+              continue;
+            }
             const linkedFile = this.metadataCache.getFirstLinkpathDest(
               imagePath,
               file.getPath()
@@ -17510,6 +17435,9 @@ ${headerSection}
             const pathEnd = svg.lastIndexOf(")");
             const imagePath = svg.substring(pathStart, pathEnd);
             if (imagePath.startsWith("http")) {
+              continue;
+            }
+            if (imagePath === "") {
               continue;
             }
             const linkedFile = this.metadataCache.getFirstLinkpathDest(
@@ -17545,6 +17473,9 @@ ${headerSection}
               imageMatch.indexOf("]")
             ).split("|");
             const imagePath = (0, import_obsidian3.getLinkpath)(imageName);
+            if (imagePath === "") {
+              continue;
+            }
             const linkedFile = this.metadataCache.getFirstLinkpathDest(
               imagePath,
               file.getPath()
@@ -17571,6 +17502,9 @@ ${headerSection}
               continue;
             }
             const decodedImagePath = decodeURI(imagePath);
+            if (decodedImagePath === "") {
+              continue;
+            }
             const linkedFile = this.metadataCache.getFirstLinkpathDest(
               decodedImagePath,
               file.getPath()
@@ -17614,6 +17548,9 @@ ${headerSection}
               metaData = `${lastValue}`;
             }
             const imagePath = (0, import_obsidian3.getLinkpath)(imageName);
+            if (imagePath === "") {
+              continue;
+            }
             const linkedFile = this.metadataCache.getFirstLinkpathDest(
               imagePath,
               filePath
@@ -17669,6 +17606,9 @@ ${headerSection}
               continue;
             }
             const decodedImagePath = decodeURI(imagePath);
+            if (decodedImagePath === "") {
+              continue;
+            }
             const linkedFile = this.metadataCache.getFirstLinkpathDest(
               decodedImagePath,
               filePath
@@ -18579,6 +18519,8 @@ var Octokit = (_a = class {
 var import_js_logger3 = __toESM(require_logger());
 var logger = import_js_logger3.default.get("repository-connection");
 var oktokitLogger = import_js_logger3.default.get("octokit");
+var IMAGE_PATH_BASE = "src/site/";
+var NOTE_PATH_BASE = "src/site/notes/";
 var RepositoryConnection = class {
   constructor({
     gardenRepository,
@@ -18696,7 +18638,7 @@ var RepositoryConnection = class {
     return __async(this, null, function* () {
       try {
         const latestCommit = yield this.octokit.request(
-          "GET /repos/{owner}/{repo}/commits/HEAD",
+          `GET /repos/{owner}/{repo}/commits/HEAD?cacheBust=${Date.now()}`,
           this.getBasePayload()
         );
         if (!latestCommit || !latestCommit.data) {
@@ -18727,6 +18669,151 @@ var RepositoryConnection = class {
       }
     });
   }
+  // NB: Do not use this, it does not work for some reason.
+  //TODO: Fix this. For now use deleteNote and deleteImage instead
+  deleteFiles(filePaths) {
+    return __async(this, null, function* () {
+      const latestCommit = yield this.getLatestCommit();
+      if (!latestCommit) {
+        logger.error("Could not get latest commit");
+        return;
+      }
+      const normalizePath = (path) => path.startsWith("/") ? path.slice(1) : path;
+      const filesToDelete = filePaths.map((path) => {
+        if (path.endsWith(".md")) {
+          return `${NOTE_PATH_BASE}${normalizePath(path)}`;
+        }
+        return `${IMAGE_PATH_BASE}${normalizePath(path)}`;
+      });
+      const repoDataPromise = this.octokit.request(
+        "GET /repos/{owner}/{repo}",
+        __spreadValues({}, this.getBasePayload())
+      );
+      const latestCommitSha = latestCommit.sha;
+      const baseTreeSha = latestCommit.commit.tree.sha;
+      const baseTree = yield this.octokit.request(
+        "GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          tree_sha: baseTreeSha
+        })
+      );
+      const newTreeEntries = baseTree.data.tree.filter(
+        (item) => !filesToDelete.includes(item.path)
+      ).map(
+        (item) => ({
+          path: item.path,
+          mode: item.mode,
+          type: item.type,
+          sha: item.sha
+        })
+      );
+      const newTree = yield this.octokit.request(
+        "POST /repos/{owner}/{repo}/git/trees",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          tree: newTreeEntries
+        })
+      );
+      const commitMessage = "Deleted multiple files";
+      const newCommit = yield this.octokit.request(
+        "POST /repos/{owner}/{repo}/git/commits",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          message: commitMessage,
+          tree: newTree.data.sha,
+          parents: [latestCommitSha]
+        })
+      );
+      const defaultBranch = (yield repoDataPromise).data.default_branch;
+      yield this.octokit.request(
+        "PATCH /repos/{owner}/{repo}/git/refs/{ref}",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          ref: `heads/${defaultBranch}`,
+          sha: newCommit.data.sha
+        })
+      );
+    });
+  }
+  updateFiles(files) {
+    return __async(this, null, function* () {
+      const latestCommit = yield this.getLatestCommit();
+      if (!latestCommit) {
+        logger.error("Could not get latest commit");
+        return;
+      }
+      const repoDataPromise = this.octokit.request(
+        "GET /repos/{owner}/{repo}",
+        __spreadValues({}, this.getBasePayload())
+      );
+      const latestCommitSha = latestCommit.sha;
+      const baseTreeSha = latestCommit.commit.tree.sha;
+      const normalizePath = (path) => path.startsWith("/") ? path.slice(1) : path;
+      const treePromises = files.map((file) => __async(this, null, function* () {
+        const [text2, _] = file.compiledFile;
+        try {
+          const blob = yield this.octokit.request(
+            "POST /repos/{owner}/{repo}/git/blobs",
+            __spreadProps(__spreadValues({}, this.getBasePayload()), {
+              content: text2,
+              encoding: "utf-8"
+            })
+          );
+          return {
+            path: `${NOTE_PATH_BASE}${normalizePath(file.getPath())}`,
+            mode: "100644",
+            type: "blob",
+            sha: blob.data.sha
+          };
+        } catch (error) {
+          logger.error(error);
+        }
+      }));
+      const treeAssetPromises = files.flatMap((x) => x.compiledFile[1].images).map((asset) => __async(this, null, function* () {
+        try {
+          const blob = yield this.octokit.request(
+            "POST /repos/{owner}/{repo}/git/blobs",
+            __spreadProps(__spreadValues({}, this.getBasePayload()), {
+              content: asset.content,
+              encoding: "base64"
+            })
+          );
+          return {
+            path: `${IMAGE_PATH_BASE}${normalizePath(asset.path)}`,
+            mode: "100644",
+            type: "blob",
+            sha: blob.data.sha
+          };
+        } catch (error) {
+          logger.error(error);
+        }
+      }));
+      treePromises.push(...treeAssetPromises);
+      const treeList = yield Promise.all(treePromises);
+      const tree = treeList.filter((x) => x !== void 0);
+      const newTree = yield this.octokit.request(
+        "POST /repos/{owner}/{repo}/git/trees",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          base_tree: baseTreeSha,
+          tree
+        })
+      );
+      const commitMessage = "Published multiple files";
+      const newCommit = yield this.octokit.request(
+        "POST /repos/{owner}/{repo}/git/commits",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          message: commitMessage,
+          tree: newTree.data.sha,
+          parents: [latestCommitSha]
+        })
+      );
+      const defaultBranch = (yield repoDataPromise).data.default_branch;
+      yield this.octokit.request(
+        "PATCH /repos/{owner}/{repo}/git/refs/heads/{branch}",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          branch: defaultBranch,
+          sha: newCommit.data.sha
+        })
+      );
+    });
+  }
   getRepositoryInfo() {
     return __async(this, null, function* () {
       const repoInfo = yield this.octokit.request("GET /repos/{owner}/{repo}", __spreadValues({}, this.getBasePayload())).catch((error) => {
@@ -18750,8 +18837,8 @@ var RepositoryConnection = class {
 };
 
 // src/publisher/Publisher.ts
-var IMAGE_PATH_BASE = "src/site/img/user/";
-var NOTE_PATH_BASE = "src/site/notes/";
+var IMAGE_PATH_BASE2 = "src/site/img/user/";
+var NOTE_PATH_BASE2 = "src/site/notes/";
 var Publisher = class {
   constructor(vault, metadataCache, settings) {
     this.vault = vault;
@@ -18801,13 +18888,13 @@ var Publisher = class {
   }
   deleteNote(vaultFilePath, sha) {
     return __async(this, null, function* () {
-      const path = `${NOTE_PATH_BASE}${vaultFilePath}`;
+      const path = `${NOTE_PATH_BASE2}${vaultFilePath}`;
       return yield this.delete(path, sha);
     });
   }
   deleteImage(vaultFilePath, sha) {
     return __async(this, null, function* () {
-      const path = `${IMAGE_PATH_BASE}${vaultFilePath}`;
+      const path = `${IMAGE_PATH_BASE2}${vaultFilePath}`;
       return yield this.delete(path, sha);
     });
   }
@@ -18820,9 +18907,10 @@ var Publisher = class {
         githubUserName: this.settings.githubUserName,
         githubToken: this.settings.githubToken
       });
-      return !!userGardenConnection.deleteFile(path, {
+      const deleted = yield userGardenConnection.deleteFile(path, {
         sha
       });
+      return !!deleted;
     });
   }
   publish(file) {
@@ -18834,6 +18922,47 @@ var Publisher = class {
         const [text2, assets] = file.compiledFile;
         yield this.uploadText(file.getPath(), text2, file == null ? void 0 : file.remoteHash);
         yield this.uploadAssets(assets);
+        return true;
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
+    });
+  }
+  deleteBatch(filePaths) {
+    return __async(this, null, function* () {
+      if (filePaths.length === 0) {
+        return true;
+      }
+      try {
+        const userGardenConnection = new RepositoryConnection({
+          gardenRepository: this.settings.githubRepo,
+          githubUserName: this.settings.githubUserName,
+          githubToken: this.settings.githubToken
+        });
+        yield userGardenConnection.deleteFiles(filePaths);
+        return true;
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
+    });
+  }
+  publishBatch(files) {
+    return __async(this, null, function* () {
+      const filesToPublish = files.filter(
+        (f) => isPublishFrontmatterValid(f.frontmatter)
+      );
+      if (filesToPublish.length === 0) {
+        return true;
+      }
+      try {
+        const userGardenConnection = new RepositoryConnection({
+          gardenRepository: this.settings.githubRepo,
+          githubUserName: this.settings.githubUserName,
+          githubToken: this.settings.githubToken
+        });
+        yield userGardenConnection.updateFiles(filesToPublish);
         return true;
       } catch (error) {
         console.error(error);
@@ -18870,7 +18999,7 @@ var Publisher = class {
   uploadText(filePath, content, sha) {
     return __async(this, null, function* () {
       content = gBase64.encode(content);
-      const path = `${NOTE_PATH_BASE}${filePath}`;
+      const path = `${NOTE_PATH_BASE2}${filePath}`;
       yield this.uploadToGithub(path, content, sha);
     });
   }
@@ -18920,6 +19049,10 @@ var PublishStatusBar = class {
     this.status = this.statusBarItem.createEl("span", {
       text: `${this.numberOfNotesToPublish} files marked for publishing`
     });
+  }
+  incrementMultiple(increments) {
+    this.counter += increments;
+    this.status.innerText = `\u231BPublishing files: ${this.counter}/${this.numberOfNotesToPublish}`;
   }
   increment() {
     this.status.innerText = `\u231BPublishing files: ${++this.counter}/${this.numberOfNotesToPublish}`;
@@ -20981,16 +21114,21 @@ var TreeView_default = TreeView;
 
 // src/views/PublicationCenter/PublicationCenter.svelte
 function add_css2(target) {
-  append_styles(target, "svelte-d3dhnt", ".title-separator.svelte-d3dhnt{margin-top:0px;margin-bottom:15px}.footer-separator.svelte-d3dhnt{margin-top:15px;margin-bottom:15px}.footer.svelte-d3dhnt{display:flex;justify-content:flex-end}.loading-msg.svelte-d3dhnt{font-size:1.2rem;display:flex;align-items:center;flex-direction:column}button.svelte-d3dhnt{background-color:var(--interactive-accent);color:var(--text-on-accent);cursor:pointer;font-weight:bold}.loading-container.svelte-d3dhnt{width:100%;height:5px;margin-top:10px}.loading-bar.svelte-d3dhnt{background-color:var(--interactive-accent);height:100%;transition:all 0.5s ease-in-out}.published.svelte-d3dhnt{color:#8bff8b}.deleted.svelte-d3dhnt{color:#ff5757}");
-}
-function get_each_context2(ctx, list, i) {
-  const child_ctx = ctx.slice();
-  child_ctx[23] = list[i];
-  return child_ctx;
+  append_styles(target, "svelte-ghd9h6", ".title-separator.svelte-ghd9h6{margin-top:0px;margin-bottom:15px}.footer-separator.svelte-ghd9h6{margin-top:15px;margin-bottom:15px}.footer.svelte-ghd9h6{display:flex;justify-content:flex-end}.loading-msg.svelte-ghd9h6{font-size:1.2rem;display:flex;align-items:center;flex-direction:column}button.svelte-ghd9h6{background-color:var(--interactive-accent);color:var(--text-on-accent);cursor:pointer;font-weight:bold}.loading-container.svelte-ghd9h6{width:100%;height:5px;margin-top:10px}.loading-bar.svelte-ghd9h6{background-color:var(--interactive-accent);height:100%;transition:all 0.5s ease-in-out}.published.svelte-ghd9h6{color:#8bff8b}.deleted.svelte-ghd9h6{color:#ff5757}.warning.svelte-ghd9h6{background-color:rgba(255, 150, 0, 0.1);border:1px solid rgba(255, 150, 0, 0.2);border-radius:4px;padding:10px;margin-bottom:15px}.callout-title.svelte-ghd9h6{font-weight:bold;margin-bottom:8px}.problematic-file.svelte-ghd9h6{display:flex;flex-direction:column;margin:5px 0;padding:5px 0;border-bottom:1px solid rgba(255, 150, 0, 0.1)}.file-path.svelte-ghd9h6{font-family:monospace;color:var(--text-muted)}.file-issue.svelte-ghd9h6{font-size:0.9em;margin-top:2px}");
 }
 function get_each_context_1(ctx, list, i) {
   const child_ctx = ctx.slice();
-  child_ctx[26] = list[i];
+  child_ctx[28] = list[i];
+  return child_ctx;
+}
+function get_each_context_2(ctx, list, i) {
+  const child_ctx = ctx.slice();
+  child_ctx[31] = list[i];
+  return child_ctx;
+}
+function get_each_context2(ctx, list, i) {
+  const child_ctx = ctx.slice();
+  child_ctx[25] = list[i];
   return child_ctx;
 }
 function create_else_block2(ctx) {
@@ -21021,9 +21159,9 @@ function create_else_block2(ctx) {
   let dispose;
   let if_block = (
     /*failedPublish*/
-    ctx[7].length > 0 && create_if_block_9(ctx)
+    ctx[17].length > 0 && create_if_block_10(ctx)
   );
-  let each_value_1 = ensure_array_like(
+  let each_value_2 = ensure_array_like(
     /*unpublishedToPublish*/
     ctx[3].concat(
       /*changedToPublish*/
@@ -21031,19 +21169,19 @@ function create_else_block2(ctx) {
     )
   );
   let each_blocks_1 = [];
-  for (let i = 0; i < each_value_1.length; i += 1) {
-    each_blocks_1[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
+  for (let i = 0; i < each_value_2.length; i += 1) {
+    each_blocks_1[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
   }
   const out = (i) => transition_out(each_blocks_1[i], 1, 1, () => {
     each_blocks_1[i] = null;
   });
-  let each_value = ensure_array_like(
+  let each_value_1 = ensure_array_like(
     /*pathsToDelete*/
     ctx[5]
   );
   let each_blocks = [];
-  for (let i = 0; i < each_value.length; i += 1) {
-    each_blocks[i] = create_each_block2(get_each_context2(ctx, each_value, i));
+  for (let i = 0; i < each_value_1.length; i += 1) {
+    each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
   }
   const out_1 = (i) => transition_out(each_blocks[i], 1, 1, () => {
     each_blocks[i] = null;
@@ -21078,18 +21216,18 @@ function create_else_block2(ctx) {
       button = element("button");
       button.textContent = "DONE";
       attr(div0, "class", "callout-title-inner");
-      attr(div2, "class", "loading-bar svelte-d3dhnt");
+      attr(div2, "class", "loading-bar svelte-ghd9h6");
       set_style(
         div2,
         "width",
         /*publishProgress*/
         ctx[13] + "%"
       );
-      attr(div3, "class", "loading-container svelte-d3dhnt");
+      attr(div3, "class", "loading-container svelte-ghd9h6");
       attr(div4, "class", "callout");
-      attr(hr, "class", "footer-separator svelte-d3dhnt");
-      attr(button, "class", "svelte-d3dhnt");
-      attr(div5, "class", "footer svelte-d3dhnt");
+      attr(hr, "class", "footer-separator svelte-ghd9h6");
+      attr(button, "class", "svelte-ghd9h6");
+      attr(div5, "class", "footer svelte-ghd9h6");
     },
     m(target, anchor) {
       insert(target, div6, anchor);
@@ -21135,7 +21273,7 @@ function create_else_block2(ctx) {
     },
     p(new_ctx, dirty) {
       ctx = new_ctx;
-      if ((!current || dirty & /*publishedPaths, unpublishedToPublish, changedToPublish, pathsToDelete*/
+      if ((!current || dirty[0] & /*publishedPaths, unpublishedToPublish, changedToPublish, pathsToDelete*/
       120) && t2_value !== (t2_value = `${/*publishedPaths*/
       ctx[6].length} of ${/*unpublishedToPublish*/
       ctx[3].length + /*changedToPublish*/
@@ -21144,20 +21282,10 @@ function create_else_block2(ctx) {
         set_data(t2, t2_value);
       if (
         /*failedPublish*/
-        ctx[7].length > 0
-      ) {
-        if (if_block) {
-          if_block.p(ctx, dirty);
-        } else {
-          if_block = create_if_block_9(ctx);
-          if_block.c();
-          if_block.m(div4, t4);
-        }
-      } else if (if_block) {
-        if_block.d(1);
-        if_block = null;
-      }
-      if (!current || dirty & /*publishProgress*/
+        ctx[17].length > 0
+      )
+        if_block.p(ctx, dirty);
+      if (!current || dirty[0] & /*publishProgress*/
       8192) {
         set_style(
           div2,
@@ -21166,9 +21294,9 @@ function create_else_block2(ctx) {
           ctx[13] + "%"
         );
       }
-      if (dirty & /*publishedPaths, unpublishedToPublish, changedToPublish, rotatingCog, processingPaths, failedPublish*/
-      33496) {
-        each_value_1 = ensure_array_like(
+      if (dirty[0] & /*publishedPaths, unpublishedToPublish, changedToPublish, rotatingCog, processingPaths, failedPublish*/
+      164440) {
+        each_value_2 = ensure_array_like(
           /*unpublishedToPublish*/
           ctx[3].concat(
             /*changedToPublish*/
@@ -21176,45 +21304,45 @@ function create_else_block2(ctx) {
           )
         );
         let i;
-        for (i = 0; i < each_value_1.length; i += 1) {
-          const child_ctx = get_each_context_1(ctx, each_value_1, i);
+        for (i = 0; i < each_value_2.length; i += 1) {
+          const child_ctx = get_each_context_2(ctx, each_value_2, i);
           if (each_blocks_1[i]) {
             each_blocks_1[i].p(child_ctx, dirty);
             transition_in(each_blocks_1[i], 1);
           } else {
-            each_blocks_1[i] = create_each_block_1(child_ctx);
+            each_blocks_1[i] = create_each_block_2(child_ctx);
             each_blocks_1[i].c();
             transition_in(each_blocks_1[i], 1);
             each_blocks_1[i].m(div6, t6);
           }
         }
         group_outros();
-        for (i = each_value_1.length; i < each_blocks_1.length; i += 1) {
+        for (i = each_value_2.length; i < each_blocks_1.length; i += 1) {
           out(i);
         }
         check_outros();
       }
-      if (dirty & /*publishedPaths, pathsToDelete, rotatingCog, processingPaths*/
+      if (dirty[0] & /*publishedPaths, pathsToDelete, rotatingCog, processingPaths*/
       33376) {
-        each_value = ensure_array_like(
+        each_value_1 = ensure_array_like(
           /*pathsToDelete*/
           ctx[5]
         );
         let i;
-        for (i = 0; i < each_value.length; i += 1) {
-          const child_ctx = get_each_context2(ctx, each_value, i);
+        for (i = 0; i < each_value_1.length; i += 1) {
+          const child_ctx = get_each_context_1(ctx, each_value_1, i);
           if (each_blocks[i]) {
             each_blocks[i].p(child_ctx, dirty);
             transition_in(each_blocks[i], 1);
           } else {
-            each_blocks[i] = create_each_block2(child_ctx);
+            each_blocks[i] = create_each_block_1(child_ctx);
             each_blocks[i].c();
             transition_in(each_blocks[i], 1);
             each_blocks[i].m(div6, t7);
           }
         }
         group_outros();
-        for (i = each_value.length; i < each_blocks.length; i += 1) {
+        for (i = each_value_1.length; i < each_blocks.length; i += 1) {
           out_1(i);
         }
         check_outros();
@@ -21223,10 +21351,10 @@ function create_else_block2(ctx) {
     i(local) {
       if (current)
         return;
-      for (let i = 0; i < each_value_1.length; i += 1) {
+      for (let i = 0; i < each_value_2.length; i += 1) {
         transition_in(each_blocks_1[i]);
       }
-      for (let i = 0; i < each_value.length; i += 1) {
+      for (let i = 0; i < each_value_1.length; i += 1) {
         transition_in(each_blocks[i]);
       }
       current = true;
@@ -21257,28 +21385,33 @@ function create_else_block2(ctx) {
 }
 function create_if_block_12(ctx) {
   var _a2, _b, _c, _d;
-  let treeview0;
   let t0;
-  let treeview1;
+  let treeview0;
   let t1;
-  let treeview2;
+  let treeview1;
   let t2;
-  let treeview3;
+  let treeview2;
   let t3;
-  let hr;
+  let treeview3;
   let t4;
+  let hr;
+  let t5;
   let div;
   let button;
   let current;
   let mounted;
   let dispose;
+  let if_block = (
+    /*problematicFiles*/
+    ctx[8].length > 0 && create_if_block_22(ctx)
+  );
   treeview0 = new TreeView_default({
     props: {
       tree: (
         /*unpublishedNoteTree*/
         (_a2 = ctx[12]) != null ? _a2 : (
           /*emptyNode*/
-          ctx[18]
+          ctx[19]
         )
       ),
       showDiff: (
@@ -21293,7 +21426,7 @@ function create_if_block_12(ctx) {
         /*changedNotesTree*/
         (_b = ctx[11]) != null ? _b : (
           /*emptyNode*/
-          ctx[18]
+          ctx[19]
         )
       ),
       showDiff: (
@@ -21309,7 +21442,7 @@ function create_if_block_12(ctx) {
         /*deletedNoteTree*/
         (_c = ctx[10]) != null ? _c : (
           /*emptyNode*/
-          ctx[18]
+          ctx[19]
         )
       ),
       showDiff: (
@@ -21325,7 +21458,7 @@ function create_if_block_12(ctx) {
         /*publishedNotesTree*/
         (_d = ctx[14]) != null ? _d : (
           /*emptyNode*/
-          ctx[18]
+          ctx[19]
         )
       ),
       showDiff: (
@@ -21336,34 +21469,40 @@ function create_if_block_12(ctx) {
   });
   return {
     c() {
-      create_component(treeview0.$$.fragment);
+      if (if_block)
+        if_block.c();
       t0 = space();
-      create_component(treeview1.$$.fragment);
+      create_component(treeview0.$$.fragment);
       t1 = space();
-      create_component(treeview2.$$.fragment);
+      create_component(treeview1.$$.fragment);
       t2 = space();
-      create_component(treeview3.$$.fragment);
+      create_component(treeview2.$$.fragment);
       t3 = space();
-      hr = element("hr");
+      create_component(treeview3.$$.fragment);
       t4 = space();
+      hr = element("hr");
+      t5 = space();
       div = element("div");
       button = element("button");
       button.textContent = "PUBLISH SELECTED";
-      attr(hr, "class", "footer-separator svelte-d3dhnt");
-      attr(button, "class", "svelte-d3dhnt");
-      attr(div, "class", "footer svelte-d3dhnt");
+      attr(hr, "class", "footer-separator svelte-ghd9h6");
+      attr(button, "class", "svelte-ghd9h6");
+      attr(div, "class", "footer svelte-ghd9h6");
     },
     m(target, anchor) {
-      mount_component(treeview0, target, anchor);
+      if (if_block)
+        if_block.m(target, anchor);
       insert(target, t0, anchor);
-      mount_component(treeview1, target, anchor);
+      mount_component(treeview0, target, anchor);
       insert(target, t1, anchor);
-      mount_component(treeview2, target, anchor);
+      mount_component(treeview1, target, anchor);
       insert(target, t2, anchor);
-      mount_component(treeview3, target, anchor);
+      mount_component(treeview2, target, anchor);
       insert(target, t3, anchor);
-      insert(target, hr, anchor);
+      mount_component(treeview3, target, anchor);
       insert(target, t4, anchor);
+      insert(target, hr, anchor);
+      insert(target, t5, anchor);
       insert(target, div, anchor);
       append(div, button);
       current = true;
@@ -21372,61 +21511,76 @@ function create_if_block_12(ctx) {
           button,
           "click",
           /*publishMarkedNotes*/
-          ctx[17]
+          ctx[18]
         );
         mounted = true;
       }
     },
     p(ctx2, dirty) {
       var _a3, _b2, _c2, _d2;
+      if (
+        /*problematicFiles*/
+        ctx2[8].length > 0
+      ) {
+        if (if_block) {
+          if_block.p(ctx2, dirty);
+        } else {
+          if_block = create_if_block_22(ctx2);
+          if_block.c();
+          if_block.m(t0.parentNode, t0);
+        }
+      } else if (if_block) {
+        if_block.d(1);
+        if_block = null;
+      }
       const treeview0_changes = {};
-      if (dirty & /*unpublishedNoteTree*/
+      if (dirty[0] & /*unpublishedNoteTree*/
       4096)
         treeview0_changes.tree = /*unpublishedNoteTree*/
         (_a3 = ctx2[12]) != null ? _a3 : (
           /*emptyNode*/
-          ctx2[18]
+          ctx2[19]
         );
-      if (dirty & /*showDiff*/
+      if (dirty[0] & /*showDiff*/
       1)
         treeview0_changes.showDiff = /*showDiff*/
         ctx2[0];
       treeview0.$set(treeview0_changes);
       const treeview1_changes = {};
-      if (dirty & /*changedNotesTree*/
+      if (dirty[0] & /*changedNotesTree*/
       2048)
         treeview1_changes.tree = /*changedNotesTree*/
         (_b2 = ctx2[11]) != null ? _b2 : (
           /*emptyNode*/
-          ctx2[18]
+          ctx2[19]
         );
-      if (dirty & /*showDiff*/
+      if (dirty[0] & /*showDiff*/
       1)
         treeview1_changes.showDiff = /*showDiff*/
         ctx2[0];
       treeview1.$set(treeview1_changes);
       const treeview2_changes = {};
-      if (dirty & /*deletedNoteTree*/
+      if (dirty[0] & /*deletedNoteTree*/
       1024)
         treeview2_changes.tree = /*deletedNoteTree*/
         (_c2 = ctx2[10]) != null ? _c2 : (
           /*emptyNode*/
-          ctx2[18]
+          ctx2[19]
         );
-      if (dirty & /*showDiff*/
+      if (dirty[0] & /*showDiff*/
       1)
         treeview2_changes.showDiff = /*showDiff*/
         ctx2[0];
       treeview2.$set(treeview2_changes);
       const treeview3_changes = {};
-      if (dirty & /*publishedNotesTree*/
+      if (dirty[0] & /*publishedNotesTree*/
       16384)
         treeview3_changes.tree = /*publishedNotesTree*/
         (_d2 = ctx2[14]) != null ? _d2 : (
           /*emptyNode*/
-          ctx2[18]
+          ctx2[19]
         );
-      if (dirty & /*showDiff*/
+      if (dirty[0] & /*showDiff*/
       1)
         treeview3_changes.showDiff = /*showDiff*/
         ctx2[0];
@@ -21454,10 +21608,13 @@ function create_if_block_12(ctx) {
         detach(t1);
         detach(t2);
         detach(t3);
-        detach(hr);
         detach(t4);
+        detach(hr);
+        detach(t5);
         detach(div);
       }
+      if (if_block)
+        if_block.d(detaching);
       destroy_component(treeview0, detaching);
       destroy_component(treeview1, detaching);
       destroy_component(treeview2, detaching);
@@ -21485,7 +21642,7 @@ function create_if_block2(ctx) {
       div0 = element("div");
       div0.textContent = "Calculating publication status from GitHub";
       html_tag.a = t0;
-      attr(div1, "class", "loading-msg svelte-d3dhnt");
+      attr(div1, "class", "loading-msg svelte-ghd9h6");
     },
     m(target, anchor) {
       insert(target, div1, anchor);
@@ -21503,26 +21660,18 @@ function create_if_block2(ctx) {
     }
   };
 }
-function create_if_block_9(ctx) {
+function create_if_block_10(ctx) {
   let div;
-  let t_value = `(${/*failedPublish*/
-  ctx[7].length} failed)`;
-  let t;
   return {
     c() {
       div = element("div");
-      t = text(t_value);
+      div.textContent = `${`(${/*failedPublish*/
+      ctx[17].length} failed)`}`;
     },
     m(target, anchor) {
       insert(target, div, anchor);
-      append(div, t);
     },
-    p(ctx2, dirty) {
-      if (dirty & /*failedPublish*/
-      128 && t_value !== (t_value = `(${/*failedPublish*/
-      ctx2[7].length} failed)`))
-        set_data(t, t_value);
-    },
+    p: noop,
     d(detaching) {
       if (detaching) {
         detach(div);
@@ -21558,7 +21707,7 @@ function create_else_block_2(ctx) {
     }
   };
 }
-function create_if_block_8(ctx) {
+function create_if_block_9(ctx) {
   let icon;
   let current;
   icon = new Icon_default({ props: { name: "cross" } });
@@ -21586,7 +21735,7 @@ function create_if_block_8(ctx) {
     }
   };
 }
-function create_if_block_72(ctx) {
+function create_if_block_8(ctx) {
   let icon;
   let current;
   icon = new Icon_default({ props: { name: "check" } });
@@ -21614,7 +21763,7 @@ function create_if_block_72(ctx) {
     }
   };
 }
-function create_if_block_62(ctx) {
+function create_if_block_72(ctx) {
   var _a2;
   let html_tag;
   let raw_value = (
@@ -21643,13 +21792,13 @@ function create_if_block_62(ctx) {
     }
   };
 }
-function create_if_block_52(ctx) {
+function create_if_block_62(ctx) {
   let span;
   return {
     c() {
       span = element("span");
       span.textContent = "- PUBLISHED";
-      attr(span, "class", "published svelte-d3dhnt");
+      attr(span, "class", "published svelte-ghd9h6");
     },
     m(target, anchor) {
       insert(target, span, anchor);
@@ -21661,7 +21810,7 @@ function create_if_block_52(ctx) {
     }
   };
 }
-function create_each_block_1(ctx) {
+function create_each_block_2(ctx) {
   let div;
   let show_if_1;
   let show_if_2;
@@ -21671,7 +21820,7 @@ function create_each_block_1(ctx) {
   let t0;
   let t1_value = (
     /*note*/
-    ctx[26].file.name + ""
+    ctx[31].file.name + ""
   );
   let t1;
   let t2;
@@ -21679,27 +21828,27 @@ function create_each_block_1(ctx) {
     /*publishedPaths*/
     ctx[6].includes(
       /*note*/
-      ctx[26].getPath()
+      ctx[31].getPath()
     )
   );
   let current;
-  const if_block_creators = [create_if_block_62, create_if_block_72, create_if_block_8, create_else_block_2];
+  const if_block_creators = [create_if_block_72, create_if_block_8, create_if_block_9, create_else_block_2];
   const if_blocks = [];
   function select_block_type_1(ctx2, dirty) {
-    if (dirty & /*processingPaths, unpublishedToPublish, changedToPublish*/
+    if (dirty[0] & /*processingPaths, unpublishedToPublish, changedToPublish*/
     536)
       show_if_1 = null;
-    if (dirty & /*publishedPaths, unpublishedToPublish, changedToPublish*/
+    if (dirty[0] & /*publishedPaths, unpublishedToPublish, changedToPublish*/
     88)
       show_if_2 = null;
-    if (dirty & /*failedPublish, unpublishedToPublish, changedToPublish*/
-    152)
+    if (dirty[0] & /*unpublishedToPublish, changedToPublish*/
+    24)
       show_if_3 = null;
     if (show_if_1 == null)
       show_if_1 = !!/*processingPaths*/
       ctx2[9].includes(
         /*note*/
-        ctx2[26].getPath()
+        ctx2[31].getPath()
       );
     if (show_if_1)
       return 0;
@@ -21707,23 +21856,23 @@ function create_each_block_1(ctx) {
       show_if_2 = !!/*publishedPaths*/
       ctx2[6].includes(
         /*note*/
-        ctx2[26].getPath()
+        ctx2[31].getPath()
       );
     if (show_if_2)
       return 1;
     if (show_if_3 == null)
       show_if_3 = !!/*failedPublish*/
-      ctx2[7].includes(
+      ctx2[17].includes(
         /*note*/
-        ctx2[26].getPath()
+        ctx2[31].getPath()
       );
     if (show_if_3)
       return 2;
     return 3;
   }
-  current_block_type_index = select_block_type_1(ctx, -1);
+  current_block_type_index = select_block_type_1(ctx, [-1, -1]);
   if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-  let if_block1 = show_if && create_if_block_52(ctx);
+  let if_block1 = show_if && create_if_block_62(ctx);
   return {
     c() {
       div = element("div");
@@ -21766,21 +21915,21 @@ function create_each_block_1(ctx) {
         transition_in(if_block0, 1);
         if_block0.m(div, t0);
       }
-      if ((!current || dirty & /*unpublishedToPublish, changedToPublish*/
+      if ((!current || dirty[0] & /*unpublishedToPublish, changedToPublish*/
       24) && t1_value !== (t1_value = /*note*/
-      ctx2[26].file.name + ""))
+      ctx2[31].file.name + ""))
         set_data(t1, t1_value);
-      if (dirty & /*publishedPaths, unpublishedToPublish, changedToPublish*/
+      if (dirty[0] & /*publishedPaths, unpublishedToPublish, changedToPublish*/
       88)
         show_if = /*publishedPaths*/
         ctx2[6].includes(
           /*note*/
-          ctx2[26].getPath()
+          ctx2[31].getPath()
         );
       if (show_if) {
         if (if_block1) {
         } else {
-          if_block1 = create_if_block_52(ctx2);
+          if_block1 = create_if_block_62(ctx2);
           if_block1.c();
           if_block1.m(div, null);
         }
@@ -21837,7 +21986,7 @@ function create_else_block_1(ctx) {
     }
   };
 }
-function create_if_block_42(ctx) {
+function create_if_block_52(ctx) {
   let icon;
   let current;
   icon = new Icon_default({ props: { name: "check" } });
@@ -21865,7 +22014,7 @@ function create_if_block_42(ctx) {
     }
   };
 }
-function create_if_block_32(ctx) {
+function create_if_block_42(ctx) {
   var _a2;
   let html_tag;
   let raw_value = (
@@ -21894,13 +22043,13 @@ function create_if_block_32(ctx) {
     }
   };
 }
-function create_if_block_22(ctx) {
+function create_if_block_32(ctx) {
   let span;
   return {
     c() {
       span = element("span");
       span.textContent = "- DELETED";
-      attr(span, "class", "deleted svelte-d3dhnt");
+      attr(span, "class", "deleted svelte-ghd9h6");
     },
     m(target, anchor) {
       insert(target, span, anchor);
@@ -21912,7 +22061,7 @@ function create_if_block_22(ctx) {
     }
   };
 }
-function create_each_block2(ctx) {
+function create_each_block_1(ctx) {
   let div;
   let show_if_1;
   let show_if_2;
@@ -21921,7 +22070,7 @@ function create_each_block2(ctx) {
   let t0;
   let t1_value = (
     /*path*/
-    ctx[23].split("/").last() + ""
+    ctx[28].split("/").last() + ""
   );
   let t1;
   let t2;
@@ -21929,24 +22078,24 @@ function create_each_block2(ctx) {
     /*publishedPaths*/
     ctx[6].includes(
       /*path*/
-      ctx[23]
+      ctx[28]
     )
   );
   let current;
-  const if_block_creators = [create_if_block_32, create_if_block_42, create_else_block_1];
+  const if_block_creators = [create_if_block_42, create_if_block_52, create_else_block_1];
   const if_blocks = [];
   function select_block_type_2(ctx2, dirty) {
-    if (dirty & /*processingPaths, pathsToDelete*/
+    if (dirty[0] & /*processingPaths, pathsToDelete*/
     544)
       show_if_1 = null;
-    if (dirty & /*publishedPaths, pathsToDelete*/
+    if (dirty[0] & /*publishedPaths, pathsToDelete*/
     96)
       show_if_2 = null;
     if (show_if_1 == null)
       show_if_1 = !!/*processingPaths*/
       ctx2[9].includes(
         /*path*/
-        ctx2[23]
+        ctx2[28]
       );
     if (show_if_1)
       return 0;
@@ -21954,15 +22103,15 @@ function create_each_block2(ctx) {
       show_if_2 = !!/*publishedPaths*/
       ctx2[6].includes(
         /*path*/
-        ctx2[23]
+        ctx2[28]
       );
     if (show_if_2)
       return 1;
     return 2;
   }
-  current_block_type_index = select_block_type_2(ctx, -1);
+  current_block_type_index = select_block_type_2(ctx, [-1, -1]);
   if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-  let if_block1 = show_if && create_if_block_22(ctx);
+  let if_block1 = show_if && create_if_block_32(ctx);
   return {
     c() {
       div = element("div");
@@ -22005,21 +22154,21 @@ function create_each_block2(ctx) {
         transition_in(if_block0, 1);
         if_block0.m(div, t0);
       }
-      if ((!current || dirty & /*pathsToDelete*/
+      if ((!current || dirty[0] & /*pathsToDelete*/
       32) && t1_value !== (t1_value = /*path*/
-      ctx2[23].split("/").last() + ""))
+      ctx2[28].split("/").last() + ""))
         set_data(t1, t1_value);
-      if (dirty & /*publishedPaths, pathsToDelete*/
+      if (dirty[0] & /*publishedPaths, pathsToDelete*/
       96)
         show_if = /*publishedPaths*/
         ctx2[6].includes(
           /*path*/
-          ctx2[23]
+          ctx2[28]
         );
       if (show_if) {
         if (if_block1) {
         } else {
-          if_block1 = create_if_block_22(ctx2);
+          if_block1 = create_if_block_32(ctx2);
           if_block1.c();
           if_block1.m(div, null);
         }
@@ -22048,6 +22197,131 @@ function create_each_block2(ctx) {
     }
   };
 }
+function create_if_block_22(ctx) {
+  let div2;
+  let div0;
+  let t1;
+  let div1;
+  let each_value = ensure_array_like(
+    /*problematicFiles*/
+    ctx[8]
+  );
+  let each_blocks = [];
+  for (let i = 0; i < each_value.length; i += 1) {
+    each_blocks[i] = create_each_block2(get_each_context2(ctx, each_value, i));
+  }
+  return {
+    c() {
+      div2 = element("div");
+      div0 = element("div");
+      div0.textContent = "\u26A0\uFE0F Warning: Issues Found";
+      t1 = space();
+      div1 = element("div");
+      for (let i = 0; i < each_blocks.length; i += 1) {
+        each_blocks[i].c();
+      }
+      attr(div0, "class", "callout-title svelte-ghd9h6");
+      attr(div1, "class", "callout-content");
+      attr(div2, "class", "callout warning svelte-ghd9h6");
+    },
+    m(target, anchor) {
+      insert(target, div2, anchor);
+      append(div2, div0);
+      append(div2, t1);
+      append(div2, div1);
+      for (let i = 0; i < each_blocks.length; i += 1) {
+        if (each_blocks[i]) {
+          each_blocks[i].m(div1, null);
+        }
+      }
+    },
+    p(ctx2, dirty) {
+      if (dirty[0] & /*problematicFiles*/
+      256) {
+        each_value = ensure_array_like(
+          /*problematicFiles*/
+          ctx2[8]
+        );
+        let i;
+        for (i = 0; i < each_value.length; i += 1) {
+          const child_ctx = get_each_context2(ctx2, each_value, i);
+          if (each_blocks[i]) {
+            each_blocks[i].p(child_ctx, dirty);
+          } else {
+            each_blocks[i] = create_each_block2(child_ctx);
+            each_blocks[i].c();
+            each_blocks[i].m(div1, null);
+          }
+        }
+        for (; i < each_blocks.length; i += 1) {
+          each_blocks[i].d(1);
+        }
+        each_blocks.length = each_value.length;
+      }
+    },
+    d(detaching) {
+      if (detaching) {
+        detach(div2);
+      }
+      destroy_each(each_blocks, detaching);
+    }
+  };
+}
+function create_each_block2(ctx) {
+  let div;
+  let span0;
+  let t0_value = (
+    /*file*/
+    ctx[25].path + ""
+  );
+  let t0;
+  let t1;
+  let span1;
+  let t2_value = (
+    /*file*/
+    ctx[25].issue + ""
+  );
+  let t2;
+  let t3;
+  return {
+    c() {
+      div = element("div");
+      span0 = element("span");
+      t0 = text(t0_value);
+      t1 = space();
+      span1 = element("span");
+      t2 = text(t2_value);
+      t3 = space();
+      attr(span0, "class", "file-path svelte-ghd9h6");
+      attr(span1, "class", "file-issue svelte-ghd9h6");
+      attr(div, "class", "problematic-file svelte-ghd9h6");
+    },
+    m(target, anchor) {
+      insert(target, div, anchor);
+      append(div, span0);
+      append(span0, t0);
+      append(div, t1);
+      append(div, span1);
+      append(span1, t2);
+      append(div, t3);
+    },
+    p(ctx2, dirty) {
+      if (dirty[0] & /*problematicFiles*/
+      256 && t0_value !== (t0_value = /*file*/
+      ctx2[25].path + ""))
+        set_data(t0, t0_value);
+      if (dirty[0] & /*problematicFiles*/
+      256 && t2_value !== (t2_value = /*file*/
+      ctx2[25].issue + ""))
+        set_data(t2, t2_value);
+    },
+    d(detaching) {
+      if (detaching) {
+        detach(div);
+      }
+    }
+  };
+}
 function create_fragment4(ctx) {
   let div;
   let hr;
@@ -22062,11 +22336,11 @@ function create_fragment4(ctx) {
     ctx2[2])
       return 0;
     if (!/*showPublishingView*/
-    ctx2[8])
+    ctx2[7])
       return 1;
     return 2;
   }
-  current_block_type_index = select_block_type(ctx, -1);
+  current_block_type_index = select_block_type(ctx, [-1, -1]);
   if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
   return {
     c() {
@@ -22074,7 +22348,7 @@ function create_fragment4(ctx) {
       hr = element("hr");
       t = space();
       if_block.c();
-      attr(hr, "class", "title-separator svelte-d3dhnt");
+      attr(hr, "class", "title-separator svelte-ghd9h6");
     },
     m(target, anchor) {
       insert(target, div, anchor);
@@ -22083,7 +22357,7 @@ function create_fragment4(ctx) {
       if_blocks[current_block_type_index].m(div, null);
       current = true;
     },
-    p(ctx2, [dirty]) {
+    p(ctx2, dirty) {
       let previous_block_index = current_block_type_index;
       current_block_type_index = select_block_type(ctx2, dirty);
       if (current_block_type_index === previous_block_index) {
@@ -22170,10 +22444,30 @@ function instance4($$self, $$props, $$invalidate) {
   let { close } = $$props;
   let publishStatus;
   let showPublishingView = false;
+  let problematicFiles = [];
   function getPublishStatus() {
     return __awaiter(this, void 0, void 0, function* () {
       $$invalidate(2, publishStatus = yield publishStatusManager.getPublishStatus());
+      validateFiles();
     });
+  }
+  function validateFiles() {
+    $$invalidate(8, problematicFiles = []);
+    if (!publishStatus)
+      return;
+    const homeFiles = [
+      ...publishStatus.publishedNotes,
+      ...publishStatus.unpublishedNotes,
+      ...publishStatus.changedNotes
+    ].filter((note) => note.frontmatter && note.frontmatter["dg-home"] === true);
+    if (homeFiles.length > 1) {
+      homeFiles.forEach((file) => {
+        problematicFiles.push({
+          path: file.getPath(),
+          issue: "Multiple files marked as home page (dg-home: true). Only one file should be marked as home."
+        });
+      });
+    }
   }
   onMount(getPublishStatus);
   const rotatingCog = () => {
@@ -22210,7 +22504,7 @@ function instance4($$self, $$props, $$invalidate) {
   let publishedPaths = [];
   let failedPublish = [];
   const publishMarkedNotes = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a2, _b, _c;
+    var _a2, _b;
     if (!unpublishedNoteTree || !changedNotesTree)
       return;
     if (!publishStatus) {
@@ -22223,34 +22517,26 @@ function instance4($$self, $$props, $$invalidate) {
     const imagesToDelete = pathsToDelete.filter((path) => publishStatus.deletedImagePaths.some((p) => p.path === path));
     $$invalidate(3, unpublishedToPublish = (_a2 = publishStatus.unpublishedNotes.filter((note) => unpublishedPaths.includes(note.getPath()))) !== null && _a2 !== void 0 ? _a2 : []);
     $$invalidate(4, changedToPublish = (_b = publishStatus === null || publishStatus === void 0 ? void 0 : publishStatus.changedNotes.filter((note) => changedPaths.includes(note.getPath()))) !== null && _b !== void 0 ? _b : []);
-    $$invalidate(8, showPublishingView = true);
-    for (const note of changedToPublish.concat(unpublishedToPublish)) {
-      processingPaths.push(note.getPath());
-      let isPublished = yield publisher.publish(note);
-      $$invalidate(9, processingPaths = processingPaths.filter((path) => path !== note.getPath()));
-      if (isPublished) {
-        $$invalidate(6, publishedPaths = [...publishedPaths, note.getPath()]);
-      } else {
-        $$invalidate(7, failedPublish = [...failedPublish, note.getPath()]);
-      }
-    }
-    for (const path of [...notesToDelete, ...imagesToDelete]) {
-      processingPaths.push(path);
-      const isNote = path.endsWith(".md");
-      let isDeleted;
-      if (isNote) {
-        const sha = (_c = publishStatus.deletedNotePaths.find((p) => p.path === path)) === null || _c === void 0 ? void 0 : _c.sha;
-        isDeleted = yield publisher.deleteNote(path, sha);
-      } else {
-        isDeleted = yield publisher.deleteImage(path);
-      }
+    $$invalidate(7, showPublishingView = true);
+    const allNotesToPublish = unpublishedToPublish.concat(changedToPublish);
+    $$invalidate(9, processingPaths = [...allNotesToPublish.map((note) => note.getPath())]);
+    yield publisher.publishBatch(allNotesToPublish);
+    $$invalidate(6, publishedPaths = [...processingPaths]);
+    $$invalidate(9, processingPaths = []);
+    for (const path of notesToDelete) {
+      $$invalidate(9, processingPaths = [...processingPaths, path]);
+      yield publisher.deleteNote(path);
       $$invalidate(9, processingPaths = processingPaths.filter((p) => p !== path));
-      if (isDeleted) {
-        $$invalidate(6, publishedPaths = [...publishedPaths, path]);
-      } else {
-        $$invalidate(7, failedPublish = [...failedPublish, path]);
-      }
+      $$invalidate(6, publishedPaths = [...publishedPaths, path]);
     }
+    for (const path of imagesToDelete) {
+      $$invalidate(9, processingPaths = [...processingPaths, path]);
+      yield publisher.deleteImage(path);
+      $$invalidate(9, processingPaths = processingPaths.filter((p) => p !== path));
+      $$invalidate(6, publishedPaths = [...publishedPaths, path]);
+    }
+    $$invalidate(6, publishedPaths = [...publishedPaths, ...processingPaths]);
+    $$invalidate(9, processingPaths = []);
   });
   const emptyNode = {
     name: "",
@@ -22261,37 +22547,37 @@ function instance4($$self, $$props, $$invalidate) {
   };
   $$self.$$set = ($$props2) => {
     if ("publishStatusManager" in $$props2)
-      $$invalidate(19, publishStatusManager = $$props2.publishStatusManager);
+      $$invalidate(20, publishStatusManager = $$props2.publishStatusManager);
     if ("publisher" in $$props2)
-      $$invalidate(20, publisher = $$props2.publisher);
+      $$invalidate(21, publisher = $$props2.publisher);
     if ("showDiff" in $$props2)
       $$invalidate(0, showDiff = $$props2.showDiff);
     if ("close" in $$props2)
       $$invalidate(1, close = $$props2.close);
   };
   $$self.$$.update = () => {
-    if ($$self.$$.dirty & /*publishStatus*/
+    if ($$self.$$.dirty[0] & /*publishStatus*/
     4) {
       $:
         $$invalidate(14, publishedNotesTree = publishStatus && filePathsToTree(publishStatus.publishedNotes.map((note) => note.getPath()), "Published Notes"));
     }
-    if ($$self.$$.dirty & /*publishStatus*/
+    if ($$self.$$.dirty[0] & /*publishStatus*/
     4) {
       $:
         $$invalidate(11, changedNotesTree = publishStatus && filePathsToTree(publishStatus.changedNotes.map((note) => note.getPath()), "Changed Notes"));
     }
-    if ($$self.$$.dirty & /*publishStatus*/
+    if ($$self.$$.dirty[0] & /*publishStatus*/
     4) {
       $:
         $$invalidate(10, deletedNoteTree = publishStatus && filePathsToTree([...publishStatus.deletedNotePaths, ...publishStatus.deletedImagePaths].map((path) => path.path), "Deleted Notes"));
     }
-    if ($$self.$$.dirty & /*publishStatus*/
+    if ($$self.$$.dirty[0] & /*publishStatus*/
     4) {
       $:
         $$invalidate(12, unpublishedNoteTree = publishStatus && filePathsToTree(publishStatus.unpublishedNotes.map((note) => note.getPath()), "Unpublished Notes"));
     }
-    if ($$self.$$.dirty & /*publishedPaths, failedPublish, unpublishedToPublish, changedToPublish, pathsToDelete*/
-    248) {
+    if ($$self.$$.dirty[0] & /*publishedPaths, unpublishedToPublish, changedToPublish, pathsToDelete*/
+    120) {
       $:
         $$invalidate(13, publishProgress = (publishedPaths.length + failedPublish.length) / (unpublishedToPublish.length + changedToPublish.length + pathsToDelete.length) * 100);
     }
@@ -22304,8 +22590,8 @@ function instance4($$self, $$props, $$invalidate) {
     changedToPublish,
     pathsToDelete,
     publishedPaths,
-    failedPublish,
     showPublishingView,
+    problematicFiles,
     processingPaths,
     deletedNoteTree,
     changedNotesTree,
@@ -22314,6 +22600,7 @@ function instance4($$self, $$props, $$invalidate) {
     publishedNotesTree,
     rotatingCog,
     bigRotatingCog,
+    failedPublish,
     publishMarkedNotes,
     emptyNode,
     publishStatusManager,
@@ -22330,12 +22617,13 @@ var PublicationCenter = class extends SvelteComponent {
       create_fragment4,
       safe_not_equal,
       {
-        publishStatusManager: 19,
-        publisher: 20,
+        publishStatusManager: 20,
+        publisher: 21,
         showDiff: 0,
         close: 1
       },
-      add_css2
+      add_css2,
+      [-1, -1]
     );
   }
 };
@@ -23130,11 +23418,10 @@ var ObsidianFrontMatterEngine = class {
     return __async(this, null, function* () {
       const newFrontMatter = this.getFrontMatterSnapshot();
       const content = yield this.vault.cachedRead(this.file);
-      const frontmatterRegex = /^\s*?---\n([\s\S]*?)\n---/g;
       const yaml = this.frontMatterToYaml(newFrontMatter);
       let newContent = "";
-      if (content.match(frontmatterRegex)) {
-        newContent = content.replace(frontmatterRegex, (_match) => {
+      if (content.match(FRONTMATTER_REGEX)) {
+        newContent = content.replace(FRONTMATTER_REGEX, (_match) => {
           return yaml;
         });
       } else {
@@ -23447,7 +23734,8 @@ var DigitalGardenSiteManager = class {
         NOTE_ICON_INTERNAL_LINKS: this.settings.showNoteIconOnInternalLink,
         NOTE_ICON_BACK_LINKS: this.settings.showNoteIconOnBackLink,
         STYLE_SETTINGS_CSS: this.settings.styleSettingsCss,
-        STYLE_SETTINGS_BODY_CLASSES: this.settings.styleSettingsBodyClasses
+        STYLE_SETTINGS_BODY_CLASSES: this.settings.styleSettingsBodyClasses,
+        USE_FULL_RESOLUTION_IMAGES: this.settings.useFullResolutionImages
       };
       if (theme.name !== "default") {
         envValues["THEME"] = theme.cssUrl;
@@ -23501,7 +23789,7 @@ var DigitalGardenSiteManager = class {
         path = path.substring(1);
       }
       const response = yield this.userGardenConnection.getFile(
-        NOTE_PATH_BASE + path
+        NOTE_PATH_BASE2 + path
       );
       if (!response) {
         return "";
@@ -23514,11 +23802,11 @@ var DigitalGardenSiteManager = class {
     return __async(this, null, function* () {
       const files = contentTree.tree;
       const notes = files.filter(
-        (x) => typeof x.path === "string" && x.path.startsWith(NOTE_PATH_BASE) && x.type === "blob" && x.path !== `${NOTE_PATH_BASE}notes.json`
+        (x) => typeof x.path === "string" && x.path.startsWith(NOTE_PATH_BASE2) && x.type === "blob" && x.path !== `${NOTE_PATH_BASE2}notes.json`
       );
       const hashes = {};
       for (const note of notes) {
-        const vaultPath = note.path.replace(NOTE_PATH_BASE, "");
+        const vaultPath = note.path.replace(NOTE_PATH_BASE2, "");
         hashes[vaultPath] = note.sha;
       }
       return hashes;
@@ -23529,11 +23817,11 @@ var DigitalGardenSiteManager = class {
       var _a2;
       const files = (_a2 = contentTree.tree) != null ? _a2 : [];
       const images = files.filter(
-        (x) => typeof x.path === "string" && x.path.startsWith(IMAGE_PATH_BASE) && x.type === "blob"
+        (x) => typeof x.path === "string" && x.path.startsWith(IMAGE_PATH_BASE2) && x.type === "blob"
       );
       const hashes = {};
       for (const img of images) {
-        const vaultPath = decodeURI(img.path.replace(IMAGE_PATH_BASE, ""));
+        const vaultPath = img.path.replace(IMAGE_PATH_BASE2, "");
         hashes[vaultPath] = img.sha;
       }
       return hashes;
@@ -27432,9 +27720,9 @@ var GithubSettings = class {
   initializeGitHubTokenSetting() {
     const desc = document.createDocumentFragment();
     desc.createEl("span", void 0, (span) => {
-      span.innerText = "A GitHub token with repo permissions. You can generate it ";
+      span.innerText = "A GitHub token with contents permissions. You can see how to generate it ";
       span.createEl("a", void 0, (link) => {
-        link.href = "https://github.com/settings/tokens/new?scopes=repo";
+        link.href = "https://dg-docs.ole.dev/advanced/fine-grained-access-token/";
         link.innerText = "here!";
       });
     });
@@ -28310,7 +28598,7 @@ var SettingView = class {
         ) {
           themeModal.contentEl.createEl("h2", { text: "Style Settings Plugin" }).prepend(this.getIcon("paintbrush"));
           new import_obsidian13.Setting(themeModal.contentEl).setName("Apply current style settings to site").setDesc(
-            "Click the apply button to use the current style settings from the Style Settings Plugin on your site."
+            "Click the apply button to use the current style settings from the Style Settings Plugin on your site. (The plugin looks at the currently APPLIED settings. Meaning you need to have the theme you are using in the garden selected in Obsidian before applying)"
           ).addButton((btn) => {
             btn.setButtonText("Apply Style Settings");
             btn.setClass("mod-cta");
@@ -28406,7 +28694,7 @@ var SettingView = class {
         }))
       );
       new import_obsidian13.Setting(themeModal.contentEl).setName("Favicon").setDesc(
-        "Path to an svg in your vault you wish to use as a favicon. Leave blank to use default."
+        "Path to an svg in your vault you wish to use as a favicon. Leave blank to use default. Must be square! (eg. 16x16)"
       ).addText((tc) => {
         tc.setPlaceholder("myfavicon.svg");
         tc.setValue(this.settings.faviconPath);
@@ -28415,6 +28703,15 @@ var SettingView = class {
           yield this.saveSettings();
         }));
         new SvgFileSuggest(this.app, tc.inputEl);
+      });
+      new import_obsidian13.Setting(themeModal.contentEl).setName("Use full resolution images").setDesc(
+        "By default, the images on your site are compressed to make your site load faster. If you instead want to use the full resolution images, enable this setting."
+      ).addToggle((toggle) => {
+        toggle.setValue(this.settings.useFullResolutionImages);
+        toggle.onChange((val) => __async(this, null, function* () {
+          this.settings.useFullResolutionImages = val;
+          yield this.saveSettings();
+        }));
       });
       new import_obsidian13.Setting(themeModal.contentEl).addButton(handleSaveSettingsButton);
       themeModal.contentEl.createEl("h2", { text: "Timestamps Settings" }).prepend(this.getIcon("calendar-clock"));
@@ -28919,6 +29216,14 @@ var DigitalGardenSettingTab = class extends import_obsidian15.PluginSettingTab {
 
 // main.ts
 var import_js_logger9 = __toESM(require_logger());
+var defaultTheme = {
+  name: "Red Graphite",
+  author: "SeanWcom",
+  repo: "seanwcom/Red-Graphite-for-Obsidian",
+  screenshot: "thumbnail.png",
+  modes: ["dark", "light"],
+  cssUrl: "https://raw.githubusercontent.com/seanwcom/Red-Graphite-for-Obsidian/HEAD/theme.css"
+};
 var DEFAULT_SETTINGS = {
   githubRepo: "",
   githubToken: "",
@@ -28926,8 +29231,10 @@ var DEFAULT_SETTINGS = {
   gardenBaseUrl: "",
   prHistory: [],
   baseTheme: "dark",
-  theme: '{"name": "default", "modes": ["dark"]}',
+  // Stringify to be backwards compatible with older versions
+  theme: JSON.stringify(defaultTheme),
   faviconPath: "",
+  useFullResolutionImages: false,
   noteSettingsIsInitialized: false,
   siteName: "Digital Garden",
   mainLanguage: "en",
@@ -29103,64 +29410,32 @@ var DigitalGarden = class extends import_obsidian17.Plugin {
               statusBarItem,
               filesToPublish.length + filesToDelete.length + imagesToDelete.length
             );
-            let errorFiles = 0;
-            let errorDeleteFiles = 0;
-            let errorDeleteImage = 0;
             new import_obsidian17.Notice(
               `Publishing ${filesToPublish.length} notes, deleting ${filesToDelete.length} notes and ${imagesToDelete.length} images. See the status bar in lower right corner for progress.`,
               8e3
             );
-            for (const file of filesToPublish) {
-              try {
-                statusBar.increment();
-                yield publisher.publish(file);
-              } catch (e) {
-                errorFiles++;
-                new import_obsidian17.Notice(
-                  `Unable to publish note ${file.file.name}, skipping it.`
-                );
-              }
+            yield publisher.publishBatch(filesToPublish);
+            statusBar.incrementMultiple(filesToPublish.length);
+            for (const file of filesToDelete) {
+              yield publisher.deleteNote(file.path);
+              statusBar.increment();
             }
-            for (const filePath of filesToDelete) {
-              try {
-                statusBar.increment();
-                yield publisher.deleteNote(
-                  filePath.path,
-                  filePath.sha
-                );
-              } catch (e) {
-                errorDeleteFiles++;
-                new import_obsidian17.Notice(
-                  `Unable to delete note ${filePath}, skipping it.`
-                );
-              }
-            }
-            for (const filePath of imagesToDelete) {
-              try {
-                statusBar.increment();
-                yield publisher.deleteImage(
-                  filePath.path,
-                  filePath.sha
-                );
-              } catch (e) {
-                errorDeleteImage++;
-                new import_obsidian17.Notice(
-                  `Unable to delete image ${filePath}, skipping it.`
-                );
-              }
+            for (const image of imagesToDelete) {
+              yield publisher.deleteImage(image.path);
+              statusBar.increment();
             }
             statusBar.finish(8e3);
             new import_obsidian17.Notice(
-              `Successfully published ${filesToPublish.length - errorFiles} notes to your garden.`
+              `Successfully published ${filesToPublish.length} notes to your garden.`
             );
             if (filesToDelete.length > 0) {
               new import_obsidian17.Notice(
-                `Successfully deleted ${filesToDelete.length - errorDeleteFiles} notes from your garden.`
+                `Successfully deleted ${filesToDelete.length} notes from your garden.`
               );
             }
             if (imagesToDelete.length > 0) {
               new import_obsidian17.Notice(
-                `Successfully deleted ${imagesToDelete.length - errorDeleteImage} images from your garden.`
+                `Successfully deleted ${imagesToDelete.length} images from your garden.`
               );
             }
           } catch (e) {
@@ -29360,3 +29635,5 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
+
+/* nosourcemap */

@@ -9,6 +9,14 @@
       }
     },
     {
+      "prefix": "Pg",
+      "suffix": "",
+      "metric": {
+        "type": 0,
+        "counter": 5
+      }
+    },
+    {
       "prefix": " ",
       "suffix": " characters",
       "metric": {
@@ -18,7 +26,9 @@
     }
   ],
   "altBar": [],
-  "countComments": false,
+  "countComments": true,
   "collectStats": true,
-  "pageWords": 300
+  "displaySectionCounts": true,
+  "pageWords": 400,
+  "statsPath": ".obsidian/vault-stats.json"
 }
