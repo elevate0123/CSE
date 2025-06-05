@@ -29,7 +29,7 @@
   "submoduleRecurseCheckout": false,
   "gitDir": "",
   "showFileMenu": true,
-  "authorInHistoryView": "initials",
+  "authorInHistoryView": "full",
   "dateInHistoryView": true,
   "diffStyle": "split",
   "lineAuthor": {

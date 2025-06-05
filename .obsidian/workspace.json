@@ -4,17 +4,31 @@
     "type": "split",
     "children": [
       {
-        "id": "4509724f8bf84da7",
+        "id": "524f74ee79af4183",
         "type": "tabs",
         "children": [
           {
-            "id": "8c814c0bcdaafbb2",
+            "id": "503161c8c6842879",
             "type": "leaf",
             "state": {
-              "type": "home-tab-view",
-              "state": {},
-              "icon": "search",
-              "title": "Home tab"
+              "type": "markdown",
+              "state": {
+                "file": "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "P2 - Introduction - Conclusion - Keywords"
             }
           }
         ]
@@ -74,7 +88,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 258.5
+    "width": 244.5
   },
   "right": {
     "id": "22799904aa594e76",
@@ -138,12 +152,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "06 Sociology/Paper 2/MSO 04 Gemini Notes.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of MSO 04 Gemini Notes"
             }
           },
           {
@@ -157,11 +172,11 @@
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 310.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -177,14 +192,24 @@
       "homepage:Open homepage": false
     }
   },
-  "active": "8c814c0bcdaafbb2",
+  "active": "503161c8c6842879",
   "lastOpenFiles": [
-    "Home.md",
+    "05 Essay/Essay Notes Rahul W.md",
     "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
-    "06 Sociology/Paper 2/MSO 04 Gemini Notes.md",
+    "05 Essay/Quotes.md",
+    "06 Sociology/Value Addition/Socio PYQ Themes.md",
+    "06 Sociology/Value Addition/FUNDAMENTALS OF SOCIOLOGY (Jargon, Examples, Thinkers).md",
+    "06 Sociology/Value Addition/INDIAN SOCIETY (Jargon, Examples, Thinkers).md",
     "06 Sociology/Value Addition/Socio Dataset, Cases & Schemes.md",
-    "06 Sociology/Paper 2/~~$MSO 04 Gemini Notes.pdf",
+    "Home.md",
+    "06 Sociology/Paper 2/MSO 04 Gemini Notes.md",
+    "X Misc/Untitled.md",
+    "X Misc/Untitled 1.md",
+    "X Misc/TM Test.canvas",
+    "X Misc/Said al Khatir!.md",
+    "X Misc/mrunalpatelPCB01.md",
     "06 Sociology/Paper 2/MSO 01 Gemini.md",
+    "06 Sociology/Paper 2/~~$MSO 04 Gemini Notes.pdf",
     "06 Sociology/Paper 2/MSO 04 Gemini Notes.pdf",
     "Untitled 1.md",
     "Random Notes.md",
@@ -200,9 +225,6 @@
     "11 Finance & Data/Foundations of Modern Finance 1.md",
     "TM Test.canvas",
     "X Misc/Untitled.canvas",
-    "X Misc/Fonts.md",
-    "Recording 20250530213147.webm",
-    "Said al Khatir!.md",
-    "mrunalpatelPCB01.md"
+    "Recording 20250530213147.webm"
   ]
 }

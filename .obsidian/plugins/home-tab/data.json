@@ -7,15 +7,15 @@
   },
   "logoScale": 1.2,
   "iconColorType": "default",
-  "wordmark": "Obsidian",
+  "wordmark": "Muhammedalmaas",
   "customFont": "interfaceFont",
   "fontSize": "4em",
   "fontColorType": "default",
   "fontWeight": 600,
-  "maxResults": 5,
+  "maxResults": 7,
   "showbookmarkedFiles": true,
-  "showRecentFiles": false,
-  "maxRecentFiles": 5,
+  "showRecentFiles": true,
+  "maxRecentFiles": 6,
   "storeRecentFile": true,
   "showPath": true,
   "selectionHighlight": "default",
@@ -24,18 +24,34 @@
   "unresolvedLinks": false,
   "recentFilesStore": [
     {
-      "filepath": "Home.md",
-      "timestamp": 1748702691386
+      "filepath": "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
+      "timestamp": 1749127832177
     },
     {
-      "filepath": "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
-      "timestamp": 1748702492843
+      "filepath": "05 Essay/Essay Notes Rahul W.md",
+      "timestamp": 1749127831529
+    },
+    {
+      "filepath": "05 Essay/Quotes.md",
+      "timestamp": 1749127829043
+    },
+    {
+      "filepath": "06 Sociology/Value Addition/Socio PYQ Themes.md",
+      "timestamp": 1749127594695
+    },
+    {
+      "filepath": "06 Sociology/Value Addition/FUNDAMENTALS OF SOCIOLOGY (Jargon, Examples, Thinkers).md",
+      "timestamp": 1749126609070
+    },
+    {
+      "filepath": "06 Sociology/Value Addition/INDIAN SOCIETY (Jargon, Examples, Thinkers).md",
+      "timestamp": 1749126126281
     }
   ],
   "bookmarkedFileStore": [],
   "searchDelay": 0,
   "replaceNewTabs": true,
-  "newTabOnStart": false,
+  "newTabOnStart": true,
   "closePreviousSessionTabs": false,
   "omnisearch": false,
   "showOmnisearchExcerpt": true,

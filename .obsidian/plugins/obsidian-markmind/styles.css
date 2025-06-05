@@ -1463,6 +1463,12 @@ th {
     margin-top: -5px;
 }
 
+.mm-node-right.mm-mindmap7-node>.mm-node-bar {
+    right: -20px;
+    top: 50%;
+    margin-top: -5px;
+}
+
 .mm-node-right.mm-mindmap1-node>.mm-node-bar {
     right: -20px;
     top: 50%;
@@ -1502,6 +1508,12 @@ th {
 }
 
 .mm-node-left.mm-mindmap2-node>.mm-node-bar {
+    left: -20px;
+    top: 50%;
+    margin-top: -5px;
+}
+
+.mm-node-left.mm-mindmap7-node>.mm-node-bar {
     left: -20px;
     top: 50%;
     margin-top: -5px;
