@@ -1,0 +1,16 @@
+{
+  "name": "phrasesync",
+  "version": "1.0.0",
+  "description": "Auto-suggests internal links in Obsidian from note titles, headings, and block references.",
+  "main": "main.js",
+  "author": "Digvijay S. Todiwal",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "dev": "node esbuild.config.mjs development"
+  },
+  "devDependencies": {
+    "esbuild": "^0.19.0",
+    "typescript": "^5.0.0"
+  }
+}
