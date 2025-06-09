@@ -106,4 +106,38 @@ tags: #UPSC #Sociology #KarlMarx #Paper1
 ```
 
 
+```argdown 
+  
+[The material base determines the social superstructure] 
+-> [History progresses through dialectical materialism and class struggle] 
+-> [Capitalism is inherently exploitative due to surplus value extraction] 
+-> [Alienation is a key consequence of capitalist production] 
+-> [Class consciousness will lead to proletarian revolution] 
+-> [A classless communist society will emerge] 
+
+[Capitalism is inherently exploitative due to surplus value extraction] 
+-> [Bourgeoisie control means of production and dominate the proletariat] 
+-> [Proletariat is alienated from product, process, self, and others] 
+
+[Alienation is a key consequence of capitalist production] 
+-> [Proletariat is alienated from product, process, self, and others] 
+
+[Proletariat is alienated from product, process, self, and others] 
+-> [Class consciousness will lead to proletarian revolution] 
+
+[Marx’s ideas are foundational to conflict theory in sociology] 
+<- [The material base determines the social superstructure] 
+<- [Capitalism is inherently exploitative due to surplus value extraction] 
+
+[Critics argue Marx underestimates the role of ideology and culture] 
+-/-> [The material base determines the social superstructure] 
+-/-> [History progresses through dialectical materialism and class struggle]
+
+[Neo-Marxists (e.g., Gramsci) extended Marx's ideas to include hegemony] 
+=> [The material base determines the social superstructure] 
+
+[Weber critiqued Marx’s economic determinism by highlighting multidimensional stratification] 
+-/-> [Capitalism is inherently exploitative due to surplus value extraction]
+
+```
 

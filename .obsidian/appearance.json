@@ -6,5 +6,8 @@
   "textFontFamily": "MS Reference Sans Serif,Montserrat,Trebuchet MS,Liberation Mono",
   "accentColor": "#1ce933",
   "interfaceFontFamily": "",
-  "baseFontSizeAction": true
+  "baseFontSizeAction": true,
+  "enabledCssSnippets": [
+    "mermaid-full-size"
+  ]
 }

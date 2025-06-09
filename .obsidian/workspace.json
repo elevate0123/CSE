@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "06 Sociology/Paper 2/MSO 01 Gemini Notes.md",
+                "file": "06 Sociology/Value Addition/Paper 2 Crisp Notes.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -28,10 +28,35 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "MSO 01 Gemini Notes"
+              "title": "Paper 2 Crisp Notes"
+            }
+          },
+          {
+            "id": "137300ddfb318f87",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Argument Map - Arg Down.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "Argument Map - Arg Down"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -104,7 +129,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "06 Sociology/Paper 2/MSO 01 Gemini Notes.md",
+                "file": "Argument Map - Arg Down.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +139,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for MSO 01 Gemini Notes"
+              "title": "Backlinks for Argument Map - Arg Down"
             }
           },
           {
@@ -123,12 +148,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "06 Sociology/Paper 2/MSO 01 Gemini Notes.md",
+                "file": "Argument Map - Arg Down.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from MSO 01 Gemini Notes"
+              "title": "Outgoing links from Argument Map - Arg Down"
             }
           },
           {
@@ -152,17 +177,17 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "06 Sociology/Paper 2/MSO 01 Gemini Notes.md",
+                "file": "Argument Map - Arg Down.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of MSO 01 Gemini Notes"
+              "title": "Outline of Argument Map - Arg Down"
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
@@ -178,23 +203,42 @@
       "markdown-importer:Open format converter": false,
       "audio-recorder:Start/stop recording": false,
       "workspaces:Manage workspace layouts": false,
-      "homepage:Open homepage": false
+      "homepage:Open homepage": false,
+      "map-of-content:Update Map of Content": false
     }
   },
-  "active": "8a8967a5645235d5",
+  "active": "137300ddfb318f87",
   "lastOpenFiles": [
-    "06 Sociology/Value Addition/P1 Mindmaps & Graphviz Dot.md",
-    "Home.md",
-    "06 Sociology/Paper 1/04 2 Karl Marx.md",
+    "06 Sociology/Value Addition/Paper 2 Crisp Notes.md",
+    "Argument Map - Arg Down.md",
     "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
+    "06 Sociology/Value Addition/Untitled.md",
+    "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
+    "06 Sociology/Value Addition/P1 Mindmaps & Graphviz Dot.md",
+    "Random Notes.md",
+    "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
+    "06 Sociology/Paper 2/MSO 04 Gemini Notes.md",
+    "06 Sociology/Paper 2/MSO 01 Gemini Notes.md",
+    "06 Sociology/Paper 2/Colonial Rule.md",
+    "06 Sociology/Paper 2/02 Colonial Rule.md",
+    "06 Sociology/Paper 2/01 Perspectives on study of Indian Society.md",
+    "06 Sociology/Value Addition/PYQ Predictions.md",
+    "06 Sociology/Value Addition/Socio Dataset, Cases & Schemes.md",
+    "06 Sociology/Value Addition/Socio PYQ Themes.md",
+    "06 Sociology/Sociology Index.md",
+    "11 Finance & Data/Zot Template.md",
+    "11 Finance & Data/Research Workflow Setup.md",
+    "11 Finance & Data/Foundations of Modern Finance 2.md",
+    "11 Finance & Data/Foundations of Modern Finance 1.md",
+    "12 Job/Extras.md",
+    "12 Job/BA Interview Questions.md",
     "Frameworks.md",
+    "Git Sample.md",
+    "Home.md",
     "06 Sociology/Value Addition/edges_stratif.csv",
     "06 Sociology/Value Addition/nodes_stratif.csv",
     "06 Sociology/Value Addition/edges.csv",
     "06 Sociology/Value Addition/nodes.csv",
-    "06 Sociology/Value Addition/Socio Dataset, Cases & Schemes.md",
-    "06 Sociology/Value Addition/Socio PYQ Themes.md",
-    "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
     "06 Sociology/Value Addition/P1graph.png",
     "06 Sociology/Value Addition/P1Graph.dot",
     "06 Sociology/Value Addition/P1 Comsolidated Graph.dot",
@@ -202,25 +246,7 @@
     "06 Sociology/Value Addition/New Text Document.txt",
     "06 Sociology/Value Addition/MD to MM Freeplane.py",
     "06 Sociology/Value Addition/MD to MM Freeplane.txt",
-    "06 Sociology/Value Addition/PYQ Predictions.md",
-    "06 Sociology/Value Addition/INDIAN SOCIETY (Jargon, Examples, Thinkers).md",
-    "06 Sociology/Value Addition/Untitled.md",
-    "06 Sociology/Extr/Resource List.md",
-    "06 Sociology/Extr/Neha 15.md",
-    "06 Sociology/Extr/PYQs Pointers.md",
-    "06 Sociology/Value Addition/FUNDAMENTALS OF SOCIOLOGY (Jargon, Examples, Thinkers).md",
-    "06 Sociology/Paper 2/MSO 04 Gemini Notes.md",
-    "06 Sociology/Paper 2/MSO 03 Gemini Notes.md",
-    "06 Sociology/Paper 2/MSO 02 Gemini Notes.md",
-    "06 Sociology/Paper 2/MSO 01 Gemini Notes.md",
-    "06 Sociology/Sociology Index.md",
-    "05 Essay/Essay Notes Rahul W.md",
-    "05 Essay/Quotes.md",
-    "X Misc/Untitled.md",
-    "X Misc/Untitled 1.md",
     "X Misc/TM Test.canvas",
-    "X Misc/Said al Khatir!.md",
-    "X Misc/mrunalpatelPCB01.md",
     "TM Test.canvas",
     "X Misc/Untitled.canvas"
   ]

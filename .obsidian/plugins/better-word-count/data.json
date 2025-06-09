@@ -2,26 +2,18 @@
   "statusBar": [
     {
       "prefix": "",
-      "suffix": " words",
+      "suffix": " words ",
       "metric": {
         "type": 0,
         "counter": 0
       }
     },
     {
-      "prefix": "Pg",
-      "suffix": "",
+      "prefix": "",
+      "suffix": " Pages",
       "metric": {
         "type": 0,
         "counter": 5
-      }
-    },
-    {
-      "prefix": " ",
-      "suffix": " characters",
-      "metric": {
-        "type": 0,
-        "counter": 1
       }
     }
   ],

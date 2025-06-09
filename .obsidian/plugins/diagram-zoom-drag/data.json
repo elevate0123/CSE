@@ -1,0 +1,124 @@
+{
+  "supported_diagrams": [
+    {
+      "name": "Default",
+      "selector": ".diagram-zoom-drag",
+      "on": true,
+      "panels": {
+        "move": {
+          "on": true
+        },
+        "zoom": {
+          "on": true
+        },
+        "service": {
+          "on": true
+        }
+      }
+    },
+    {
+      "name": "Mermaid",
+      "selector": ".mermaid",
+      "on": true,
+      "panels": {
+        "move": {
+          "on": true
+        },
+        "zoom": {
+          "on": true
+        },
+        "service": {
+          "on": true
+        }
+      }
+    },
+    {
+      "name": "Mehrmaid",
+      "selector": ".block-language-mehrmaid",
+      "on": true,
+      "panels": {
+        "move": {
+          "on": true
+        },
+        "zoom": {
+          "on": true
+        },
+        "service": {
+          "on": true
+        }
+      }
+    },
+    {
+      "name": "PlantUML",
+      "selector": ".block-language-plantuml",
+      "on": true,
+      "panels": {
+        "move": {
+          "on": true
+        },
+        "zoom": {
+          "on": true
+        },
+        "service": {
+          "on": true
+        }
+      }
+    },
+    {
+      "name": "Graphviz",
+      "selector": ".block-language-dot",
+      "on": true,
+      "panels": {
+        "move": {
+          "on": true
+        },
+        "zoom": {
+          "on": true
+        },
+        "service": {
+          "on": true
+        }
+      }
+    }
+  ],
+  "panelsConfig": {
+    "service": {
+      "enabled": true,
+      "position": {
+        "top": "0px",
+        "right": "0px"
+      }
+    },
+    "move": {
+      "enabled": false,
+      "position": {
+        "bottom": "0px",
+        "right": "0px"
+      }
+    },
+    "zoom": {
+      "enabled": true,
+      "position": {
+        "right": "0px",
+        "top": "49.7%"
+      }
+    }
+  },
+  "diagramsPerPage": 10,
+  "foldByDefault": false,
+  "automaticFoldingOnFocusChange": true,
+  "hideOnMouseOutDiagram": true,
+  "diagramExpanded": {
+    "width": "400",
+    "widthUnit": "px",
+    "height": "400",
+    "heightUnit": "px"
+  },
+  "diagramFolded": {
+    "width": "25",
+    "widthUnit": "%",
+    "height": "25",
+    "heightUnit": "%"
+  },
+  "addHidingButton": true
+}

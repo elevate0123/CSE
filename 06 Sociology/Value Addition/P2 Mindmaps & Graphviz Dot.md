@@ -15,7 +15,6 @@ Understanding their approaches is essential, as they provide the lenses through 
 
 ### **A. Core Mindmap: Perspectives on Indian Society (Markdown)**
 
-```markdown
 ## Paper 2, Topic 1: Perspectives on the Study of Indian Society
 
 ### 1. The Core Debate: How to Study Indian Society?
@@ -207,7 +206,6 @@ This integrated approach will allow us to see the connections between these stru
 
 ### **A. Core Mindmap: Social Structure of India (Markdown)**
 
-```markdown
 ## Paper 2, Topic 2: Social Structure
 
 ### 1. Rural & Agrarian Social Structure
@@ -289,6 +287,7 @@ This integrated approach will allow us to see the connections between these stru
     - **New Middle Class:** Emerged post-liberalization (1991). Works in IT, finance, media. Characterized by consumerism and global aspirations.
     - **Role:** Often seen as agents of social change and drivers of the economy.
 
+---
 ---
 
 ### **B. Visual Mindmap: The Structure of Indian Society (Graphviz Code)**
@@ -413,7 +412,6 @@ This response will cover all five sub-topics:
 
 ### **A. Core Mindmap: Social Changes in India (Markdown)**
 
-```markdown
 ## Paper 2, Topic 3: Social Changes in India
 
 ### 1. Visions of Social Change
@@ -628,7 +626,6 @@ This response will cover:
 
 ### **A. Core Mindmap: Population & Challenges (Markdown)**
 
-```markdown
 ## Paper 2, Topics 4 & 5: Population Dynamics & Challenges of Social Transformation
 
 ### 1. Population Dynamics (Topic 4)
