@@ -1,0 +1,177 @@
+digraph Sociology_Paper_1 {
+    // GRAPH-WIDE SETTINGS
+    graph [rankdir="TB", splines=ortho, overlap=false, bgcolor="#f5f5f5", fontname="Helvetica", label="Sociology Paper 1: A Comprehensive Knowledge Graph", fontsize=20];
+    node [style="rounded,filled", fontname="Helvetica", penwidth=2];
+    edge [fontname="Helvetica", fontsize=9, color="#424242", penwidth=1.5];
+
+    // CENTRAL THINKERS (The Core Engine)
+    subgraph cluster_thinkers {
+        label = "Topic 4: Sociological Thinkers";
+        node [shape=box3d, penwidth=2.5];
+        Marx [label="Karl Marx", fillcolor="#ffebee", color="#b71c1c"];
+        Durkheim [label="Emile Durkheim", fillcolor="#e3f2fd", color="#0d47a1"];
+        Weber [label="Max Weber", fillcolor="#e8f5e9", color="#1b5e20"];
+        Parsons [label="Talcott Parsons", fillcolor="#e3f2fd", color="#0d47a1"];
+        Merton [label="R.K. Merton", fillcolor="#e3f2fd", color="#0d47a1"];
+        Mead [label="G.H. Mead", fillcolor="#e8f5e9", color="#1b5e20"];
+    }
+
+    // TOPIC 1: THE DISCIPLINE
+    subgraph cluster_discipline {
+        label = "Topic 1: The Discipline";
+        node [shape=diamond, fillcolor="#fffde7", color="#e65100"];
+        Discipline [label="Sociology:\nThe Discipline"];
+        Modernity [label="Modernity\n(Industrial & French Rev.)"];
+        Enlightenment [label="Enlightenment\n(Reason & Rationality)"];
+        CommonSense [label="Sociology vs\nCommon Sense"];
+    }
+    Enlightenment -> Modernity -> Discipline;
+    Discipline -> CommonSense;
+
+    // TOPIC 2: SOCIOLOGY AS SCIENCE
+    subgraph cluster_science {
+        label = "Topic 2: Sociology as Science";
+        node [shape=diamond, fillcolor="#fffde7", color="#e65100"];
+        Science [label="Sociology\nas Science"];
+        Positivism [label="Positivism", fillcolor="#e3f2fd", color="#0d47a1"];
+        NonPositivism [label="Non-Positivism", fillcolor="#e8f5e9", color="#1b5e20"];
+        FactValue [label="Fact, Value\n& Objectivity", shape=cylinder, fillcolor="#ede7f6", color="#4A148C"];
+    }
+    Science -> {Positivism, NonPositivism, FactValue};
+    Durkheim -> Positivism [label="is a proponent of"];
+    Weber -> NonPositivism [label="is a proponent of"];
+    Weber -> FactValue [label="proposes\nValue-Neutrality"];
+
+    // TOPIC 3: RESEARCH METHODS
+    subgraph cluster_methods {
+        label = "Topic 3: Research Methods";
+        node [shape=diamond, fillcolor="#fffde7", color="#e65100"];
+        Methods [label="Research\nMethods"];
+        Quantitative [label="Quantitative", fillcolor="#e3f2fd", color="#0d47a1"];
+        Qualitative [label="Qualitative", fillcolor="#e8f5e9", color="#1b5e20"];
+        ReliabilityValidity [label="Reliability vs\nValidity", shape=cylinder, fillcolor="#ede7f6", color="#4A148C"];
+        Sampling [label="Sampling"];
+    }
+    Methods -> {Quantitative, Qualitative, ReliabilityValidity, Sampling};
+    Positivism -> Quantitative [label="prefers"];
+    NonPositivism -> Qualitative [label="prefers"];
+
+    // TOPIC 5: STRATIFICATION
+    subgraph cluster_strat {
+        label = "Topic 5: Stratification";
+        node [shape=diamond, fillcolor="#fffde7", color="#e65100"];
+        Stratification [label="Stratification\n& Mobility"];
+        Class [label="Class", shape=ellipse];
+        Status [label="Status", shape=ellipse];
+        Party [label="Party", shape=ellipse];
+        Gender [label="Gender", shape=ellipse];
+        SocialMobility [label="Social Mobility"];
+    }
+    Stratification -> {Class, Status, Party, Gender, SocialMobility};
+    Marx -> Class [label="defines via\nMeans of Production"];
+    Weber -> {Class, Status, Party} [label="proposes\n3 dimensions"];
+
+    // TOPIC 6: WORK & ECONOMIC LIFE
+    subgraph cluster_work {
+        label = "Topic 6: Work & Economic Life";
+        node [shape=diamond, fillcolor="#fffde7", color="#e65100"];
+        Work [label="Work &\nEconomic Life"];
+        Alienation [label="Alienation", fillcolor="#ffebee", color="#b71c1c"];
+        Taylorism [label="Taylorism"];
+        FormalInformal [label="Formal-Informal\nDivide"];
+        GigEconomy [label="Gig Economy"];
+    }
+    Work -> {Alienation, Taylorism, FormalInformal, GigEconomy};
+    Marx -> Alienation [label="theorizes"];
+    Taylorism -> Alienation [label="intensifies"];
+
+    // TOPIC 7: POLITICS & SOCIETY
+    subgraph cluster_politics {
+        label = "Topic 7: Politics & Society";
+        node [shape=diamond, fillcolor="#fffde7", color="#e65100"];
+        Politics [label="Politics\n& Society"];
+        PowerAuthority [label="Power & Authority", shape=cylinder, fillcolor="#ede7f6", color="#4A148C"];
+        State [label="The State"];
+        Citizenship [label="Citizenship\n(T.H. Marshall)"];
+        SocialMovements [label="Social Movements"];
+    }
+    Politics -> {PowerAuthority, State, Citizenship, SocialMovements};
+    Weber -> PowerAuthority [label="defines 3 types of"];
+    Marx -> State [label="sees as 'executive\ncommittee'"];
+
+    // TOPIC 8: RELIGION & SOCIETY
+    subgraph cluster_religion {
+        label = "Topic 8: Religion & Society";
+        node [shape=diamond, fillcolor="#fffde7", color="#e65100"];
+        Religion [label="Religion\n& Society"];
+        SacredProfane [label="Sacred & Profane", fillcolor="#e3f2fd", color="#0d47a1"];
+        PESC [label="Protestant Ethic\n& Spirit of Capitalism", fillcolor="#e8f5e9", color="#1b5e20"];
+        Secularization [label="Secularization\nDebate", shape=cylinder, fillcolor="#ede7f6", color="#4A148C"];
+    }
+    Religion -> {SacredProfane, PESC, Secularization};
+    Durkheim -> SacredProfane [label="theorizes"];
+    Weber -> PESC [label="theorizes"];
+    Marx -> Religion [label="sees as\n'Opium of Masses'"];
+
+    // TOPIC 9: KINSHIP
+    subgraph cluster_kinship {
+        label = "Topic 9: Systems of Kinship";
+        node [shape=diamond, fillcolor="#fffde7", color="#e65100"];
+        Kinship [label="Systems of\nKinship"];
+        Family [label="Family"];
+        Marriage [label="Marriage"];
+        Patriarchy [label="Patriarchy", fillcolor="#ffebee", color="#b71c1c"];
+    }
+    Kinship -> {Family, Marriage, Patriarchy};
+    Gender -> Patriarchy [label="is structured by"];
+
+    // TOPIC 10: SOCIAL CHANGE
+    subgraph cluster_change {
+        label = "Topic 10: Social Change";
+        node [shape=diamond, fillcolor="#fffde7", color="#e65100"];
+        SocialChange [label="Social Change"];
+        DependencyTheory [label="Dependency Theory\n(A.G. Frank)", fillcolor="#ffebee", color="#b71c1c"];
+        ModernizationTheory [label="Modernization Theory", fillcolor="#e3f2fd", color="#0d47a1"];
+        Education [label="Education"];
+        Technology [label="Technology"];
+    }
+    SocialChange -> {DependencyTheory, ModernizationTheory, Education, Technology};
+    DependencyTheory -> Marx [label="is influenced by"];
+    ModernizationTheory -> Parsons [label="is influenced by"];
+
+    // INTER-TOPIC & THINKER-CONCEPT CONNECTIONS
+    // Marx Connections
+    Marx -> {Discipline, Science, Stratification, Work, Politics, Religion, SocialChange} [style=dashed, color="#b71c1c"];
+    
+    // Durkheim Connections
+    Durkheim -> {Discipline, Science, Stratification, Religion} [style=dashed, color="#0d47a1"];
+    Durkheim -> SocialMobility [label="theorizes DoL as\na driver of"];
+    
+    // Weber Connections
+    Weber -> {Discipline, Science, Stratification, Work, Politics, Religion} [style=dashed, color="#1b5e20"];
+    
+    // Parsons & Merton Connections
+    Parsons -> SocialChange [label="theorizes\nStructural Differentiation"];
+    Merton -> Stratification [label="theorizes\nAnomie/Deviance"];
+    Merton -> Parsons [label="critiques\n'Grand Theory'", style=dashed];
+    
+    // Mead Connections
+    Mead -> Science [label="informs\nSymbolic Interactionism"];
+    
+    // Cross-Concept Connections
+    Rationalization [label="Rationalization", shape=star, fillcolor="#fff9c4"];
+    Weber -> Rationalization [label="identifies as\nmaster process"];
+    Rationalization -> {PESC, Work, Politics} [label="drives"];
+    Bureaucracy [label="Bureaucracy"];
+    Work -> Bureaucracy;
+    Politics -> Bureaucracy;
+    Rationalization -> Bureaucracy;
+    
+    Anomie [label="Anomie", shape=star, fillcolor="#fff9c4"];
+    Durkheim -> Anomie [label="theorizes in DoL"];
+    Merton -> Anomie [label="redefines as\nStrain Theory"];
+    
+    ReferenceGroup [label="Reference Group"];
+    Merton -> ReferenceGroup;
+    SocialMobility -> ReferenceGroup [label="is explained by"];
+}

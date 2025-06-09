@@ -1,0 +1,48 @@
+Id,Label,Type,School
+marx,Karl Marx,Thinker,Conflict
+durkheim,Emile Durkheim,Thinker,Functionalist
+weber,Max Weber,Thinker,Interpretive
+parsons,Talcott Parsons,Thinker,Functionalist
+merton,R.K. Merton,Thinker,Functionalist
+mead,G.H. Mead,Thinker,Interpretive
+topic1,1. The Discipline,Topic,Foundation
+topic2,2. Sociology as Science,Topic,Foundation
+topic3,3. Research Methods,Topic,Foundation
+topic4,4. Sociological Thinkers,Topic,Core
+topic5,5. Stratification,Topic,Substantive
+topic6,6. Work & Economic Life,Topic,Substantive
+topic7,7. Politics & Society,Topic,Substantive
+topic8,8. Religion & Society,Topic,Substantive
+topic9,9. Systems of Kinship,Topic,Substantive
+topic10,10. Social Change,Topic,Substantive
+modernity,Modernity,Concept,Foundation
+enlightenment,Enlightenment,Concept,Foundation
+positivism,Positivism,Theory,Methodology
+non_positivism,Non-Positivism,Theory,Methodology
+fact_value,Fact-Value Debate,Concept,Methodology
+quantitative,Quantitative Methods,Concept,Methodology
+qualitative,Qualitative Methods,Concept,Methodology
+hm,Historical Materialism,Theory,Conflict
+class_struggle,Class Struggle,Theory,Conflict
+alienation,Alienation,Concept,Conflict
+dol,Division of Labour,Theory,Functionalist
+social_fact,Social Fact,Concept,Functionalist
+anomie,Anomie,Concept,Functionalist
+suicide,Suicide Theory,Theory,Functionalist
+pesc,Protestant Ethic & Spirit of Capitalism,Theory,Interpretive
+rationalization,Rationalization,Concept,Interpretive
+bureaucracy,Bureaucracy,Concept,Interpretive
+authority,Authority (Domination),Theory,Interpretive
+strat_dims,Class, Status, Party,Theory,Interpretive
+social_system,Social System,Theory,Functionalist
+agil,AGIL Paradigm,Theory,Functionalist
+pattern_variables,Pattern Variables,Theory,Functionalist
+middle_range,Middle-Range Theory,Theory,Methodology
+manifest_latent,Manifest/Latent Functions,Concept,Functionalist
+strain_theory,Strain Theory (Anomie),Theory,Functionalist
+ref_group,Reference Group Theory,Theory,Functionalist
+self,The Self (I & Me),Concept,Interpretive
+symbolic_interaction,Symbolic Interactionism,Theory,Interpretive
+patriarchy,Patriarchy,Concept,Conflict
+dependency_theory,Dependency Theory,Theory,Conflict
+modernization_theory,Modernization Theory,Theory,Functionalist

@@ -1,0 +1,50 @@
+Source,Target,Type,Label
+enlightenment,modernity,Directed,Led to
+modernity,topic1,Directed,Emergence of
+marx,hm,Directed,Theorizes
+marx,class_struggle,Directed,Theorizes
+marx,alienation,Directed,Theorizes
+marx,dependency_theory,Directed,Influences
+durkheim,social_fact,Directed,Theorizes
+durkheim,dol,Directed,Theorizes
+durkheim,suicide,Directed,Theorizes
+durkheim,anomie,Directed,Theorizes
+durkheim,positivism,Directed,Proponent of
+weber,pesc,Directed,Theorizes
+weber,rationalization,Directed,Theorizes
+weber,bureaucracy,Directed,Theorizes
+weber,authority,Directed,Theorizes
+weber,strat_dims,Directed,Theorizes
+weber,non_positivism,Directed,Proponent of
+weber,fact_value,Directed,Proposes Value-Neutrality
+parsons,social_system,Directed,Theorizes
+parsons,agil,Directed,Theorizes
+parsons,pattern_variables,Directed,Theorizes
+parsons,modernization_theory,Directed,Influences
+merton,middle_range,Directed,Proposes
+merton,manifest_latent,Directed,Theorizes
+merton,strain_theory,Directed,Theorizes
+merton,ref_group,Directed,Theorizes
+merton,parsons,Directed,Critiques 'Grand Theory'
+mead,self,Directed,Theorizes
+mead,symbolic_interaction,Directed,Founds
+topic2,positivism,Directed,Includes
+topic2,non_positivism,Directed,Includes
+topic3,quantitative,Directed,Includes
+topic3,qualitative,Directed,Includes
+positivism,quantitative,Directed,Prefers
+non_positivism,qualitative,Directed,Prefers
+topic5,strat_dims,Directed,Analyzed by
+topic5,class_struggle,Directed,Analyzed by
+topic6,alienation,Directed,Central concept in
+topic7,authority,Directed,Central concept in
+topic7,class_struggle,Directed,Central concept in
+topic8,pesc,Directed,Central theory in
+topic8,social_fact,Directed,Analyzed as
+topic9,patriarchy,Directed,Central concept in
+topic10,dependency_theory,Directed,Central theory in
+topic10,modernization_theory,Directed,Central theory in
+rationalization,bureaucracy,Directed,Leads to
+rationalization,pesc,Directed,Example of
+dol,anomie,Directed,Can lead to
+strain_theory,anomie,Directed,Is a theory of
