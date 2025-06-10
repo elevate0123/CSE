@@ -1,6 +1,5 @@
 
 ---
-
 # UPSC Sociology Optional - Paper 2 Notes
 
 ## Section A: Introducing Indian Society

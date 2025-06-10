@@ -1,8 +1,8 @@
 {
   "translucency": true,
-  "theme": "obsidian",
+  "theme": "moonstone",
   "baseFontSize": 13,
-  "cssTheme": "Things",
+  "cssTheme": "Atom",
   "textFontFamily": "MS Reference Sans Serif,Montserrat,Trebuchet MS,Liberation Mono",
   "accentColor": "#1ce933",
   "interfaceFontFamily": "",

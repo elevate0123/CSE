@@ -8,30 +8,6 @@
         "type": "tabs",
         "children": [
           {
-            "id": "275c7fa49cc5bda9",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
-                "mode": "source",
-                "source": false,
-                "backlinks": true,
-                "backlinkOpts": {
-                  "collapseAll": false,
-                  "extraContext": false,
-                  "sortOrder": "alphabetical",
-                  "showSearch": false,
-                  "searchQuery": "",
-                  "backlinkCollapsed": false,
-                  "unlinkedCollapsed": true
-                }
-              },
-              "icon": "lucide-file",
-              "title": "Paper 1 Crisp Notes"
-            }
-          },
-          {
             "id": "ef4b91983ad4338f",
             "type": "leaf",
             "state": {
@@ -56,12 +32,12 @@
             }
           },
           {
-            "id": "ec8e233fc13ca4c9",
+            "id": "3c4f81b04ca1ffdc",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "06 Sociology/Value Addition/Matrix - Self Evaluation Answers.md",
+                "file": "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -76,10 +52,11 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "Matrix - Self Evaluation Answers"
+              "title": "P2 Mindmaps & Graphviz Dot"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -136,7 +113,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 244.5
+    "width": 291.5
   },
   "right": {
     "id": "22799904aa594e76",
@@ -200,13 +177,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
+                "file": "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Paper 1 Crisp Notes"
+              "title": "Outline of P2 Mindmaps & Graphviz Dot"
             }
           }
         ],
@@ -228,23 +205,27 @@
       "workspaces:Manage workspace layouts": false
     }
   },
-  "active": "275c7fa49cc5bda9",
+  "active": "3c4f81b04ca1ffdc",
   "lastOpenFiles": [
     "06 Sociology/Value Addition/Paper 2 Crisp Notes.md",
+    "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
+    "06 Sociology/Value Addition/P1 Mindmaps & Graphviz Dot.md",
+    "06 Sociology/Value Addition/MSO 01-02-03-04 High Yield PYQs.md",
     "06 Sociology/Value Addition/Matrix - Self Evaluation Answers.md",
-    "06 Sociology/Paper 2/Paper 2 Crisp Notes.pdf",
+    "06 Sociology/Value Addition/FUNDAMENTALS OF SOCIOLOGY (Jargon, Examples, Thinkers).md",
+    "06 Sociology/Value Addition/INDIAN SOCIETY (Jargon, Examples, Thinkers).md",
+    "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
     "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
     "04 GS 4 Ethics/Case Study Frameworks.md",
-    "04 GS 4 Ethics/PYQ Pointers.md",
+    "04 GS 4 Ethics/Sec A Frameworks and Examples.md",
     "04 GS 4 Ethics/Ethics Theory.md",
     "04 GS 4 Ethics/Case Study.md",
+    "06 Sociology/Value Addition/Untitled.md",
+    "06 Sociology/Paper 2/Paper 2 Crisp Notes.pdf",
+    "04 GS 4 Ethics/PYQ Pointers.md",
     "Argument Map - Arg Down.md",
     "06 Sociology/Paper 2/Paper 1 Crisp Notes.pdf",
-    "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
-    "06 Sociology/Value Addition/Untitled.md",
-    "06 Sociology/Value Addition/P1 Mindmaps & Graphviz Dot.md",
     "Random Notes.md",
-    "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
     "06 Sociology/Paper 2/MSO 04 Gemini Notes.md",
     "06 Sociology/Paper 2/MSO 01 Gemini Notes.md",
     "06 Sociology/Paper 2/Colonial Rule.md",
@@ -254,9 +235,6 @@
     "06 Sociology/Value Addition/Socio Dataset, Cases & Schemes.md",
     "06 Sociology/Value Addition/Socio PYQ Themes.md",
     "06 Sociology/Sociology Index.md",
-    "11 Finance & Data/Zot Template.md",
-    "11 Finance & Data/Research Workflow Setup.md",
-    "11 Finance & Data/Foundations of Modern Finance 2.md",
     "06 Sociology/Value Addition/edges_stratif.csv",
     "06 Sociology/Value Addition/nodes_stratif.csv",
     "06 Sociology/Value Addition/edges.csv",
