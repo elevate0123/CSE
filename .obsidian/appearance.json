@@ -1,9 +1,9 @@
 {
   "translucency": true,
-  "theme": "moonstone",
-  "baseFontSize": 13,
+  "theme": "obsidian",
+  "baseFontSize": 15,
   "cssTheme": "Prism",
-  "textFontFamily": "MS Reference Sans Serif,Montserrat,Trebuchet MS,Liberation Mono",
+  "textFontFamily": "Inter",
   "accentColor": "#1ce933",
   "interfaceFontFamily": "",
   "baseFontSizeAction": true,
