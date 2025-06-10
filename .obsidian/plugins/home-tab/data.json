@@ -1,5 +1,5 @@
 {
-  "logoType": "default",
+  "logoType": "oldLogo",
   "logo": {
     "lucideIcon": "",
     "imagePath": "",
@@ -9,7 +9,7 @@
   "iconColorType": "default",
   "wordmark": "Muhammedalmaas",
   "customFont": "custom",
-  "fontSize": "9em",
+  "fontSize": "5em",
   "fontColorType": "default",
   "fontWeight": 500,
   "maxResults": 7,
@@ -24,28 +24,28 @@
   "unresolvedLinks": false,
   "recentFilesStore": [
     {
-      "filepath": "Argument Map - Arg Down.md",
-      "timestamp": 1749492013890
+      "filepath": "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
+      "timestamp": 1749547473316
     },
     {
       "filepath": "06 Sociology/Value Addition/Paper 2 Crisp Notes.md",
-      "timestamp": 1749491518306
+      "timestamp": 1749547471559
     },
     {
-      "filepath": "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
-      "timestamp": 1749491501334
+      "filepath": "06 Sociology/Value Addition/Matrix - Self Evaluation Answers.md",
+      "timestamp": 1749547470464
     },
     {
-      "filepath": "06 Sociology/Value Addition/Untitled.md",
-      "timestamp": 1749491496181
+      "filepath": "04 GS 4 Ethics/Case Study Frameworks.md",
+      "timestamp": 1749535641654
     },
     {
-      "filepath": "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
-      "timestamp": 1749491054335
+      "filepath": "04 GS 4 Ethics/PYQ Pointers.md",
+      "timestamp": 1749535633529
     },
     {
-      "filepath": "06 Sociology/Value Addition/P1 Mindmaps & Graphviz Dot.md",
-      "timestamp": 1749484863205
+      "filepath": "04 GS 4 Ethics/Ethics Theory.md",
+      "timestamp": 1749533537776
     }
   ],
   "bookmarkedFileStore": [],

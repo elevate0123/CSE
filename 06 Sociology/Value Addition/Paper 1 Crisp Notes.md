@@ -1,7 +1,7 @@
 
 ---
 
-### **UPSC Sociology Optional - Paper 1 Notes**
+## UPSC Sociology Optional - Paper 1 Notes
 
 ### **Chapter 1: Sociology - The Discipline**
 
@@ -712,8 +712,8 @@ graph TD
         end
 
         subgraph Base [Economic Foundation - Mode of Production]
-            D{Relations of Production <br/> (Class Structure)}
-            E{Forces of Production <br/> (Technology, Labour)}
+            D{Relations of Production <br/> Class Structure}
+            E{Forces of Production <br/> Technology, Labour}
         end
 
         Base -- Determines --> Superstructure;
@@ -808,13 +808,6 @@ graph TD
 
 6.  **Conclusion**
     *   The Mode of Production is Marx's key analytical tool for classifying societies and understanding historical dynamics. It provides a structured way to analyze how a society's economic organization generates its class structure, conflicts, and potential for revolutionary transformation.
-
----
-
-*(I will proceed with Alienation and Class Struggle next, following this structure.)*
-
-
-Perfect. Continuing with Karl Marx.
 
 ---
 
@@ -2454,7 +2447,6 @@ graph TD
 ---
 ---
 
-
 ### **Chapter 10: Social Change in Modern Society**
 
 **Introduction**
@@ -2597,7 +2589,7 @@ graph TD
 
 ## EXTRAs - Horizontal Coverage + Value Sprinkling!
 
-### **Chapter 11: Peripheral & Cross-Cutting Themes**
+### Extra Unit 11: Peripheral & Cross-Cutting Themes
 
 **Introduction**
 *   This chapter consolidates key sociological debates and concepts that cut across multiple syllabus topics. These themes are crucial for providing depth, nuance, and a contemporary edge to answers, and for tackling questions that require a synthetic, multi-dimensional approach.
@@ -2755,18 +2747,7 @@ graph TD
 
 ---
 ---
-
-This is an excellent final check, pushing for that extra 5% that separates a great answer from a truly exceptional one. You are right; relying solely on the explicit syllabus and past trends is good, but preparing for "bouncers" and having unique "sprinkles" is what top-tier preparation is about.
-
-Based on contemporary events and the direction sociology is heading, here are a few more high-impact, forward-looking themes. These are not just peripheral; they are emerging as central to 21st-century sociology.
-
-I will add one more chapter to the notes: **"Chapter 12: Emerging Horizons and Contemporary Discourses."**
-
----
-
-### **UPSC Sociology Optional - Paper 1 Notes**
-
-### **Chapter 12: Emerging Horizons and Contemporary Discourses**
+### Extra Unit 12: Emerging Horizons and Contemporary Discourses
 
 **Introduction**
 *   This chapter addresses cutting-edge themes and concepts that are shaping contemporary sociological thought. While not always explicitly in the syllabus, these topics provide a sophisticated lens to analyze the modern world and offer unique points for high-scoring answers, demonstrating an awareness of the discipline's evolving frontiers.
@@ -2848,7 +2829,6 @@ I will add one more chapter to the notes: **"Chapter 12: Emerging Horizons and C
 
 ---
 ---
-
 ### **Final Comprehensive Tables for Sociology Paper 1**
 
 #### **Table 1: Core Sociological Perspectives**
@@ -2922,106 +2902,127 @@ I will add one more chapter to the notes: **"Chapter 12: Emerging Horizons and C
 | 4. | **Human Development** | A narrow focus on economic growth instead of human well-being. | Expand human **capabilities** (health, education, freedom). | Amartya Sen |
 
 ---
-
 ## Final Comprehensive Tables for Sociology Paper 1: Quotes & Keywords
 
 ### Table 8: High-Impact Sociological Quotes (Expanded)
 
-| **S.No.** | **Quote** | **Author** | **Best used for...** |
-| :--- | :--- | :--- | :--- |
-| 1. | *"The first wisdom of sociology is this: things are not what they seem."* | Peter Berger | Introduction to any question that requires debunking common sense or revealing latent functions. |
-| 2. | *"The sociological imagination enables us to grasp history and biography and the relations between the two within society."* | C. Wright Mills | Introduction to the scope of sociology; linking personal troubles to public issues (e.g., unemployment, divorce). |
-| 3. | *"The history of all hitherto existing society is the history of class struggles."* | Karl Marx | Introduction to any question on Marx, class, conflict, or stratification. |
-| 4. | *"It is not the consciousness of men that determines their being, but, on the contrary, their social being that determines their consciousness."* | Karl Marx | Explaining Historical Materialism; contrasting with Weber; discussing ideology. |
-| 5. | *"Religion is the opium of the people."* | Karl Marx | Critiquing the function of religion; explaining ideology and false consciousness. |
-| 6. | *"Treat social facts as things."* | Emile Durkheim | Explaining the positivist method; defining sociology's subject matter; justifying a scientific approach. |
-| 7. | *"When the collective conscience is weakened, society is threatened with disintegration."* | Emile Durkheim | Explaining anomie, social solidarity, and the function of norms. |
-| 8. | *"The specialist without spirit, the sensualist without heart; this nullity imagines that it has attained a level of civilization never before achieved."* | Max Weber | Concluding an answer on bureaucracy or rationalization, highlighting the "iron cage" and disenchantment. |
-| 9. | *"Sociology is a science concerning itself with the interpretive understanding of social action and thereby with a causal explanation of its course and effects."* | Max Weber | Defining the scope and method of Weberian sociology (`Verstehen`). |
-| 10. | *"Society and self are twin-born."* | G.H. Mead | Explaining the relationship between the individual and society; self and identity. |
-| 11. | *"Sociology has a body of concepts, methods and data, commonsense has none."* | Andre Beteille | Directly contrasting sociology with common sense. |
-| 12. | *"If men define situations as real, they are real in their consequences."* | W.I. Thomas | Explaining social construction of reality; the power of subjective meaning (Weber, Mead). |
-| 13. | *"The problem of the 20th century is the problem of the color-line."* | W.E.B. Du Bois | Introducing answers on race, ethnicity, and stratification. A classic quote. |
-| 14. | *"One is not born, but rather becomes, a woman."* | Simone de Beauvoir | Introducing answers on gender as a social construct; distinguishing sex from gender. |
-| 15. | *"Power is everywhere... not because it embraces everything, but because it comes from everywhere."* | Michel Foucault | Explaining the modern, diffused nature of power (biopower, discourse) beyond the state. |
-| 16. | *"We live in a 'risk society' where the central issue is no longer the distribution of wealth, but the distribution of risk."* | Ulrich Beck | Analyzing contemporary social change, environment, and technology. |
-| 17. | *"Capitalism born of surveillance."* | Shoshana Zuboff | Providing a sharp, contemporary critique of the digital economy and its new form of power. |
-| 18. | *"Development consists of the removal of various types of unfreedoms that leave people with little choice and little opportunity."* | Amartya Sen | Defining the Human Development paradigm; critiquing purely economic models of development. |
+| **S.No.** | **Quote**                                                                                                                                                          | **Author**         | **Best used for...**                                                                                              |
+| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------- | :---------------------------------------------------------------------------------------------------------------- |
+| 1.        | *"The first wisdom of sociology is this: things are not what they seem."*                                                                                          | Peter Berger       | Introduction to any question that requires debunking common sense or revealing latent functions.                  |
+| 2.        | *"The sociological imagination enables us to grasp history and biography and the relations between the two within society."*                                       | C. Wright Mills    | Introduction to the scope of sociology; linking personal troubles to public issues (e.g., unemployment, divorce). |
+| 3.        | *"The history of all hitherto existing society is the history of class struggles."*                                                                                | Karl Marx          | Introduction to any question on Marx, class, conflict, or stratification.                                         |
+| 4.        | *"It is not the consciousness of men that determines their being, but, on the contrary, their social being that determines their consciousness."*                  | Karl Marx          | Explaining Historical Materialism; contrasting with Weber; discussing ideology.                                   |
+| 5.        | *"Religion is the opium of the people."*                                                                                                                           | Karl Marx          | Critiquing the function of religion; explaining ideology and false consciousness.                                 |
+| 6.        | *"Treat social facts as things."*                                                                                                                                  | Emile Durkheim     | Explaining the positivist method; defining sociology's subject matter; justifying a scientific approach.          |
+| 7.        | *"When the collective conscience is weakened, society is threatened with disintegration."*                                                                         | Emile Durkheim     | Explaining anomie, social solidarity, and the function of norms.                                                  |
+| 8.        | *"The specialist without spirit, the sensualist without heart; this nullity imagines that it has attained a level of civilization never before achieved."*         | Max Weber          | Concluding an answer on bureaucracy or rationalization, highlighting the "iron cage" and disenchantment.          |
+| 9.        | *"Sociology is a science concerning itself with the interpretive understanding of social action and thereby with a causal explanation of its course and effects."* | Max Weber          | Defining the scope and method of Weberian sociology (`Verstehen`).                                                |
+| 10.       | *"Society and self are twin-born."*                                                                                                                                | G.H. Mead          | Explaining the relationship between the individual and society; self and identity.                                |
+| 11.       | *"Sociology has a body of concepts, methods and data, commonsense has none."*                                                                                      | Andre Beteille     | Directly contrasting sociology with common sense.                                                                 |
+| 12.       | *"If men define situations as real, they are real in their consequences."*                                                                                         | W.I. Thomas        | Explaining social construction of reality; the power of subjective meaning (Weber, Mead).                         |
+| 13.       | *"The problem of the 20th century is the problem of the color-line."*                                                                                              | W.E.B. Du Bois     | Introducing answers on race, ethnicity, and stratification. A classic quote.                                      |
+| 14.       | *"One is not born, but rather becomes, a woman."*                                                                                                                  | Simone de Beauvoir | Introducing answers on gender as a social construct; distinguishing sex from gender.                              |
+| 15.       | *"Power is everywhere... not because it embraces everything, but because it comes from everywhere."*                                                               | Michel Foucault    | Explaining the modern, diffused nature of power (biopower, discourse) beyond the state.                           |
+| 16.       | *"We live in a 'risk society' where the central issue is no longer the distribution of wealth, but the distribution of risk."*                                     | Ulrich Beck        | Analyzing contemporary social change, environment, and technology.                                                |
+| 17.       | *"Capitalism born of surveillance."*                                                                                                                               | Shoshana Zuboff    | Providing a sharp, contemporary critique of the digital economy and its new form of power.                        |
+| 18.       | *"Development consists of the removal of various types of unfreedoms that leave people with little choice and little opportunity."*                                | Amartya Sen        | Defining the Human Development paradigm; critiquing purely economic models of development.                        |
 
 ---
-
 ### Table 9: Sociological Jargon & Keyword Bank (Expanded)
 
-| **S.No.** | **Keyword/Jargon** | **Brief Meaning & Context** |
-| :--- | :--- | :--- |
-| **A.** | **General & Methodological Concepts** | |
-| 1. | **Sociological Imagination** | Linking personal troubles to public issues (Mills). |
-| 2. | **Gemeinschaft/Gesellschaft** | Community (traditional) vs. Society/Association (modern) (Tönnies). |
-| 3. | **Epistemology / Ontology** | Theory of knowledge (how we know) / Theory of being (what is real). |
-| 4. | **Value-Neutrality** | The duty of sociologists to remain impartial and free of personal bias (Weber). |
-| 5. | **Reflexivity** | Critically examining one's own research process and biases (Gouldner). |
-| 6. | **Triangulation** | Using multiple methods to study a single problem to increase validity (Denzin). |
-| 7. | **Idiographic / Nomothetic** | Study of unique cases (History) vs. Search for general laws (Sociology). |
-| **B.** | **Stratification & Inequality Concepts** | |
-| 8. | **Intersectionality** | The interconnected nature of social categorizations like race, class, and gender (Crenshaw). |
-| 9. | **Social Capital** | Resources embedded in social networks (Bourdieu, Putnam). |
-| 10. | **Cultural Capital** | Non-economic assets that promote social mobility (e.g., education, style of speech) (Bourdieu). |
-| 11. | **Habitus** | Internalized dispositions that guide our actions within a social field (Bourdieu). |
-| 12. | **Relative Deprivation** | The gap between expectations and reality, felt in comparison to a reference group (Merton). |
-| 13. | **Social Exclusion** | A process of being shut out from the social, political, and economic mainstream. |
-| 14. | **Patriarchy** | A social system of male domination over women (Walby). |
-| **C.** | **Thinker-Specific Jargon** | |
-| 15. | **Historical Materialism** | Marx's theory that material/economic conditions drive history. |
-| 16. | **Mode of Production** | The combination of forces and relations of production that defines an era (Marx). |
-| 17. | **Alienation** | Estrangement from one's work, products, self, and others under capitalism (Marx). |
-| 18. | **Class-for-itself** | A social class possessing revolutionary class consciousness (Marx). |
-| 19. | **Commodity Fetishism** | Attributing mystical powers to goods, obscuring the human labour behind them (Marx). |
-| 20. | **Social Fact** | External and constraining ways of acting, the subject matter of sociology (Durkheim). |
-| 21. | **Collective Conscience** | The shared beliefs and moral attitudes that operate as a unifying force (Durkheim). |
-| 22. | **Anomie** | A state of normlessness; a breakdown of social regulation (Durkheim, Merton). |
-| 23. | **Sacred/Profane** | The fundamental division of the world in religion (Durkheim). |
-| 24. | **Collective Effervescence** | The high emotional energy in collective rituals that reinforces social bonds (Durkheim). |
-| 25. | **Rationalization** | The historical process where reason and efficiency replace tradition and emotion (Weber). |
-| 26. | **Verstehen** | Empathetic or interpretive understanding of social action (Weber). |
-| 27. | **Iron Cage** | The trap of dehumanizing rationality in modern bureaucratic society (Weber). |
-| 28. | **Protestant Ethic** | The value system of hard work and worldly asceticism that aided capitalism's rise (Weber). |
-| 29. | **AGIL Framework** | The four functional prerequisites of any social system (Parsons). |
-| 30. | **Pattern Variables** | The five dichotomous choices of action that define roles and societies (Parsons). |
-| 31. | **Latent/Manifest Functions** | Unintended/intended consequences of a social pattern (Merton). |
-| 32. | **Generalized Other** | The internalized attitude of the whole community (Mead). |
-| **D.** | **Contemporary & Advanced Concepts** | |
-| 33. | **Structuration** | The two-way process where structure and agency create each other (Giddens). |
-| 34. | **Risk Society** | A society preoccupied with managing the manufactured risks of modernity (Beck). |
-| 35. | **Glocalization** | The blending of global and local cultural forms (Robertson). |
-| 36. | **Biopower / Discourse** | Modern power focused on managing bodies and populations / Knowledge systems tied to power (Foucault). |
-| 37. | **Surveillance Capitalism** | An economic system based on the commodification of personal data (Zuboff). |
-| 38. | **Network Society** | A society whose primary structure is based on information networks, not hierarchies (Castells). |
-| 39. | **Anthropocene** | The geological age where human activity is the dominant influence on the planet. |
-| 40. | **Cultural Lag** | The gap between the change in material culture (technology) and non-material culture (norms) (Ogburn). |
+| ***S.No.*** | ***Keyword/Jargon***                       | ***Brief Meaning & Context***                                                                          |
+| :---------- | :----------------------------------------- | :----------------------------------------------------------------------------------------------------- |
+| ***A.***    | ***General & Methodological Concepts***    |                                                                                                        |
+| 1.          | **Sociological Imagination**               | Linking personal troubles to public issues (Mills).                                                    |
+| 2.          | **Gemeinschaft/Gesellschaft**              | Community (traditional) vs. Society/Association (modern) (Tönnies).                                    |
+| 3.          | **Epistemology / Ontology**                | Theory of knowledge (how we know) / Theory of being (what is real).                                    |
+| 4.          | **Value-Neutrality**                       | The duty of sociologists to remain impartial and free of personal bias (Weber).                        |
+| 5.          | **Reflexivity**                            | Critically examining one's own research process and biases (Gouldner).                                 |
+| 6.          | **Triangulation**                          | Using multiple methods to study a single problem to increase validity (Denzin).                        |
+| 7.          | **Idiographic / Nomothetic**               | Study of unique cases (History) vs. Search for general laws (Sociology).                               |
+| ***B.***    | ***Stratification & Inequality Concepts*** |                                                                                                        |
+| 8.          | **Intersectionality**                      | The interconnected nature of social categorizations like race, class, and gender (Crenshaw).           |
+| 9.          | **Social Capital**                         | Resources embedded in social networks (Bourdieu, Putnam).                                              |
+| 10.         | **Cultural Capital**                       | Non-economic assets that promote social mobility (e.g., education, style of speech) (Bourdieu).        |
+| 11.         | **Habitus**                                | Internalized dispositions that guide our actions within a social field (Bourdieu).                     |
+| 12.         | **Relative Deprivation**                   | The gap between expectations and reality, felt in comparison to a reference group (Merton).            |
+| 13.         | **Social Exclusion**                       | A process of being shut out from the social, political, and economic mainstream.                       |
+| 14.         | **Patriarchy**                             | A social system of male domination over women (Walby).                                                 |
+| ***C.***    | ***Thinker-Specific Jargon***              |                                                                                                        |
+| 15.         | **Historical Materialism**                 | Marx's theory that material/economic conditions drive history.                                         |
+| 16.         | **Mode of Production**                     | The combination of forces and relations of production that defines an era (Marx).                      |
+| 17.         | **Alienation**                             | Estrangement from one's work, products, self, and others under capitalism (Marx).                      |
+| 18.         | **Class-for-itself**                       | A social class possessing revolutionary class consciousness (Marx).                                    |
+| 19.         | **Commodity Fetishism**                    | Attributing mystical powers to goods, obscuring the human labour behind them (Marx).                   |
+| 20.         | **Social Fact**                            | External and constraining ways of acting, the subject matter of sociology (Durkheim).                  |
+| 21.         | **Collective Conscience**                  | The shared beliefs and moral attitudes that operate as a unifying force (Durkheim).                    |
+| 22.         | **Anomie**                                 | A state of normlessness; a breakdown of social regulation (Durkheim, Merton).                          |
+| 23.         | **Sacred/Profane**                         | The fundamental division of the world in religion (Durkheim).                                          |
+| 24.         | **Collective Effervescence**               | The high emotional energy in collective rituals that reinforces social bonds (Durkheim).               |
+| 25.         | **Rationalization**                        | The historical process where reason and efficiency replace tradition and emotion (Weber).              |
+| 26.         | **Verstehen**                              | Empathetic or interpretive understanding of social action (Weber).                                     |
+| 27.         | **Iron Cage**                              | The trap of dehumanizing rationality in modern bureaucratic society (Weber).                           |
+| 28.         | **Protestant Ethic**                       | The value system of hard work and worldly asceticism that aided capitalism's rise (Weber).             |
+| 29.         | **AGIL Framework**                         | The four functional prerequisites of any social system (Parsons).                                      |
+| 30.         | **Pattern Variables**                      | The five dichotomous choices of action that define roles and societies (Parsons).                      |
+| 31.         | **Latent/Manifest Functions**              | Unintended/intended consequences of a social pattern (Merton).                                         |
+| 32.         | **Generalized Other**                      | The internalized attitude of the whole community (Mead).                                               |
+| ***D.***    | ***Contemporary & Advanced Concepts***     |                                                                                                        |
+| 33.         | **Structuration**                          | The two-way process where structure and agency create each other (Giddens).                            |
+| 34.         | **Risk Society**                           | A society preoccupied with managing the manufactured risks of modernity (Beck).                        |
+| 35.         | **Glocalization**                          | The blending of global and local cultural forms (Robertson).                                           |
+| 36.         | **Biopower / Discourse**                   | Modern power focused on managing bodies and populations / Knowledge systems tied to power (Foucault).  |
+| 37.         | **Surveillance Capitalism**                | An economic system based on the commodification of personal data (Zuboff).                             |
+| 38.         | **Network Society**                        | A society whose primary structure is based on information networks, not hierarchies (Castells).        |
+| 39.         | **Anthropocene**                           | The geological age where human activity is the dominant influence on the planet.                       |
+| 40.         | **Cultural Lag**                           | The gap between the change in material culture (technology) and non-material culture (norms) (Ogburn). |
 
 ---
-
 ### **Table 10: Contemporary Sociological Books & Their Application**
 
 **Purpose:** To cite modern, credible authors and their key ideas to demonstrate contemporary awareness and add weight to your arguments. You don't need to have read them, just know the core idea and author.
 
-| **S.No.** | **Book Title (Year)** | **Author** | **Core Idea / Thesis** | **Where to Use (Topics)** |
-| :--- | :--- | :--- | :--- | :--- |
-| 1. | *The Second Machine Age* (2014) | Erik Brynjolfsson & Andrew McAfee | Digital technology and AI are creating a new economic revolution, leading to bounty (productivity) but also spread (inequality). | **Work & Economic Life:** Automation, future of work. **Social Change:** Technology as an agent of change. |
-| 2. | *Surveillance Capitalism* (2019) | Shoshana Zuboff | A new form of capitalism that profits from monitoring and modifying human behaviour through digital surveillance. | **Politics & Society:** New forms of power, ideology. **Work & Economic Life:** Critique of the digital economy. **Social Change:** Technology. |
-| 3. | *Capital in the Twenty-First Century* (2013) | Thomas Piketty | In capitalist economies, the rate of return on capital (r) tends to be greater than the rate of economic growth (g), leading to a massive and increasing concentration of wealth and inequality. | **Stratification & Mobility:** Theories of inequality, class. **Work & Economic Life:** Critique of capitalism. |
-| 4. | *Sapiens: A Brief History of Humankind* (2011) | Yuval Noah Harari | Humans conquered the world by creating and believing in shared fictions or "imagined realities" like money, nations, and human rights. | **Sociology as Science:** Social construction of reality. **Politics & Society:** Nation as an "imagined community." **Religion:** As a system of shared myths. |
-| 5. | *The Risk Society: Towards a New Modernity* (1986) | Ulrich Beck | Modern societies have shifted from distributing 'goods' (wealth) to distributing 'bads' (manufactured risks like climate change, nuclear threats). | **Social Change:** Critique of modernity. **Environment:** As a new social issue. **Science & Technology:** Unintended consequences. |
-| 6. | *The Power Elite* (1956) | C. Wright Mills | American society is ruled by a small, unified elite from the military, corporate, and political spheres. | **Politics & Society:** Theories of power, elites. **Stratification:** As a critique of pluralism. |
-| 7. | *Southern Theory* (2007) | Raewyn Connell | Argues that classical sociological theory is Eurocentric and ignores the crucial contributions and perspectives from the Global South, which developed in response to colonialism. | **Sociology - The Discipline:** Critique of the origin story. **Development & Dependency:** Post-colonial critique. |
-| 8. | *Liquid Modernity* (2000) | Zygmunt Bauman | Contemporary society is "liquid"—all social bonds, identities, and structures are fluid, fragile, and constantly changing, leading to uncertainty and anxiety. | **Social Change:** Characterizing contemporary society. **Kinship:** Explaining fluid family forms. **Self & Identity:** Fragmented identities. |
-| 9. | *Bowling Alone* (2000) | Robert Putnam | A decline in "social capital" (networks, norms, and trust) in American society, leading to a weakening of civic engagement and democracy. | **Politics & Society:** Civil society, democracy. **Stratification:** Social capital as a resource. |
-| 10. | *The Managed Heart* (1983) | Arlie Russell Hochschild | Introduces the concept of "emotional labour"—the management of one's feelings as a requirement of a job (e.g., flight attendants). | **Work & Economic Life:** New dimensions of work, alienation. **Gender:** As women are often expected to perform more emotional labour. |
-| 11. | *The Great Transformation* (1944) | Karl Polanyi | Argues that the modern market economy is not a natural phenomenon but was created by the state. The attempt to "disembed" the economy from society is unnatural and leads to social crises. | **Work & Economic Life:** Critique of free-market ideology. **Politics & Society:** Role of the state in creating the economy. |
-| 12. | *Seeing Like a State* (1998) | James C. Scott | Critiques large-scale state projects (e.g., urban planning, collectivization) for failing because they impose a rigid, simplified logic that ignores complex local, practical knowledge (`mētis`). | **Politics & Society:** Critique of state power, bureaucracy. **Development:** Explaining the failure of top-down planning. |
+| **S.No.** | **Book Title (Year)**                              | **Author**                        | **Core Idea / Thesis**                                                                                                                                                                             | **Where to Use (Topics)**                                                                                                                                       |
+| :-------- | :------------------------------------------------- | :-------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.        | *The Second Machine Age* (2014)                    | Erik Brynjolfsson & Andrew McAfee | Digital technology and AI are creating a new economic revolution, leading to bounty (productivity) but also spread (inequality).                                                                   | **Work & Economic Life:** Automation, future of work. **Social Change:** Technology as an agent of change.                                                      |
+| 2.        | *Surveillance Capitalism* (2019)                   | Shoshana Zuboff                   | A new form of capitalism that profits from monitoring and modifying human behaviour through digital surveillance.                                                                                  | **Politics & Society:** New forms of power, ideology. **Work & Economic Life:** Critique of the digital economy. **Social Change:** Technology.                 |
+| 3.        | *Capital in the Twenty-First Century* (2013)       | Thomas Piketty                    | In capitalist economies, the rate of return on capital (r) tends to be greater than the rate of economic growth (g), leading to a massive and increasing concentration of wealth and inequality.   | **Stratification & Mobility:** Theories of inequality, class. **Work & Economic Life:** Critique of capitalism.                                                 |
+| 4.        | *Sapiens: A Brief History of Humankind* (2011)     | Yuval Noah Harari                 | Humans conquered the world by creating and believing in shared fictions or "imagined realities" like money, nations, and human rights.                                                             | **Sociology as Science:** Social construction of reality. **Politics & Society:** Nation as an "imagined community." **Religion:** As a system of shared myths. |
+| 5.        | *The Risk Society: Towards a New Modernity* (1986) | Ulrich Beck                       | Modern societies have shifted from distributing 'goods' (wealth) to distributing 'bads' (manufactured risks like climate change, nuclear threats).                                                 | **Social Change:** Critique of modernity. **Environment:** As a new social issue. **Science & Technology:** Unintended consequences.                            |
+| 6.        | *The Power Elite* (1956)                           | C. Wright Mills                   | American society is ruled by a small, unified elite from the military, corporate, and political spheres.                                                                                           | **Politics & Society:** Theories of power, elites. **Stratification:** As a critique of pluralism.                                                              |
+| 7.        | *Southern Theory* (2007)                           | Raewyn Connell                    | Argues that classical sociological theory is Eurocentric and ignores the crucial contributions and perspectives from the Global South, which developed in response to colonialism.                 | **Sociology - The Discipline:** Critique of the origin story. **Development & Dependency:** Post-colonial critique.                                             |
+| 8.        | *Liquid Modernity* (2000)                          | Zygmunt Bauman                    | Contemporary society is "liquid"—all social bonds, identities, and structures are fluid, fragile, and constantly changing, leading to uncertainty and anxiety.                                     | **Social Change:** Characterizing contemporary society. **Kinship:** Explaining fluid family forms. **Self & Identity:** Fragmented identities.                 |
+| 9.        | *Bowling Alone* (2000)                             | Robert Putnam                     | A decline in "social capital" (networks, norms, and trust) in American society, leading to a weakening of civic engagement and democracy.                                                          | **Politics & Society:** Civil society, democracy. **Stratification:** Social capital as a resource.                                                             |
+| 10.       | *The Managed Heart* (1983)                         | Arlie Russell Hochschild          | Introduces the concept of "emotional labour"—the management of one's feelings as a requirement of a job (e.g., flight attendants).                                                                 | **Work & Economic Life:** New dimensions of work, alienation. **Gender:** As women are often expected to perform more emotional labour.                         |
+| 11.       | *The Great Transformation* (1944)                  | Karl Polanyi                      | Argues that the modern market economy is not a natural phenomenon but was created by the state. The attempt to "disembed" the economy from society is unnatural and leads to social crises.        | **Work & Economic Life:** Critique of free-market ideology. **Politics & Society:** Role of the state in creating the economy.                                  |
+| 12.       | *Seeing Like a State* (1998)                       | James C. Scott                    | Critiques large-scale state projects (e.g., urban planning, collectivization) for failing because they impose a rigid, simplified logic that ignores complex local, practical knowledge (`mētis`). | **Politics & Society:** Critique of state power, bureaucracy. **Development:** Explaining the failure of top-down planning.                                     |
 
 ---
 
+Excellent final request. This is a very high-value addition. Citing contemporary, diverse, and interdisciplinary thinkers is a powerful way to demonstrate a deep and modern understanding of the subject, setting your answers apart.
+
+Here are the two requested tables, one for each paper, designed for easy recall and strategic "sprinkling" in the exam.
+
+---
+
+### Table  11: Contemporary Global & Interdisciplinary Thinkers
+
+**Purpose:** To add a modern, global, and critical edge to your Paper 1 answers, moving beyond the classical canon.
+
+| **S.No.** | **Thinker** | **Domain / Region** | **Core Idea / Concept** | **Where to Use (Topics)** |
+| :--- | :--- | :--- | :--- | :--- |
+| 1. | **Shoshana Zuboff** | Digital Sociology / USA | **Surveillance Capitalism:** A new economic logic that treats human experience as a free raw material to be monitored and monetized for predictive purposes. | **Work & Economic Life:** Critique of digital economy. **Politics & Society:** New forms of power. **Social Change:** Technology. |
+| 2. | **Thomas Piketty** | Economics / France | **r > g:** The rate of return on capital (r) historically exceeds the rate of economic growth (g), leading to spiraling inequality. | **Stratification & Mobility:** Class inequality. **Work & Economic Life:** Critique of capitalism. |
+| 3. | **Raewyn Connell** | Gender & Post-Colonial Sociology / Australia | **Southern Theory:** Critiques the Eurocentrism of classical sociology and calls for recognizing theories developed in the Global South in response to colonialism. | **Sociology - The Discipline:** Emergence of sociology. **Development & Dependency:** Post-colonial critique. |
+| 4. | **Zygmunt Bauman** | Post-Modernity / Poland-UK | **Liquid Modernity:** Contemporary social life is fluid, precarious, and uncertain. All social bonds and identities are temporary and fragile. | **Social Change:** Characterizing modernity. **Kinship:** Fluid family forms. **Self & Identity:** Fragmented self. |
+| 5. | **Manuel Castells** | Urban & Digital Sociology / Spain | **The Network Society:** The network, not the hierarchy, is the dominant social structure of our age, creating a "space of flows" and "timeless time." | **Social Change:** Globalization. **Work & Economic Life:** New organizational forms. **Urbanization.** |
+| 6. | **Arlie Russell Hochschild** | Sociology of Emotions / USA | **Emotional Labour:** The management of feelings to create a publicly observable facial and bodily display, which is sold for a wage. | **Work & Economic Life:** New dimensions of alienation. **Gender:** As women are often socialized to perform more emotional labour. |
+| 7. | **Saskia Sassen** | Globalization & Urban Sociology / Netherlands-USA | **The Global City:** Key cities (e.g., New York, London, Tokyo) are command-and-control centers for the global economy, leading to new forms of urban inequality. | **Social Change:** Globalization. **Stratification:** Global inequality. **Urbanization.** |
+| 8. | **Fatima Mernissi** | Islamic Feminism / Morocco | Critically re-interpreted Islamic texts to argue that the Quran is not inherently patriarchal; rather, patriarchal interpretations have been imposed by men. | **Religion & Society:** Feminist critique of religion. **Patriarchy:** Cultural variations. |
+| 9. | **Slavoj Žižek** | Psychoanalysis & Cultural Critique / Slovenia | **Ideology as Enjoyment:** We don't just passively believe in ideology; we actively enjoy our submission to it, which is why it's so powerful. | **Politics & Society:** Advanced critique of ideology. **Religion & Society:** Explaining the persistence of belief. |
+| 10. | **Byung-Chul Han** | Philosophy & Social Critique / South Korea-Germany | **The Burnout Society:** We have moved from a disciplinary society (Foucault) to an "achievement society" where we exploit ourselves, leading to burnout and depression. | **Work & Economic Life:** Critique of modern work culture. **Politics & Society:** New forms of social control. |
+
+---
 ---
 
 ## High-Impact Sociological Quotes for Answers
@@ -3093,11 +3094,9 @@ I will add one more chapter to the notes: **"Chapter 12: Emerging Horizons and C
 ---
 ---
 ---
-
-
 ## The Mastermind Map of Sociology Paper 1
 
-
+**Mermaid Diagram**
 ```mermaid
 	graph TD
     %% === SECTION I: FOUNDATIONS (The 'Why' & 'How' of Sociology) ===
@@ -3166,9 +3165,7 @@ I will add one more chapter to the notes: **"Chapter 12: Emerging Horizons and C
     style R fill:#fff2cc
 ```
 
-
 ---
-
 ```mermaid
 graph TD
     %% === SECTION I: FOUNDATIONS (The 'Why' & 'How' of Sociology) ===
@@ -3353,14 +3350,11 @@ graph TD
     {rank=same; P; Q; R;}
 }
 ```
-
 ---
 ---
 # [[P1 Mindmaps & Graphviz Dot#***END Paper 1***|END]]
 ---
 ---
 ---
-
-
 
 ---

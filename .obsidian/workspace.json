@@ -8,6 +8,30 @@
         "type": "tabs",
         "children": [
           {
+            "id": "275c7fa49cc5bda9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "Paper 1 Crisp Notes"
+            }
+          },
+          {
             "id": "ef4b91983ad4338f",
             "type": "leaf",
             "state": {
@@ -32,12 +56,12 @@
             }
           },
           {
-            "id": "137300ddfb318f87",
+            "id": "ec8e233fc13ca4c9",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Argument Map - Arg Down.md",
+                "file": "06 Sociology/Value Addition/Matrix - Self Evaluation Answers.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -52,11 +76,10 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "Argument Map - Arg Down"
+              "title": "Matrix - Self Evaluation Answers"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -129,7 +152,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Argument Map - Arg Down.md",
+                "file": "06 Sociology/Value Addition/Paper 2 Crisp Notes.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -139,7 +162,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Argument Map - Arg Down"
+              "title": "Backlinks for Paper 2 Crisp Notes"
             }
           },
           {
@@ -148,12 +171,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Argument Map - Arg Down.md",
+                "file": "06 Sociology/Value Addition/Paper 2 Crisp Notes.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Argument Map - Arg Down"
+              "title": "Outgoing links from Paper 2 Crisp Notes"
             }
           },
           {
@@ -177,13 +200,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Argument Map - Arg Down.md",
+                "file": "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Argument Map - Arg Down"
+              "title": "Outline of Paper 1 Crisp Notes"
             }
           }
         ],
@@ -202,18 +225,23 @@
       "command-palette:Open command palette": false,
       "markdown-importer:Open format converter": false,
       "audio-recorder:Start/stop recording": false,
-      "workspaces:Manage workspace layouts": false,
-      "homepage:Open homepage": false,
-      "map-of-content:Update Map of Content": false
+      "workspaces:Manage workspace layouts": false
     }
   },
-  "active": "137300ddfb318f87",
+  "active": "275c7fa49cc5bda9",
   "lastOpenFiles": [
     "06 Sociology/Value Addition/Paper 2 Crisp Notes.md",
+    "06 Sociology/Value Addition/Matrix - Self Evaluation Answers.md",
+    "06 Sociology/Paper 2/Paper 2 Crisp Notes.pdf",
+    "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
+    "04 GS 4 Ethics/Case Study Frameworks.md",
+    "04 GS 4 Ethics/PYQ Pointers.md",
+    "04 GS 4 Ethics/Ethics Theory.md",
+    "04 GS 4 Ethics/Case Study.md",
     "Argument Map - Arg Down.md",
+    "06 Sociology/Paper 2/Paper 1 Crisp Notes.pdf",
     "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
     "06 Sociology/Value Addition/Untitled.md",
-    "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
     "06 Sociology/Value Addition/P1 Mindmaps & Graphviz Dot.md",
     "Random Notes.md",
     "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
@@ -229,12 +257,6 @@
     "11 Finance & Data/Zot Template.md",
     "11 Finance & Data/Research Workflow Setup.md",
     "11 Finance & Data/Foundations of Modern Finance 2.md",
-    "11 Finance & Data/Foundations of Modern Finance 1.md",
-    "12 Job/Extras.md",
-    "12 Job/BA Interview Questions.md",
-    "Frameworks.md",
-    "Git Sample.md",
-    "Home.md",
     "06 Sociology/Value Addition/edges_stratif.csv",
     "06 Sociology/Value Addition/nodes_stratif.csv",
     "06 Sociology/Value Addition/edges.csv",
@@ -244,8 +266,6 @@
     "06 Sociology/Value Addition/P1 Comsolidated Graph.dot",
     "06 Sociology/Value Addition/P1 Comsolidated Graph.txt",
     "06 Sociology/Value Addition/New Text Document.txt",
-    "06 Sociology/Value Addition/MD to MM Freeplane.py",
-    "06 Sociology/Value Addition/MD to MM Freeplane.txt",
     "X Misc/TM Test.canvas",
     "TM Test.canvas",
     "X Misc/Untitled.canvas"

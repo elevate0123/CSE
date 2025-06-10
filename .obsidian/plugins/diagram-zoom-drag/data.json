@@ -35,7 +35,7 @@
     {
       "name": "Mehrmaid",
       "selector": ".block-language-mehrmaid",
-      "on": true,
+      "on": false,
       "panels": {
         "move": {
           "on": true
