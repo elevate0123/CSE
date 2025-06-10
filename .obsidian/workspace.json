@@ -37,7 +37,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
+                "file": "04 GS 4 Ethics/Case Study Frameworks.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -52,11 +52,35 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "P2 Mindmaps & Graphviz Dot"
+              "title": "Case Study Frameworks"
+            }
+          },
+          {
+            "id": "8b194286709f670b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "04 GS 4 Ethics/Tabular - Single Source of Truth.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "Tabular - Single Source of Truth"
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -177,13 +201,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
+                "file": "04 GS 4 Ethics/Tabular - Single Source of Truth.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of P2 Mindmaps & Graphviz Dot"
+              "title": "Outline of Tabular - Single Source of Truth"
             }
           }
         ],
@@ -191,7 +215,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 310.5
+    "width": 309.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -205,9 +229,11 @@
       "workspaces:Manage workspace layouts": false
     }
   },
-  "active": "3c4f81b04ca1ffdc",
+  "active": "8b194286709f670b",
   "lastOpenFiles": [
     "06 Sociology/Value Addition/Paper 2 Crisp Notes.md",
+    "04 GS 4 Ethics/Case Study Frameworks.md",
+    "04 GS 4 Ethics/Tabular - Single Source of Truth.md",
     "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
     "06 Sociology/Value Addition/P1 Mindmaps & Graphviz Dot.md",
     "06 Sociology/Value Addition/MSO 01-02-03-04 High Yield PYQs.md",
@@ -216,7 +242,6 @@
     "06 Sociology/Value Addition/INDIAN SOCIETY (Jargon, Examples, Thinkers).md",
     "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
     "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
-    "04 GS 4 Ethics/Case Study Frameworks.md",
     "04 GS 4 Ethics/Sec A Frameworks and Examples.md",
     "04 GS 4 Ethics/Ethics Theory.md",
     "04 GS 4 Ethics/Case Study.md",
@@ -234,7 +259,6 @@
     "06 Sociology/Value Addition/PYQ Predictions.md",
     "06 Sociology/Value Addition/Socio Dataset, Cases & Schemes.md",
     "06 Sociology/Value Addition/Socio PYQ Themes.md",
-    "06 Sociology/Sociology Index.md",
     "06 Sociology/Value Addition/edges_stratif.csv",
     "06 Sociology/Value Addition/nodes_stratif.csv",
     "06 Sociology/Value Addition/edges.csv",

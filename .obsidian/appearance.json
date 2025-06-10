@@ -2,7 +2,7 @@
   "translucency": true,
   "theme": "moonstone",
   "baseFontSize": 13,
-  "cssTheme": "Atom",
+  "cssTheme": "Prism",
   "textFontFamily": "MS Reference Sans Serif,Montserrat,Trebuchet MS,Liberation Mono",
   "accentColor": "#1ce933",
   "interfaceFontFamily": "",
