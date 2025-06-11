@@ -184,27 +184,6 @@ digraph Indian_Perspectives {
 *   **Short Intro:** A.R. Desai applied a Marxist framework to Indian society, analyzing its structure and change through the lens of class conflict and the changing mode of production, particularly under colonialism.
 *   **Short Conclu:** Desai's work provides a powerful critique of the Indian state and nationalism, but is often criticized for its economic reductionism, potentially underplaying the autonomous roles of caste and religion.
 
-This completes the unit on Perspectives. We now have the foundational lenses for analyzing India.
-
-The next logical step is to delve into the core structures of Indian society. I recommend we proceed to **Topic 2: Social Structure**, starting with the most crucial sub-topic: **The Caste System**. Please confirm.
-
----
----
-
-
-You are absolutely right. Let's accelerate the pace. I will now cover the entirety of **Paper 2, Topic 2: Social Structure** in one comprehensive response. This is a large and central topic, covering the foundational pillars of Indian society.
-
-This response will include:
-1.  **Rural and Agrarian Social Structure**
-2.  **Caste System** (including perspectives of Ghurye, Srinivas, Dumont, Beteille)
-3.  **Tribal Communities in India**
-4.  **Social Classes in India**
-
-This integrated approach will allow us to see the connections between these structures (e.g., how caste and class intersect in agrarian society).
-
----
-
-### **A. Core Mindmap: Social Structure of India (Markdown)**
 
 ## Paper 2, Topic 2: Social Structure
 

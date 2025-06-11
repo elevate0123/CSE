@@ -24297,6 +24297,7 @@ Tirukkural
 Turpitude
 Tolerance
 Terminal
+Typological
 Points
 Pehle
 Parehsaniya
@@ -37781,6 +37782,7 @@ Miracle
 Metro
 Marketplace
 Matthew
+Maps
 Sahih
 Surah
 Shaikh
@@ -56361,6 +56363,7 @@ blankets
 breakers
 bend
 binding
+blueprints
 level
 likhi
 lekin
@@ -77985,6 +77988,7 @@ demonstrable
 disclosing
 drafting
 distributive
+diagnose
 wo
 wajah
 waqt

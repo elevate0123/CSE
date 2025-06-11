@@ -365,9 +365,111 @@ graph TD
 | 5.    | **Personal Ethics & Dilemmas**  | Crisis of Conscience, Moral Courage, Courage of Conviction, Virtue Ethics, Deontology, Utilitarianism (Act & Rule), Moral Myopia, Ethical Fading, Cognitive Dissonance, Moral Muteness, Locus of Control (Internal/External), The Banality of Evil (Arendt).                                                       |
 | 6.    | **Rights, Duties & Conflicts**  | Freedom of Speech vs. Public Order, Right to Information vs. Official Secrets, Right to Livelihood vs. Development, Intra-generational vs. Inter-generational Equity, Duty of Care, Tragedy of the Commons, Zero-Sum vs. Positive-Sum Thinking.                                                                    |
 
+---
+---
 
 ---
----
+
+### **Part 1: Decision-Making Tools for Case Studies**
+
+These tools help you structure your thought process and present your evaluation of options in a clear, logical, and high-impact manner.
+
+#### **Tool 1: The Ethical Decision Matrix (For Complex Choices)**
+
+This is a powerful tool to systematically evaluate multiple options against key criteria. It brings analytical rigor to your answer.
+
+*   **When to Use:** When you have 3-4 clear options and the dilemma involves multiple conflicting values (e.g., legality, public good, personal risk).
+*   **How to Use:**
+    1.  **Define Criteria:** Choose 4-5 criteria relevant to the case.
+    2.  **Create Matrix:** Map options against criteria.
+    3.  **Evaluate:** Score each option (High/Medium/Low or ✓/✗).
+    4.  **Justify:** Present your analysis in prose, referencing the matrix's logic.
+
+**PYQ Example 1: The Corrupt Chairman Case (Vinod, 2023)**
+*   **Options:** 1. Comply with Chairman. 2. Resign. 3. Resist & Report.
+*   **Criteria:** Upholding Rule of Law, Public Interest, Institutional Integrity, Personal Safety.
+
+| Option | Upholding Rule of Law | Public Interest | Institutional Integrity | Personal Safety |
+| :--- | :--- | :--- | :--- | :--- |
+| 1. Comply | ✗ (Low) | ✗ (Low) | ✗ (Low) | ✓ (High) |
+| 2. Resign | ~ (Medium) | ✗ (Low) | ~ (Medium) | ✓ (High) |
+| 3. Resist & Report | ✓ (High) | ✓ (High) | ✓ (High) | ✗ (Low) |
+
+> **Answer Snippet:** *"Evaluating the options against key administrative principles, Option 3, while carrying the highest personal risk, is the only course of action that scores high on upholding the Rule of Law, protecting the public interest, and preserving institutional integrity. Options 1 and 2 represent a dereliction and abdication of duty, respectively."*
+
+**PYQ Example 2: The Defective Shoe Consignment Case (2022)**
+*   **Options:** 1. Sign & Clear the defective goods. 2. Refuse to sign. 3. Refuse & Escalate the issue.
+*   **Criteria:** Company's Financial Health, Consumer Rights/Safety, Your Job Security, Long-term Brand Reputation.
+
+| Option | Financial Health (Short-term) | Consumer Rights | Job Security | Brand Reputation (Long-term) |
+| :--- | :--- | :--- | :--- | :--- |
+| 1. Sign & Clear | ✓ (High) | ✗ (Low) | ✓ (High) | ✗ (Low) |
+| 2. Refuse to Sign | ✗ (Low) | ✓ (High) | ✗ (Low) | ~ (Medium) |
+| 3. Refuse & Escalate | ✗ (Low) | ✓ (High) | ✗ (Low) | ✓ (High) |
+
+> **Answer Snippet:** *"A matrix-based evaluation reveals a conflict between short-term financial/personal security (Option 1) and long-term ethical and business sustainability (Option 3). Option 3, refusing and escalating the matter with a formal report on quality concerns, is the most prudent choice as it safeguards consumer rights and protects the company's long-term reputation, which is its most valuable asset."*
+
+#### **Tool 2: The Decision Tree Map (For Sequential Dilemmas)**
+
+This tool is excellent for cases where your decision at one point opens up new choices and consequences. It shows foresight.
+
+*   **When to Use:** When the case has a sequence of events or when your immediate action determines the next set of problems (e.g., a hostage situation, a negotiation, a rapidly evolving crisis).
+*   **How to Use:** Map out the "If-Then" pathways of your choices.
+
+**PYQ Example 1: The Attacked Rescue Team Case (2019)**
+*   **Dilemma:** Your team is attacked by angry locals and wants to withdraw from a rescue operation.
+
+```mermaid
+graph TD
+    A[Crisis: Team Attacked] --> B{My Immediate Decision};
+    B --> C[Withdraw Team];
+    B --> D[Continue Operation];
+
+    C --> E{Consequence};
+    E --> F[Team is safe.<br><b>BUT</b><br>Public suffers.<br>Dereliction of duty.<br>Morale plummets.];
+
+    D --> G{How to Continue?};
+    G --> H[Use Force on Locals];
+    G --> I[Engage & Persuade Locals];
+
+    H --> J[Operation proceeds.<br><b>BUT</b><br>Alienates community.<br>Escalates violence.<br>Ethically wrong.];
+    I --> K[Operation proceeds.<br>Builds trust.<br>Ensures cooperation.<br>Upholds duty & compassion.];
+
+    subgraph "Chosen Path"
+    D; I; K;
+    end
+```
+
+> **Answer Snippet:** *"A decision tree analysis shows that withdrawing the team (Path C) is a dereliction of duty. Continuing by force (Path H) is counter-productive. Therefore, the only viable path is to continue the operation by first engaging with the community leaders (Path I). I would calmly explain our resource constraints, assure them of our commitment, and seek their help in managing the crowd, thereby transforming a confrontational situation into a collaborative one."*
+
+**PYQ Example 2: The Harassed Architect Case (Seema, 2023)**
+*   **Dilemma:** A talented junior is being harassed by her insecure but experienced senior.
+
+```mermaid
+graph TD
+    A[Complaint Received] --> B{My Approach};
+    B --> C[Informal Resolution<br>(e.g., warning the senior)];
+    B --> D[Formal & Systemic Action];
+
+    C --> E{Likely Outcome};
+    E --> F[Senior may stop temporarily.<br><b>BUT</b><br>No official record.<br>Victim is unprotected.<br>Problem will likely recur.<br>Fails POSH Act compliance.];
+
+    D --> G{Formal Steps};
+    G --> H[1. Listen to victim & ensure safety];
+    H --> I[2. Refer to Internal Complaints Committee (ICC)];
+    I --> J[3. Post-inquiry, implement systemic training];
+
+    J --> K[Justice is delivered.<br>Victim is protected.<br>Precedent is set.<br>Work culture improves.];
+
+    subgraph "Chosen Path"
+    D; G; H; I; J; K;
+    end
+```
+
+> **Answer Snippet:** *"Mapping the decision pathways reveals that an informal approach (Path C) is insufficient and legally non-compliant. The correct course of action is the formal, systemic path (Path D). This involves immediately referring the matter to the ICC as per the POSH Act, ensuring the process is fair and confidential, and using the incident as a catalyst for long-term cultural reform through mandatory sensitization workshops."*
+
+
+
 ---
 ## ~~XYZ~~
 ### ~~**Guiding Principle for All Frameworks: The "360-Degree View"**~~

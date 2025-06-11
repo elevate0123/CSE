@@ -60,7 +60,7 @@
 
 3.  **Ghurye's Key Contributions**
     1.  **On Caste (*Caste and Race in India*):**
-        *   Defined caste by 6 core features: segmental division, hierarchy, social restrictions, civil/religious disabilities, lack of occupational choice, endogamy.
+        *   *==Defined caste by 6 core features: segmental division, hierarchy, social restrictions, civil/religious disabilities, lack of occupational choice, endogamy.==*
         *   Saw caste as a unique, pan-Indian institution.
     2.  **On Tribes (*The Scheduled Tribes*):**
         *   Viewed tribes as "backward Hindus," not separate entities.
@@ -133,7 +133,7 @@
         *   **Thesis:** The post-independence Indian state is a **bourgeois state**, despite "welfare" claims.
         *   **Evidence:** Its policies protect private property and capitalist interests.
     3.  **On Rural Sociology:**
-        *   **Thesis:** Rural India is not a harmonious community but an arena of agrarian class conflict due to capitalist penetration.
+        *   **Thesis:** ==Rural India is not a harmonious community but an arena of agrarian class conflict due to capitalist penetration.==
 
 4.  **Paper 1 Linkages**
     *   **Marxism:** Direct application of Historical Materialism, Class Struggle, and State theory.
@@ -162,7 +162,7 @@
     B --"Created"--> C[New Social Classes];
     C --"Led the struggle for their interests"--> D((Indian Nationalism));
 
-    subgraph B
+    subgraph B[New Material Conditions]
         B1[Capitalist Economy]
         B2[Modern Transport Railways]
         B3[Centralized State & Law]

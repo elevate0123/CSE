@@ -80,7 +80,7 @@
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -201,13 +201,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
+                "file": "06 Sociology/Value Addition/Paper 2 Crisp Notes.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of P2 Mindmaps & Graphviz Dot"
+              "title": "Outline of Paper 2 Crisp Notes"
             }
           }
         ],
@@ -229,23 +229,24 @@
       "workspaces:Manage workspace layouts": false
     }
   },
-  "active": "f3c8d2f65c76882f",
+  "active": "259c6af0ba745e94",
   "lastOpenFiles": [
+    "06 Sociology/Value Addition/P1 - Argdowns.md",
     "06 Sociology/Value Addition/Paper 2 Crisp Notes.md",
+    "04 GS 4 Ethics/Tabular - Single Source of Truth.md",
+    "04 GS 4 Ethics/Case Study Frameworks.md",
+    "06 Sociology/Value Addition/P2 - Argdowns.md",
+    "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
     "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
     "06 Sociology/Value Addition/INDIAN SOCIETY (Jargon, Examples, Thinkers).md",
-    "04 GS 4 Ethics/Case Study Frameworks.md",
-    "04 GS 4 Ethics/Tabular - Single Source of Truth.md",
     "06 Sociology/Value Addition/P1 Mindmaps & Graphviz Dot.md",
     "06 Sociology/Value Addition/MSO 01-02-03-04 High Yield PYQs.md",
     "06 Sociology/Value Addition/Matrix - Self Evaluation Answers.md",
     "06 Sociology/Value Addition/FUNDAMENTALS OF SOCIOLOGY (Jargon, Examples, Thinkers).md",
     "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
-    "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
     "04 GS 4 Ethics/Sec A Frameworks and Examples.md",
     "04 GS 4 Ethics/Ethics Theory.md",
     "04 GS 4 Ethics/Case Study.md",
-    "06 Sociology/Value Addition/Untitled.md",
     "06 Sociology/Paper 2/Paper 2 Crisp Notes.pdf",
     "04 GS 4 Ethics/PYQ Pointers.md",
     "Argument Map - Arg Down.md",
@@ -258,7 +259,6 @@
     "06 Sociology/Paper 2/01 Perspectives on study of Indian Society.md",
     "06 Sociology/Value Addition/PYQ Predictions.md",
     "06 Sociology/Value Addition/Socio Dataset, Cases & Schemes.md",
-    "06 Sociology/Value Addition/Socio PYQ Themes.md",
     "06 Sociology/Value Addition/edges_stratif.csv",
     "06 Sociology/Value Addition/nodes_stratif.csv",
     "06 Sociology/Value Addition/edges.csv",
