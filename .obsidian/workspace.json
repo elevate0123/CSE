@@ -8,12 +8,12 @@
         "type": "tabs",
         "children": [
           {
-            "id": "b1ed7d2d3f8fbccc",
+            "id": "eefcc7cc540d7451",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "06 Sociology/Value Addition/INDIAN SOCIETY (Jargon, Examples, Thinkers).md",
+                "file": "06 Sociology/IGNOU MSO/MSO 04 Crisp Notes - Sociology in India.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -28,16 +28,16 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "INDIAN SOCIETY (Jargon, Examples, Thinkers)"
+              "title": "MSO 04 Crisp Notes - Sociology in India"
             }
           },
           {
-            "id": "f3c8d2f65c76882f",
+            "id": "c2f6548d4de2e0b3",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
+                "file": "06 Sociology/IGNOU MSO/MSO 04 Gemini Notes.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -52,35 +52,10 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "P2 Mindmaps & Graphviz Dot"
-            }
-          },
-          {
-            "id": "259c6af0ba745e94",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "06 Sociology/Value Addition/Paper 2 Crisp Notes.md",
-                "mode": "source",
-                "source": false,
-                "backlinks": true,
-                "backlinkOpts": {
-                  "collapseAll": false,
-                  "extraContext": false,
-                  "sortOrder": "alphabetical",
-                  "showSearch": false,
-                  "searchQuery": "",
-                  "backlinkCollapsed": false,
-                  "unlinkedCollapsed": true
-                }
-              },
-              "icon": "lucide-file",
-              "title": "Paper 2 Crisp Notes"
+              "title": "MSO 04 Gemini Notes"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -201,13 +176,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "06 Sociology/Value Addition/Paper 2 Crisp Notes.md",
+                "file": "06 Sociology/IGNOU MSO/MSO 04 Crisp Notes - Sociology in India.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Paper 2 Crisp Notes"
+              "title": "Outline of MSO 04 Crisp Notes - Sociology in India"
             }
           }
         ],
@@ -229,36 +204,37 @@
       "workspaces:Manage workspace layouts": false
     }
   },
-  "active": "259c6af0ba745e94",
+  "active": "eefcc7cc540d7451",
   "lastOpenFiles": [
+    "06 Sociology/IGNOU MSO/MSO 04 Gemini Notes.md",
+    "06 Sociology/IGNOU MSO/MSO 04 Crisp Notes - Sociology in India.md",
+    "06 Sociology/IGNOU MSO/MSO 02 Gemini Notes.md",
+    "06 Sociology/IGNOU MSO/MSO 01 Gemini Notes.md",
+    "06 Sociology/IGNOU MSO/MSO 03 Crisp Notes - Sociology of Development.md",
+    "06 Sociology/IGNOU MSO/MSO 02 Left Crisp Notes -.md",
+    "06 Sociology/IGNOU MSO/MSO 01 Crisp Notes - Sociological Theories and Concepts.md",
+    "06 Sociology/IGNOU MSO/MSO 04 Gemini Notes.pdf",
+    "06 Sociology/IGNOU MSO/MSO 03 Gemini Notes.md",
+    "06 Sociology/Value Addition/PYQ Predictions.md",
+    "06 Sociology/Paper 2/02 Colonial Rule.md",
+    "06 Sociology/Paper 2/Colonial Rule.md",
+    "06 Sociology/IGNOU MSO",
     "06 Sociology/Value Addition/P1 - Argdowns.md",
+    "06 Sociology/IGNOU MSO/MSO High Yield PYQs 01-02-03-04.md",
+    "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
+    "06 Sociology/Value Addition/INDIAN SOCIETY (Jargon, Examples, Thinkers).md",
+    "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
     "06 Sociology/Value Addition/Paper 2 Crisp Notes.md",
+    "06 Sociology/Value Addition/P1 Mindmaps & Graphviz Dot.md",
     "04 GS 4 Ethics/Tabular - Single Source of Truth.md",
     "04 GS 4 Ethics/Case Study Frameworks.md",
     "06 Sociology/Value Addition/P2 - Argdowns.md",
-    "06 Sociology/Value Addition/Paper 1 Crisp Notes.md",
-    "06 Sociology/Value Addition/P2 Mindmaps & Graphviz Dot.md",
-    "06 Sociology/Value Addition/INDIAN SOCIETY (Jargon, Examples, Thinkers).md",
-    "06 Sociology/Value Addition/P1 Mindmaps & Graphviz Dot.md",
-    "06 Sociology/Value Addition/MSO 01-02-03-04 High Yield PYQs.md",
     "06 Sociology/Value Addition/Matrix - Self Evaluation Answers.md",
     "06 Sociology/Value Addition/FUNDAMENTALS OF SOCIOLOGY (Jargon, Examples, Thinkers).md",
     "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
     "04 GS 4 Ethics/Sec A Frameworks and Examples.md",
-    "04 GS 4 Ethics/Ethics Theory.md",
-    "04 GS 4 Ethics/Case Study.md",
     "06 Sociology/Paper 2/Paper 2 Crisp Notes.pdf",
-    "04 GS 4 Ethics/PYQ Pointers.md",
-    "Argument Map - Arg Down.md",
-    "06 Sociology/Paper 2/Paper 1 Crisp Notes.pdf",
-    "Random Notes.md",
-    "06 Sociology/Paper 2/MSO 04 Gemini Notes.md",
-    "06 Sociology/Paper 2/MSO 01 Gemini Notes.md",
-    "06 Sociology/Paper 2/Colonial Rule.md",
-    "06 Sociology/Paper 2/02 Colonial Rule.md",
-    "06 Sociology/Paper 2/01 Perspectives on study of Indian Society.md",
-    "06 Sociology/Value Addition/PYQ Predictions.md",
-    "06 Sociology/Value Addition/Socio Dataset, Cases & Schemes.md",
+    "06 Sociology/Paper 1/Paper 1 Crisp Notes.pdf",
     "06 Sociology/Value Addition/edges_stratif.csv",
     "06 Sociology/Value Addition/nodes_stratif.csv",
     "06 Sociology/Value Addition/edges.csv",
@@ -266,8 +242,6 @@
     "06 Sociology/Value Addition/P1graph.png",
     "06 Sociology/Value Addition/P1Graph.dot",
     "06 Sociology/Value Addition/P1 Comsolidated Graph.dot",
-    "06 Sociology/Value Addition/P1 Comsolidated Graph.txt",
-    "06 Sociology/Value Addition/New Text Document.txt",
     "X Misc/TM Test.canvas",
     "TM Test.canvas",
     "X Misc/Untitled.canvas"

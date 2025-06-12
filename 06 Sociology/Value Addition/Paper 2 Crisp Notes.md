@@ -209,7 +209,7 @@
     *   **Core Idea:** Modernization in India involved a process of **structural change** (introduction of bureaucracy, market economy) and **cultural change** (Western values like rationalism, humanism).
     *   **Contradictory Nature:**
         *   Colonialism introduced modernizing elements (e.g., rule of law) but also reinforced traditional structures (e.g., by aligning with princely states and landlords) to maintain control.
-        *   This created a "contested modernity."
+        *   This created a =="contested modernity."==
 
 3.  **Key Processes of Interaction**
     1.  **Structural Changes:**
@@ -237,13 +237,13 @@
     B --> D((A New, Contested Indian Modernity));
     C --> D;
 
-    subgraph B
+    subgraph B[Introduction of Western Modernity]
         B1[Bureaucracy]
         B2[Market Economy]
         B3[Rationalism]
     end
 
-    subgraph C
+    subgraph C[Response of Indian Tradition]
         C1[Sanskritization Srinivas]
         C2[Reform Movements Roy, Phule]
         C3[Reinterpretation of Texts]
@@ -292,12 +292,12 @@ graph TD
     A --> B[Direct Resistance to Exploitation];
     A --> C[Internal Reform & Reconstruction];
 
-    subgraph B
+    subgraph B[Direct Resistance to Exploitation]
         B1[Peasant Movements <br/>e.g., Indigo Revolt]
         B2[Tribal Movements <br/>e.g., Birsa Munda's Ulgulan]
     end
 
-    subgraph C
+    subgraph C[Internal Reform & Reconstruction]
         C1[Socio-Religious Reform Movements <br/>e.g., Brahmo Samaj]
         C2[Caste Reform Movements <br/>e.g., Satyashodhak Samaj]
     end
