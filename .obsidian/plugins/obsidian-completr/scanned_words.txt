@@ -14323,6 +14323,7 @@ Khemka
 Kudumbashree
 Keynesian
 KSSP
+Koya
 ki
 ke
 kuch
@@ -32385,6 +32386,7 @@ Interlinked
 Industrializing
 Integrate
 Involuntary
+Incorporate
 Likhne
 Lekis
 Lock
@@ -34383,6 +34385,7 @@ Lobby
 Laboratory
 Lights
 Localism
+Landmarks
 Maqsad
 Mubarak
 Moosa
@@ -58549,6 +58552,7 @@ lays
 locked
 libraries
 lowness
+labourer
 jisme
 jaye
 jo
@@ -75737,6 +75741,7 @@ GNP
 GNI
 Gaps
 Gustavo
+Glorified
 dusre
 diya
 door
@@ -95864,6 +95869,7 @@ functionings
 fend
 fisheries
 fungal
+fixes
 Yaad
 Yeh
 Yaa
@@ -115932,6 +115938,7 @@ oppress
 orally
 oldest
 opted
+objectify
 Examples
 Empowering
 Educational
