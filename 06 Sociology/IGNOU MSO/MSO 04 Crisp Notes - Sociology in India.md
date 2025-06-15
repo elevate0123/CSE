@@ -210,7 +210,7 @@ The emergence of sociology in India is a complex story, deeply intertwined with 
 The initial groundwork for the study of Indian society was laid not by sociologists, but by British colonial administrators, missionaries, and orientalists in the 18th and 19th centuries.
 
 1.  **Administrative Needs:** The British needed to understand the structure of Indian society to govern it effectively. This led to massive data-collection exercises like the **Census (starting in 1871)**, ethnographic surveys, and the compilation of imperial gazetteers.
-2.  **The Colonial Gaze:** These early studies were shaped by the **"colonial gaze."** They often portrayed Indian society as static, timeless, and fundamentally different from the "modern" West. They had a vested interest in emphasizing caste divisions and exotic customs to justify colonial rule.
+2.  **The Colonial Gaze:** These early studies were shaped by the **"colonial gaze."** **They often portrayed Indian society as static, timeless, and fundamentally different from the "modern" West.** They had a vested interest in emphasizing caste divisions and exotic customs to justify colonial rule.
 3.  **Orientalist/Indological Approach:** Scholars like **William Jones** and **Max Müller** focused on ancient Sanskrit texts (the "book view") to understand India. They constructed an image of a "glorious" past, often seen as the essence of Indian civilization, while ignoring the lived realities of the people.
 
 #### **2. The Institutionalization Phase (Early 20th Century)**

@@ -1475,6 +1475,12 @@ th {
     margin-top: -5px;
 }
 
+.mm-node-right.mm-htime-node>.mm-node-bar {
+    right: -20px;
+    top: 50%;
+    margin-top: -5px;
+}
+
 
 .mm-root>.mm-node-bar,
 .mm-node-second>.mm-node-bar {
@@ -1498,6 +1504,12 @@ th {
 }
 
 .mm-node-up>.mm-node-bar {
+    left: 50%;
+    margin-left: -5px;
+    top: -15px;
+}
+
+.mm-node-up.mm-htime-node>.mm-node-bar {
     left: 50%;
     margin-left: -5px;
     top: -15px;
@@ -1536,6 +1548,8 @@ th {
     left: -12px !important;
     top: auto;
 }
+
+
 
 .mm-node-collapse>.mm-node-bar {
     display: block !important;

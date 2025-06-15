@@ -22,20 +22,7 @@
   "showShortcuts": true,
   "markdownOnly": false,
   "unresolvedLinks": false,
-  "recentFilesStore": [
-    {
-      "filepath": "06 Sociology/IGNOU MSO/MSO 04 Crisp Notes - Sociology in India.md",
-      "timestamp": 1749983500189
-    },
-    {
-      "filepath": "06 Sociology/IGNOU MSO/MSO 03 Crisp Notes - Sociology of Development.md",
-      "timestamp": 1749983461079
-    },
-    {
-      "filepath": "06 Sociology/IGNOU MSO/MSO 04 Gemini Notes.md",
-      "timestamp": 1749983404047
-    }
-  ],
+  "recentFilesStore": [],
   "bookmarkedFileStore": [],
   "searchDelay": 50,
   "replaceNewTabs": true,
