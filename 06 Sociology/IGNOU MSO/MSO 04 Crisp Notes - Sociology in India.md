@@ -398,7 +398,7 @@ The British colonial state, particularly through the institution of the **decenn
 *   **Politicization of Caste:** It turned caste into an explicit category for political mobilization and competition for state resources.
 *   **Creation of a "Pan-Indian" Caste Consciousness:** It encouraged local *jatis* to affiliate with larger, province-wide or even all-India caste categories, laying the groundwork for modern caste-based politics.
 
-Sociologists like **Bernard Cohn** and **Nicholas Dirks** have argued that the census was a key tool of colonial "governmentality," which fundamentally transformed the nature of caste in modern India.
+Sociologists like **Bernard Cohn** and **Nicholas Dirks** have argued that the census was a key tool of **colonial** "**governmentality**," which fundamentally transformed the nature of caste in modern India.
 
 ---
 ### **Mermaid Diagram: Perspectives on Caste**
@@ -459,7 +459,7 @@ The "tribal question" in India revolves around a central policy dilemma: what sh
 
 #### **1. G.S. Ghurye's Position: Tribes as "Backward Hindus"**
 
-**G.S. Ghurye**, in his book **"The Aborigines - So-called - and their Future"** (later retitled "The Scheduled Tribes"), put forward a strong argument for assimilation.
+**G.S. Ghurye**, in his book **"The Aborigines - So-called - and their Future"** (later retitled "**The Scheduled Tribes**"), put forward a strong argument for assimilation.
 
 1.  **No Real Distinction:** Ghurye argued that there was no clear dividing line between tribes and caste-based Hindu society. He saw tribal communities not as distinct, pristine groups but as **"imperfectly integrated classes of Hindu society"** or simply **"Backward Hindus."**
 2.  **Continuum of Culture:** He believed that most tribes had already been in contact with Hindu culture for centuries and had absorbed many of its elements. They existed on a cultural continuum with rural Hindu society.
@@ -468,7 +468,7 @@ The "tribal question" in India revolves around a central policy dilemma: what sh
 
 #### **2. Verrier Elwin's Position: The "National Park" Policy**
 
-**Verrier Elwin**, who lived for years among the Baiga and Gond tribes, offered a passionate counter-argument based on his direct experience.
+**Verrier Elwin**, who lived for years among the **Baiga and Gond tribes**, offered a passionate counter-argument based on his direct experience.
 
 1.  **Destructive Impact of Mainstream Contact:** Elwin witnessed firsthand the devastating impact of contact with the "mainstream." He saw how traders, moneylenders, and forest contractors exploited tribal people, alienated their land, and destroyed their culture, leaving them demoralized and impoverished.
 2.  **The Problem is Exploitation:** The core problem was not their backwardness, but their vulnerability to **exploitation**. Unfettered contact was destructive.

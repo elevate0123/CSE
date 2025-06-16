@@ -22,7 +22,12 @@
   "showShortcuts": true,
   "markdownOnly": false,
   "unresolvedLinks": false,
-  "recentFilesStore": [],
+  "recentFilesStore": [
+    {
+      "filepath": "06 Sociology/IGNOU MSO/MSO 04 Crisp Notes - Sociology in India.md",
+      "timestamp": 1750055515812
+    }
+  ],
   "bookmarkedFileStore": [],
   "searchDelay": 50,
   "replaceNewTabs": true,
