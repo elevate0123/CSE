@@ -13,5 +13,7 @@
   "phrasesync",
   "diagram-zoom-drag",
   "obsidian-graphviz",
-  "obsidian-style-settings"
+  "obsidian-style-settings",
+  "obsidian-remember-file-state",
+  "cursor-position-history"
 ]

@@ -196,7 +196,6 @@ This tier is built on the highest frequency topics from the PYQs.
 
 ### **Theme 1: The Discipline of Sociology in India**
 
-
 ### **Note 1.1: The Emergence and Development of Sociology in India**
 
 **(Keywords: Colonialism, Nationalism, Indology, Social Anthropology, Village Studies, Institutionalization)**
