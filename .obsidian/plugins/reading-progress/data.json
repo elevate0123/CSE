@@ -1,0 +1,9 @@
+{
+  "showProgressBar": true,
+  "showStatusText": true,
+  "calculationMethod": "cursor",
+  "barPosition": "top",
+  "barColor": "#3498db",
+  "barThickness": "5px",
+  "statusTextFormat": "Reading: {progress}%"
+}

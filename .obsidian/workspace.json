@@ -8,18 +8,18 @@
         "type": "tabs",
         "children": [
           {
-            "id": "eefcc7cc540d7451",
+            "id": "e0f0f38d47f8256c",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "06 Sociology/IGNOU MSO/MSO 04 Crisp Notes - Sociology in India.md",
+                "file": "06 Sociology/IGNOU MSO/MSO 03 Crisp Notes - Sociology of Development.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": false
               },
               "icon": "lucide-file",
-              "title": "MSO 04 Crisp Notes - Sociology in India"
+              "title": "MSO 03 Crisp Notes - Sociology of Development"
             }
           }
         ]
@@ -54,7 +54,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "Mythemes",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -110,13 +110,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "06 Sociology/IGNOU MSO/MSO 04 Crisp Notes - Sociology in India.md",
+                "file": "06 Sociology/IGNOU MSO/MSO 03 Crisp Notes - Sociology of Development.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of MSO 04 Crisp Notes - Sociology in India"
+              "title": "Outline of MSO 03 Crisp Notes - Sociology of Development"
             }
           },
           {
@@ -127,6 +127,86 @@
               "state": {},
               "icon": "quote-glyph",
               "title": "Dictionary"
+            }
+          },
+          {
+            "id": "a6da7f9d4a36d68b",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          },
+          {
+            "id": "9d8e69eaf0d47038",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          },
+          {
+            "id": "8d6863879864b77a",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          },
+          {
+            "id": "8a1c8576cc8d685e",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          },
+          {
+            "id": "d8df5e5e03b53b5d",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          },
+          {
+            "id": "8b365857010de3bb",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          },
+          {
+            "id": "d7cbbfd53edcb9b5",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          },
+          {
+            "id": "73cc5a0292d47d20",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
             }
           }
         ],
@@ -140,25 +220,30 @@
     "hiddenItems": {
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
       "markdown-importer:Open format converter": false,
-      "workspaces:Manage workspace layouts": false
+      "workspaces:Manage workspace layouts": false,
+      "canvas:Create new canvas": false
     }
   },
-  "active": "eefcc7cc540d7451",
+  "active": "e0f0f38d47f8256c",
   "lastOpenFiles": [
+    "06 Sociology/IGNOU MSO/MSO 01 Crisp Notes - Sociological Theories and Concepts.md",
+    "06 Sociology/IGNOU MSO/MSO 01 QRM.md",
+    "06 Sociology/IGNOU MSO/MSO 01 Crisp Notes - Sociological Theories and Concepts.pdf",
+    "06 Sociology/IGNOU MSO/MSO 01 Gemini Notes.md",
+    "06 Sociology/IGNOU MSO/MSO 04 QRM.md",
+    "06 Sociology/IGNOU MSO/MSO 03 QRM.md",
     "06 Sociology/IGNOU MSO/MSO 04 Crisp Notes - Sociology in India.md",
+    "06 Sociology/IGNOU MSO/MSO 02 Gemini Notes.md",
+    "06 Sociology/IGNOU MSO/MSO 03 Gemini Notes.md",
+    "06 Sociology/IGNOU MSO/Untitled.canvas",
     "06 Sociology/IGNOU MSO/MSO 04 Gemini Notes.md",
     "Philology (en-GB).md",
     "06 Sociology/IGNOU MSO/MSO 03 Crisp Notes - Sociology of Development.md",
-    "06 Sociology/IGNOU MSO/MSO 01 Crisp Notes - Sociological Theories and Concepts.md",
-    "06 Sociology/IGNOU MSO/MSO 02 Gemini Notes.md",
-    "06 Sociology/IGNOU MSO/MSO 01 Gemini Notes.md",
     "06 Sociology/IGNOU MSO/MSO 02 Left Crisp Notes -.md",
     "06 Sociology/IGNOU MSO/MSO 04 Gemini Notes.pdf",
-    "06 Sociology/IGNOU MSO/MSO 03 Gemini Notes.md",
     "06 Sociology/Value Addition/PYQ Predictions.md",
     "06 Sociology/Paper 2/02 Colonial Rule.md",
     "06 Sociology/Paper 2/Colonial Rule.md",
@@ -173,10 +258,6 @@
     "04 GS 4 Ethics/Tabular - Single Source of Truth.md",
     "04 GS 4 Ethics/Case Study Frameworks.md",
     "06 Sociology/Value Addition/P2 - Argdowns.md",
-    "06 Sociology/Value Addition/Matrix - Self Evaluation Answers.md",
-    "06 Sociology/Value Addition/FUNDAMENTALS OF SOCIOLOGY (Jargon, Examples, Thinkers).md",
-    "06 Sociology/Value Addition/P2 - Introduction - Conclusion - Keywords.md",
-    "04 GS 4 Ethics/Sec A Frameworks and Examples.md",
     "06 Sociology/Paper 2/Paper 2 Crisp Notes.pdf",
     "06 Sociology/Paper 1/Paper 1 Crisp Notes.pdf",
     "06 Sociology/Value Addition/edges_stratif.csv",
@@ -185,7 +266,6 @@
     "06 Sociology/Value Addition/nodes.csv",
     "06 Sociology/Value Addition/P1graph.png",
     "06 Sociology/Value Addition/P1Graph.dot",
-    "06 Sociology/Value Addition/P1 Comsolidated Graph.dot",
     "X Misc/TM Test.canvas",
     "TM Test.canvas",
     "X Misc/Untitled.canvas"

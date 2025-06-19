@@ -464,7 +464,7 @@ var SmartEnv = class {
    * If a newer version is loaded into a runtime that already has an older environment,
    * an automatic reload of all existing mains will occur.
    */
-  static version = 2.139216;
+  static version = 2.139219;
   scope_name = "smart_env";
   static global_ref = ROOT_SCOPE;
   global_ref = this.constructor.global_ref;
@@ -4621,8 +4621,9 @@ var SmartSource = class extends SmartEntity {
     }
     const breadcrumbs = this.path.split("/").join(" > ").replace(".md", "");
     const max_tokens = this.collection.embed_model.model_config.max_tokens || 500;
+    const max_chars = Math.floor(max_tokens * 3.7);
     this._embed_input = `${breadcrumbs}:
-${content}`.substring(0, max_tokens * 4);
+${content}`.substring(0, max_chars);
     return this._embed_input;
   }
   /**
@@ -5446,10 +5447,6 @@ var SmartSources = class extends SmartEntities {
       if (!item.vec) return false;
       if (item.is_gone) {
         item.reason = "is_gone";
-        return true;
-      }
-      if (!item.should_embed) {
-        item.reason = "!should_embed";
         return true;
       }
       return false;
@@ -8346,7 +8343,7 @@ var SmartModelAdapter = class {
       this.get_models(true);
       return [{ value: "", name: "No models currently available" }];
     }
-    return Object.values(models).map((model) => ({ value: model.id, name: model.name || model.id })).sort((a, b) => a.name.localeCompare(b.name));
+    return Object.entries(models).map(([id, model]) => ({ value: id, name: model.name || id })).sort((a, b) => a.name.localeCompare(b.name));
   }
   /**
    * Set the adapter's state.
@@ -9492,7 +9489,7 @@ var SmartEmbedOllamaAdapter = class extends SmartEmbedModelApiAdapter {
     // Not required for local instance
     streaming: false,
     // Ollama's embed API does not support streaming
-    max_tokens: 8192,
+    max_tokens: 512,
     // Example default, adjust based on model capabilities
     signup_url: null,
     // Not applicable for local instance
@@ -9627,7 +9624,7 @@ var SmartEmbedOllamaAdapter = class extends SmartEmbedModelApiAdapter {
       } };
       return this.model_data;
     }
-    return model_data.reduce((acc, model) => {
+    this.model_data = model_data.reduce((acc, model) => {
       const info = model.model_info || {};
       const ctx = Object.entries(info).find(([k]) => k.includes("context_length"))?.[1];
       const dims = Object.entries(info).find(([k]) => k.includes("embedding_length"))?.[1];
@@ -9635,12 +9632,24 @@ var SmartEmbedOllamaAdapter = class extends SmartEmbedModelApiAdapter {
         model_name: model.name,
         id: model.name,
         multimodal: false,
-        max_input_tokens: ctx || this.max_tokens,
+        max_tokens: ctx || this.max_tokens,
         dims,
         description: model.description || `Model: ${model.name}`
       };
       return acc;
     }, {});
+    this._models = this.model_data;
+    return this.model_data;
+  }
+  /**
+   * Get the models.
+   * @returns {Object} Map of model objects
+   */
+  get models() {
+    if (typeof this._models === "object" && Object.keys(this._models || {}).length > 0) return this._models;
+    else {
+      return {};
+    }
   }
   /**
    * Override settings config to remove API key setting since not needed for local instance.
@@ -14128,7 +14137,7 @@ var SmartModelAdapter2 = class {
       this.get_models(true);
       return [{ value: "", name: "No models currently available" }];
     }
-    return Object.values(models).map((model) => ({ value: model.id, name: model.name || model.id })).sort((a, b) => a.name.localeCompare(b.name));
+    return Object.entries(models).map(([id, model]) => ({ value: id, name: model.name || id })).sort((a, b) => a.name.localeCompare(b.name));
   }
   /**
    * Set the adapter's state.
@@ -16211,6 +16220,9 @@ var SmartChatModelLmStudioRequestAdapter = class extends SmartChatModelRequestAd
         type: "text",
         text: `Use the "${this.tool_choice.function.name}" tool.`
       });
+      body.tool_choice = "required";
+    } else if (body.tool_choice && typeof body.tool_choice === "object") {
+      body.tool_choice = "auto";
     }
     req.body = JSON.stringify(body);
     return req;
@@ -18856,8 +18868,9 @@ var SmartSource2 = class extends SmartEntity2 {
     }
     const breadcrumbs = this.path.split("/").join(" > ").replace(".md", "");
     const max_tokens = this.collection.embed_model.model_config.max_tokens || 500;
+    const max_chars = Math.floor(max_tokens * 3.7);
     this._embed_input = `${breadcrumbs}:
-${content}`.substring(0, max_tokens * 4);
+${content}`.substring(0, max_chars);
     return this._embed_input;
   }
   /**
@@ -19681,10 +19694,6 @@ var SmartSources2 = class extends SmartEntities2 {
       if (!item.vec) return false;
       if (item.is_gone) {
         item.reason = "is_gone";
-        return true;
-      }
-      if (!item.should_embed) {
-        item.reason = "!should_embed";
         return true;
       }
       return false;
@@ -22725,7 +22734,7 @@ var smart_env_config3 = {
   }
 };
 
-// src/modals/story.js
+// node_modules/obsidian-smart-env/modals/story.js
 var import_obsidian20 = require("obsidian");
 var StoryModal = class _StoryModal extends import_obsidian20.Modal {
   constructor(plugin, { title, url }) {
@@ -26330,60 +26339,72 @@ function parse_xml_fragments(xml_input) {
   if (typeof xml_input !== "string" || xml_input.trim() === "") {
     return null;
   }
+  const VERBATIM_TAGS = /* @__PURE__ */ new Set(["think"]);
   const compress_whitespace = (str) => str.replace(/\s+/g, " ").trim();
   const parse_attributes = (str) => {
     if (!str) return {};
-    const attr_map = {};
+    const attrs = {};
     const attr_re = /(\w[\w.\-]*)\s*=\s*"([^"]*)"/g;
     let m;
     while ((m = attr_re.exec(str)) !== null) {
       const [, key, raw_val] = m;
-      attr_map[key] = coerce_primitives(raw_val);
+      attrs[key] = coerce_primitives(raw_val);
     }
-    return attr_map;
+    return attrs;
   };
   const attach_child = (map, tag, node) => {
     if (tag in map) {
       const existing = map[tag];
-      if (Array.isArray(existing)) {
-        existing.push(node);
-      } else {
-        map[tag] = [existing, node];
-      }
+      map[tag] = Array.isArray(existing) ? [...existing, node] : [existing, node];
     } else {
       map[tag] = node;
     }
   };
   const finalize_node = (ctx) => {
-    const trimmed_text = compress_whitespace(ctx.text);
+    const text_raw = ctx.verbatim ? ctx.text.replace(/^\s*\n/, "").replace(/\s+$/, "") : compress_whitespace(ctx.text);
     if (Object.keys(ctx.children_map).length) {
       ctx.node.contents = ctx.children_map;
-    } else if (trimmed_text !== "") {
-      ctx.node.contents = coerce_primitives(trimmed_text);
+    } else if (text_raw !== "") {
+      ctx.node.contents = ctx.verbatim ? text_raw : coerce_primitives(text_raw);
     } else {
       ctx.node.contents = null;
     }
   };
-  const comment_re = /<!--[\s\S]*?-->/g;
-  const cleaned = xml_input.replace(comment_re, "");
-  const token_re = /<\/?[A-Za-z_][\w.\-]*(?:\s+[^<>]*?)?\/?>(?<!<![^>]*>)|[^<>]+/g;
+  const cleaned = xml_input.replace(/<!--[\s\S]*?-->/g, "");
+  const token_re = /<[^>]+>|[^<]+/g;
   const root_map = {};
   const stack = [];
   let match;
   while ((match = token_re.exec(cleaned)) !== null) {
     const token = match[0];
+    if (stack.length) {
+      const top = stack[stack.length - 1];
+      if (top.verbatim) {
+        if (token.startsWith(`</${top.tag_name}`)) {
+          stack.pop();
+          finalize_node(top);
+          if (stack.length === 0) {
+            attach_child(root_map, top.tag_name, top.node);
+          } else {
+            attach_child(stack[stack.length - 1].children_map, top.tag_name, top.node);
+          }
+          continue;
+        }
+        top.text += token;
+        continue;
+      }
+    }
     if (token.startsWith("<")) {
       if (token.startsWith("</")) {
         const tag_name = token.slice(2, -1).trim();
-        if (stack.length === 0) return null;
+        if (!stack.length) return null;
         const ctx = stack.pop();
         if (ctx.tag_name !== tag_name) return null;
         finalize_node(ctx);
         if (stack.length === 0) {
           attach_child(root_map, tag_name, ctx.node);
         } else {
-          const parent_ctx = stack[stack.length - 1];
-          attach_child(parent_ctx.children_map, tag_name, ctx.node);
+          attach_child(stack[stack.length - 1].children_map, tag_name, ctx.node);
         }
       } else {
         const self_closing = token.endsWith("/>");
@@ -26398,32 +26419,29 @@ function parse_xml_fragments(xml_input) {
           if (stack.length === 0) {
             attach_child(root_map, tag_name, node);
           } else {
-            const parent_ctx = stack[stack.length - 1];
-            attach_child(parent_ctx.children_map, tag_name, node);
+            attach_child(stack[stack.length - 1].children_map, tag_name, node);
           }
         } else {
           stack.push({
             tag_name,
             node,
             text: "",
-            children_map: {}
+            children_map: {},
+            verbatim: VERBATIM_TAGS.has(tag_name)
           });
         }
       }
     } else {
-      if (stack.length > 0) {
-        stack[stack.length - 1].text += token;
-      }
+      if (stack.length) stack[stack.length - 1].text += token;
     }
   }
-  while (stack.length !== 0) {
+  while (stack.length) {
     const ctx = stack.pop();
     finalize_node(ctx);
     if (stack.length === 0) {
       attach_child(root_map, ctx.tag_name, ctx.node);
     } else {
-      const parent_ctx = stack[stack.length - 1];
-      attach_child(parent_ctx.children_map, ctx.tag_name, ctx.node);
+      attach_child(stack[stack.length - 1].children_map, ctx.tag_name, ctx.node);
     }
   }
   return Object.keys(root_map).length ? root_map : null;
@@ -27315,19 +27333,19 @@ var SmartContexts = class extends Collection3 {
       // 0 => no enforced limit
       templates: {
         "-1": {
-          before: "{{FILE_TREE}}"
+          before: `<context>
+<file_tree>
+{{FILE_TREE}}
+</file_tree>`,
+          after: `</context>`
         },
         "0": {
-          before: "{{ITEM_PATH}}\n```{{ITEM_EXT}}",
-          after: "```"
+          before: `<context_primary path="{{ITEM_PATH}}" mtime="{{ITEM_TIME_AGO}}">`,
+          after: `</context_primary>`
         },
         "1": {
-          before: "LINK: {{ITEM_NAME}}\n```{{ITEM_EXT}}",
-          after: "```"
-        },
-        "1": {
-          before: "REF: {{ITEM_NAME}}\n```{{ITEM_EXT}}",
-          after: "```"
+          before: `<context_linked path="{{ITEM_PATH}}" mtime="{{ITEM_TIME_AGO}}">`,
+          after: `</context_linked>`
         }
       }
     };
@@ -28168,7 +28186,7 @@ async function compile_snapshot(context_snapshot, merged_opts) {
     const items = context_snapshot.items[depth] || {};
     const { before_raw, after_raw } = get_templates_for_depth(depth, merged_opts);
     for (const [path2, item] of Object.entries(items)) {
-      const placeholders = build_item_placeholders(path2, depth);
+      const placeholders = build_item_placeholders(path2, depth, item.mtime);
       chunks.push({
         path: path2,
         mtime: item.mtime,
@@ -28260,7 +28278,12 @@ function build_item_placeholders(path2, depth, mtime) {
   };
 }
 function convert_to_time_ago(timestamp) {
-  const seconds = Math.floor(Date.now() - timestamp);
+  const now = Date.now();
+  let diffMs = now - timestamp;
+  if (timestamp < 1e12) {
+    diffMs = now - timestamp * 1e3;
+  }
+  const seconds = Math.floor(diffMs / 1e3);
   const intervals = [
     { label: "year", seconds: 31536e3 },
     { label: "month", seconds: 2592e3 },
@@ -29039,15 +29062,15 @@ var ContextSelectorModal = class extends import_obsidian30.FuzzySuggestModal {
         const depth_2 = suggestions.filter((s) => s.depth <= 2);
         const depth_3 = suggestions.filter((s) => s.depth <= 3);
         if (depth_1.length)
-          special_items2.push({ name: "Add all to depth 1", items: depth_1 });
+          special_items2.push({ name: `Add all to depth 1 (${depth_1.length})`, items: depth_1 });
         if (depth_2.length)
-          special_items2.push({ name: "Add all to depth 2", items: depth_2 });
+          special_items2.push({ name: `Add all to depth 2 (${depth_2.length})`, items: depth_2 });
         if (depth_3.length)
-          special_items2.push({ name: "Add all to depth 3", items: depth_3 });
+          special_items2.push({ name: `Add all to depth 3 (${depth_3.length})`, items: depth_3 });
       }
       if (suggestions.some((s) => s.score)) {
         special_items2.push({
-          name: "Add all connections",
+          name: `Add all connections (${all_connections.length})`,
           items: suggestions.filter((s) => s.score)
         });
       }
@@ -29059,24 +29082,27 @@ var ContextSelectorModal = class extends import_obsidian30.FuzzySuggestModal {
     });
     if (visible_open_files.length) {
       special_items.push({
-        name: "Visible open files" + (visible_open_files.length ? ` (+${visible_open_files.length})` : ""),
+        name: "Visible open files",
         items: visible_open_files
       });
       const all_open_files = Array.from(get_all_open_file_paths(this.app)).map((f) => {
         return { item: this.env.smart_sources.get(f) };
       });
       if (all_open_files.length && visible_open_files.length !== all_open_files.length) special_items.push({
-        name: "All open files" + (all_open_files.length ? ` (+${all_open_files.length})` : ""),
+        name: "All open files",
         items: all_open_files
       });
     }
-    special_items = special_items.filter((i) => {
+    special_items = special_items.map((i) => {
       if (i.items) {
         i.items = i.items.filter(
           (item) => item.item && !this.ctx?.data?.context_items[item.item.key]
         );
-        return i.items.length > 0;
+        i.name = `${i.name} (+${i.items.length})`;
       }
+      return i;
+    }).filter((i) => {
+      if (i.items) return i.items.length > 0;
       return true;
     });
     const unselected = Object.values(this.env.smart_sources.items).filter(
@@ -30802,7 +30828,6 @@ async function render41(ctx, opts = {}) {
 async function post_process35(ctx, container, opts = {}) {
   const items = get_selected_items(ctx);
   if (!items.length) {
-    container.textContent = "Add context";
     return;
   }
   const { stats } = await ctx.compile({ link_depth: 0, calculating: true });
@@ -31413,15 +31438,15 @@ var ContextSelectorModal2 = class extends import_obsidian35.FuzzySuggestModal {
         const depth_2 = suggestions.filter((s) => s.depth <= 2);
         const depth_3 = suggestions.filter((s) => s.depth <= 3);
         if (depth_1.length)
-          special_items2.push({ name: "Add all to depth 1", items: depth_1 });
+          special_items2.push({ name: `Add all to depth 1 (${depth_1.length})`, items: depth_1 });
         if (depth_2.length)
-          special_items2.push({ name: "Add all to depth 2", items: depth_2 });
+          special_items2.push({ name: `Add all to depth 2 (${depth_2.length})`, items: depth_2 });
         if (depth_3.length)
-          special_items2.push({ name: "Add all to depth 3", items: depth_3 });
+          special_items2.push({ name: `Add all to depth 3 (${depth_3.length})`, items: depth_3 });
       }
       if (suggestions.some((s) => s.score)) {
         special_items2.push({
-          name: "Add all connections",
+          name: `Add all connections (${all_connections.length})`,
           items: suggestions.filter((s) => s.score)
         });
       }
@@ -31433,24 +31458,27 @@ var ContextSelectorModal2 = class extends import_obsidian35.FuzzySuggestModal {
     });
     if (visible_open_files.length) {
       special_items.push({
-        name: "Visible open files" + (visible_open_files.length ? ` (+${visible_open_files.length})` : ""),
+        name: "Visible open files",
         items: visible_open_files
       });
       const all_open_files = Array.from(get_all_open_file_paths2(this.app)).map((f) => {
         return { item: this.env.smart_sources.get(f) };
       });
       if (all_open_files.length && visible_open_files.length !== all_open_files.length) special_items.push({
-        name: "All open files" + (all_open_files.length ? ` (+${all_open_files.length})` : ""),
+        name: "All open files",
         items: all_open_files
       });
     }
-    special_items = special_items.filter((i) => {
+    special_items = special_items.map((i) => {
       if (i.items) {
         i.items = i.items.filter(
           (item) => item.item && !this.ctx?.data?.context_items[item.item.key]
         );
-        return i.items.length > 0;
+        i.name = `${i.name} (+${i.items.length})`;
       }
+      return i;
+    }).filter((i) => {
+      if (i.items) return i.items.length > 0;
       return true;
     });
     const unselected = Object.values(this.env.smart_sources.items).filter(
@@ -32526,25 +32554,78 @@ var SmartChatSettingTab = class extends import_obsidian46.PluginSettingTab {
 // src/bases/connections_score_column_modal.js
 var import_obsidian47 = require("obsidian");
 
-// releases/3.0.0.md
-var __default = '# Smart Connections `v3`\r\n## New Features\r\n\r\n### Smart Chat v1\r\n- Effectively utilizes the Smart Environment architecture to facilitate deeper integration and new features.\r\n#### Improved Smart Chat UI\r\n- New context builder\r\n	- makes managing conversation context easier\r\n- Drag images and notes into the chat window to add as context\r\n- Separate settings tab specifically for chat features\r\n#### *Improved Smart Chat compatibility with Local Models*\r\n- Note lookup (RAG) now compatible with models that don\'t support tool calling\r\n	- Disable tool calling in the settings\r\n### Ollama embedding adapter\r\n- use Ollama to create embeddings\r\n\r\n## Fixed\r\n- renders content in connections results when all result items are expanded by default\r\n## Housekeeping\r\n- Updated README\r\n	- Improved Getting Started section\r\n	- Removed extraneous details\r\n- Improved version release process\r\n- Smart Chat `v0` (legacy)\r\n	- Smart Chat `v0` will continue to be available for a short time and will be removed in `v3.1` unless unforeseen issues arise in which case it will be removed sooner.\r\n	- Smart Chat `v0` code was moved from `brianpetro/jsbrains` to the Smart Connections repo\r\n\r\n## patch `v3.0.1`\r\n\r\nImproved Mobile UX and cleaned up extraneous code.\r\n\r\n## patch `v3.0.3`\r\n\r\nFixed issue where connections results would not render if expand-all results was toggled on.\r\n\r\n## patch `v3.0.4`\r\n\r\nPrevented frontmatter blocks from being included in connections results. Fixed toggle-fold-all logic.\r\n\r\n## patch `v3.0.5`\r\n\r\nFixes Ollama Embedding model loading issue in the settings.\r\n\r\n## patch `v3.0.6`\r\n\r\nFixed release notes should only show once after update.\r\n\r\n## patch `v3.0.7`\r\n\r\nAdded "current/dynamic" option in bases connection score modal to add score based on current file. Fixed issue causing Ollama to seemingly embed at 0 tokens/sec. Fixed bases integration modal failing on new bases.\r\n\r\n## patch `v3.0.8`\r\n\r\n- Improved bases integration UX\r\n	- prevent throwing error on erroroneous input in `cos_sim` base function\r\n	- gracefully handle when smart_env is not loaded yet\r\n- Reduced max size of markdown file that will be imported from 1MB to 300KB (prevent long initial import)\r\n	- advanced configuration available via `smart_sources.obsidian_markdown_source_content_adapter.max_import_size` in `smart_env.json`\r\n- Removed deprecated Smart Search API registered to window since `smart_env` object is now globally accessible\r\n- Fixed bug causing expanded connections results to render twice\r\n\r\n## patch `v3.0.9`\r\n\r\n- Reworked the context builder UX in Smart Chat to prevent confusion\r\n	- Context is now added to the chat regardless of how the context selector modal is closed\r\n	- Removed "Back" button in favor of "Back" suggestion item\r\n- Fixed using `@` to open context selector in Smart Chat\r\n	- "Done" button now appears in the context selector modal when it is opened from the keyboard\r\n\r\n## patch `v3.0.10`\r\n\r\nFixed Google Gemini integration in the new Smart Chat\r\n\r\n## patch `v3.0.11`\r\n\r\nFixes unexpected scroll issue when dragging file from connections view (issue #1073)\r\n\r\n## patch `v3.0.12`\r\n\r\nFixes pasted text: should paste lines in correct order (no longer reversed)\r\n\r\n## patch `v3.0.13`\r\n\r\n- Prevents trying to process embed queue if embed model is not loaded\r\n	- Particularly for Ollama which may not be turned on when Obsidian starts\r\n	- Re-checks for Ollama server in intervals of a minute\r\n	- Embed queue can be restarted by clicking "Reload sources" in the Smart Environment settings\r\n\r\n## patch `v3.0.14`\r\n\r\n- Improved hover popover for blocks in connections results and context builder\r\n- Refactored `context_builder` component to extract `context_tree` component and prevent passing UI components\r\n  - these components are frequently re-used, the updated architecture should make it easier to maintain and extend\r\n- Fixed: should not embed blocks with size less than `min_chars`\r\n- Fixed: Smart Chat completion requests should have a properly ordered `messages` array\r\n\r\n## patch `v3.0.15`\r\n\r\n- Fixed: some Ollama embedding models triggering re-embedding every restart\r\n\r\n## patch `v3.0.16`\r\n\r\n- Fixed: no models available in Ollama should no longer cause issues in the settings\r\n\r\n## patch `v3.0.17`\r\n\r\n- Improved embedding processing UX\r\n	- show notification immediately to allow pausing sooner\r\n	- show notification every 30 seconds in addition to every 100 embeddings\r\n- Fixed: Smart Environment settings tab should be visible during "loading" state\r\n	- prevents "Loading Obsidian Smart Environment..." message from appearing indefinitely in instances where the environment fails to load from errors related to specific embedding models\r\n\r\n## patch `v3.0.18`\r\n\r\n- Fixed: Smart Connections view rendering on mobile\r\n	- should render when opening the view from the sidebar\r\n	- should update the results to the currently active file\r\n\r\n## patch `v3.0.19`\r\n\r\n- Added: model info to Smart Chat view\r\n	- shows before the first message and anytime the model changes since the last message\r\n- Fixed: ChatGPT sign-in with Google account\r\n	- should now work as expected\r\n	- will require re-signing in to ChatGPT after update\r\n- Fixed: Smart Chat thread adapter should better handle past completions to prevent unexpected behavior\r\n	- prevented `build_request` from outputting certain request content unless the completion is the current completion\r\n		- logic is specific to completion adapters (actions, actions_xml, thread)\r\n\r\n## patch `v3.0.20`\r\n\r\n- Fixed: Smart Environment settings tab should be visible during "loading" and "loaded" states\r\n- Fixed: Open URL externally should use window.open with "_external" if webviewer plugin is installed\r\n\r\n## patch `v3.0.21`\r\n\r\n- Implemented Smart Completions fallback to Smart Chat configuration\r\n	- WHY: enables use via global `smart_env` instance without requiring `chat_model` parameters in every request\r\n\r\n## patch `v3.0.22`\r\n\r\n- Improved connections view event handling\r\n	- prevent throwing error when no view container is present on iOS\r\n\r\n## patch `v3.0.23`\r\n\r\n- Added Getting Started guide\r\n	- opens automatically for new users\r\n	- can be opened manually via command `Show getting started`\r\n	- can be opened from the connections view "Help" icon\r\n	- can be opened from the main settings "Open getting started guide" button\r\n\r\n## patch `v3.0.24`\r\n\r\nFix Lookup tab not displaying.\r\n\r\n## patch `v3.0.25`\r\n\r\nFixed connections view help button failing to open\r\n\r\n## patch `v3.0.26`\r\n\r\nTemp disable bases integration since Obsidian changed how the integration works and there is currently no clear path to updating.\r\n\r\n## patch `v3.0.27`\r\n\r\n- Added: Smart Chat lookup now supports folder-based filtering\r\n	- mention a folder when requesting a lookup using self-referential pronoun (no special folder syntax required)\r\n		- ex. "Summarize my thoughts on this topic based on notes in my Content folder"\r\n- Added: Smart Chat system prompt now allows `{{folder_tree}}` variable\r\n	- this variable will be replaced with the folder tree of the current vault\r\n	- useful for providing context about the vault structure to the model\r\n- Improved: Smart Chat system message UI\r\n	- now collapses when longer than 10 lines\r\n\r\n## patch `v3.0.28`\r\n\r\nFixed: Getting Started slideshow UX on mobile.\r\n\r\n## patch `v3.0.29`\r\n\r\n- Fixed: prevented regex special characters from throwing error when excluded file/folder contains them\r\n- Fixed: Smart Chat should return lookup context results when Smart Blocks are disabled\r\n\r\n## patch `v3.0.30`\r\n\r\n- Added: Drag multiple files into the Smart Chat window to add as context\r\n- Fixed: Smart Connections results remain stable when dragging connection from bottom of the list\r\n\r\n## patch `v3.0.31`\r\n\r\n- Added: Smart Chat: "Retrieve more" button in lookup results\r\n	- allows retrieving more results from the lookup\r\n	- includes retrieved context in subsequent lookup to provide more context to the model\r\n- Improved: Smart Chat: prior message handling in subsequent completions\r\n\r\n## patch `v3.0.32`\r\n\r\n- Added: Anthropic Claude Sonnet 4 & Opus 4 to Smart Chat\r\n- Improved: Smart Chat new note button no longer automatically addes open notes as context \r\n	- Added: "Add visible" and "Add open" notes options to Smart Context selector \r\n	- Added: "Add context" button above chat input on new chat for quick access to context selector\r\n- Fixed: Removing an item in the context selector updates the stats\r\n- Fixed: Smart Chat system message should render no more than once per turn\r\n\r\n## patch `v3.0.33`\r\n\r\n- Improved: Context Tree styles improved by @samhiatt (PR #1091)\r\n- Improved: Smart Chat message should be full width if container is less than 600px\r\n- Fixed: Smart Chat model selection should handle when Ollama is available but no models are installed\r\n\r\n## patch `v3.0.34`\n\r\n- Added: Multi-modal support (images as context) using Ollama models\r\n	- requires Ollama models that support multi-modal input like `gemma3:4b`';
-
-// src/modals/release_notes.js
+// src/views/release_notes_view.js
 var import_obsidian48 = require("obsidian");
-var ReleaseNotesModal = class extends import_obsidian48.Modal {
-  constructor(plugin, version) {
-    super(plugin.app);
-    this.plugin = plugin;
-    this.version = version;
+
+// releases/3.0.0.md
+var __default = '# Smart Connections `v3`\r\n## New Features\r\n\r\n### Smart Chat v1\r\n- Effectively utilizes the Smart Environment architecture to facilitate deeper integration and new features.\r\n#### Improved Smart Chat UI\r\n- New context builder\r\n	- makes managing conversation context easier\r\n- Drag images and notes into the chat window to add as context\r\n- Separate settings tab specifically for chat features\r\n#### *Improved Smart Chat compatibility with Local Models*\r\n- Note lookup (RAG) now compatible with models that don\'t support tool calling\r\n	- Disable tool calling in the settings\r\n### Ollama embedding adapter\r\n- use Ollama to create embeddings\r\n\r\n## Fixed\r\n- renders content in connections results when all result items are expanded by default\r\n## Housekeeping\r\n- Updated README\r\n	- Improved Getting Started section\r\n	- Removed extraneous details\r\n- Improved version release process\r\n- Smart Chat `v0` (legacy)\r\n	- Smart Chat `v0` will continue to be available for a short time and will be removed in `v3.1` unless unforeseen issues arise in which case it will be removed sooner.\r\n	- Smart Chat `v0` code was moved from `brianpetro/jsbrains` to the Smart Connections repo\r\n\r\n## patch `v3.0.1`\r\n\r\nImproved Mobile UX and cleaned up extraneous code.\r\n\r\n## patch `v3.0.3`\r\n\r\nFixed issue where connections results would not render if expand-all results was toggled on.\r\n\r\n## patch `v3.0.4`\r\n\r\nPrevented frontmatter blocks from being included in connections results. Fixed toggle-fold-all logic.\r\n\r\n## patch `v3.0.5`\r\n\r\nFixes Ollama Embedding model loading issue in the settings.\r\n\r\n## patch `v3.0.6`\r\n\r\nFixed release notes should only show once after update.\r\n\r\n## patch `v3.0.7`\r\n\r\nAdded "current/dynamic" option in bases connection score modal to add score based on current file. Fixed issue causing Ollama to seemingly embed at 0 tokens/sec. Fixed bases integration modal failing on new bases.\r\n\r\n## patch `v3.0.8`\r\n\r\n- Improved bases integration UX\r\n	- prevent throwing error on erroroneous input in `cos_sim` base function\r\n	- gracefully handle when smart_env is not loaded yet\r\n- Reduced max size of markdown file that will be imported from 1MB to 300KB (prevent long initial import)\r\n	- advanced configuration available via `smart_sources.obsidian_markdown_source_content_adapter.max_import_size` in `smart_env.json`\r\n- Removed deprecated Smart Search API registered to window since `smart_env` object is now globally accessible\r\n- Fixed bug causing expanded connections results to render twice\r\n\r\n## patch `v3.0.9`\r\n\r\n- Reworked the context builder UX in Smart Chat to prevent confusion\r\n	- Context is now added to the chat regardless of how the context selector modal is closed\r\n	- Removed "Back" button in favor of "Back" suggestion item\r\n- Fixed using `@` to open context selector in Smart Chat\r\n	- "Done" button now appears in the context selector modal when it is opened from the keyboard\r\n\r\n## patch `v3.0.10`\r\n\r\nFixed Google Gemini integration in the new Smart Chat\r\n\r\n## patch `v3.0.11`\r\n\r\nFixes unexpected scroll issue when dragging file from connections view (issue #1073)\r\n\r\n## patch `v3.0.12`\r\n\r\nFixes pasted text: should paste lines in correct order (no longer reversed)\r\n\r\n## patch `v3.0.13`\r\n\r\n- Prevents trying to process embed queue if embed model is not loaded\r\n	- Particularly for Ollama which may not be turned on when Obsidian starts\r\n	- Re-checks for Ollama server in intervals of a minute\r\n	- Embed queue can be restarted by clicking "Reload sources" in the Smart Environment settings\r\n\r\n## patch `v3.0.14`\r\n\r\n- Improved hover popover for blocks in connections results and context builder\r\n- Refactored `context_builder` component to extract `context_tree` component and prevent passing UI components\r\n  - these components are frequently re-used, the updated architecture should make it easier to maintain and extend\r\n- Fixed: should not embed blocks with size less than `min_chars`\r\n- Fixed: Smart Chat completion requests should have a properly ordered `messages` array\r\n\r\n## patch `v3.0.15`\r\n\r\n- Fixed: some Ollama embedding models triggering re-embedding every restart\r\n\r\n## patch `v3.0.16`\r\n\r\n- Fixed: no models available in Ollama should no longer cause issues in the settings\r\n\r\n## patch `v3.0.17`\r\n\r\n- Improved embedding processing UX\r\n	- show notification immediately to allow pausing sooner\r\n	- show notification every 30 seconds in addition to every 100 embeddings\r\n- Fixed: Smart Environment settings tab should be visible during "loading" state\r\n	- prevents "Loading Obsidian Smart Environment..." message from appearing indefinitely in instances where the environment fails to load from errors related to specific embedding models\r\n\r\n## patch `v3.0.18`\r\n\r\n- Fixed: Smart Connections view rendering on mobile\r\n	- should render when opening the view from the sidebar\r\n	- should update the results to the currently active file\r\n\r\n## patch `v3.0.19`\r\n\r\n- Added: model info to Smart Chat view\r\n	- shows before the first message and anytime the model changes since the last message\r\n- Fixed: ChatGPT sign-in with Google account\r\n	- should now work as expected\r\n	- will require re-signing in to ChatGPT after update\r\n- Fixed: Smart Chat thread adapter should better handle past completions to prevent unexpected behavior\r\n	- prevented `build_request` from outputting certain request content unless the completion is the current completion\r\n		- logic is specific to completion adapters (actions, actions_xml, thread)\r\n\r\n## patch `v3.0.20`\r\n\r\n- Fixed: Smart Environment settings tab should be visible during "loading" and "loaded" states\r\n- Fixed: Open URL externally should use window.open with "_external" if webviewer plugin is installed\r\n\r\n## patch `v3.0.21`\r\n\r\n- Implemented Smart Completions fallback to Smart Chat configuration\r\n	- WHY: enables use via global `smart_env` instance without requiring `chat_model` parameters in every request\r\n\r\n## patch `v3.0.22`\r\n\r\n- Improved connections view event handling\r\n	- prevent throwing error when no view container is present on iOS\r\n\r\n## patch `v3.0.23`\r\n\r\n- Added Getting Started guide\r\n	- opens automatically for new users\r\n	- can be opened manually via command `Show getting started`\r\n	- can be opened from the connections view "Help" icon\r\n	- can be opened from the main settings "Open getting started guide" button\r\n\r\n## patch `v3.0.24`\r\n\r\nFix Lookup tab not displaying.\r\n\r\n## patch `v3.0.25`\r\n\r\nFixed connections view help button failing to open\r\n\r\n## patch `v3.0.26`\r\n\r\nTemp disable bases integration since Obsidian changed how the integration works and there is currently no clear path to updating.\r\n\r\n## patch `v3.0.27`\r\n\r\n- Added: Smart Chat lookup now supports folder-based filtering\r\n	- mention a folder when requesting a lookup using self-referential pronoun (no special folder syntax required)\r\n		- ex. "Summarize my thoughts on this topic based on notes in my Content folder"\r\n- Added: Smart Chat system prompt now allows `{{folder_tree}}` variable\r\n	- this variable will be replaced with the folder tree of the current vault\r\n	- useful for providing context about the vault structure to the model\r\n- Improved: Smart Chat system message UI\r\n	- now collapses when longer than 10 lines\r\n\r\n## patch `v3.0.28`\r\n\r\nFixed: Getting Started slideshow UX on mobile.\r\n\r\n## patch `v3.0.29`\r\n\r\n- Fixed: prevented regex special characters from throwing error when excluded file/folder contains them\r\n- Fixed: Smart Chat should return lookup context results when Smart Blocks are disabled\r\n\r\n## patch `v3.0.30`\r\n\r\n- Added: Drag multiple files into the Smart Chat window to add as context\r\n- Fixed: Smart Connections results remain stable when dragging connection from bottom of the list\r\n\r\n## patch `v3.0.31`\r\n\r\n- Added: Smart Chat: "Retrieve more" button in lookup results\r\n	- allows retrieving more results from the lookup\r\n	- includes retrieved context in subsequent lookup to provide more context to the model\r\n- Improved: Smart Chat: prior message handling in subsequent completions\r\n\r\n## patch `v3.0.32`\r\n\r\n- Added: Anthropic Claude Sonnet 4 & Opus 4 to Smart Chat\r\n- Improved: Smart Chat new note button no longer automatically addes open notes as context \r\n	- Added: "Add visible" and "Add open" notes options to Smart Context selector \r\n	- Added: "Add context" button above chat input on new chat for quick access to context selector\r\n- Fixed: Removing an item in the context selector updates the stats\r\n- Fixed: Smart Chat system message should render no more than once per turn\r\n\r\n## patch `v3.0.33`\r\n\r\n- Improved: Context Tree styles improved by @samhiatt (PR #1091)\r\n- Improved: Smart Chat message should be full width if container is less than 600px\r\n- Fixed: Smart Chat model selection should handle when Ollama is available but no models are installed\r\n\r\n## patch `v3.0.34`\r\n\r\n- Added: Multi-modal support (images as context) using Ollama models\r\n	- requires Ollama models that support multi-modal input like `gemma3:4b`\r\n\r\n\r\n## patch `v3.0.37`\r\n\r\n- Fixed: Ollama `max_tokens` parameter should accurately reflect the model\'s max tokens\r\n- Fixed: Getting Started slideshow should only show automatically for new users\r\n\r\n## patch `v3.0.38`\r\n\r\n- Fixed: Smart Chat LM Studio models handling of `tool_choice` parameter\r\n\r\n## patch `v3.0.39`\n\r\n- Improved: Release notes user experience to use the same as the native Obsidian release notes\r\n	- Now uses new tab instead of modal to display the release notes\r\n- Fixed: Reduced vector length OpenAI embedding models should be selectable in the settings';
+
+// src/views/release_notes_view.js
+var ReleaseNotesView = class _ReleaseNotesView extends import_obsidian48.ItemView {
+  /* ─────────────────────────────── metadata ─────────────────────────────── */
+  static get view_type() {
+    return "smart-release-notes-view";
   }
-  async onOpen() {
-    this.titleEl.setText(`What's new in v${this.version}`);
-    await import_obsidian48.MarkdownRenderer.renderMarkdown(
+  static get display_text() {
+    return "Release Notes";
+  }
+  static get icon_name() {
+    return "file-text";
+  }
+  /** Convenience helper – opens (or reveals) the view in a root leaf. */
+  static open(workspace, version, active = true) {
+    const leaf = workspace.getLeavesOfType(this.view_type)[0] ?? workspace.getLeaf(false);
+    leaf.setViewState({ type: this.view_type, active, state: { version } });
+  }
+  /* ───────────────────────────── item‑view API ───────────────────────────── */
+  getViewType() {
+    return _ReleaseNotesView.view_type;
+  }
+  getDisplayText() {
+    return _ReleaseNotesView.display_text;
+  }
+  getIcon() {
+    return _ReleaseNotesView.icon_name;
+  }
+  /**
+   * Build the preview container & render markdown using core renderer so the
+   * output styles match native note preview exactly.
+   */
+  onOpen() {
+    this.titleEl.setText(`What\u2019s new in v${this.version}`);
+    this.render();
+  }
+  get container() {
+    return this.containerEl?.querySelector(".view-content");
+  }
+  async render() {
+    while (!this.container) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      console.warn("Waiting for containerEl to be ready...", this.container);
+    }
+    import_obsidian48.MarkdownRenderer.render(
+      this.app,
       __default,
-      this.contentEl,
-      this.plugin.app.workspace.getActiveFile()?.path ?? "",
-      this.plugin
+      this.container,
+      "",
+      this
     );
+    requestAnimationFrame(() => this.#scroll_to_version(this.container, this.version));
+  }
+  get version() {
+    const version = this.leaf.viewState?.state?.version ?? this.app.plugins.getPlugin("smart-connections")?.manifest.version ?? "";
+    return version;
+  }
+  /* ────────────────────────────── utilities ─────────────────────────────── */
+  #scroll_to_version(container, version) {
+    if (!version) return;
+    const safe = version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const matcher = new RegExp(`\\bv?${safe}\\b`, "i");
+    container.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach((h) => {
+      if (matcher.test(h.textContent ?? "")) {
+        h.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
   }
 };
 
@@ -32562,7 +32643,8 @@ var SmartConnectionsPlugin = class extends Plugin {
       ScLookupView,
       SmartChatsView,
       SmartChatGPTView,
-      SmartPrivateChatView
+      SmartPrivateChatView,
+      ReleaseNotesView
     };
   }
   // GETTERS
@@ -32611,7 +32693,6 @@ var SmartConnectionsPlugin = class extends Plugin {
     this.addSettingTab(new ScSettingsTab(this.app, this));
     this.add_commands();
     this.register_code_blocks();
-    this.load_new_user_state();
   }
   // async onload() { this.app.workspace.onLayoutReady(this.initialize.bind(this)); } // initialize when layout is ready
   onunload() {
@@ -32620,6 +32701,7 @@ var SmartConnectionsPlugin = class extends Plugin {
     this.notices?.unload();
   }
   async initialize() {
+    await this.load_new_user_state();
     this.smart_connections_view = null;
     if (!Platform8.isMobile) {
       this.registerObsidianProtocolHandler("sc-op/callback", async (params) => {
@@ -32692,9 +32774,9 @@ var SmartConnectionsPlugin = class extends Plugin {
     if (await this.should_show_release_notes(this.manifest.version)) {
       console.log("opening release notes modal");
       try {
-        new ReleaseNotesModal(this, this.manifest.version).open();
+        ReleaseNotesView.open(this.app.workspace, this.manifest.version);
       } catch (e) {
-        console.error("Failed to open ReleaseNotesModal", e);
+        console.error("Failed to open ReleaseNotesView", e);
       }
       await this.set_last_known_version(this.manifest.version);
     }
@@ -32798,9 +32880,7 @@ var SmartConnectionsPlugin = class extends Plugin {
     this.addCommand({
       id: "show-release-notes",
       name: "Show release notes",
-      callback: () => {
-        new ReleaseNotesModal(this, this.manifest.version).open();
-      }
+      callback: () => ReleaseNotesView.open(this.app.workspace, this.manifest.version)
     });
     this.addCommand({
       id: "show-getting-started",

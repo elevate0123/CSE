@@ -4,7 +4,7 @@
   "showLineNumber": true,
   "pdfExportSettings": {
     "includeName": true,
-    "pageSize": "A4",
+    "pageSize": "Legal",
     "landscape": false,
     "margin": "0",
     "downscalePercent": 100

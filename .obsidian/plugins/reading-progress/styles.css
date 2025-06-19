@@ -1,0 +1,22 @@
+.reading-progress-bar {
+  position: absolute;
+  left: 0;
+  pointer-events: none; /* Make sure it doesn't interfere with mouse clicks */
+  z-index: 1; /* Keep it above the text, but below other UI */
+
+  /* These will be controlled by the plugin settings via JavaScript */
+  background-color: var(--reading-progress-color);
+  height: var(--reading-progress-thickness);
+  width: var(--reading-progress-width);
+
+  /* Add a subtle transition for smoothness */
+  transition: width 0.1s linear;
+}
+
+.reading-progress-bar.position-top {
+  top: 0;
+}
+
+.reading-progress-bar.position-bottom {
+  bottom: 0;
+}

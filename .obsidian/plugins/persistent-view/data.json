@@ -1,0 +1,15 @@
+{
+  "settings": {
+    "shouldSaveCursor": true,
+    "shouldSaveScroll": true,
+    "shouldSaveFolds": true,
+    "saveTrigger": "onSwitch",
+    "periodicSaveInterval": 5,
+    "showSaveIndicator": true,
+    "enableAutomaticPruning": false,
+    "pruningMethod": "byAge",
+    "pruningMaxAgeDays": 90,
+    "pruningMaxFiles": 500
+  },
+  "fileStates": {}
+}

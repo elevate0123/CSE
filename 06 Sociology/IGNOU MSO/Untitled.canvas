@@ -1,0 +1,12 @@
+{
+	"nodes":[
+		{"id":"6a99c1e5562734f2","x":-180,"y":-100,"width":250,"height":60,"color":"4","type":"text","text":"Hello "},
+		{"id":"e37a2b9f353ab30f","x":-180,"y":80,"width":250,"height":60,"type":"text","text":""},
+		{"id":"0675b5725bf35a94","x":160,"y":-200,"width":240,"height":240,"color":"5","type":"file","file":"06 Sociology/IGNOU MSO/MSO 01 Gemini Notes.md"}
+	],
+	"edges":[
+		{"id":"79370520afa506f0","fromNode":"6a99c1e5562734f2","fromSide":"bottom","toNode":"e37a2b9f353ab30f","toSide":"top","fromEnd":"arrow"},
+		{"id":"3e61258191018487","fromNode":"6a99c1e5562734f2","fromSide":"left","toNode":"e37a2b9f353ab30f","toSide":"left"},
+		{"id":"367d2d62a1e4a453","fromNode":"0675b5725bf35a94","fromSide":"left","toNode":"6a99c1e5562734f2","toSide":"right","toEnd":"none"}
+	]
+}

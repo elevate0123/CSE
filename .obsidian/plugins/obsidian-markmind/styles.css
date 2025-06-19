@@ -1835,6 +1835,15 @@ th {
     padding-right: 6px;
 }
 
+.mm-link-board .mm-file-path {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.8em;
+    margin-bottom: 2px;
+}
+
 .mm-block-ext {
     font-size: 0.6em;
     padding-right: 6px;

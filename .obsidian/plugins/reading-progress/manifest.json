@@ -1,0 +1,10 @@
+{
+  "id": "reading-progress",
+  "name": "Reading Progress",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Visually displays reading progress as a bar or status bar text, with full customization.",
+  "author": "Shaikh Muhammedalmaas Ashrafi",
+  "authorUrl": "https://your-website.com",
+  "isDesktopOnly": false
+}

@@ -1,0 +1,10 @@
+{
+  "id": "persistent-view-pro-max",
+  "name": "Persistent View Pro Max",
+  "version": "3.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Intelligently remembers view state with smart file tracking, data pruning, and a full settings panel.",
+  "author": "Shaikh Muhammedalmaas Ashrafi",
+  "authorUrl": "https://your-website.com",
+  "isDesktopOnly": false
+}

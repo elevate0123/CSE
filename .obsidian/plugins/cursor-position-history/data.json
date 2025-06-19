@@ -1,0 +1,6 @@
+{
+  "databaseFilePath": ".obsidian/plugins/cursor-position-history/cursor-position-history.json",
+  "delayAfterFileOpeningMs": 80,
+  "saveTimoutMs": 5000,
+  "maxHistoryLength": 500
+}

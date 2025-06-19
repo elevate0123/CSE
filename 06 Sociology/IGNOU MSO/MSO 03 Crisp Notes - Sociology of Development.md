@@ -98,7 +98,7 @@ The evaluation scheme for MSO-03 follows the standard IGNOU Master's program for
 
 ### **1. High-Impact Comparative Tables (MSO-003)**
 
-**Table 1: Mainstream vs. Alternative Development Paradigms**
+#### Table 1: Mainstream vs. Alternative Development Paradigms
 
 | Feature                 | **Mainstream Development (Modernization/Liberal)**                                     | **Alternative Development (Human/Sustainable/Gandhian)**                         |
 | :---------------------- | :------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------- |
@@ -109,7 +109,7 @@ The evaluation scheme for MSO-03 follows the standard IGNOU Master's program for
 | **Key Metrics**         | GNP per capita, industrial output.                                                     | Human Development Index (HDI), ecological footprint, measures of equity.         |
 | **Associated Thinkers** | W.W. Rostow, Adam Smith.                                                               | Amartya Sen, Mahbub ul Haq, E.F. Schumacher.                                     |
 
-**Table 2: Modernization Theory vs. Dependency Theory**
+#### Table 2: Modernization Theory vs. Dependency Theory
 
 | Feature | **Modernization Theory** | **Dependency Theory** |
 | :--- | :--- | :--- |
@@ -120,7 +120,7 @@ The evaluation scheme for MSO-03 follows the standard IGNOU Master's program for
 | **Key Proponents** | W.W. Rostow, Talcott Parsons. | Andre Gunder Frank, Samir Amin. |
 | **Proposed Solution** | Diffusion of Western capital, technology, and values. | **Delinking** from the global capitalist system; socialist revolution. |
 
-**Table 3: Evolution of Gender & Development Approaches**
+#### Table 3: Evolution of Gender & Development Approaches
 
 | Feature | **WID (Women in Development)** | **WAD (Women and Development)** | **GAD (Gender and Development)** |
 | :--- | :--- | :--- | :--- |
@@ -134,13 +134,13 @@ The evaluation scheme for MSO-03 follows the standard IGNOU Master's program for
 
 ### **2. High-Impact Sociological Quotes (MSO-003)**
 
-| Sl. No. | Theme | Quote | Thinker & Source |
-| :--- | :--- | :--- | :--- |
-| 1 | **Sustainable Development** | "Development that meets the needs of the present without compromising the ability of future generations to meet their own needs." | Brundtland Commission, *Our Common Future* |
-| 2 | **Human Development** | "The basic purpose of development is to enlarge people's choices... The objective of development is to create an enabling environment for people to enjoy long, healthy and creative lives." | Mahbub ul Haq |
-| 3 | **Capability Approach** | "Poverty must be seen as the deprivation of basic capabilities rather than merely as lowness of incomes." | Amartya Sen, *Development as Freedom* |
-| 4 | **Gandhian Development** | "The world has enough for everyone's need, but not enough for everyone's greed." | Mahatma Gandhi |
-| 5 | **Dependency Theory** | "Underdevelopment is not the lack of development, but the result of a particular historical process of capitalist development." | (Paraphrasing) Andre Gunder Frank |
+| Sl. No. | Theme                       | Quote                                                                                                                                                                                        | Thinker & Source                           |
+| :------ | :-------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------- |
+| 1       | **Sustainable Development** | "Development that meets the needs of the present without compromising the ability of future generations to meet their own needs."                                                            | Brundtland Commission, *Our Common Future* |
+| 2       | **Human Development**       | "The basic purpose of development is to enlarge people's choices... The objective of development is to create an enabling environment for people to enjoy long, healthy and creative lives." | Mahbub ul Haq                              |
+| 3       | **Capability Approach**     | "Poverty must be seen as the deprivation of basic capabilities rather than merely as lowness of incomes."                                                                                    | Amartya Sen, *Development as Freedom*      |
+| 4       | **Gandhian Development**    | "The world has enough for everyone's need, but not enough for everyone's greed."                                                                                                             | Mahatma Gandhi                             |
+| 5       | **Dependency Theory**       | "Underdevelopment is not the lack of development, but the result of a particular historical process of capitalist development."                                                              | (Paraphrasing) Andre Gunder Frank          |
 
 ---
 
@@ -917,8 +917,6 @@ The liberal perspective provides a powerful and enduring argument for the role o
 
 ---
 ---
-
-Of course. Here is the detailed analysis and integration plan for MSO-03, comparing your "Crisp Notes" with the "Gemini Notes."
 
 ### Overall Analysis
 
