@@ -130,8 +130,6 @@ The evaluation scheme for MSO-03 follows the standard IGNOU Master's program for
 | **Theoretical Link** | Liberal Feminism. | Marxist / Dependency Theory. | Socialist / Radical Feminism. |
 | **Limitation** | Ignores patriarchy; adds to women's "double burden." | Prioritizes class over gender; sees women as a monolithic group. | Can be difficult to implement; risks being co-opted by bureaucracies. |
 
----
-
 ### **2. High-Impact Sociological Quotes (MSO-003)**
 
 | Sl. No. | Theme                       | Quote                                                                                                                                                                                        | Thinker & Source                           |
@@ -141,8 +139,6 @@ The evaluation scheme for MSO-03 follows the standard IGNOU Master's program for
 | 3       | **Capability Approach**     | "Poverty must be seen as the deprivation of basic capabilities rather than merely as lowness of incomes."                                                                                    | Amartya Sen, *Development as Freedom*      |
 | 4       | **Gandhian Development**    | "The world has enough for everyone's need, but not enough for everyone's greed."                                                                                                             | Mahatma Gandhi                             |
 | 5       | **Dependency Theory**       | "Underdevelopment is not the lack of development, but the result of a particular historical process of capitalist development."                                                              | (Paraphrasing) Andre Gunder Frank          |
-
----
 
 ### **3. Jargon & Keyword Bank (MSO-003)**
 
@@ -158,8 +154,6 @@ The evaluation scheme for MSO-03 follows the standard IGNOU Master's program for
 | 8 | **Patriarchy** | (Feminist Theory / GAD) | A social system in which men hold primary power and predominate in roles of political leadership, moral authority, and control of property. |
 | 9 | **Gender Mainstreaming** | (GAD Approach) | The strategy of integrating a gender perspective into the design, implementation, and evaluation of all policies and programs. |
 | 10 | **Bio-piracy** | Vandana Shiva | The commercial exploitation of traditional knowledge and biological resources from developing countries without proper compensation. |
-
----
 
 ### **4. Contemporary Thinkers & Books for Application (MSO-003)**
 
@@ -189,7 +183,6 @@ The evaluation scheme for MSO-03 follows the standard IGNOU Master's program for
 This theme covers the grand debate that dominated development studies for decades: the clash between the mainstream, Western-centric Modernization school and its radical critique from the Dependency school.
 
 ---
-
 ### **Note 1.1: The Modernization Paradigm and its Decline**
 
 **(Keywords: Modernization, Traditional vs. Modern, Rostow's Stages, Parsons' Pattern Variables, Ethnocentrism, Dependency Theory)**

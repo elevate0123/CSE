@@ -90,6 +90,30 @@
         "type": "tabs",
         "children": [
           {
+            "id": "7f0ce033e711d5fa",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          },
+          {
+            "id": "ddfedae176ba9b9a",
+            "type": "leaf",
+            "state": {
+              "type": "dictionary-view",
+              "state": {},
+              "icon": "quote-glyph",
+              "title": "Dictionary"
+            }
+          },
+          {
             "id": "ee35402f92e5eda6",
             "type": "leaf",
             "state": {
@@ -105,41 +129,6 @@
             }
           },
           {
-            "id": "7f0ce033e711d5fa",
-            "type": "leaf",
-            "state": {
-              "type": "outline",
-              "state": {
-                "file": "06 Sociology/IGNOU MSO/MSO 03 Crisp Notes - Sociology of Development.md",
-                "followCursor": true,
-                "showSearch": false,
-                "searchQuery": ""
-              },
-              "icon": "lucide-list",
-              "title": "Outline of MSO 03 Crisp Notes - Sociology of Development"
-            }
-          },
-          {
-            "id": "ddfedae176ba9b9a",
-            "type": "leaf",
-            "state": {
-              "type": "dictionary-view",
-              "state": {},
-              "icon": "quote-glyph",
-              "title": "Dictionary"
-            }
-          },
-          {
-            "id": "a6da7f9d4a36d68b",
-            "type": "leaf",
-            "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
-            }
-          },
-          {
             "id": "9d8e69eaf0d47038",
             "type": "leaf",
             "state": {
@@ -148,69 +137,8 @@
               "icon": "lucide-file",
               "title": "New tab"
             }
-          },
-          {
-            "id": "8d6863879864b77a",
-            "type": "leaf",
-            "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
-            }
-          },
-          {
-            "id": "8a1c8576cc8d685e",
-            "type": "leaf",
-            "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
-            }
-          },
-          {
-            "id": "d8df5e5e03b53b5d",
-            "type": "leaf",
-            "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
-            }
-          },
-          {
-            "id": "8b365857010de3bb",
-            "type": "leaf",
-            "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
-            }
-          },
-          {
-            "id": "d7cbbfd53edcb9b5",
-            "type": "leaf",
-            "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
-            }
-          },
-          {
-            "id": "73cc5a0292d47d20",
-            "type": "leaf",
-            "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
-            }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -227,8 +155,9 @@
       "canvas:Create new canvas": false
     }
   },
-  "active": "e0f0f38d47f8256c",
+  "active": "7f0ce033e711d5fa",
   "lastOpenFiles": [
+    "06 Sociology/IGNOU MSO/MSO 03 Crisp Notes - Sociology of Development.md",
     "06 Sociology/IGNOU MSO/MSO 01 Crisp Notes - Sociological Theories and Concepts.md",
     "06 Sociology/IGNOU MSO/MSO 01 QRM.md",
     "06 Sociology/IGNOU MSO/MSO 01 Crisp Notes - Sociological Theories and Concepts.pdf",
@@ -241,7 +170,6 @@
     "06 Sociology/IGNOU MSO/Untitled.canvas",
     "06 Sociology/IGNOU MSO/MSO 04 Gemini Notes.md",
     "Philology (en-GB).md",
-    "06 Sociology/IGNOU MSO/MSO 03 Crisp Notes - Sociology of Development.md",
     "06 Sociology/IGNOU MSO/MSO 02 Left Crisp Notes -.md",
     "06 Sociology/IGNOU MSO/MSO 04 Gemini Notes.pdf",
     "06 Sociology/Value Addition/PYQ Predictions.md",
