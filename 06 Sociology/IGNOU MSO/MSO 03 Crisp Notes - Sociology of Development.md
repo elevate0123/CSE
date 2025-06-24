@@ -141,18 +141,18 @@ The evaluation scheme for MSO-03 follows the standard IGNOU Master's program for
 
 ### **3. Jargon & Keyword Bank (MSO-003)**
 
-| Sl. No. | Keyword | Associated Thinker(s) / Concept | Brief Meaning |
-| :--- | :--- | :--- | :--- |
-| 1 | **Ethnocentrism** | (Critique of Modernization) | Evaluating other cultures according to the standards of one's own, implying superiority. |
-| 2 | **Core-Periphery** | Immanuel Wallerstein, Dependency Theorists | A model of the world system where the industrialized "core" nations exploit the resource-exporting "periphery" nations. |
-| 3 | **Unequal Exchange** | Arghiri Emmanuel, Dependency Theorists | The process by which the periphery is forced to sell its raw materials cheaply and buy expensive manufactured goods from the core. |
-| 4 | **Capability Approach** | Amartya Sen | A theory that defines development as the expansion of people's real freedoms (capabilities) to live a life they value. |
-| 5 | **Human Development Index (HDI)** | Mahbub ul Haq (UNDP) | A composite index measuring development based on life expectancy, education, and per capita income. |
-| 6 | **Inter-generational Equity** | Sustainable Development | The principle of justice between generations, ensuring the future has the same opportunities as the present. |
-| 7 | **Intra-generational Equity** | Sustainable Development | The principle of justice within the current generation, focusing on poverty alleviation. |
-| 8 | **Patriarchy** | (Feminist Theory / GAD) | A social system in which men hold primary power and predominate in roles of political leadership, moral authority, and control of property. |
-| 9 | **Gender Mainstreaming** | (GAD Approach) | The strategy of integrating a gender perspective into the design, implementation, and evaluation of all policies and programs. |
-| 10 | **Bio-piracy** | Vandana Shiva | The commercial exploitation of traditional knowledge and biological resources from developing countries without proper compensation. |
+| Sl. No. | Keyword                           | Associated Thinker(s) / Concept            | Brief Meaning                                                                                                                               |
+| :------ | :-------------------------------- | :----------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1       | **Ethnocentrism**                 | (Critique of Modernization)                | Evaluating other cultures according to the standards of one's own, implying superiority.                                                    |
+| 2       | **Core-Periphery**                | Immanuel Wallerstein, Dependency Theorists | A model of the world system where the industrialized "core" nations exploit the resource-exporting "periphery" nations.                     |
+| 3       | **Unequal Exchange**              | Arghiri Emmanuel, Dependency Theorists     | The process by which the periphery is forced to sell its raw materials cheaply and buy expensive manufactured goods from the core.          |
+| 4       | **Capability Approach**           | Amartya Sen                                | A theory that defines development as the expansion of people's real freedoms (capabilities) to live a life they value.                      |
+| 5       | **Human Development Index (HDI)** | Mahbub ul Haq (UNDP)                       | A composite index measuring development based on life expectancy, education, and per capita income.                                         |
+| 6       | **Inter-generational Equity**     | Sustainable Development                    | The principle of justice between generations, ensuring the future has the same opportunities as the present.                                |
+| 7       | **Intra-generational Equity**     | Sustainable Development                    | The principle of justice within the current generation, focusing on poverty alleviation.                                                    |
+| 8       | **Patriarchy**                    | (Feminist Theory / GAD)                    | A social system in which men hold primary power and predominate in roles of political leadership, moral authority, and control of property. |
+| 9       | **Gender Mainstreaming**          | (GAD Approach)                             | The strategy of integrating a gender perspective into the design, implementation, and evaluation of all policies and programs.              |
+| 10      | **Bio-piracy**                    | Vandana Shiva                              | The commercial exploitation of traditional knowledge and biological resources from developing countries without proper compensation.        |
 
 ### **4. Contemporary Thinkers & Books for Application (MSO-003)**
 

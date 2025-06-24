@@ -1,0 +1,10 @@
+{
+  "layoutEngine": "elk",
+  "debounce": 200,
+  "theme": 0,
+  "apiToken": "",
+  "d2Path": "",
+  "pad": 100,
+  "sketch": false,
+  "containerHeight": 800
+}
