@@ -1,0 +1,21 @@
+.fluff-dim {
+    color: var(--text-faint);
+}
+
+.fluff-wavy-underline {
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: var(--color-blue);
+    text-decoration-skip-ink: none;
+}
+
+.fluff-strikethrough {
+    text-decoration-line: line-through;
+    color: var(--text-faint);
+}
+
+.settings-full-width-textarea {
+    width: 100%;
+    resize: none;
+    height: 12em;
+}

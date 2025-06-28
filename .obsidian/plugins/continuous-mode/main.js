@@ -255,16 +255,16 @@ class ContinuousModePlugin extends obsidian.Plugin {
 						}
  						updateSavedIds(false);
 				}
-				if ( compact_mode === true ) { openInRightSplit(tab_group.children.find( leaf => leaf.containerEl.classList.contains('mod-active') ) || tab_group.children[0] ); }
-				if ( this.settings.alwaysHideNoteHeaders === true && !tab_group.containerEl?.classList?.contains('show_note_titles') ) {
-					tab_group.containerEl?.classList?.add('hide_note_titles');
+				if ( compact_mode === true ) { openInRightSplit(tab_group?.children?.find( leaf => leaf.containerEl.classList.contains('mod-active') ) || tab_group?.children[0] ); }
+				if ( this.settings.alwaysHideNoteHeaders === true && !tab_group?.containerEl?.classList?.contains('show_note_titles') ) {
+					tab_group?.containerEl?.classList?.add('hide_note_titles');	tab_group?.containerEl?.classList?.remove('show_note_titles');
 				} else {
-					tab_group.containerEl?.classList?.add('show_note_titles');
+					tab_group?.containerEl?.classList?.add('show_note_titles');	tab_group?.containerEl?.classList?.remove('hide_note_titles');
 				}
-				if ( this.settings.enableScrollIntoView === false )		{ tab_group.containerEl?.classList?.add('is_enable_scroll') }
-				if ( this.settings.enableSmoothScroll === true )		{ tab_group.containerEl?.classList?.add('is_smooth_scroll') }
-				if ( this.settings.enableTypewriterScroll === true )	{ tab_group.containerEl?.classList?.add('is_typewriter_scroll') }
-				if ( this.settings.onlyShowFileName === true )			{ tab_group.containerEl?.classList?.add('only_show_file_name'); }
+				if ( this.settings.enableScrollIntoView === false )		{ tab_group?.containerEl?.classList?.add('is_enable_scroll') }
+				if ( this.settings.enableSmoothScroll === true )		{ tab_group?.containerEl?.classList?.add('is_smooth_scroll') }
+				if ( this.settings.enableTypewriterScroll === true )	{ tab_group?.containerEl?.classList?.add('is_typewriter_scroll') }
+				if ( this.settings.onlyShowFileName === true )			{ tab_group?.containerEl?.classList?.add('only_show_file_name'); }
 			})
 		}
 		/*-----------------------------------------------*/
@@ -531,6 +531,7 @@ class ContinuousModePlugin extends obsidian.Plugin {
 			let appended_leaf = ( items.length === 1 ? open_leaves.find( open_leaf => items[0] === open_leaf.view.file ) : null );
 			let extensions = { 
 				markdown:	['md'],
+				base:		['base'],
 				images:		['avif','bmp','jpg','jpeg','gif','png','svg','webp'],
 				canvas:		['canvas'],
 				media:		['aac','aif','aiff','ape','flac','m4a','mka','mp3','ogg','opus','wav','m4v','mkv','mov','mp4','mpeg','webm'],
@@ -1224,6 +1225,12 @@ let ContinuousModeSettings = class extends obsidian.PluginSettingTab {
 			.addToggle( A => A.setValue(this.plugin.settings.includedFileTypes.includes('images'))
 			.onChange(async (value) => {
 				(value === true ? this.plugin.settings.includedFileTypes.push('images') : this.plugin.settings.includedFileTypes.splice(this.plugin.settings.includedFileTypes.indexOf('images'),1));
+				await this.plugin.saveSettings();
+		}));
+		new obsidian.Setting(containerEl).setName('Include base files').setClass("cm-setting-indent")
+			.addToggle( A => A.setValue(this.plugin.settings.includedFileTypes.includes('base'))
+			.onChange(async (value) => {
+				(value === true ? this.plugin.settings.includedFileTypes.push('base') : this.plugin.settings.includedFileTypes.splice(this.plugin.settings.includedFileTypes.indexOf('base'),1));
 				await this.plugin.saveSettings();
 		}));
 		new obsidian.Setting(containerEl).setName('Include canvas files').setClass("cm-setting-indent")

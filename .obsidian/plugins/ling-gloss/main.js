@@ -27,490 +27,605 @@ __export(main_exports, {
   default: () => LingGlossPlugin
 });
 module.exports = __toCommonJS(main_exports);
-var import_obsidian = require("obsidian");
+var import_obsidian2 = require("obsidian");
 
-// src/models/command.ts
-var CommandType = /* @__PURE__ */ ((CommandType2) => {
-  CommandType2[CommandType2["ex"] = 0] = "ex";
-  CommandType2[CommandType2["ft"] = 1] = "ft";
-  CommandType2[CommandType2["gla"] = 2] = "gla";
-  CommandType2[CommandType2["glb"] = 3] = "glb";
-  CommandType2[CommandType2["glc"] = 4] = "glc";
-  CommandType2[CommandType2["gl"] = 5] = "gl";
-  CommandType2[CommandType2["num"] = 6] = "num";
-  CommandType2[CommandType2["lbl"] = 7] = "lbl";
-  CommandType2[CommandType2["src"] = 8] = "src";
-  CommandType2[CommandType2["set"] = 9] = "set";
-  return CommandType2;
-})(CommandType || {});
-var SetOptionType = /* @__PURE__ */ ((SetOptionType2) => {
-  SetOptionType2[SetOptionType2["style"] = 0] = "style";
-  SetOptionType2[SetOptionType2["exstyle"] = 1] = "exstyle";
-  SetOptionType2[SetOptionType2["ftstyle"] = 2] = "ftstyle";
-  SetOptionType2[SetOptionType2["srcstyle"] = 3] = "srcstyle";
-  SetOptionType2[SetOptionType2["glastyle"] = 4] = "glastyle";
-  SetOptionType2[SetOptionType2["glbstyle"] = 5] = "glbstyle";
-  SetOptionType2[SetOptionType2["glcstyle"] = 6] = "glcstyle";
-  SetOptionType2[SetOptionType2["glxstyle"] = 7] = "glxstyle";
-  SetOptionType2[SetOptionType2["glaspaces"] = 8] = "glaspaces";
-  return SetOptionType2;
-})(SetOptionType || {});
-
-// src/models/gloss-data.ts
-var initGlossElement = () => ({
-  levelA: "",
-  levelB: "",
-  levelC: "",
-  nlevels: []
-});
-var initGlossLineStyle = () => ({
-  classes: []
-});
-var initGlossData = () => ({
-  number: "",
-  label: "",
-  source: "",
-  preamble: "",
-  elements: [],
-  translation: "",
-  options: {}
-});
-
-// src/token-functions.ts
-var stripIndent = (input) => {
-  var _a, _b;
-  const minIndent = (_b = (_a = input.match(/^\s*(?=\S)/gm)) == null ? void 0 : _a.reduce((a, x) => Math.min(a, x.length), Infinity)) != null ? _b : 0;
-  if (minIndent > 0) {
-    const regex = new RegExp(`^\\s{${minIndent}}`, "gm");
-    return input.replace(regex, "");
-  }
-  return input;
-};
-var gatherLines = (input) => {
-  const outLines = [];
-  const lineBuf = [];
-  const trInput = stripIndent(input);
-  for (const line of trInput.split(/\n+/)) {
-    if (!/^\s+/.test(line)) {
-      if (lineBuf.length > 0) {
-        outLines.push(lineBuf.join(" "));
-      }
-      lineBuf.length = 0;
-    }
-    const trLine = line.trim();
-    if (trLine.length > 0) {
-      lineBuf.push(trLine);
+// src/utils.ts
+var resultOk = (data) => ({ success: true, data });
+var resultErr = (errors) => ({ success: false, errors });
+var isObject = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+var deepMerge = (target, source) => {
+  const result = { ...target };
+  if (source == null)
+    return result;
+  for (const key of Object.keys(source)) {
+    if (isObject(source[key])) {
+      result[key] = isObject(result[key]) ? deepMerge(result[key], source[key]) : { ...source[key] };
+    } else {
+      result[key] = source[key];
     }
   }
-  if (lineBuf.length > 0) {
-    outLines.push(lineBuf.join(" "));
-  }
-  return outLines;
+  return result;
 };
-var tokenizeLine = (line) => {
-  const outTokens = [];
-  const tokenBuf = [];
-  const makeErrorPos = () => {
-    var _a, _b;
-    return [(_b = (_a = outTokens.last()) == null ? void 0 : _a.text) != null ? _b : "", tokenBuf.join("")].filter((x) => x.length > 0).join(" ");
+var deepCopy = (source, arrays = true) => {
+  if (isObject(source)) {
+    const result = {};
+    for (const key of Object.keys(source)) {
+      result[key] = deepCopy(source[key], arrays);
+    }
+    return result;
+  }
+  if (arrays && Array.isArray(source)) {
+    return source.map((el) => deepCopy(el, arrays));
+  }
+  return source;
+};
+function* range(limit, start = 0) {
+  for (let index = start; index < limit; index += 1)
+    yield index;
+}
+var arrayFill = (array, limit, func) => {
+  if (array.length < limit) {
+    const from = array.length;
+    array.length = limit;
+    for (const index of range(limit, from)) {
+      array[index] = func(index);
+    }
+  }
+  return array;
+};
+var CssClassRegex = /[^a-z0-9_-]+/ig;
+var sanitizeCssClass = (classes) => Array.isArray(classes) ? classes.map((cls) => cls.replace(CssClassRegex, "-")) : classes.replace(CssClassRegex, "-");
+
+// src/data/gloss.ts
+var getDefaultGlossOptions = () => ({
+  useMarkup: false,
+  altSpaces: false,
+  styles: {
+    global: [],
+    levelA: [],
+    levelB: [],
+    levelC: [],
+    levelX: [],
+    preamble: [],
+    translation: [],
+    source: []
+  }
+});
+var createGlossElement = () => ({
+  levels: []
+});
+var createGlossData = (nlevel, options) => {
+  var _a;
+  return {
+    nlevel,
+    options: (_a = deepCopy(options)) != null ? _a : getDefaultGlossOptions(),
+    number: {
+      value: ""
+    },
+    label: "",
+    preamble: "",
+    translation: "",
+    source: "",
+    elements: []
   };
-  let isBracket = false;
-  let isEscape = false;
-  for (const char of line.trim()) {
-    if (char === "^" && !isEscape) {
-      isEscape = true;
-      continue;
+};
+
+// src/parser/helpers.ts
+var checkAssertion = (assert, errorType) => {
+  if (!assert)
+    throw `${errorType} provided to \u201C@@\u201D command`;
+};
+var checkNoValues = (params) => checkAssertion(params.length > 0, "no values");
+var checkMultiValues = (params) => checkAssertion(params.length < 2, "more than one value");
+var checkAnyValues = (params) => checkAssertion(params.length < 1, "more than no values");
+var checkValueSimple = (param, errorType) => checkAssertion((param == null ? void 0 : param.type) === "simple", errorType);
+var paramsJoin = (params) => {
+  checkNoValues(params);
+  return params.map((p) => p.value).join(" ");
+};
+var paramsOne = (params) => {
+  var _a, _b;
+  checkNoValues(params);
+  checkMultiValues(params);
+  return (_b = (_a = params.first()) == null ? void 0 : _a.value) != null ? _b : "";
+};
+var gatherValuesQuoted = (params) => {
+  const result = [];
+  for (const param of params) {
+    if (param.type === "quoted") {
+      const group = result.last();
+      if (group == null)
+        continue;
+      group.push(param.value);
+    } else {
+      result.push([param.value]);
     }
+  }
+  return result;
+};
+var updateObjectField = (object, keys, func) => {
+  if (keys.length < 1)
+    return;
+  for (const index of range(keys.length - 1)) {
+    object = object[keys[index]];
+  }
+  const key = keys.at(-1);
+  object[key] = func(object[key]);
+};
+
+// src/parser/tokenize.ts
+var NewLineRegex = /\r\n|[\r\n\u2028\u2029]/;
+var IndentRegex = /^[ \t\v\f\u00A0]+/;
+function* iterateLines(input) {
+  let lineNo = 0;
+  for (let line of input.split(NewLineRegex)) {
+    const indent = IndentRegex.test(line);
+    line = line.trim();
+    lineNo += 1;
+    if (line.startsWith("#"))
+      continue;
+    if (line.length > 0) {
+      yield { line, lineNo, indent };
+    }
+  }
+}
+function tokenizeLine(lineNo, line) {
+  let isEscape = false;
+  let isQuoted = false;
+  const buffer = [];
+  const tokens = [];
+  for (const char of line) {
     if (isEscape) {
+      isEscape = false;
       switch (char) {
         case "[":
         case "]":
         case "^":
-          tokenBuf.push(char);
-          isEscape = false;
+          buffer.push(char);
           break;
         default:
-          tokenBuf.push("^");
-          tokenBuf.push(char);
-          isEscape = false;
+          buffer.push("^");
+          buffer.push(char);
           break;
       }
-    } else if (isBracket) {
+    } else if (isQuoted) {
       switch (char) {
         case "[":
-          throw `invalid \u201C[\u201D found around \u201C${makeErrorPos()}\u201D`;
+          throw `found an invalid \u201C[\u201D (line ${lineNo})`;
+        case "^":
+          isEscape = true;
+          break;
         case "]":
-          outTokens.push({
-            type: 1 /* Bracketed */,
-            text: tokenBuf.join("")
+          tokens.push({
+            type: "quoted",
+            value: buffer.join("")
           });
-          tokenBuf.length = 0;
-          isBracket = false;
+          buffer.length = 0;
+          isQuoted = false;
           break;
         default:
-          tokenBuf.push(char);
+          buffer.push(char);
           break;
       }
     } else {
       switch (char) {
         case "]":
-          throw `invalid \u201C]\u201D found around \u201C${makeErrorPos()}\u201D`;
+          throw `found an invalid \u201C]\u201D (line ${lineNo})`;
+        case "^":
+          isEscape = true;
+          break;
         case "[":
         case " ":
         case "	":
-          if (tokenBuf.length > 0) {
-            outTokens.push({
-              type: 0 /* Simple */,
-              text: tokenBuf.join("")
+        case "\v":
+        case "\f":
+        case "\xA0":
+          if (buffer.length > 0) {
+            tokens.push({
+              type: "simple",
+              value: buffer.join("")
             });
           }
-          tokenBuf.length = 0;
-          isBracket = char == "[";
+          buffer.length = 0;
+          isQuoted = char === "[";
           break;
         default:
-          tokenBuf.push(char);
+          buffer.push(char);
           break;
       }
     }
   }
-  if (isBracket)
-    throw `a \u201C[\u201D without matching \u201C]\u201D found around \u201C${makeErrorPos()}\u201D`;
-  if (tokenBuf.length > 0) {
-    outTokens.push({
-      type: 0 /* Simple */,
-      text: tokenBuf.join("")
+  if (isQuoted) {
+    throw `found a \u201C[\u201D without a matching \u201C]\u201D (line ${lineNo})`;
+  }
+  if (buffer.length > 0) {
+    tokens.push({
+      type: "simple",
+      value: buffer.join("")
     });
   }
-  return outTokens;
-};
-var makeTokenError = (tokens) => {
-  const maxlen = 20;
-  const text = tokens.slice(0, 2).map((t) => t.text).join(" ");
-  if (text.length <= maxlen)
-    return text;
-  return text.substring(0, maxlen).trim() + "\u2026";
+  return tokens;
+}
+function tryGetCommand(lineNo, token) {
+  if ((token == null ? void 0 : token.type) !== "simple")
+    return null;
+  if (!token.value.startsWith("\\"))
+    return null;
+  const star = token.value.endsWith("*");
+  const name = star ? token.value.slice(1, -1) : token.value.slice(1);
+  return { lineNo, name, star, params: [] };
+}
+var tokenize = (input) => {
+  const commands = [];
+  let errors = null;
+  for (const { lineNo, line, indent } of iterateLines(input)) {
+    try {
+      const tokens = tokenizeLine(lineNo, line);
+      const command = indent ? commands.last() : tryGetCommand(lineNo, tokens.shift());
+      if (command == null)
+        throw `found values without a command (line ${lineNo})`;
+      command.params.push(...tokens);
+      if (!indent) {
+        commands.push(command);
+      }
+    } catch (error) {
+      errors != null ? errors : errors = [];
+      errors.push(error);
+    }
+  }
+  return errors !== null ? resultErr(errors) : resultOk(commands);
 };
 
-// src/parse-functions.ts
-var iterateParser = (tokens, parser, callback) => {
-  while (tokens.length > 0) {
-    const [item, remainder] = parser(tokens);
-    if (item == null)
-      return remainder;
-    callback(item);
-    tokens = remainder;
-  }
-  return null;
-};
-var isSimple = (tokens, index = 0) => {
-  var _a;
-  return ((_a = tokens[index]) == null ? void 0 : _a.type) === 0 /* Simple */;
-};
-var gatherBracketed = (tokens, start = 1) => {
-  var _a;
-  let index = start;
-  while (((_a = tokens[index]) == null ? void 0 : _a.type) === 1 /* Bracketed */) {
-    index += 1;
-  }
-  return tokens.slice(start, index);
-};
-var isComment = (tokens) => isSimple(tokens) && tokens[0].text.startsWith("#");
-var getCommand = (tokens) => {
-  if (!isSimple(tokens))
-    return [null, tokens];
-  const match = tokens[0].text.match(/^\\(.+)$/);
-  if (match == null)
-    return [null, tokens];
-  const cmdText = match[1];
-  const cmdType = CommandType[cmdText.toLowerCase()];
-  const command = {
-    text: cmdText,
-    type: cmdType != null ? cmdType : null,
-    params: tokens.slice(1)
-  };
-  return [command, []];
-};
-var getCombinedElement = (tokens) => {
-  var _a, _b;
-  if (!isSimple(tokens))
-    return [null, tokens];
-  const levels = gatherBracketed(tokens).map((x) => x.text);
-  const element = {
-    levelA: tokens[0].text,
-    levelB: (_a = levels[0]) != null ? _a : "",
-    levelC: (_b = levels[1]) != null ? _b : "",
-    nlevels: levels.slice(2)
-  };
-  return [element, tokens.slice(levels.length + 1)];
-};
-var getSetOption = (tokens) => {
-  if (!isSimple(tokens))
-    return [null, tokens];
-  const optText = tokens[0].text;
-  const optType = SetOptionType[optText.toLowerCase()];
-  const option = {
-    text: optText,
-    type: optType != null ? optType : null,
-    values: tokens.slice(1).map((x) => x.text)
-  };
-  return [option, []];
-};
-
-// src/gloss-parser.ts
-var GlossStrings = {
-  [0 /* ex */]: "preamble",
-  [1 /* ft */]: "translation",
-  [6 /* num */]: "number",
-  [7 /* lbl */]: "label",
-  [8 /* src */]: "source"
-};
-var GlossLevels = {
-  [2 /* gla */]: "levelA",
-  [3 /* glb */]: "levelB",
-  [4 /* glc */]: "levelC"
-};
-var GlossLineStyles = {
-  [0 /* style */]: "global",
-  [1 /* exstyle */]: "preamble",
-  [2 /* ftstyle */]: "translation",
-  [3 /* srcstyle */]: "source",
-  [4 /* glastyle */]: "levelA",
-  [5 /* glbstyle */]: "levelB",
-  [6 /* glcstyle */]: "levelC",
-  [7 /* glxstyle */]: "nlevels",
-  [8 /* glaspaces */]: "levelA"
-};
+// src/parser/main.ts
 var GlossParser = class {
-  constructor(options) {
-    this.errorMessages = [];
-    var _a;
-    this.isNlevel = (_a = options == null ? void 0 : options.nlevel) != null ? _a : false;
+  constructor(settings) {
+    this.settings = settings;
+    this.commandTable = {
+      // Simple string value commands
+      ex: (data, params, _) => data.preamble = paramsJoin(params),
+      ft: (data, params, _) => data.translation = paramsJoin(params),
+      lbl: (data, params, _) => data.label = paramsJoin(params),
+      src: (data, params, _) => data.source = paramsJoin(params),
+      num: (data, params, _) => data.number.value = paramsOne(params),
+      // Individual gloss level commands
+      gla: (data, params, _) => this.handleGlossCommand(data, params, 0),
+      glb: (data, params, _) => this.handleGlossCommand(data, params, 1),
+      glc: (data, params, _) => this.handleGlossCommand(data, params, 2),
+      // Combined n-level gloss command
+      gl: (data, params, _) => this.handleMultiGlossCommand(data, params),
+      // Gloss option changing command
+      set: (data, params, star) => this.handleSetCommand(data, params, star)
+    };
+    this.setOptionTable = {
+      // Assign CSS style classes
+      style: { type: "list", key: ["styles", "global"] },
+      exstyle: { type: "list", key: ["styles", "preamble"] },
+      glastyle: { type: "list", key: ["styles", "levelA"] },
+      glbstyle: { type: "list", key: ["styles", "levelB"] },
+      glcstyle: { type: "list", key: ["styles", "levelC"] },
+      glxstyle: { type: "list", key: ["styles", "levelX"] },
+      ftstyle: { type: "list", key: ["styles", "translation"] },
+      srcstyle: { type: "list", key: ["styles", "source"] },
+      // Replace underscores with spaces
+      glaspaces: { type: "flag", key: ["altSpaces"] },
+      // Enable advanced text markup
+      markup: { type: "flag", key: ["useMarkup"] }
+    };
   }
-  errors() {
-    return this.errorMessages;
+  parse(input, nlevel) {
+    const tokenized = tokenize(input);
+    if (!tokenized.success)
+      return resultErr(tokenized.errors);
+    const glossData = createGlossData(nlevel, this.settings.get("gloss"));
+    const procErrors = this.processCommands(tokenized.data, glossData);
+    if (procErrors !== null)
+      return resultErr(procErrors);
+    return resultOk(glossData);
   }
-  parse(input) {
-    this.glossData = initGlossData();
-    this.errorMessages = [];
-    for (const line of gatherLines(input)) {
+  processCommands(commands, data) {
+    var _a, _b;
+    let errors = null;
+    for (const command of commands) {
       try {
-        const tokens = tokenizeLine(line);
-        if (isComment(tokens))
-          continue;
-        const errTokens = iterateParser(tokens, getCommand, (cmd) => this.parseCommand(cmd));
-        if (errTokens != null)
-          throw `don't know what to do with \u201C${makeTokenError(errTokens)}\u201D`;
-      } catch (err) {
-        this.errorMessages.push(err);
+        const action = this.commandTable[command.name];
+        if (action == null)
+          throw "command \u201C@@\u201D is not known";
+        action(data, command.params, command.star);
+      } catch (error) {
+        error = `${error} (line ${command.lineNo})`.replace("@@", command.name).replace("@1", (_b = (_a = command.params[0]) == null ? void 0 : _a.value) != null ? _b : "");
+        errors != null ? errors : errors = [];
+        errors.push(error);
       }
     }
-    return this.glossData;
+    return errors;
   }
-  parseCommand({ text, type, params }) {
-    switch (type) {
-      case 0 /* ex */:
-      case 1 /* ft */:
-      case 6 /* num */:
-      case 7 /* lbl */:
-      case 8 /* src */:
-        this.parseStringField(params, GlossStrings[type]);
-        break;
-      case 2 /* gla */:
-      case 3 /* glb */:
-      case 4 /* glc */:
-        if (this.isNlevel)
-          throw `command \u201C${text}\u201D can't be used in nlevel mode`;
-        this.parseGlossElement(params, GlossLevels[type]);
-        break;
-      case 5 /* gl */:
-        if (!this.isNlevel)
-          throw `command \u201C${text}\u201D can't be used in regular mode`;
-        this.parseCombinedElements(params);
-        break;
-      case 9 /* set */:
-        this.parseOptionsList(params);
-        break;
-      default:
-        throw `command \u201C${text}\u201D is not known`;
-    }
-  }
-  parseSetOption({ text, type, values }) {
-    switch (type) {
-      case 0 /* style */:
-      case 1 /* exstyle */:
-      case 2 /* ftstyle */:
-      case 3 /* srcstyle */:
-      case 4 /* glastyle */:
-      case 5 /* glbstyle */:
-      case 6 /* glcstyle */:
-      case 7 /* glxstyle */:
-        this.setLineStyleClasses(values, GlossLineStyles[type]);
-        break;
-      case 8 /* glaspaces */:
-        this.setLineStyleValue(true, GlossLineStyles[type], "altSpaces");
-        break;
-      default:
-        throw `option \u201C${text}\u201D is not known`;
-    }
-  }
-  parseStringField(params, key) {
-    if (params.length < 1)
-      throw `no value provided for \u201C${key}\u201D`;
-    this.glossData[key] = params.map((t) => t.text).join(" ");
-  }
-  parseGlossElement(params, key) {
+  handleGlossCommand(data, params, level) {
     var _a, _b;
-    const elements = this.glossData.elements;
-    while (elements.length < params.length) {
-      elements.push(initGlossElement());
+    checkNoValues(params);
+    arrayFill(data.elements, params.length, () => createGlossElement());
+    for (const [index, elem] of data.elements.entries()) {
+      arrayFill(elem.levels, level + 1, () => "");
+      elem.levels[level] = (_b = (_a = params[index]) == null ? void 0 : _a.value) != null ? _b : "";
     }
-    for (let ix = 0; ix < elements.length; ix += 1) {
-      elements[ix][key] = (_b = (_a = params[ix]) == null ? void 0 : _a.text) != null ? _b : "";
+  }
+  handleMultiGlossCommand(data, params) {
+    checkNoValues(params);
+    checkValueSimple(params.first(), "invalid gloss element");
+    const bits = gatherValuesQuoted(params);
+    const maxLevel = bits.reduce((acc, el) => Math.max(acc, el.length), 0);
+    arrayFill(data.elements, bits.length, () => createGlossElement());
+    for (const [index, elem] of data.elements.entries()) {
+      arrayFill(elem.levels, maxLevel, (bit) => {
+        var _a;
+        return (_a = bits[index][bit]) != null ? _a : "";
+      });
     }
   }
-  parseCombinedElements(params) {
-    const elements = this.glossData.elements;
-    elements.length = 0;
-    const errTokens = iterateParser(params, getCombinedElement, (elem) => elements.push(elem));
-    if (errTokens != null)
-      throw `don't know how to parse ${makeTokenError(errTokens)}`;
-  }
-  parseOptionsList(params) {
-    const options = [];
-    const errTokens = iterateParser(params, getSetOption, (opt) => options.push(opt));
-    if (errTokens != null)
-      throw `don't know how to parse ${makeTokenError(errTokens)}`;
-    options.forEach((opt) => this.parseSetOption(opt));
-  }
-  setLineStyleClasses(values, section) {
-    if (values.length < 1)
-      throw `no values provided for \u201C${section}\u201D`;
-    const invalid = values.find((x) => !/^[a-z0-9-]+$/i.test(x));
-    if (invalid != null)
-      throw `\u201C${invalid}\u201D isn't a valid style name`;
-    this.setLineStyleValue(values, section, "classes");
-  }
-  setLineStyleValue(value, section, field) {
-    var _a, _b;
-    const option = (_b = (_a = this.glossData.options)[section]) != null ? _b : _a[section] = initGlossLineStyle();
-    option[field] = value;
+  handleSetCommand(data, params, star) {
+    const [optionParam, ...valueParams] = params;
+    checkValueSimple(optionParam, "no option name");
+    const option = this.setOptionTable[optionParam.value];
+    checkAssertion(option != null, "unknown option \u201C@1\u201D");
+    const object = data.options;
+    const objectKeys = option.key;
+    switch (option.type) {
+      case "flag":
+        checkAnyValues(valueParams);
+        updateObjectField(object, objectKeys, () => !star);
+        break;
+      case "one":
+        checkNoValues(valueParams);
+        checkMultiValues(valueParams);
+        updateObjectField(object, objectKeys, () => valueParams[0].value);
+        break;
+      case "list":
+        if (!star)
+          checkNoValues(valueParams);
+        updateObjectField(object, objectKeys, (value) => {
+          const newValue = valueParams.map((p) => p.value);
+          return star ? newValue : [...value, ...newValue];
+        });
+        break;
+    }
   }
 };
 
-// src/gloss-printer.ts
-var withNbsp = (text) => text.replace(/\s+/g, "\xA0");
-var textOrNbsp = (text, style) => {
-  if (text.length < 1)
-    return "\xA0";
-  if (style == null ? void 0 : style.altSpaces) {
-    text = text.replace(/[_]+/g, "\xA0");
+// src/render/helpers.ts
+var getStyleKind = (kind) => kind.length > 0 ? `ling-gloss-${kind}` : "ling-gloss";
+var getStyleClasses = (classes) => sanitizeCssClass(classes).filter((cls) => cls.length > 0).map((cls) => `ling-style-${cls}`);
+var getLevelMetadata = (level) => {
+  switch (level) {
+    case 0:
+      return ["level-a", "levelA"];
+    case 1:
+      return ["level-b", "levelB"];
+    case 2:
+      return ["level-c", "levelC"];
+    default:
+      return ["level-x", "levelX"];
   }
-  return withNbsp(text);
 };
-var styleClasses = (style) => {
-  var _a;
-  return (_a = style == null ? void 0 : style.classes.filter((x) => x.length > 0).map((x) => `ling-style-${x}`)) != null ? _a : [];
-};
-var glossPrinter = (gloss, dest) => {
-  var _a;
-  const container = dest.createDiv({ cls: "ling-gloss" });
-  container.createDiv({
-    text: withNbsp(gloss.number),
-    cls: "ling-gloss-number"
+var formatWhitespace = (text) => text.replace(/\s+/g, "\xA0");
+var renderBlock = (target, options) => {
+  var _a, _b, _c;
+  if (options.text.length < 1 && !options.always)
+    return;
+  target.createDiv({
+    text: (_b = (_a = options.format) == null ? void 0 : _a.call(options, options.text)) != null ? _b : formatWhitespace(options.text),
+    cls: [getStyleKind(options.kind), ...getStyleClasses((_c = options.cls) != null ? _c : [])]
   });
-  const body = container.createDiv({
-    cls: ["ling-gloss-body", ...styleClasses(gloss.options.global)]
-  });
-  if (gloss.label.length > 0) {
-    body.createDiv({
-      text: gloss.label,
-      cls: "ling-gloss-label"
-    });
-  }
-  if (gloss.preamble.length > 0) {
-    body.createDiv({
-      text: gloss.preamble,
-      cls: ["ling-gloss-preamble", ...styleClasses(gloss.options.preamble)]
-    });
-  }
-  if (gloss.elements.length > 0) {
-    const elements = body.createDiv({ cls: "ling-gloss-elements" });
-    const hasLevelB = gloss.elements.some((el) => {
-      var _a2;
-      return ((_a2 = el.levelB) == null ? void 0 : _a2.length) > 0;
-    });
-    const hasLevelC = gloss.elements.some((el) => {
-      var _a2;
-      return ((_a2 = el.levelC) == null ? void 0 : _a2.length) > 0;
-    });
-    const maxNlevel = gloss.elements.reduce((acc, el) => Math.max(acc, el.nlevels.length), 0);
-    for (const glelem of gloss.elements) {
-      const element = elements.createDiv({ cls: "ling-gloss-element" });
-      element.createDiv({
-        text: textOrNbsp(glelem.levelA, gloss.options.levelA),
-        cls: ["ling-gloss-level-a", ...styleClasses(gloss.options.levelA)]
-      });
-      if (hasLevelB) {
-        element.createDiv({
-          text: textOrNbsp(glelem.levelB, gloss.options.levelA),
-          cls: ["ling-gloss-level-b", ...styleClasses(gloss.options.levelB)]
-        });
-      }
-      if (hasLevelC) {
-        element.createDiv({
-          text: textOrNbsp(glelem.levelC, gloss.options.levelA),
-          cls: ["ling-gloss-level-c", ...styleClasses(gloss.options.levelC)]
-        });
-      }
-      for (let index = 0; index < maxNlevel; index += 1) {
-        element.createDiv({
-          text: textOrNbsp((_a = glelem.nlevels[index]) != null ? _a : ""),
-          cls: ["ling-gloss-level-x", ...styleClasses(gloss.options.nlevels)]
-        });
-      }
+};
+
+// src/render/main.ts
+var GlossRenderer = class {
+  renderErrors(target, errors) {
+    target.empty();
+    for (const error of errors) {
+      renderBlock(target, { kind: "error", text: error });
     }
   }
-  const hasTranslation = gloss.translation.length > 0;
-  const hasSource = gloss.source.length > 0;
-  if (hasTranslation || hasSource) {
-    const postamble = body.createDiv({ cls: "ling-gloss-postamble" });
-    if (hasTranslation) {
-      postamble.createDiv({
-        text: gloss.translation,
-        cls: ["ling-gloss-translation", ...styleClasses(gloss.options.translation)]
+  renderGloss(target, data) {
+    const { styles, altSpaces, useMarkup } = data.options;
+    if (useMarkup) {
+      return this.renderErrors(target, ["advanced markup is not supported at the time"]);
+    }
+    target.empty();
+    const container = target.createDiv({ cls: getStyleKind("") });
+    renderBlock(container, {
+      kind: "number",
+      text: data.number.value,
+      always: true
+    });
+    const gloss = container.createDiv({
+      cls: [getStyleKind("body"), ...getStyleClasses(styles.global)]
+    });
+    renderBlock(gloss, {
+      kind: "label",
+      text: data.label
+    });
+    renderBlock(gloss, {
+      kind: "preamble",
+      cls: styles.preamble,
+      text: data.preamble,
+      format: (text) => this.formatText(text, false, useMarkup)
+    });
+    if (data.elements.length > 0) {
+      const elements = gloss.createDiv({ cls: getStyleKind("elements") });
+      for (const { levels } of data.elements) {
+        const element = elements.createDiv({ cls: getStyleKind("element") });
+        for (const [levelNo, level] of levels.entries()) {
+          const [levelKind, styleKey] = getLevelMetadata(levelNo);
+          const glaSpaces = altSpaces && levelNo === 0;
+          renderBlock(element, {
+            kind: levelKind,
+            cls: styles[styleKey],
+            text: level,
+            always: true,
+            format: (text) => this.formatText(text, glaSpaces, useMarkup)
+          });
+        }
+      }
+    }
+    if (data.translation.length > 0 || data.source.length > 0) {
+      const postamble = gloss.createDiv({ cls: getStyleKind("postamble") });
+      renderBlock(postamble, {
+        kind: "translation",
+        cls: styles.translation,
+        text: data.translation,
+        format: (text) => this.formatText(text, false, useMarkup)
+      });
+      renderBlock(postamble, {
+        kind: "source",
+        cls: styles.source,
+        text: data.source
       });
     }
-    if (hasSource) {
-      postamble.createDiv({
-        text: gloss.source,
-        cls: ["ling-gloss-source", ...styleClasses(gloss.options.source)]
-      });
+    if (!gloss.hasChildNodes()) {
+      return this.renderErrors(target, ["this gloss contains no elements"]);
     }
   }
-  if (!body.hasChildNodes()) {
-    errorPrinter(["the gloss is empty, there's nothing to display"], dest);
+  formatText(text, altSpaces, useMarkup) {
+    if (altSpaces) {
+      text = text.replace(/[_]+/, " ");
+    }
+    if (useMarkup) {
+      throw "not implemented yet";
+    }
+    return formatWhitespace(text);
   }
 };
-var errorPrinter = (messages, dest) => {
-  for (const msg of messages) {
-    dest.createDiv({
-      text: msg,
-      cls: "ling-gloss-error"
+
+// src/settings/main.ts
+var import_obsidian = require("obsidian");
+var PluginSettingsTab = class extends import_obsidian.PluginSettingTab {
+  constructor(plugin, settings) {
+    super(plugin.app, plugin);
+    this.settings = settings;
+  }
+  display() {
+    this.containerEl.empty();
+    this.addSwitchSettings();
+    this.addStyleSettings();
+  }
+  addSwitchSettings() {
+    const desc = new DocumentFragment();
+    desc.appendText("Default feature switch settings for all glosses.");
+    desc.createEl("br");
+    desc.appendText("To unset the enabled ones, the ");
+    desc.createEl("code", { text: " \\set*" });
+    desc.appendText(" command can be used.");
+    new import_obsidian.Setting(this.containerEl).setName("Feature switches").setDesc(desc).setHeading();
+    this.addSwitchSettingByKey("altSpaces", "Alternate spaces", "glaspaces");
+    this.addSwitchSettingByKey("useMarkup", "Process markup", "markup");
+  }
+  addStyleSettings() {
+    const desc = new DocumentFragment();
+    desc.appendText("Default style classes for all glosses. The ");
+    desc.createEl("code", { text: "\\set" });
+    desc.appendText(" command will append to these.");
+    desc.createEl("br");
+    desc.appendText("To replace or remove these, the ");
+    desc.createEl("code", { text: "\\set*" });
+    desc.appendText(" command can be used instead.");
+    new import_obsidian.Setting(this.containerEl).setName("Style classes").setDesc(desc).setHeading();
+    this.addStyleSettingByKey("global", "Global styles", "style");
+    this.addStyleSettingByKey("levelA", "Gloss level A", "glastyle");
+    this.addStyleSettingByKey("levelB", "Gloss level B", "glbstyle");
+    this.addStyleSettingByKey("levelC", "Gloss level C", "glcstyle");
+    this.addStyleSettingByKey("levelX", "Other gloss levels", "glxstyle");
+    this.addStyleSettingByKey("preamble", "Preamble/example text", "exstyle");
+    this.addStyleSettingByKey("translation", "Translation text", "ftstyle");
+    this.addStyleSettingByKey("source", "Gloss source", "srcstyle");
+  }
+  addStyleSettingByKey(style, label, command) {
+    const { styles } = this.settings.get("gloss");
+    const desc = new DocumentFragment();
+    desc.appendText("Default style classes for the ");
+    desc.createEl("code", { text: `\\set ${command}` });
+    desc.appendText(" option.");
+    new import_obsidian.Setting(this.containerEl).setName(label).setDesc(desc).addText((component) => {
+      component.setPlaceholder("class1 class2 ...").setValue(styles[style].join(" ")).onChange(async (value) => {
+        await this.settings.update({
+          gloss: {
+            styles: {
+              [style]: sanitizeCssClass(value.split(/\s+/))
+            }
+          }
+        });
+      });
+      component.inputEl.addClass("ling-gloss-settings-wide");
     });
+  }
+  addSwitchSettingByKey(flag, label, command) {
+    const gloss = this.settings.get("gloss");
+    const desc = new DocumentFragment();
+    desc.appendText("Default switch setting for the ");
+    desc.createEl("code", { text: `\\set ${command}` });
+    desc.appendText(" option.");
+    new import_obsidian.Setting(this.containerEl).setName(label).setDesc(desc).addToggle((component) => {
+      component.setValue(gloss[flag]).onChange(async (value) => {
+        await this.settings.update({
+          gloss: {
+            [flag]: value
+          }
+        });
+      });
+    });
+  }
+};
+
+// src/data/settings.ts
+var getDefaultPluginSettings = () => ({
+  gloss: getDefaultGlossOptions()
+});
+
+// src/settings/wrapper.ts
+var PluginSettingsWrapper = class {
+  constructor(plugin) {
+    this.plugin = plugin;
+  }
+  async load() {
+    this.settings = deepMerge(
+      getDefaultPluginSettings(),
+      await this.plugin.loadData()
+    );
+  }
+  async save() {
+    await this.plugin.saveData(this.settings);
+  }
+  async update(newSettings) {
+    this.settings = deepMerge(this.settings, newSettings);
+    await this.save();
+  }
+  get(key) {
+    return this.settings[key];
+  }
+  set(key, value) {
+    this.settings[key] = value;
   }
 };
 
 // src/main.ts
-var LingGlossPlugin = class extends import_obsidian.Plugin {
-  onload() {
+var LingGlossPlugin = class extends import_obsidian2.Plugin {
+  constructor() {
+    super(...arguments);
+    this.settings = new PluginSettingsWrapper(this);
+    this.parser = new GlossParser(this.settings);
+    this.renderer = new GlossRenderer();
+  }
+  async onload() {
+    await this.settings.load();
+    this.addSettingTab(new PluginSettingsTab(this, this.settings));
     this.registerMarkdownCodeBlockProcessor("gloss", (src, el, _) => this.processGlossMarkdown(src, el, false));
     this.registerMarkdownCodeBlockProcessor("ngloss", (src, el, _) => this.processGlossMarkdown(src, el, true));
   }
   processGlossMarkdown(source, el, nlevel) {
-    const parser = new GlossParser({ nlevel });
-    const gloss = parser.parse(source);
-    glossPrinter(gloss, el);
-    errorPrinter(parser.errors(), el);
+    const glossData = this.parser.parse(source, nlevel);
+    if (glossData.success) {
+      this.renderer.renderGloss(el, glossData.data);
+    } else {
+      this.renderer.renderErrors(el, glossData.errors);
+    }
   }
 };
 

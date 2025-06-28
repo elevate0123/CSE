@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "highlightStyle": "dim",
+  "enableRulesetWeakQualifiers": true,
+  "enableRulesetJargon": true,
+  "enableRulesetComplexity": true,
+  "enableRulesetRedundancies": true,
+  "customWordList": ""
+}

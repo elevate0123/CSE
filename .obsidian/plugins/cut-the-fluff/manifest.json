@@ -1,0 +1,10 @@
+{
+	"id": "cut-the-fluff",
+	"name": "Cut The Fluff",
+	"version": "0.1.6",
+	"minAppVersion": "0.15.0",
+	"description": "Make your writing clearer by checking for unnecessary complexity and clutter. ",
+	"author": "Adam Fletcher",
+	"authorUrl": "https://adamfletcher.com",
+	"isDesktopOnly": false
+}

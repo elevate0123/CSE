@@ -11,21 +11,21 @@
     "size": {
       "expanded": {
         "width": {
-          "value": 75,
+          "value": 65,
           "unit": "%"
         },
         "height": {
-          "value": 75,
+          "value": 65,
           "unit": "%"
         }
       },
       "folded": {
         "width": {
-          "value": 25,
+          "value": 35,
           "unit": "%"
         },
         "height": {
-          "value": 25,
+          "value": 35,
           "unit": "%"
         }
       }
@@ -116,7 +116,7 @@
   "panels": {
     "global": {
       "triggering": {
-        "mode": "hover",
+        "mode": "always",
         "ignoreService": true
       }
     },
@@ -147,8 +147,8 @@
             "downRight": true
           },
           "position": {
-            "bottom": "0px",
-            "right": "0px"
+            "left": "0px",
+            "top": "0px"
           }
         },
         "zoom": {
