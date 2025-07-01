@@ -136,10 +136,10 @@ __export(src_exports, {
   default: () => SmartConnectionsPlugin
 });
 module.exports = __toCommonJS(src_exports);
-var import_obsidian52 = __toESM(require("obsidian"), 1);
+var import_obsidian53 = __toESM(require("obsidian"), 1);
 
 // node_modules/obsidian-smart-env/smart_env.js
-var import_obsidian17 = require("obsidian");
+var import_obsidian18 = require("obsidian");
 
 // node_modules/obsidian-smart-env/node_modules/smart-environment/components/settings.js
 async function build_html(env, opts = {}) {
@@ -476,7 +476,7 @@ var SmartEnv = class {
    * If a newer version is loaded into a runtime that already has an older environment,
    * an automatic reload of all existing mains will occur.
    */
-  static version = 2.139229;
+  static version = 2.139233;
   scope_name = "smart_env";
   static global_ref = ROOT_SCOPE;
   global_ref = this.constructor.global_ref;
@@ -686,8 +686,8 @@ var SmartEnv = class {
     await this.init_collections();
     for (const [main_key, { main, opts }] of Object.entries(this.smart_env_configs)) {
       this[main_key] = main;
-      await this.ready_to_load_collections(main);
     }
+    await this.ready_to_load_collections();
     await this.load_collections();
     this.state = "loaded";
   }
@@ -713,14 +713,10 @@ var SmartEnv = class {
     }
   }
   /**
-   * Hook for main classes that optionally implement `ready_to_load_collections()`.
+   * Hook/Override this method to wait for any conditions before loading collections. 
    * @param {Object} main
    */
-  async ready_to_load_collections(main) {
-    if (typeof main?.ready_to_load_collections === "function") {
-      await main.ready_to_load_collections();
-    }
-    return true;
+  async ready_to_load_collections() {
   }
   /**
    * Loads any available collections, processing their load queues.
@@ -2483,9 +2479,6 @@ var SmartViewObsidianAdapter = class extends SmartViewAdapter {
   async render_file_select_component(elm, path2, value) {
     return super.render_text_component(elm, path2, value);
   }
-  async render_folder_select_component(elm, path2, value) {
-    return super.render_text_component(elm, path2, value);
-  }
   async render_markdown(markdown, scope) {
     const component = scope.env.smart_connections_plugin?.connections_view || new import_obsidian.Component();
     if (!scope) return console.warn("Scope required for rendering markdown in Obsidian adapter");
@@ -2510,6 +2503,22 @@ var SmartViewObsidianAdapter = class extends SmartViewAdapter {
   // Obsidian Specific
   is_mod_event(event) {
     return import_obsidian.Keymap.isModEvent(event);
+  }
+  render_folder_select_component(elm, path2, value, scope, settings_scope) {
+    const smart_setting = new this.setting_class(elm);
+    const folders = scope.env.plugin.app.vault.getAllFolders().sort((a, b) => a.path.localeCompare(b.path));
+    smart_setting.addDropdown((dropdown) => {
+      if (elm.dataset.required) dropdown.inputEl.setAttribute("required", true);
+      dropdown.addOption("", "No folder selected");
+      folders.forEach((folder) => {
+        dropdown.addOption(folder.path, folder.path);
+      });
+      dropdown.onChange((value2) => {
+        this.handle_on_change(path2, value2, elm, scope, settings_scope);
+      });
+      dropdown.setValue(value);
+    });
+    return smart_setting;
   }
 };
 
@@ -4594,6 +4603,9 @@ var SmartSource = class extends SmartEntity {
       }
     }
   }
+  /**
+   * @deprecated likely extraneous
+   */
   async parse_content(content = null) {
     const parse_fns = this.env?.opts?.collections?.smart_sources?.content_parsers || [];
     for (const fn of parse_fns) {
@@ -6621,20 +6633,6 @@ function get_markdown_links(content) {
   );
 }
 
-// node_modules/obsidian-smart-env/node_modules/smart-sources/content_parsers/parse_links.js
-async function parse_links(source2, content) {
-  if (!source2.source_adapter?.get_links) return;
-  const outlinks = await source2.source_adapter.get_links(content);
-  source2.data.outlinks = outlinks;
-}
-
-// node_modules/obsidian-smart-env/node_modules/smart-sources/content_parsers/parse_metadata.js
-async function parse_metadata(source2, content) {
-  if (!source2.source_adapter?.get_metadata) return;
-  const metadata = await source2.source_adapter?.get_metadata?.(content);
-  source2.data.metadata = metadata;
-}
-
 // node_modules/obsidian-smart-env/node_modules/smart-sources/utils/parse_frontmatter.js
 function parse_value(raw_value) {
   const trimmed = raw_value.trim();
@@ -6775,8 +6773,10 @@ var MarkdownSourceContentAdapter = class extends FileSourceContentAdapter {
   // }
   // Runs before configured content_parsers (for example, templates uses outlinks)
   async parse_content(content) {
-    await parse_links(this.item, content);
-    await parse_metadata(this.item, content);
+    const outlinks = await this.get_links(content);
+    this.data.outlinks = outlinks;
+    const metadata = await this.get_metadata(content);
+    this.data.metadata = metadata;
   }
   async get_links(content = null) {
     if (!content) content = await this.read();
@@ -8541,6 +8541,41 @@ var SmartHttpResponseAdapter = class {
   }
 };
 
+// node_modules/obsidian-smart-env/node_modules/smart-http-request/adapters/obsidian.js
+var SmartHttpObsidianRequestAdapter = class extends SmartHttpRequestAdapter {
+  async request(request_params) {
+    let response;
+    try {
+      if (!this.main.opts.obsidian_request_url) {
+        throw new Error("obsidian_request_url is required in SmartHttp constructor opts");
+      }
+      response = await this.main.opts.obsidian_request_url({ ...request_params, throw: false });
+      if (response.status === 400) throw new Error("Obsidian request failed");
+      return new SmartHttpObsidianResponseAdapter(response);
+    } catch (error) {
+      console.error("Error in SmartHttpObsidianRequestAdapter.request():");
+      console.error(JSON.stringify(request_params, null, 2));
+      console.error(response);
+      console.error(error);
+      return null;
+    }
+  }
+};
+var SmartHttpObsidianResponseAdapter = class extends SmartHttpResponseAdapter {
+  async status() {
+    return this.response.status;
+  }
+  async json() {
+    return await this.response.json;
+  }
+  async text() {
+    return await this.response.text;
+  }
+  async headers() {
+    return this.response.headers;
+  }
+};
+
 // node_modules/obsidian-smart-env/node_modules/smart-http-request/adapters/fetch.js
 var SmartHttpRequestFetchAdapter = class extends SmartHttpRequestAdapter {
   async request(request_params) {
@@ -9374,7 +9409,7 @@ var SmartEmbedIframeAdapter = class extends SmartEmbedMessageAdapter {
 };
 
 // node_modules/obsidian-smart-env/node_modules/smart-embed-model/connectors/transformers_iframe.js
-var transformers_connector = 'var __defProp = Object.defineProperty;\nvar __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;\nvar __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);\n\n// ../smart-model/smart_model.js\nvar SmartModel = class {\n  /**\n   * Create a SmartModel instance.\n   * @param {Object} opts - Configuration options\n   * @param {Object} opts.adapters - Map of adapter names to adapter classes\n   * @param {Object} opts.settings - Model settings configuration\n   * @param {Object} opts.model_config - Model-specific configuration\n   * @param {string} opts.model_config.adapter - Name of the adapter to use\n   * @param {string} [opts.model_key] - Optional model identifier to override settings\n   * @throws {Error} If required options are missing\n   */\n  constructor(opts = {}) {\n    __publicField(this, "scope_name", "smart_model");\n    this.opts = opts;\n    this.validate_opts(opts);\n    this.state = "unloaded";\n    this._adapter = null;\n  }\n  /**\n   * Initialize the model by loading the configured adapter.\n   * @async\n   * @returns {Promise<void>}\n   */\n  async initialize() {\n    this.load_adapter(this.adapter_name);\n    await this.load();\n  }\n  /**\n   * Validate required options.\n   * @param {Object} opts - Configuration options\n   */\n  validate_opts(opts) {\n    if (!opts.adapters) throw new Error("opts.adapters is required");\n    if (!opts.settings) throw new Error("opts.settings is required");\n  }\n  /**\n   * Get the current settings\n   * @returns {Object} Current settings\n   */\n  get settings() {\n    if (!this.opts.settings) this.opts.settings = {\n      ...this.constructor.defaults\n    };\n    return this.opts.settings;\n  }\n  /**\n   * Get the current adapter name\n   * @returns {string} Current adapter name\n   */\n  get adapter_name() {\n    let adapter_key = this.opts.model_config?.adapter || this.opts.adapter || this.settings.adapter || Object.keys(this.adapters)[0];\n    if (!adapter_key || !this.adapters[adapter_key]) {\n      console.warn(`Platform "${adapter_key}" not supported`);\n      adapter_key = Object.keys(this.adapters)[0];\n    }\n    return adapter_key;\n  }\n  /**\n   * Get adapter-specific settings.\n   * @returns {Object} Settings for current adapter\n   */\n  get adapter_settings() {\n    if (!this.settings[this.adapter_name]) this.settings[this.adapter_name] = {};\n    return this.settings[this.adapter_name];\n  }\n  get adapter_config() {\n    const base_config = this.adapters[this.adapter_name]?.defaults || {};\n    return {\n      ...base_config,\n      ...this.adapter_settings,\n      ...this.opts.adapter_config\n    };\n  }\n  /**\n   * Get available models.\n   * @returns {Object} Map of model objects\n   */\n  get models() {\n    return this.adapter.models;\n  }\n  /**\n   * Get default model key.\n   * @returns {string} Default model key\n   */\n  get default_model_key() {\n    return this.adapter.constructor.defaults.default_model;\n  }\n  /**\n   * Get the current model key\n   * @returns {string} Current model key\n   */\n  get model_key() {\n    return this.opts.model_key || this.adapter_config.model_key || this.settings.model_key || this.default_model_key;\n  }\n  /**\n   * Get the current model configuration\n   * @returns {Object} Combined base and custom model configuration\n   */\n  get model_config() {\n    const model_key = this.model_key;\n    const base_model_config = this.models[model_key] || {};\n    return {\n      ...this.adapter_config,\n      ...base_model_config,\n      ...this.opts.model_config\n    };\n  }\n  get model_settings() {\n    if (!this.settings[this.model_key]) this.settings[this.model_key] = {};\n    return this.settings[this.model_key];\n  }\n  /**\n   * Load the current adapter and transition to loaded state.\n   * @async\n   * @returns {Promise<void>}\n   */\n  async load() {\n    this.set_state("loading");\n    if (!this.adapter?.is_loaded) {\n      await this.invoke_adapter_method("load");\n    }\n    this.set_state("loaded");\n  }\n  /**\n   * Unload the current adapter and transition to unloaded state.\n   * @async\n   * @returns {Promise<void>}\n   */\n  async unload() {\n    if (this.adapter?.is_loaded) {\n      this.set_state("unloading");\n      await this.invoke_adapter_method("unload");\n      this.set_state("unloaded");\n    }\n  }\n  /**\n   * Set the model\'s state.\n   * @param {(\'unloaded\'|\'loading\'|\'loaded\'|\'unloading\')} new_state - The new state\n   * @throws {Error} If the state is invalid\n   */\n  set_state(new_state) {\n    const valid_states = ["unloaded", "loading", "loaded", "unloading"];\n    if (!valid_states.includes(new_state)) {\n      throw new Error(`Invalid state: ${new_state}`);\n    }\n    this.state = new_state;\n  }\n  get is_loading() {\n    return this.state === "loading";\n  }\n  get is_loaded() {\n    return this.state === "loaded";\n  }\n  get is_unloading() {\n    return this.state === "unloading";\n  }\n  get is_unloaded() {\n    return this.state === "unloaded";\n  }\n  // ADAPTERS\n  /**\n   * Get the map of available adapters\n   * @returns {Object} Map of adapter names to adapter classes\n   */\n  get adapters() {\n    return this.opts.adapters || {};\n  }\n  /**\n   * Load a specific adapter by name.\n   * @async\n   * @param {string} adapter_name - Name of the adapter to load\n   * @throws {Error} If adapter not found or loading fails\n   * @returns {Promise<void>}\n   */\n  async load_adapter(adapter_name) {\n    this.set_adapter(adapter_name);\n    if (!this._adapter.loaded) {\n      this.set_state("loading");\n      try {\n        await this.invoke_adapter_method("load");\n        this.set_state("loaded");\n      } catch (err) {\n        this.set_state("unloaded");\n        throw new Error(`Failed to load adapter: ${err.message}`);\n      }\n    }\n  }\n  /**\n   * Set an adapter instance by name without loading it.\n   * @param {string} adapter_name - Name of the adapter to set\n   * @throws {Error} If adapter not found\n   */\n  set_adapter(adapter_name) {\n    const AdapterClass = this.adapters[adapter_name];\n    if (!AdapterClass) {\n      throw new Error(`Adapter "${adapter_name}" not found.`);\n    }\n    if (this._adapter?.constructor.name.toLowerCase() === adapter_name.toLowerCase()) {\n      return;\n    }\n    this._adapter = new AdapterClass(this);\n  }\n  /**\n   * Get the current active adapter instance\n   * @returns {Object} The active adapter instance\n   * @throws {Error} If adapter not found\n   */\n  get adapter() {\n    const adapter_name = this.adapter_name;\n    if (!adapter_name) {\n      throw new Error(`Adapter not set for model.`);\n    }\n    if (!this._adapter) {\n      this.load_adapter(adapter_name);\n    }\n    return this._adapter;\n  }\n  /**\n   * Ensure the adapter is ready to execute a method.\n   * @param {string} method - Name of the method to check\n   * @throws {Error} If adapter not loaded or method not implemented\n   */\n  ensure_adapter_ready(method) {\n    if (!this.adapter) {\n      throw new Error("No adapter loaded.");\n    }\n    if (typeof this.adapter[method] !== "function") {\n      throw new Error(`Adapter does not implement method: ${method}`);\n    }\n  }\n  /**\n   * Invoke a method on the current adapter.\n   * @async\n   * @param {string} method - Name of the method to call\n   * @param {...any} args - Arguments to pass to the method\n   * @returns {Promise<any>} Result from the adapter method\n   * @throws {Error} If adapter not ready or method fails\n   */\n  async invoke_adapter_method(method, ...args) {\n    this.ensure_adapter_ready(method);\n    return await this.adapter[method](...args);\n  }\n  /**\n   * Get platforms as dropdown options.\n   * @returns {Array<Object>} Array of {value, name} option objects\n   */\n  get_platforms_as_options() {\n    console.log("get_platforms_as_options", this.adapters);\n    return Object.entries(this.adapters).map(([key, AdapterClass]) => ({ value: key, name: AdapterClass.defaults.description || key }));\n  }\n  // SETTINGS\n  /**\n   * Get the settings configuration schema\n   * @returns {Object} Settings configuration object\n   */\n  get settings_config() {\n    return this.process_settings_config({\n      adapter: {\n        name: "Model Platform",\n        type: "dropdown",\n        description: "Select a model platform to use with Smart Model.",\n        options_callback: "get_platforms_as_options",\n        is_scope: true,\n        // trigger re-render of settings when changed\n        callback: "adapter_changed",\n        default: "default"\n      }\n    });\n  }\n  /**\n   * Process settings configuration with conditionals and prefixes.\n   * @param {Object} _settings_config - Raw settings configuration\n   * @param {string} [prefix] - Optional prefix for setting keys\n   * @returns {Object} Processed settings configuration\n   */\n  process_settings_config(_settings_config, prefix = null) {\n    return Object.entries(_settings_config).reduce((acc, [key, val]) => {\n      const new_key = (prefix ? prefix + "." : "") + this.process_setting_key(key);\n      acc[new_key] = val;\n      return acc;\n    }, {});\n  }\n  /**\n   * Process an individual setting key.\n   * Example: replace placeholders with actual adapter names.\n   * @param {string} key - The setting key with placeholders.\n   * @returns {string} Processed setting key.\n   */\n  process_setting_key(key) {\n    return key.replace(/\\[ADAPTER\\]/g, this.adapter_name);\n  }\n  re_render_settings() {\n    console.log("re_render_settings", this.opts);\n    if (typeof this.opts.re_render_settings === "function") this.opts.re_render_settings();\n    else console.warn("re_render_settings is not a function (must be passed in model opts)");\n  }\n  /**\n   * Reload model.\n   */\n  reload_model() {\n    console.log("reload_model", this.opts);\n    if (typeof this.opts.reload_model === "function") this.opts.reload_model();\n    else console.warn("reload_model is not a function (must be passed in model opts)");\n  }\n  adapter_changed() {\n    this.reload_model();\n    this.re_render_settings();\n  }\n  model_changed() {\n    this.reload_model();\n    this.re_render_settings();\n  }\n  // /**\n  //  * Render settings.\n  //  * @param {HTMLElement} [container] - Container element\n  //  * @param {Object} [opts] - Render options\n  //  * @returns {Promise<HTMLElement>} Container element\n  //  */\n  // async render_settings(container=this.settings_container, opts = {}) {\n  //   if(!this.settings_container || container !== this.settings_container) this.settings_container = container;\n  //   const model_type = this.constructor.name.toLowerCase().replace(\'smart\', \'\').replace(\'model\', \'\');\n  //   let model_settings_container;\n  //   if(this.settings_container) {\n  //     const container_id = `#${model_type}-model-settings-container`;\n  //     model_settings_container = this.settings_container.querySelector(container_id);\n  //     if(!model_settings_container) {\n  //       model_settings_container = document.createElement(\'div\');\n  //       model_settings_container.id = container_id;\n  //       this.settings_container.appendChild(model_settings_container);\n  //     }\n  //     model_settings_container.innerHTML = \'<div class="sc-loading">Loading \' + this.adapter_name + \' settings...</div>\';\n  //   }\n  //   const frag = await this.render_settings_component(this, opts);\n  //   if(model_settings_container) {\n  //     model_settings_container.innerHTML = \'\';\n  //     model_settings_container.appendChild(frag);\n  //     this.smart_view.on_open_overlay(model_settings_container);\n  //   }\n  //   return frag;\n  // }\n};\n__publicField(SmartModel, "defaults", {\n  // override in sub-class if needed\n});\n\n// smart_embed_model.js\nvar SmartEmbedModel = class extends SmartModel {\n  /**\n   * Create a SmartEmbedModel instance\n   * @param {Object} opts - Configuration options\n   * @param {Object} [opts.adapters] - Map of available adapter implementations\n   * @param {boolean} [opts.use_gpu] - Whether to enable GPU acceleration\n   * @param {number} [opts.gpu_batch_size] - Batch size when using GPU\n   * @param {number} [opts.batch_size] - Default batch size for processing\n   * @param {Object} [opts.model_config] - Model-specific configuration\n   * @param {string} [opts.model_config.adapter] - Override adapter type\n   * @param {number} [opts.model_config.dims] - Embedding dimensions\n   * @param {number} [opts.model_config.max_tokens] - Maximum tokens to process\n   * @param {Object} [opts.settings] - User settings\n   * @param {string} [opts.settings.api_key] - API key for remote models\n   * @param {number} [opts.settings.min_chars] - Minimum text length to embed\n   */\n  constructor(opts = {}) {\n    super(opts);\n    __publicField(this, "scope_name", "smart_embed_model");\n  }\n  /**\n   * Count tokens in an input string\n   * @param {string} input - Text to tokenize\n   * @returns {Promise<Object>} Token count result\n   * @property {number} tokens - Number of tokens in input\n   * \n   * @example\n   * ```javascript\n   * const result = await model.count_tokens("Hello world");\n   * console.log(result.tokens); // 2\n   * ```\n   */\n  async count_tokens(input) {\n    return await this.invoke_adapter_method("count_tokens", input);\n  }\n  /**\n   * Generate embeddings for a single input\n   * @param {string|Object} input - Text or object with embed_input property\n   * @returns {Promise<Object>} Embedding result\n   * @property {number[]} vec - Embedding vector\n   * @property {number} tokens - Token count\n   * \n   * @example\n   * ```javascript\n   * const result = await model.embed("Hello world");\n   * console.log(result.vec); // [0.1, 0.2, ...]\n   * ```\n   */\n  async embed(input) {\n    if (typeof input === "string") input = { embed_input: input };\n    return (await this.embed_batch([input]))[0];\n  }\n  /**\n   * Generate embeddings for multiple inputs in batch\n   * @param {Array<string|Object>} inputs - Array of texts or objects with embed_input\n   * @returns {Promise<Array<Object>>} Array of embedding results\n   * @property {number[]} vec - Embedding vector for each input\n   * @property {number} tokens - Token count for each input\n   * \n   * @example\n   * ```javascript\n   * const results = await model.embed_batch([\n   *   { embed_input: "First text" },\n   *   { embed_input: "Second text" }\n   * ]);\n   * ```\n   */\n  async embed_batch(inputs) {\n    return await this.invoke_adapter_method("embed_batch", inputs);\n  }\n  /**\n   * Get the current batch size based on GPU settings\n   * @returns {number} Current batch size for processing\n   */\n  get batch_size() {\n    return this.adapter.batch_size || 1;\n  }\n  /**\n   * Get settings configuration schema\n   * @returns {Object} Settings configuration object\n   */\n  get settings_config() {\n    const _settings_config = {\n      adapter: {\n        name: "Embedding model platform",\n        type: "dropdown",\n        description: "Select an embedding model platform. The default \'transformers\' utilizes built-in local models.",\n        options_callback: "get_platforms_as_options",\n        callback: "adapter_changed",\n        default: this.constructor.defaults.adapter\n      },\n      ...this.adapter.settings_config || {}\n    };\n    return this.process_settings_config(_settings_config);\n  }\n  process_setting_key(key) {\n    return key.replace(/\\[ADAPTER\\]/g, this.adapter_name);\n  }\n  /**\n   * Get available embedding model options\n   * @returns {Array<Object>} Array of model options with value and name\n   */\n  get_embedding_model_options() {\n    return Object.entries(this.models).map(([key, model2]) => ({ value: key, name: key }));\n  }\n  /**\n   * Get embedding model options including \'None\' option\n   * @returns {Array<Object>} Array of model options with value and name\n   */\n  get_block_embedding_model_options() {\n    const options = this.get_embedding_model_options();\n    options.unshift({ value: "None", name: "None" });\n    return options;\n  }\n};\n__publicField(SmartEmbedModel, "defaults", {\n  adapter: "transformers"\n});\n\n// ../smart-model/adapters/_adapter.js\nvar SmartModelAdapter = class {\n  /**\n   * Create a SmartModelAdapter instance.\n   * @param {SmartModel} model - The parent SmartModel instance\n   */\n  constructor(model2) {\n    this.model = model2;\n    this.state = "unloaded";\n  }\n  /**\n   * Load the adapter.\n   * @async\n   * @returns {Promise<void>}\n   */\n  async load() {\n    this.set_state("loaded");\n  }\n  /**\n   * Unload the adapter.\n   * @returns {void}\n   */\n  unload() {\n    this.set_state("unloaded");\n  }\n  /**\n   * Get all settings.\n   * @returns {Object} All settings\n   */\n  get settings() {\n    return this.model.settings;\n  }\n  /**\n   * Get the current model key.\n   * @returns {string} Current model identifier\n   */\n  get model_key() {\n    return this.model.model_key;\n  }\n  /**\n   * Get the current model configuration.\n   * @returns {Object} Model configuration\n   */\n  get model_config() {\n    return this.model.model_config;\n  }\n  /**\n   * Get model-specific settings.\n   * @returns {Object} Settings for current model\n   */\n  get model_settings() {\n    return this.model.model_settings;\n  }\n  /**\n   * Get adapter-specific configuration.\n   * @returns {Object} Adapter configuration\n   */\n  get adapter_config() {\n    return this.model.adapter_config;\n  }\n  /**\n   * Get adapter-specific settings.\n   * @returns {Object} Adapter settings\n   */\n  get adapter_settings() {\n    return this.model.adapter_settings;\n  }\n  /**\n   * Get the models.\n   * @returns {Object} Map of model objects\n   */\n  get models() {\n    if (typeof this.adapter_config.models === "object" && Object.keys(this.adapter_config.models || {}).length > 0) return this.adapter_config.models;\n    else {\n      return {};\n    }\n  }\n  /**\n   * Get available models from the API.\n   * @abstract\n   * @param {boolean} [refresh=false] - Whether to refresh cached models\n   * @returns {Promise<Object>} Map of model objects\n   */\n  async get_models(refresh = false) {\n    throw new Error("get_models not implemented");\n  }\n  /**\n   * Validate the parameters for get_models.\n   * @returns {boolean|Array<Object>} True if parameters are valid, otherwise an array of error objects\n   */\n  validate_get_models_params() {\n    return true;\n  }\n  /**\n   * Get available models as dropdown options synchronously.\n   * @returns {Array<Object>} Array of model options.\n   */\n  get_models_as_options() {\n    const models = this.models;\n    const params_valid = this.validate_get_models_params();\n    if (params_valid !== true) return params_valid;\n    if (!Object.keys(models || {}).length) {\n      this.get_models(true);\n      return [{ value: "", name: "No models currently available" }];\n    }\n    return Object.values(models).map((model2) => ({ value: model2.id, name: model2.name || model2.id })).sort((a, b) => a.name.localeCompare(b.name));\n  }\n  /**\n   * Set the adapter\'s state.\n   * @param {(\'unloaded\'|\'loading\'|\'loaded\'|\'unloading\')} new_state - The new state\n   * @throws {Error} If the state is invalid\n   */\n  set_state(new_state) {\n    const valid_states = ["unloaded", "loading", "loaded", "unloading"];\n    if (!valid_states.includes(new_state)) {\n      throw new Error(`Invalid state: ${new_state}`);\n    }\n    this.state = new_state;\n  }\n  // Replace individual state getters/setters with a unified state management\n  get is_loading() {\n    return this.state === "loading";\n  }\n  get is_loaded() {\n    return this.state === "loaded";\n  }\n  get is_unloading() {\n    return this.state === "unloading";\n  }\n  get is_unloaded() {\n    return this.state === "unloaded";\n  }\n};\n\n// adapters/_adapter.js\nvar SmartEmbedAdapter = class extends SmartModelAdapter {\n  /**\n   * Create adapter instance\n   * @param {SmartEmbedModel} model - Parent model instance\n   */\n  constructor(model2) {\n    super(model2);\n    this.smart_embed = model2;\n  }\n  /**\n   * Count tokens in input text\n   * @abstract\n   * @param {string} input - Text to tokenize\n   * @returns {Promise<Object>} Token count result\n   * @property {number} tokens - Number of tokens in input\n   * @throws {Error} If not implemented by subclass\n   */\n  async count_tokens(input) {\n    throw new Error("count_tokens method not implemented");\n  }\n  /**\n   * Generate embeddings for single input\n   * @abstract\n   * @param {string|Object} input - Text to embed\n   * @returns {Promise<Object>} Embedding result\n   * @property {number[]} vec - Embedding vector\n   * @property {number} tokens - Number of tokens in input\n   * @throws {Error} If not implemented by subclass\n   */\n  async embed(input) {\n    throw new Error("embed method not implemented");\n  }\n  /**\n   * Generate embeddings for multiple inputs\n   * @abstract\n   * @param {Array<string|Object>} inputs - Texts to embed\n   * @returns {Promise<Array<Object>>} Array of embedding results\n   * @property {number[]} vec - Embedding vector for each input\n   * @property {number} tokens - Number of tokens in each input\n   * @throws {Error} If not implemented by subclass\n   */\n  async embed_batch(inputs) {\n    throw new Error("embed_batch method not implemented");\n  }\n  get settings_config() {\n    return {\n      "[ADAPTER].model_key": {\n        name: "Embedding model",\n        type: "dropdown",\n        description: "Select an embedding model.",\n        options_callback: "adapter.get_models_as_options",\n        callback: "model_changed",\n        default: this.constructor.defaults.default_model\n      }\n    };\n  }\n  get dims() {\n    return this.model_config.dims;\n  }\n  get max_tokens() {\n    return this.model_config.max_tokens;\n  }\n  // get batch_size() { return this.model_config.batch_size; }\n  get use_gpu() {\n    if (typeof this._use_gpu === "undefined") {\n      if (typeof this.model.opts.use_gpu !== "undefined") this._use_gpu = this.model.opts.use_gpu;\n      else this._use_gpu = typeof navigator !== "undefined" && !!navigator?.gpu && this.model_settings.gpu_batch_size !== 0;\n    }\n    return this._use_gpu;\n  }\n  set use_gpu(value) {\n    this._use_gpu = value;\n  }\n  get batch_size() {\n    if (this.use_gpu && this.model_config?.gpu_batch_size) return this.model_config.gpu_batch_size;\n    return this.model.opts.batch_size || this.model_config.batch_size || 1;\n  }\n};\n/**\n * @override in sub-class with adapter-specific default configurations\n * @property {string} id - The adapter identifier\n * @property {string} description - Human-readable description\n * @property {string} type - Adapter type ("API")\n * @property {string} endpoint - API endpoint\n * @property {string} adapter - Adapter identifier\n * @property {string} default_model - Default model to use\n */\n__publicField(SmartEmbedAdapter, "defaults", {});\n\n// adapters/transformers.js\nvar transformers_defaults = {\n  adapter: "transformers",\n  description: "Transformers (Local, built-in)",\n  default_model: "TaylorAI/bge-micro-v2"\n};\nvar SmartEmbedTransformersAdapter = class extends SmartEmbedAdapter {\n  /**\n   * Create transformers adapter instance\n   * @param {SmartEmbedModel} model - Parent model instance\n   */\n  constructor(model2) {\n    super(model2);\n    this.pipeline = null;\n    this.tokenizer = null;\n  }\n  /**\n   * Load model and tokenizer\n   * @returns {Promise<void>}\n   */\n  async load() {\n    await this.load_transformers();\n    this.loaded = true;\n    this.set_state("loaded");\n  }\n  /**\n   * Unload model and free resources\n   * @returns {Promise<void>}\n   */\n  async unload() {\n    if (this.pipeline) {\n      if (this.pipeline.destroy) this.pipeline.destroy();\n      this.pipeline = null;\n    }\n    if (this.tokenizer) {\n      this.tokenizer = null;\n    }\n    this.loaded = false;\n    this.set_state("unloaded");\n  }\n  /**\n   * Initialize transformers pipeline and tokenizer\n   * @private\n   * @returns {Promise<void>}\n   */\n  async load_transformers() {\n    const { pipeline, env, AutoTokenizer } = await import("@huggingface/transformers");\n    env.allowLocalModels = false;\n    const pipeline_opts = {\n      quantized: true\n    };\n    if (this.use_gpu) {\n      console.log("[Transformers] Using GPU");\n      pipeline_opts.device = "webgpu";\n      pipeline_opts.dtype = "fp32";\n    } else {\n      console.log("[Transformers] Using CPU");\n      env.backends.onnx.wasm.numThreads = 8;\n    }\n    this.pipeline = await pipeline("feature-extraction", this.model_key, pipeline_opts);\n    this.tokenizer = await AutoTokenizer.from_pretrained(this.model_key);\n  }\n  /**\n   * Count tokens in input text\n   * @param {string} input - Text to tokenize\n   * @returns {Promise<Object>} Token count result\n   */\n  async count_tokens(input) {\n    if (!this.tokenizer) await this.load();\n    const { input_ids } = await this.tokenizer(input);\n    return { tokens: input_ids.data.length };\n  }\n  /**\n   * Generate embeddings for multiple inputs\n   * @param {Array<Object>} inputs - Array of input objects\n   * @returns {Promise<Array<Object>>} Processed inputs with embeddings\n   */\n  async embed_batch(inputs) {\n    if (!this.pipeline) await this.load();\n    const filtered_inputs = inputs.filter((item) => item.embed_input?.length > 0);\n    if (!filtered_inputs.length) return [];\n    if (filtered_inputs.length > this.batch_size) {\n      console.log(`Processing ${filtered_inputs.length} inputs in batches of ${this.batch_size}`);\n      const results = [];\n      for (let i = 0; i < filtered_inputs.length; i += this.batch_size) {\n        const batch = filtered_inputs.slice(i, i + this.batch_size);\n        const batch_results = await this._process_batch(batch);\n        results.push(...batch_results);\n      }\n      return results;\n    }\n    return await this._process_batch(filtered_inputs);\n  }\n  /**\n   * Process a single batch of inputs\n   * @private\n   * @param {Array<Object>} batch_inputs - Batch of inputs to process\n   * @returns {Promise<Array<Object>>} Processed batch results\n   */\n  async _process_batch(batch_inputs) {\n    const tokens = await Promise.all(batch_inputs.map((item) => this.count_tokens(item.embed_input)));\n    const embed_inputs = await Promise.all(batch_inputs.map(async (item, i) => {\n      if (tokens[i].tokens < this.max_tokens) return item.embed_input;\n      let token_ct = tokens[i].tokens;\n      let truncated_input = item.embed_input;\n      while (token_ct > this.max_tokens) {\n        const pct = this.max_tokens / token_ct;\n        const max_chars = Math.floor(truncated_input.length * pct * 0.9);\n        truncated_input = truncated_input.substring(0, max_chars) + "...";\n        token_ct = (await this.count_tokens(truncated_input)).tokens;\n      }\n      tokens[i].tokens = token_ct;\n      return truncated_input;\n    }));\n    try {\n      const resp = await this.pipeline(embed_inputs, { pooling: "mean", normalize: true });\n      return batch_inputs.map((item, i) => {\n        item.vec = Array.from(resp[i].data).map((val) => Math.round(val * 1e8) / 1e8);\n        item.tokens = tokens[i].tokens;\n        return item;\n      });\n    } catch (err) {\n      console.error("error_processing_batch", err);\n      this.pipeline?.dispose();\n      this.pipeline = null;\n      await this.load();\n      return Promise.all(batch_inputs.map(async (item) => {\n        try {\n          const result = await this.pipeline(item.embed_input, { pooling: "mean", normalize: true });\n          item.vec = Array.from(result[0].data).map((val) => Math.round(val * 1e8) / 1e8);\n          item.tokens = (await this.count_tokens(item.embed_input)).tokens;\n          return item;\n        } catch (single_err) {\n          console.error("error_processing_single_item", single_err);\n          return {\n            ...item,\n            vec: [],\n            tokens: 0,\n            error: single_err.message\n          };\n        }\n      }));\n    }\n  }\n  /** @returns {Object} Settings configuration for transformers adapter */\n  get settings_config() {\n    return transformers_settings_config;\n  }\n  /**\n   * Get available models (hardcoded list)\n   * @returns {Promise<Object>} Map of model objects\n   */\n  get_models() {\n    return Promise.resolve(this.models);\n  }\n  get models() {\n    return transformers_models;\n  }\n};\n__publicField(SmartEmbedTransformersAdapter, "defaults", transformers_defaults);\nvar transformers_models = {\n  "TaylorAI/bge-micro-v2": {\n    "id": "TaylorAI/bge-micro-v2",\n    "batch_size": 1,\n    "dims": 384,\n    "max_tokens": 512,\n    "name": "BGE-micro-v2",\n    "description": "Local, 512 tokens, 384 dim (recommended)",\n    "adapter": "transformers"\n  },\n  "TaylorAI/gte-tiny": {\n    "id": "TaylorAI/gte-tiny",\n    "batch_size": 1,\n    "dims": 384,\n    "max_tokens": 512,\n    "name": "GTE-tiny",\n    "description": "Local, 512 tokens, 384 dim",\n    "adapter": "transformers"\n  },\n  "Mihaiii/Ivysaur": {\n    "id": "Mihaiii/Ivysaur",\n    "batch_size": 1,\n    "dims": 384,\n    "max_tokens": 512,\n    "name": "Ivysaur",\n    "description": "Local, 512 tokens, 384 dim",\n    "adapter": "transformers"\n  },\n  "andersonbcdefg/bge-small-4096": {\n    "id": "andersonbcdefg/bge-small-4096",\n    "batch_size": 1,\n    "dims": 384,\n    "max_tokens": 4096,\n    "name": "BGE-small-4K",\n    "description": "Local, 4,096 tokens, 384 dim",\n    "adapter": "transformers"\n  },\n  "Xenova/jina-embeddings-v2-base-zh": {\n    "id": "Xenova/jina-embeddings-v2-base-zh",\n    "batch_size": 1,\n    "dims": 768,\n    "max_tokens": 8192,\n    "name": "Jina-v2-base-zh-8K",\n    "description": "Local, 8,192 tokens, 768 dim, Chinese/English bilingual",\n    "adapter": "transformers"\n  },\n  "Xenova/jina-embeddings-v2-small-en": {\n    "id": "Xenova/jina-embeddings-v2-small-en",\n    "batch_size": 1,\n    "dims": 512,\n    "max_tokens": 8192,\n    "name": "Jina-v2-small-en",\n    "description": "Local, 8,192 tokens, 512 dim",\n    "adapter": "transformers"\n  },\n  "nomic-ai/nomic-embed-text-v1.5": {\n    "id": "nomic-ai/nomic-embed-text-v1.5",\n    "batch_size": 1,\n    "dims": 768,\n    "max_tokens": 2048,\n    "name": "Nomic-embed-text-v1.5",\n    "description": "Local, 8,192 tokens, 768 dim",\n    "adapter": "transformers"\n  },\n  "Xenova/bge-small-en-v1.5": {\n    "id": "Xenova/bge-small-en-v1.5",\n    "batch_size": 1,\n    "dims": 384,\n    "max_tokens": 512,\n    "name": "BGE-small",\n    "description": "Local, 512 tokens, 384 dim",\n    "adapter": "transformers"\n  },\n  "nomic-ai/nomic-embed-text-v1": {\n    "id": "nomic-ai/nomic-embed-text-v1",\n    "batch_size": 1,\n    "dims": 768,\n    "max_tokens": 2048,\n    "name": "Nomic-embed-text",\n    "description": "Local, 2,048 tokens, 768 dim",\n    "adapter": "transformers"\n  }\n};\nvar transformers_settings_config = {\n  "[ADAPTER].gpu_batch_size": {\n    name: "GPU batch size",\n    type: "number",\n    description: "Number of embeddings to process per batch on GPU. Use 0 to disable GPU.",\n    placeholder: "Enter number ex. 10"\n  },\n  "[ADAPTER].legacy_transformers": {\n    name: "Legacy transformers (no GPU)",\n    type: "toggle",\n    description: "Use legacy transformers (v2) instead of v3. This may resolve issues if the local embedding isn\'t working.",\n    callback: "embed_model_changed",\n    default: true\n  }\n};\n\n// build/transformers_iframe_script.js\nvar model = null;\nasync function process_message(data) {\n  const { method, params, id, iframe_id } = data;\n  try {\n    let result;\n    switch (method) {\n      case "init":\n        console.log("init");\n        break;\n      case "load":\n        console.log("load", params);\n        model = new SmartEmbedModel({\n          ...params,\n          adapters: { transformers: SmartEmbedTransformersAdapter },\n          adapter: "transformers",\n          settings: {}\n        });\n        await model.load();\n        result = { model_loaded: true };\n        break;\n      case "embed_batch":\n        if (!model) throw new Error("Model not loaded");\n        result = await model.embed_batch(params.inputs);\n        break;\n      case "count_tokens":\n        if (!model) throw new Error("Model not loaded");\n        result = await model.count_tokens(params);\n        break;\n      default:\n        throw new Error(`Unknown method: ${method}`);\n    }\n    return { id, result, iframe_id };\n  } catch (error) {\n    console.error("Error processing message:", error);\n    return { id, error: error.message, iframe_id };\n  }\n}\nprocess_message({ method: "init" });\n';
+var transformers_connector = 'var __defProp = Object.defineProperty;\nvar __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;\nvar __publicField = (obj, key, value) => {\n  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);\n  return value;\n};\n\n// ../smart-model/smart_model.js\nvar SmartModel = class {\n  /**\n   * Create a SmartModel instance.\n   * @param {Object} opts - Configuration options\n   * @param {Object} opts.adapters - Map of adapter names to adapter classes\n   * @param {Object} opts.settings - Model settings configuration\n   * @param {Object} opts.model_config - Model-specific configuration\n   * @param {string} opts.model_config.adapter - Name of the adapter to use\n   * @param {string} [opts.model_key] - Optional model identifier to override settings\n   * @throws {Error} If required options are missing\n   */\n  constructor(opts = {}) {\n    __publicField(this, "scope_name", "smart_model");\n    this.opts = opts;\n    this.validate_opts(opts);\n    this.state = "unloaded";\n    this._adapter = null;\n  }\n  /**\n   * Initialize the model by loading the configured adapter.\n   * @async\n   * @returns {Promise<void>}\n   */\n  async initialize() {\n    this.load_adapter(this.adapter_name);\n    await this.load();\n  }\n  /**\n   * Validate required options.\n   * @param {Object} opts - Configuration options\n   */\n  validate_opts(opts) {\n    if (!opts.adapters)\n      throw new Error("opts.adapters is required");\n    if (!opts.settings)\n      throw new Error("opts.settings is required");\n  }\n  /**\n   * Get the current settings\n   * @returns {Object} Current settings\n   */\n  get settings() {\n    if (!this.opts.settings)\n      this.opts.settings = {\n        ...this.constructor.defaults\n      };\n    return this.opts.settings;\n  }\n  /**\n   * Get the current adapter name\n   * @returns {string} Current adapter name\n   */\n  get adapter_name() {\n    let adapter_key = this.opts.model_config?.adapter || this.opts.adapter || this.settings.adapter || Object.keys(this.adapters)[0];\n    if (!adapter_key || !this.adapters[adapter_key]) {\n      console.warn(`Platform "${adapter_key}" not supported`);\n      adapter_key = Object.keys(this.adapters)[0];\n    }\n    return adapter_key;\n  }\n  /**\n   * Get adapter-specific settings.\n   * @returns {Object} Settings for current adapter\n   */\n  get adapter_settings() {\n    if (!this.settings[this.adapter_name])\n      this.settings[this.adapter_name] = {};\n    return this.settings[this.adapter_name];\n  }\n  get adapter_config() {\n    const base_config = this.adapters[this.adapter_name]?.defaults || {};\n    return {\n      ...base_config,\n      ...this.adapter_settings,\n      ...this.opts.adapter_config\n    };\n  }\n  /**\n   * Get available models.\n   * @returns {Object} Map of model objects\n   */\n  get models() {\n    return this.adapter.models;\n  }\n  /**\n   * Get default model key.\n   * @returns {string} Default model key\n   */\n  get default_model_key() {\n    return this.adapter.constructor.defaults.default_model;\n  }\n  /**\n   * Get the current model key\n   * @returns {string} Current model key\n   */\n  get model_key() {\n    return this.opts.model_key || this.adapter_config.model_key || this.settings.model_key || this.default_model_key;\n  }\n  /**\n   * Get the current model configuration\n   * @returns {Object} Combined base and custom model configuration\n   */\n  get model_config() {\n    const model_key = this.model_key;\n    const base_model_config = this.models[model_key] || {};\n    return {\n      ...this.adapter_config,\n      ...base_model_config,\n      ...this.opts.model_config\n    };\n  }\n  get model_settings() {\n    if (!this.settings[this.model_key])\n      this.settings[this.model_key] = {};\n    return this.settings[this.model_key];\n  }\n  /**\n   * Load the current adapter and transition to loaded state.\n   * @async\n   * @returns {Promise<void>}\n   */\n  async load() {\n    this.set_state("loading");\n    try {\n      if (!this.adapter?.is_loaded) {\n        await this.invoke_adapter_method("load");\n      }\n    } catch (err) {\n      this.set_state("unloaded");\n      if (!this.reload_model_timeout) {\n        this.reload_model_timeout = setTimeout(async () => {\n          this.reload_model_timeout = null;\n          await this.load();\n          this.set_state("loaded");\n          this.notices?.show("Loaded model: " + this.model_key);\n        }, 6e4);\n      }\n      throw new Error(`Failed to load model: ${err.message}`);\n    }\n    this.set_state("loaded");\n  }\n  /**\n   * Unload the current adapter and transition to unloaded state.\n   * @async\n   * @returns {Promise<void>}\n   */\n  async unload() {\n    if (this.adapter?.is_loaded) {\n      this.set_state("unloading");\n      await this.invoke_adapter_method("unload");\n      this.set_state("unloaded");\n    }\n  }\n  /**\n   * Set the model\'s state.\n   * @param {(\'unloaded\'|\'loading\'|\'loaded\'|\'unloading\')} new_state - The new state\n   * @throws {Error} If the state is invalid\n   */\n  set_state(new_state) {\n    const valid_states = ["unloaded", "loading", "loaded", "unloading"];\n    if (!valid_states.includes(new_state)) {\n      throw new Error(`Invalid state: ${new_state}`);\n    }\n    this.state = new_state;\n  }\n  get is_loading() {\n    return this.state === "loading";\n  }\n  get is_loaded() {\n    return this.state === "loaded";\n  }\n  get is_unloading() {\n    return this.state === "unloading";\n  }\n  get is_unloaded() {\n    return this.state === "unloaded";\n  }\n  // ADAPTERS\n  /**\n   * Get the map of available adapters\n   * @returns {Object} Map of adapter names to adapter classes\n   */\n  get adapters() {\n    return this.opts.adapters || {};\n  }\n  /**\n   * Load a specific adapter by name.\n   * @async\n   * @param {string} adapter_name - Name of the adapter to load\n   * @throws {Error} If adapter not found or loading fails\n   * @returns {Promise<void>}\n   */\n  async load_adapter(adapter_name) {\n    this.set_adapter(adapter_name);\n    if (!this._adapter.loaded) {\n      this.set_state("loading");\n      try {\n        await this.invoke_adapter_method("load");\n        this.set_state("loaded");\n      } catch (err) {\n        this.set_state("unloaded");\n        throw new Error(`Failed to load adapter: ${err.message}`);\n      }\n    }\n  }\n  /**\n   * Set an adapter instance by name without loading it.\n   * @param {string} adapter_name - Name of the adapter to set\n   * @throws {Error} If adapter not found\n   */\n  set_adapter(adapter_name) {\n    const AdapterClass = this.adapters[adapter_name];\n    if (!AdapterClass) {\n      throw new Error(`Adapter "${adapter_name}" not found.`);\n    }\n    if (this._adapter?.constructor.name.toLowerCase() === adapter_name.toLowerCase()) {\n      return;\n    }\n    this._adapter = new AdapterClass(this);\n  }\n  /**\n   * Get the current active adapter instance\n   * @returns {Object} The active adapter instance\n   * @throws {Error} If adapter not found\n   */\n  get adapter() {\n    const adapter_name = this.adapter_name;\n    if (!adapter_name) {\n      throw new Error(`Adapter not set for model.`);\n    }\n    if (!this._adapter) {\n      this.load_adapter(adapter_name);\n    }\n    return this._adapter;\n  }\n  /**\n   * Ensure the adapter is ready to execute a method.\n   * @param {string} method - Name of the method to check\n   * @throws {Error} If adapter not loaded or method not implemented\n   */\n  ensure_adapter_ready(method) {\n    if (!this.adapter) {\n      throw new Error("No adapter loaded.");\n    }\n    if (typeof this.adapter[method] !== "function") {\n      throw new Error(`Adapter does not implement method: ${method}`);\n    }\n  }\n  /**\n   * Invoke a method on the current adapter.\n   * @async\n   * @param {string} method - Name of the method to call\n   * @param {...any} args - Arguments to pass to the method\n   * @returns {Promise<any>} Result from the adapter method\n   * @throws {Error} If adapter not ready or method fails\n   */\n  async invoke_adapter_method(method, ...args) {\n    this.ensure_adapter_ready(method);\n    return await this.adapter[method](...args);\n  }\n  /**\n   * Get platforms as dropdown options.\n   * @returns {Array<Object>} Array of {value, name} option objects\n   */\n  get_platforms_as_options() {\n    return Object.entries(this.adapters).map(([key, AdapterClass]) => ({ value: key, name: AdapterClass.defaults.description || key }));\n  }\n  // SETTINGS\n  /**\n   * Get the settings configuration schema\n   * @returns {Object} Settings configuration object\n   */\n  get settings_config() {\n    return this.process_settings_config({\n      adapter: {\n        name: "Model Platform",\n        type: "dropdown",\n        description: "Select a model platform to use with Smart Model.",\n        options_callback: "get_platforms_as_options",\n        is_scope: true,\n        // trigger re-render of settings when changed\n        callback: "adapter_changed",\n        default: "default"\n      }\n    });\n  }\n  /**\n   * Process settings configuration with conditionals and prefixes.\n   * @param {Object} _settings_config - Raw settings configuration\n   * @param {string} [prefix] - Optional prefix for setting keys\n   * @returns {Object} Processed settings configuration\n   */\n  process_settings_config(_settings_config, prefix = null) {\n    return Object.entries(_settings_config).reduce((acc, [key, val]) => {\n      const new_key = (prefix ? prefix + "." : "") + this.process_setting_key(key);\n      acc[new_key] = val;\n      return acc;\n    }, {});\n  }\n  /**\n   * Process an individual setting key.\n   * Example: replace placeholders with actual adapter names.\n   * @param {string} key - The setting key with placeholders.\n   * @returns {string} Processed setting key.\n   */\n  process_setting_key(key) {\n    return key.replace(/\\[ADAPTER\\]/g, this.adapter_name);\n  }\n  re_render_settings() {\n    if (typeof this.opts.re_render_settings === "function")\n      this.opts.re_render_settings();\n    else\n      console.warn("re_render_settings is not a function (must be passed in model opts)");\n  }\n  /**\n   * Reload model.\n   */\n  reload_model() {\n    if (typeof this.opts.reload_model === "function")\n      this.opts.reload_model();\n    else\n      console.warn("reload_model is not a function (must be passed in model opts)");\n  }\n  adapter_changed() {\n    this.reload_model();\n    this.re_render_settings();\n  }\n  model_changed() {\n    this.reload_model();\n    this.re_render_settings();\n  }\n};\n__publicField(SmartModel, "defaults", {\n  // override in sub-class if needed\n});\n\n// smart_embed_model.js\nvar SmartEmbedModel = class extends SmartModel {\n  /**\n   * Create a SmartEmbedModel instance\n   * @param {Object} opts - Configuration options\n   * @param {Object} [opts.adapters] - Map of available adapter implementations\n   * @param {boolean} [opts.use_gpu] - Whether to enable GPU acceleration\n   * @param {number} [opts.gpu_batch_size] - Batch size when using GPU\n   * @param {number} [opts.batch_size] - Default batch size for processing\n   * @param {Object} [opts.model_config] - Model-specific configuration\n   * @param {string} [opts.model_config.adapter] - Override adapter type\n   * @param {number} [opts.model_config.dims] - Embedding dimensions\n   * @param {number} [opts.model_config.max_tokens] - Maximum tokens to process\n   * @param {Object} [opts.settings] - User settings\n   * @param {string} [opts.settings.api_key] - API key for remote models\n   * @param {number} [opts.settings.min_chars] - Minimum text length to embed\n   */\n  constructor(opts = {}) {\n    super(opts);\n    __publicField(this, "scope_name", "smart_embed_model");\n  }\n  /**\n   * Count tokens in an input string\n   * @param {string} input - Text to tokenize\n   * @returns {Promise<Object>} Token count result\n   * @property {number} tokens - Number of tokens in input\n   * \n   * @example\n   * ```javascript\n   * const result = await model.count_tokens("Hello world");\n   * console.log(result.tokens); // 2\n   * ```\n   */\n  async count_tokens(input) {\n    return await this.invoke_adapter_method("count_tokens", input);\n  }\n  /**\n   * Generate embeddings for a single input\n   * @param {string|Object} input - Text or object with embed_input property\n   * @returns {Promise<Object>} Embedding result\n   * @property {number[]} vec - Embedding vector\n   * @property {number} tokens - Token count\n   * \n   * @example\n   * ```javascript\n   * const result = await model.embed("Hello world");\n   * console.log(result.vec); // [0.1, 0.2, ...]\n   * ```\n   */\n  async embed(input) {\n    if (typeof input === "string")\n      input = { embed_input: input };\n    return (await this.embed_batch([input]))[0];\n  }\n  /**\n   * Generate embeddings for multiple inputs in batch\n   * @param {Array<string|Object>} inputs - Array of texts or objects with embed_input\n   * @returns {Promise<Array<Object>>} Array of embedding results\n   * @property {number[]} vec - Embedding vector for each input\n   * @property {number} tokens - Token count for each input\n   * \n   * @example\n   * ```javascript\n   * const results = await model.embed_batch([\n   *   { embed_input: "First text" },\n   *   { embed_input: "Second text" }\n   * ]);\n   * ```\n   */\n  async embed_batch(inputs) {\n    return await this.invoke_adapter_method("embed_batch", inputs);\n  }\n  /**\n   * Get the current batch size based on GPU settings\n   * @returns {number} Current batch size for processing\n   */\n  get batch_size() {\n    return this.adapter.batch_size || 1;\n  }\n  /**\n   * Get settings configuration schema\n   * @returns {Object} Settings configuration object\n   */\n  get settings_config() {\n    const _settings_config = {\n      adapter: {\n        name: "Embedding model platform",\n        type: "dropdown",\n        description: "Select an embedding model platform. The default \'transformers\' utilizes built-in local models.",\n        options_callback: "get_platforms_as_options",\n        callback: "adapter_changed",\n        default: this.constructor.defaults.adapter\n      },\n      ...this.adapter.settings_config || {}\n    };\n    return this.process_settings_config(_settings_config);\n  }\n  process_setting_key(key) {\n    return key.replace(/\\[ADAPTER\\]/g, this.adapter_name);\n  }\n  /**\n   * Get available embedding model options\n   * @returns {Array<Object>} Array of model options with value and name\n   */\n  get_embedding_model_options() {\n    return Object.entries(this.models).map(([key, model2]) => ({ value: key, name: key }));\n  }\n  // /**\n  //  * Get embedding model options including \'None\' option\n  //  * @returns {Array<Object>} Array of model options with value and name\n  //  */\n  // get_block_embedding_model_options() {\n  //   const options = this.get_embedding_model_options();\n  //   options.unshift({ value: \'None\', name: \'None\' });\n  //   return options;\n  // }\n};\n__publicField(SmartEmbedModel, "defaults", {\n  adapter: "transformers"\n});\n\n// ../smart-model/adapters/_adapter.js\nvar SmartModelAdapter = class {\n  /**\n   * Create a SmartModelAdapter instance.\n   * @param {SmartModel} model - The parent SmartModel instance\n   */\n  constructor(model2) {\n    this.model = model2;\n    this.state = "unloaded";\n  }\n  /**\n   * Load the adapter.\n   * @async\n   * @returns {Promise<void>}\n   */\n  async load() {\n    this.set_state("loaded");\n  }\n  /**\n   * Unload the adapter.\n   * @returns {void}\n   */\n  unload() {\n    this.set_state("unloaded");\n  }\n  /**\n   * Get all settings.\n   * @returns {Object} All settings\n   */\n  get settings() {\n    return this.model.settings;\n  }\n  /**\n   * Get the current model key.\n   * @returns {string} Current model identifier\n   */\n  get model_key() {\n    return this.model.model_key;\n  }\n  /**\n   * Get the current model configuration.\n   * @returns {Object} Model configuration\n   */\n  get model_config() {\n    return this.model.model_config;\n  }\n  /**\n   * Get model-specific settings.\n   * @returns {Object} Settings for current model\n   */\n  get model_settings() {\n    return this.model.model_settings;\n  }\n  /**\n   * Get adapter-specific configuration.\n   * @returns {Object} Adapter configuration\n   */\n  get adapter_config() {\n    return this.model.adapter_config;\n  }\n  /**\n   * Get adapter-specific settings.\n   * @returns {Object} Adapter settings\n   */\n  get adapter_settings() {\n    return this.model.adapter_settings;\n  }\n  /**\n   * Get the models.\n   * @returns {Object} Map of model objects\n   */\n  get models() {\n    if (typeof this.adapter_config.models === "object" && Object.keys(this.adapter_config.models || {}).length > 0)\n      return this.adapter_config.models;\n    else {\n      return {};\n    }\n  }\n  /**\n   * Get available models from the API.\n   * @abstract\n   * @param {boolean} [refresh=false] - Whether to refresh cached models\n   * @returns {Promise<Object>} Map of model objects\n   */\n  async get_models(refresh = false) {\n    throw new Error("get_models not implemented");\n  }\n  /**\n   * Validate the parameters for get_models.\n   * @returns {boolean|Array<Object>} True if parameters are valid, otherwise an array of error objects\n   */\n  validate_get_models_params() {\n    return true;\n  }\n  /**\n   * Get available models as dropdown options synchronously.\n   * @returns {Array<Object>} Array of model options.\n   */\n  get_models_as_options() {\n    const models = this.models;\n    const params_valid = this.validate_get_models_params();\n    if (params_valid !== true)\n      return params_valid;\n    if (!Object.keys(models || {}).length) {\n      this.get_models(true);\n      return [{ value: "", name: "No models currently available" }];\n    }\n    return Object.entries(models).map(([id, model2]) => ({ value: id, name: model2.name || id })).sort((a, b) => a.name.localeCompare(b.name));\n  }\n  /**\n   * Set the adapter\'s state.\n   * @deprecated should be handled in SmartModel (only handle once)\n   * @param {(\'unloaded\'|\'loading\'|\'loaded\'|\'unloading\')} new_state - The new state\n   * @throws {Error} If the state is invalid\n   */\n  set_state(new_state) {\n    const valid_states = ["unloaded", "loading", "loaded", "unloading"];\n    if (!valid_states.includes(new_state)) {\n      throw new Error(`Invalid state: ${new_state}`);\n    }\n    this.state = new_state;\n  }\n  // Replace individual state getters/setters with a unified state management\n  get is_loading() {\n    return this.state === "loading";\n  }\n  get is_loaded() {\n    return this.state === "loaded";\n  }\n  get is_unloading() {\n    return this.state === "unloading";\n  }\n  get is_unloaded() {\n    return this.state === "unloaded";\n  }\n};\n\n// adapters/_adapter.js\nvar SmartEmbedAdapter = class extends SmartModelAdapter {\n  /**\n   * Create adapter instance\n   * @param {SmartEmbedModel} model - Parent model instance\n   */\n  constructor(model2) {\n    super(model2);\n    this.smart_embed = model2;\n  }\n  /**\n   * Count tokens in input text\n   * @abstract\n   * @param {string} input - Text to tokenize\n   * @returns {Promise<Object>} Token count result\n   * @property {number} tokens - Number of tokens in input\n   * @throws {Error} If not implemented by subclass\n   */\n  async count_tokens(input) {\n    throw new Error("count_tokens method not implemented");\n  }\n  /**\n   * Generate embeddings for single input\n   * @abstract\n   * @param {string|Object} input - Text to embed\n   * @returns {Promise<Object>} Embedding result\n   * @property {number[]} vec - Embedding vector\n   * @property {number} tokens - Number of tokens in input\n   * @throws {Error} If not implemented by subclass\n   */\n  async embed(input) {\n    throw new Error("embed method not implemented");\n  }\n  /**\n   * Generate embeddings for multiple inputs\n   * @abstract\n   * @param {Array<string|Object>} inputs - Texts to embed\n   * @returns {Promise<Array<Object>>} Array of embedding results\n   * @property {number[]} vec - Embedding vector for each input\n   * @property {number} tokens - Number of tokens in each input\n   * @throws {Error} If not implemented by subclass\n   */\n  async embed_batch(inputs) {\n    throw new Error("embed_batch method not implemented");\n  }\n  get settings_config() {\n    return {\n      "[ADAPTER].model_key": {\n        name: "Embedding model",\n        type: "dropdown",\n        description: "Select an embedding model.",\n        options_callback: "adapter.get_models_as_options",\n        callback: "model_changed",\n        default: this.constructor.defaults.default_model\n      }\n    };\n  }\n  get dims() {\n    return this.model_config.dims;\n  }\n  get max_tokens() {\n    return this.model_config.max_tokens;\n  }\n  // get batch_size() { return this.model_config.batch_size; }\n  get use_gpu() {\n    if (typeof this._use_gpu === "undefined") {\n      if (typeof this.model.opts.use_gpu !== "undefined")\n        this._use_gpu = this.model.opts.use_gpu;\n      else\n        this._use_gpu = typeof navigator !== "undefined" && !!navigator?.gpu && this.model_settings.gpu_batch_size !== 0;\n    }\n    return this._use_gpu;\n  }\n  set use_gpu(value) {\n    this._use_gpu = value;\n  }\n  get batch_size() {\n    if (this.use_gpu && this.model_config?.gpu_batch_size)\n      return this.model_config.gpu_batch_size;\n    return this.model.opts.batch_size || this.model_config.batch_size || 1;\n  }\n};\n/**\n * @override in sub-class with adapter-specific default configurations\n * @property {string} id - The adapter identifier\n * @property {string} description - Human-readable description\n * @property {string} type - Adapter type ("API")\n * @property {string} endpoint - API endpoint\n * @property {string} adapter - Adapter identifier\n * @property {string} default_model - Default model to use\n */\n__publicField(SmartEmbedAdapter, "defaults", {});\n\n// adapters/transformers.js\nvar transformers_defaults = {\n  adapter: "transformers",\n  description: "Transformers (Local, built-in)",\n  default_model: "TaylorAI/bge-micro-v2"\n};\nvar SmartEmbedTransformersAdapter = class extends SmartEmbedAdapter {\n  /**\n   * Create transformers adapter instance\n   * @param {SmartEmbedModel} model - Parent model instance\n   */\n  constructor(model2) {\n    super(model2);\n    this.pipeline = null;\n    this.tokenizer = null;\n  }\n  /**\n   * Load model and tokenizer\n   * @returns {Promise<void>}\n   */\n  async load() {\n    await this.load_transformers();\n    this.loaded = true;\n    this.set_state("loaded");\n  }\n  /**\n   * Unload model and free resources\n   * @returns {Promise<void>}\n   */\n  async unload() {\n    if (this.pipeline) {\n      if (this.pipeline.destroy)\n        this.pipeline.destroy();\n      this.pipeline = null;\n    }\n    if (this.tokenizer) {\n      this.tokenizer = null;\n    }\n    this.loaded = false;\n    this.set_state("unloaded");\n  }\n  /**\n   * Initialize transformers pipeline and tokenizer\n   * @private\n   * @returns {Promise<void>}\n   */\n  async load_transformers() {\n    const { pipeline, env, AutoTokenizer } = await import("@huggingface/transformers");\n    env.allowLocalModels = false;\n    const pipeline_opts = {\n      quantized: true\n    };\n    if (this.use_gpu) {\n      console.log("[Transformers] Using GPU");\n      pipeline_opts.device = "webgpu";\n      pipeline_opts.dtype = "fp32";\n    } else {\n      console.log("[Transformers] Using CPU");\n      env.backends.onnx.wasm.numThreads = 8;\n    }\n    this.pipeline = await pipeline("feature-extraction", this.model_key, pipeline_opts);\n    this.tokenizer = await AutoTokenizer.from_pretrained(this.model_key);\n  }\n  /**\n   * Count tokens in input text\n   * @param {string} input - Text to tokenize\n   * @returns {Promise<Object>} Token count result\n   */\n  async count_tokens(input) {\n    if (!this.tokenizer)\n      await this.load();\n    const { input_ids } = await this.tokenizer(input);\n    return { tokens: input_ids.data.length };\n  }\n  /**\n   * Generate embeddings for multiple inputs\n   * @param {Array<Object>} inputs - Array of input objects\n   * @returns {Promise<Array<Object>>} Processed inputs with embeddings\n   */\n  async embed_batch(inputs) {\n    if (!this.pipeline)\n      await this.load();\n    const filtered_inputs = inputs.filter((item) => item.embed_input?.length > 0);\n    if (!filtered_inputs.length)\n      return [];\n    if (filtered_inputs.length > this.batch_size) {\n      console.log(`Processing ${filtered_inputs.length} inputs in batches of ${this.batch_size}`);\n      const results = [];\n      for (let i = 0; i < filtered_inputs.length; i += this.batch_size) {\n        const batch = filtered_inputs.slice(i, i + this.batch_size);\n        const batch_results = await this._process_batch(batch);\n        results.push(...batch_results);\n      }\n      return results;\n    }\n    return await this._process_batch(filtered_inputs);\n  }\n  /**\n   * Process a single batch of inputs\n   * @private\n   * @param {Array<Object>} batch_inputs - Batch of inputs to process\n   * @returns {Promise<Array<Object>>} Processed batch results\n   */\n  async _process_batch(batch_inputs) {\n    const tokens = await Promise.all(batch_inputs.map((item) => this.count_tokens(item.embed_input)));\n    const embed_inputs = await Promise.all(batch_inputs.map(async (item, i) => {\n      if (tokens[i].tokens < this.max_tokens)\n        return item.embed_input;\n      let token_ct = tokens[i].tokens;\n      let truncated_input = item.embed_input;\n      while (token_ct > this.max_tokens) {\n        const pct = this.max_tokens / token_ct;\n        const max_chars = Math.floor(truncated_input.length * pct * 0.9);\n        truncated_input = truncated_input.substring(0, max_chars) + "...";\n        token_ct = (await this.count_tokens(truncated_input)).tokens;\n      }\n      tokens[i].tokens = token_ct;\n      return truncated_input;\n    }));\n    try {\n      const resp = await this.pipeline(embed_inputs, { pooling: "mean", normalize: true });\n      return batch_inputs.map((item, i) => {\n        item.vec = Array.from(resp[i].data).map((val) => Math.round(val * 1e8) / 1e8);\n        item.tokens = tokens[i].tokens;\n        return item;\n      });\n    } catch (err) {\n      console.error("error_processing_batch", err);\n      this.pipeline?.dispose();\n      this.pipeline = null;\n      await this.load();\n      return Promise.all(batch_inputs.map(async (item) => {\n        try {\n          const result = await this.pipeline(item.embed_input, { pooling: "mean", normalize: true });\n          item.vec = Array.from(result[0].data).map((val) => Math.round(val * 1e8) / 1e8);\n          item.tokens = (await this.count_tokens(item.embed_input)).tokens;\n          return item;\n        } catch (single_err) {\n          console.error("error_processing_single_item", single_err);\n          return {\n            ...item,\n            vec: [],\n            tokens: 0,\n            error: single_err.message\n          };\n        }\n      }));\n    }\n  }\n  /** @returns {Object} Settings configuration for transformers adapter */\n  get settings_config() {\n    return transformers_settings_config;\n  }\n  /**\n   * Get available models (hardcoded list)\n   * @returns {Promise<Object>} Map of model objects\n   */\n  get_models() {\n    return Promise.resolve(this.models);\n  }\n  get models() {\n    return transformers_models;\n  }\n};\n__publicField(SmartEmbedTransformersAdapter, "defaults", transformers_defaults);\nvar transformers_models = {\n  "TaylorAI/bge-micro-v2": {\n    "id": "TaylorAI/bge-micro-v2",\n    "batch_size": 1,\n    "dims": 384,\n    "max_tokens": 512,\n    "name": "BGE-micro-v2",\n    "description": "Local, 512 tokens, 384 dim (recommended)",\n    "adapter": "transformers"\n  },\n  "Snowflake/snowflake-arctic-embed-xs": {\n    "id": "Snowflake/snowflake-arctic-embed-xs",\n    "batch_size": 1,\n    "dims": 384,\n    "max_tokens": 512,\n    "name": "Snowflake Arctic Embed XS",\n    "description": "Local, 512 tokens, 384 dim",\n    "adapter": "transformers"\n  },\n  "Snowflake/snowflake-arctic-embed-s": {\n    "id": "Snowflake/snowflake-arctic-embed-s",\n    "batch_size": 1,\n    "dims": 384,\n    "max_tokens": 512,\n    "name": "Snowflake Arctic Embed Small",\n    "description": "Local, 512 tokens, 384 dim",\n    "adapter": "transformers"\n  },\n  "Snowflake/snowflake-arctic-embed-m": {\n    "id": "Snowflake/snowflake-arctic-embed-m",\n    "batch_size": 1,\n    "dims": 768,\n    "max_tokens": 512,\n    "name": "Snowflake Arctic Embed Medium",\n    "description": "Local, 512 tokens, 768 dim",\n    "adapter": "transformers"\n  },\n  "TaylorAI/gte-tiny": {\n    "id": "TaylorAI/gte-tiny",\n    "batch_size": 1,\n    "dims": 384,\n    "max_tokens": 512,\n    "name": "GTE-tiny",\n    "description": "Local, 512 tokens, 384 dim",\n    "adapter": "transformers"\n  },\n  "Mihaiii/Ivysaur": {\n    "id": "Mihaiii/Ivysaur",\n    "batch_size": 1,\n    "dims": 384,\n    "max_tokens": 512,\n    "name": "Ivysaur",\n    "description": "Local, 512 tokens, 384 dim",\n    "adapter": "transformers"\n  },\n  "andersonbcdefg/bge-small-4096": {\n    "id": "andersonbcdefg/bge-small-4096",\n    "batch_size": 1,\n    "dims": 384,\n    "max_tokens": 4096,\n    "name": "BGE-small-4K",\n    "description": "Local, 4,096 tokens, 384 dim",\n    "adapter": "transformers"\n  },\n  // Too slow and persistent crashes\n  // "jinaai/jina-embeddings-v2-base-de": {\n  //   "id": "jinaai/jina-embeddings-v2-base-de",\n  //   "batch_size": 1,\n  //   "dims": 768,\n  //   "max_tokens": 4096,\n  //   "name": "jina-embeddings-v2-base-de",\n  //   "description": "Local, 4,096 tokens, 768 dim, German",\n  //   "adapter": "transformers"\n  // },\n  "Xenova/jina-embeddings-v2-base-zh": {\n    "id": "Xenova/jina-embeddings-v2-base-zh",\n    "batch_size": 1,\n    "dims": 768,\n    "max_tokens": 8192,\n    "name": "Jina-v2-base-zh-8K",\n    "description": "Local, 8,192 tokens, 768 dim, Chinese/English bilingual",\n    "adapter": "transformers"\n  },\n  "Xenova/jina-embeddings-v2-small-en": {\n    "id": "Xenova/jina-embeddings-v2-small-en",\n    "batch_size": 1,\n    "dims": 512,\n    "max_tokens": 8192,\n    "name": "Jina-v2-small-en",\n    "description": "Local, 8,192 tokens, 512 dim",\n    "adapter": "transformers"\n  },\n  "nomic-ai/nomic-embed-text-v1.5": {\n    "id": "nomic-ai/nomic-embed-text-v1.5",\n    "batch_size": 1,\n    "dims": 768,\n    "max_tokens": 2048,\n    "name": "Nomic-embed-text-v1.5",\n    "description": "Local, 8,192 tokens, 768 dim",\n    "adapter": "transformers"\n  },\n  "Xenova/bge-small-en-v1.5": {\n    "id": "Xenova/bge-small-en-v1.5",\n    "batch_size": 1,\n    "dims": 384,\n    "max_tokens": 512,\n    "name": "BGE-small",\n    "description": "Local, 512 tokens, 384 dim",\n    "adapter": "transformers"\n  },\n  "nomic-ai/nomic-embed-text-v1": {\n    "id": "nomic-ai/nomic-embed-text-v1",\n    "batch_size": 1,\n    "dims": 768,\n    "max_tokens": 2048,\n    "name": "Nomic-embed-text",\n    "description": "Local, 2,048 tokens, 768 dim",\n    "adapter": "transformers"\n  }\n};\nvar transformers_settings_config = {\n  "[ADAPTER].gpu_batch_size": {\n    name: "GPU batch size",\n    type: "number",\n    description: "Number of embeddings to process per batch on GPU. Use 0 to disable GPU.",\n    placeholder: "Enter number ex. 10"\n  },\n  "[ADAPTER].legacy_transformers": {\n    name: "Legacy transformers (no GPU)",\n    type: "toggle",\n    description: "Use legacy transformers (v2) instead of v3. This may resolve issues if the local embedding isn\'t working.",\n    callback: "embed_model_changed",\n    default: true\n  }\n};\n\n// build/transformers_iframe_script.js\nvar model = null;\nasync function process_message(data) {\n  const { method, params, id, iframe_id } = data;\n  try {\n    let result;\n    switch (method) {\n      case "init":\n        console.log("init");\n        break;\n      case "load":\n        console.log("load", params);\n        model = new SmartEmbedModel({\n          ...params,\n          adapters: { transformers: SmartEmbedTransformersAdapter },\n          adapter: "transformers",\n          settings: {}\n        });\n        await model.load();\n        result = { model_loaded: true };\n        break;\n      case "embed_batch":\n        if (!model)\n          throw new Error("Model not loaded");\n        result = await model.embed_batch(params.inputs);\n        break;\n      case "count_tokens":\n        if (!model)\n          throw new Error("Model not loaded");\n        result = await model.count_tokens(params);\n        break;\n      default:\n        throw new Error(`Unknown method: ${method}`);\n    }\n    return { id, result, iframe_id };\n  } catch (error) {\n    console.error("Error processing message:", error);\n    return { id, error: error.message, iframe_id };\n  }\n}\nprocess_message({ method: "init" });\n';
 
 // node_modules/obsidian-smart-env/node_modules/smart-embed-model/adapters/transformers.js
 var transformers_defaults = {
@@ -9390,6 +9425,33 @@ var transformers_models = {
     "max_tokens": 512,
     "name": "BGE-micro-v2",
     "description": "Local, 512 tokens, 384 dim (recommended)",
+    "adapter": "transformers"
+  },
+  "Snowflake/snowflake-arctic-embed-xs": {
+    "id": "Snowflake/snowflake-arctic-embed-xs",
+    "batch_size": 1,
+    "dims": 384,
+    "max_tokens": 512,
+    "name": "Snowflake Arctic Embed XS",
+    "description": "Local, 512 tokens, 384 dim",
+    "adapter": "transformers"
+  },
+  "Snowflake/snowflake-arctic-embed-s": {
+    "id": "Snowflake/snowflake-arctic-embed-s",
+    "batch_size": 1,
+    "dims": 384,
+    "max_tokens": 512,
+    "name": "Snowflake Arctic Embed Small",
+    "description": "Local, 512 tokens, 384 dim",
+    "adapter": "transformers"
+  },
+  "Snowflake/snowflake-arctic-embed-m": {
+    "id": "Snowflake/snowflake-arctic-embed-m",
+    "batch_size": 1,
+    "dims": 768,
+    "max_tokens": 512,
+    "name": "Snowflake Arctic Embed Medium",
+    "description": "Local, 512 tokens, 768 dim",
     "adapter": "transformers"
   },
   "TaylorAI/gte-tiny": {
@@ -9776,6 +9838,4134 @@ var filter_embedding_models = (models) => {
     throw new TypeError("models must be an array");
   }
   return models.filter(is_embedding_model);
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-chat-model/smart_chat_model.js
+var SmartChatModel = class extends SmartModel {
+  scope_name = "smart_chat_model";
+  static defaults = {
+    adapter: "openai"
+  };
+  /**
+   * Create a SmartChatModel instance.
+   * @param {Object} opts - Configuration options
+   * @param {string} opts.adapter - Adapter to use
+   * @param {Object} opts.adapters - Map of adapter names to adapter classes
+   * @param {Object} opts.settings - Model settings configuration
+   */
+  constructor(opts = {}) {
+    super(opts);
+  }
+  /**
+   * Get available models.
+   * @returns {Object} Map of model objects
+   */
+  get models() {
+    return this.adapter.models;
+  }
+  get can_stream() {
+    return this.adapter.constructor.defaults.streaming;
+  }
+  get can_use_tools() {
+    return this.adapter.constructor.defaults.can_use_tools;
+  }
+  /**
+   * Complete a chat request.
+   * @param {Object} req - Request parameters
+   * @returns {Promise<Object>} Completion result
+   */
+  async complete(req) {
+    return await this.invoke_adapter_method("complete", req);
+  }
+  /**
+   * Stream chat responses.
+   * @param {Object} req - Request parameters
+   * @param {Object} handlers - Event handlers for streaming
+   * @param {Function} handlers.chunk - Handler for chunks: receives response object
+   * @param {Function} handlers.error - Handler for errors: receives error object
+   * @param {Function} handlers.done - Handler for completion: receives final response object
+   * @returns {Promise<string>} Complete response text
+   */
+  async stream(req, handlers = {}) {
+    return await this.invoke_adapter_method("stream", req, handlers);
+  }
+  /**
+   * Stop active stream.
+   */
+  stop_stream() {
+    this.invoke_adapter_method("stop_stream");
+  }
+  /**
+   * Count tokens in input text.
+   * @param {string|Object} input - Text to count tokens for
+   * @returns {Promise<number>} Token count
+   */
+  async count_tokens(input) {
+    return await this.invoke_adapter_method("count_tokens", input);
+  }
+  /**
+   * Test if API key is valid.
+   * @returns {Promise<boolean>} True if API key is valid
+   */
+  async test_api_key() {
+    await this.invoke_adapter_method("test_api_key");
+    this.re_render_settings();
+  }
+  /**
+   * Get default model key.
+   * @returns {string} Default model key
+   */
+  get default_model_key() {
+    return this.adapter.constructor.defaults.default_model;
+  }
+  /**
+   * Get current settings.
+   * @returns {Object} Settings object
+   */
+  get settings() {
+    return this.opts.settings;
+  }
+  /**
+   * Get settings configuration.
+   * @returns {Object} Settings configuration object
+   */
+  get settings_config() {
+    const _settings_config = {
+      adapter: {
+        name: "Chat Model Platform",
+        type: "dropdown",
+        description: "Select a platform/provider for chat models.",
+        options_callback: "get_platforms_as_options",
+        is_scope: true,
+        // trigger re-render of settings when changed
+        callback: "adapter_changed"
+      },
+      // Merge adapter-specific settings
+      ...this.adapter.settings_config || {}
+    };
+    return this.process_settings_config(_settings_config);
+  }
+  /**
+   * Process setting key.
+   * @param {string} key - Setting key
+   * @returns {string} Processed key
+   */
+  process_setting_key(key) {
+    return key.replace(/\[CHAT_ADAPTER\]/g, this.adapter_name);
+  }
+  /**
+   * Validate the adapter configuration.
+   * @returns {Object} Validation result with 'valid' and 'message'.
+   */
+  validate_config() {
+    return this.adapter.validate_config();
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-chat-model/streamer.js
+var SmartStreamer = class {
+  constructor(url, options = {}) {
+    const {
+      method = "GET",
+      headers = {},
+      body = null,
+      withCredentials = false
+    } = options;
+    this.url = url;
+    this.method = method;
+    this.headers = headers;
+    this.body = body;
+    this.withCredentials = withCredentials;
+    this.listeners = {};
+    this.readyState = this.CONNECTING;
+    this.progress = 0;
+    this.chunk = "";
+    this.last_event_id = "";
+    this.xhr = null;
+    this.FIELD_SEPARATOR = ":";
+    this.INITIALIZING = -1;
+    this.CONNECTING = 0;
+    this.OPEN = 1;
+    this.CLOSED = 2;
+    this.chunk_accumulator = "";
+    this.chunk_splitting_regex = options.chunk_splitting_regex || /(\r\n|\n|\r)/g;
+  }
+  /**
+   * Adds an event listener for the specified event type.
+   *
+   * @param {string} type - The type of the event.
+   * @param {Function} listener - The listener function to be called when the event is triggered.
+   */
+  addEventListener(type, listener) {
+    if (!this.listeners[type]) this.listeners[type] = [];
+    if (!this.listeners[type].includes(listener)) this.listeners[type].push(listener);
+  }
+  /**
+   * Removes an event listener from the SmartStreamer instance.
+   *
+   * @param {string} type - The type of event to remove the listener from.
+   * @param {Function} listener - The listener function to remove.
+   */
+  removeEventListener(type, listener) {
+    if (!this.listeners[type]) return;
+    this.listeners[type] = this.listeners[type].filter((callback) => callback !== listener);
+    if (this.listeners[type].length === 0) delete this.listeners[type];
+  }
+  /**
+   * Dispatches an event to the appropriate event handlers.
+   *
+   * @param {Event} event - The event to be dispatched.
+   * @returns {boolean} - Returns true if the event was successfully dispatched, false otherwise.
+   */
+  dispatchEvent(event) {
+    if (!event) return true;
+    event.source = this;
+    const onHandler = "on" + event.type;
+    if (Object.prototype.hasOwnProperty.call(this, onHandler)) {
+      this[onHandler].call(this, event);
+      if (event.defaultPrevented) return false;
+    }
+    if (this.listeners[event.type]) {
+      this.listeners[event.type].forEach((callback) => {
+        callback(event);
+        return !event.defaultPrevented;
+      });
+    }
+    return true;
+  }
+  /**
+   * Initiates the streaming process.
+   */
+  stream() {
+    this.#setReadyState(this.CONNECTING);
+    this.xhr = new XMLHttpRequest();
+    this.xhr.addEventListener("progress", this.#onStreamProgress.bind(this));
+    this.xhr.addEventListener("load", this.#onStreamLoaded.bind(this));
+    this.xhr.addEventListener("readystatechange", this.#checkStreamClosed.bind(this));
+    this.xhr.addEventListener("error", this.#onStreamFailure.bind(this));
+    this.xhr.addEventListener("abort", this.#onStreamAbort.bind(this));
+    this.xhr.open(this.method, this.url);
+    for (const header in this.headers) {
+      this.xhr.setRequestHeader(header, this.headers[header]);
+    }
+    if (this.last_event_id) this.xhr.setRequestHeader("Last-Event-ID", this.last_event_id);
+    this.xhr.withCredentials = this.withCredentials;
+    this.xhr.send(this.body);
+  }
+  /**
+   * Ends the streamer connection.
+   * Aborts the current XHR request and sets the ready state to CLOSED.
+   */
+  end() {
+    if (this.readyState === this.CLOSED) return;
+    this.xhr.abort();
+    this.xhr = null;
+    this.#setReadyState(this.CLOSED);
+  }
+  // private methods
+  #setReadyState(state) {
+    const event = new CustomEvent("readyStateChange");
+    event.readyState = state;
+    this.readyState = state;
+    this.dispatchEvent(event);
+  }
+  #onStreamFailure(e) {
+    const event = new CustomEvent("error");
+    event.data = e.currentTarget.response;
+    this.dispatchEvent(event);
+    this.end();
+  }
+  #onStreamAbort(e) {
+    const event = new CustomEvent("abort");
+    this.end();
+  }
+  #onStreamProgress(e) {
+    if (!this.xhr) return;
+    if (this.xhr.status !== 200) {
+      this.#onStreamFailure(e);
+      return;
+    }
+    if (this.readyState === this.CONNECTING) {
+      this.dispatchEvent(new CustomEvent("open"));
+      this.#setReadyState(this.OPEN);
+    }
+    const data = this.xhr.responseText.substring(this.progress);
+    this.progress += data.length;
+    const parts = data.split(this.chunk_splitting_regex);
+    parts.forEach((part, index) => {
+      if (part.trim().length === 0) {
+        if (this.chunk) {
+          this.dispatchEvent(this.#parseEventChunk(this.chunk.trim()));
+          this.chunk = "";
+        }
+      } else {
+        this.chunk += part;
+        if (index === parts.length - 1 && this.xhr.readyState === XMLHttpRequest.DONE) {
+          this.dispatchEvent(this.#parseEventChunk(this.chunk.trim()));
+          this.chunk = "";
+        }
+      }
+    });
+  }
+  #onStreamLoaded(e) {
+    this.#onStreamProgress(e);
+    this.dispatchEvent(this.#parseEventChunk(this.chunk));
+    this.chunk = "";
+  }
+  #parseEventChunk(chunk) {
+    if (!chunk) return console.log("no chunk");
+    const event = new CustomEvent("message");
+    event.data = chunk;
+    event.last_event_id = this.last_event_id;
+    return event;
+  }
+  #checkStreamClosed() {
+    if (!this.xhr) return;
+    if (this.xhr.readyState === XMLHttpRequest.DONE) this.#setReadyState(this.CLOSED);
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-chat-model/adapters/_adapter.js
+var SmartChatModelAdapter = class extends SmartModelAdapter {
+  /**
+   * @override in sub-class with adapter-specific default configurations
+   * @property {string} id - The adapter identifier
+   * @property {string} description - Human-readable description
+   * @property {string} type - Adapter type ("API")
+   * @property {string} endpoint - API endpoint
+   * @property {boolean} streaming - Whether streaming is supported
+   * @property {string} adapter - Adapter identifier
+   * @property {string} models_endpoint - Endpoint for retrieving models
+   * @property {string} default_model - Default model to use
+   * @property {string} signup_url - URL for API key signup
+   */
+  static defaults = {};
+  /**
+   * Create a SmartChatModelAdapter instance.
+   * @param {SmartChatModel} model - The parent SmartChatModel instance
+   */
+  constructor(model) {
+    super(model);
+    this.smart_chat = model;
+    this.main = model;
+  }
+  /**
+   * Complete a chat request.
+   * @abstract
+   * @param {Object} req - Request parameters
+   * @returns {Promise<Object>} Completion result
+   */
+  async complete(req) {
+    throw new Error("complete not implemented");
+  }
+  /**
+   * Count tokens in input text.
+   * @abstract
+   * @param {string|Object} input - Text to count tokens for
+   * @returns {Promise<number>} Token count
+   */
+  async count_tokens(input) {
+    throw new Error("count_tokens not implemented");
+  }
+  /**
+   * Stream chat responses.
+   * @abstract
+   * @param {Object} req - Request parameters
+   * @param {Object} handlers - Event handlers for streaming
+   * @returns {Promise<string>} Complete response text
+   */
+  async stream(req, handlers = {}) {
+    throw new Error("stream not implemented");
+  }
+  /**
+   * Test if API key is valid.
+   * @abstract
+   * @returns {Promise<boolean>} True if API key is valid
+   */
+  async test_api_key() {
+    throw new Error("test_api_key not implemented");
+  }
+  /**
+   * Refresh available models.
+   */
+  refresh_models() {
+    console.log("refresh_models");
+    this.get_models(true);
+  }
+  /**
+   * Get settings configuration.
+   * @returns {Object} Settings configuration object
+   */
+  get settings_config() {
+    return {
+      "[CHAT_ADAPTER].model_key": {
+        name: "Chat Model",
+        type: "dropdown",
+        description: "Select a chat model.",
+        options_callback: "adapter.get_models_as_options",
+        callback: "reload_model",
+        default: this.constructor.defaults.default_model
+      },
+      "[CHAT_ADAPTER].refresh_models": {
+        name: "Refresh Models",
+        type: "button",
+        description: "Refresh the list of available models.",
+        callback: "adapter.refresh_models"
+      }
+    };
+  }
+  /**
+   * Validate the adapter configuration.
+   * @abstract
+   * @returns {Object} { valid: boolean, message: string }
+   */
+  validate_config() {
+    throw new Error("validate_config not implemented");
+  }
+  get can_use_tools() {
+    return this.model_config?.can_use_tools || false;
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-chat-model/adapters/_api.js
+var SmartChatModelApiAdapter = class extends SmartChatModelAdapter {
+  /**
+   * Get the request adapter class.
+   * @returns {SmartChatModelRequestAdapter} The request adapter class
+   */
+  get req_adapter() {
+    return SmartChatModelRequestAdapter;
+  }
+  /**
+   * Get the response adapter class.
+   * @returns {SmartChatModelResponseAdapter} The response adapter class
+   */
+  get res_adapter() {
+    return SmartChatModelResponseAdapter;
+  }
+  /**
+   * Get or initialize the HTTP adapter.
+   * @returns {SmartHttpRequest} The HTTP adapter instance
+   */
+  get http_adapter() {
+    if (!this._http_adapter) {
+      if (this.model.opts.http_adapter) this._http_adapter = this.model.opts.http_adapter;
+      else this._http_adapter = new SmartHttpRequest({ adapter: SmartHttpRequestFetchAdapter });
+    }
+    return this._http_adapter;
+  }
+  /**
+   * Get the settings configuration for the API adapter.
+   * @returns {Object} Settings configuration object with API key and other settings
+   */
+  get settings_config() {
+    return {
+      ...super.settings_config,
+      "[CHAT_ADAPTER].api_key": {
+        name: "API Key",
+        type: "password",
+        description: "Enter your API key for the chat model platform.",
+        callback: "test_api_key",
+        is_scope: true
+        // trigger re-render of settings when changed (reload models dropdown)
+      }
+    };
+  }
+  /**
+   * Count tokens in the input text.
+   * @abstract
+   * @param {string|Object} input - Text or message object to count tokens for
+   * @returns {Promise<number>} Number of tokens in the input
+   */
+  async count_tokens(input) {
+    throw new Error("count_tokens not implemented");
+  }
+  /**
+   * Get the parameters for requesting available models.
+   * @returns {Object} Request parameters for models endpoint
+   */
+  get models_request_params() {
+    return {
+      url: this.models_endpoint,
+      method: this.models_endpoint_method,
+      headers: {
+        "Authorization": `Bearer ${this.api_key}`
+      }
+    };
+  }
+  /**
+   * Validate parameters required for getting models.
+   * @returns {true|Array<Object>} True if valid, array of error objects if invalid
+   */
+  validate_get_models_params() {
+    if (!this.adapter_config.models_endpoint) {
+      const err_msg = `${this.model.adapter_name} models endpoint required to retrieve models`;
+      console.warn(err_msg);
+      return [{ value: "", name: err_msg }];
+    }
+    if (!this.api_key) {
+      const err_msg = `${this.model.adapter_name} API key required to retrieve models`;
+      console.warn(err_msg);
+      return [{ value: "", name: err_msg }];
+    }
+    return true;
+  }
+  /**
+   * Get available models from the API.
+   * @param {boolean} [refresh=false] - Whether to refresh cached models
+   * @returns {Promise<Object>} Map of model objects
+   */
+  async get_models(refresh = false) {
+    if (!refresh && this.adapter_config?.models && typeof this.adapter_config.models === "object" && Object.keys(this.adapter_config.models).length > 0) return this.adapter_config.models;
+    try {
+      const response = await this.http_adapter.request(this.models_request_params);
+      const model_data = this.parse_model_data(await response.json());
+      this.adapter_settings.models = model_data;
+      this.model.re_render_settings();
+      return model_data;
+    } catch (error) {
+      console.error("Failed to fetch model data:", error);
+      return { "_": { id: `Failed to fetch models from ${this.model.adapter_name}` } };
+    }
+  }
+  /**
+   * Parses the raw model data from OpenAI API and transforms it into a more usable format.
+   * @param {Object} model_data - The raw model data received from OpenAI API.
+   * @returns {Array<Object>} An array of parsed model objects with the following properties:
+   *   @property {string} model_name - The name/ID of the model as returned by the API.
+   *   @property {string} id - The id used to identify the model (usually same as model_name).
+   *   @property {boolean} multimodal - Indicates if the model supports multimodal inputs.
+   *   @property {number} [max_input_tokens] - The maximum number of input tokens the model can process.
+   *   @property {string} [description] - A description of the model's context and output capabilities.
+   */
+  parse_model_data(model_data) {
+    throw new Error("parse_model_data not implemented");
+  }
+  /**
+   * Complete a chat request.
+   * @param {Object} req - Request parameters
+   * @returns {Promise<Object>} Completion response in OpenAI format
+   */
+  async complete(req) {
+    const _req = new this.req_adapter(this, {
+      ...req,
+      stream: false
+    });
+    const request_params = _req.to_platform();
+    const http_resp = await this.http_adapter.request(request_params);
+    if (!http_resp) return null;
+    const _res = new this.res_adapter(this, await http_resp.json());
+    try {
+      return _res.to_openai();
+    } catch (error) {
+      console.error("Error in SmartChatModelApiAdapter.complete():", error);
+      console.error(http_resp);
+      return null;
+    }
+  }
+  // STREAMING
+  /**
+  * Stream chat responses.
+  * @param {Object} req - Request parameters
+  * @param {Object} handlers - Event handlers for streaming
+  * @param {Function} handlers.chunk - Handler for response objects
+  * @param {Function} handlers.error - Handler for errors
+  * @param {Function} handlers.done - Handler for completion
+  * @returns {Promise<Object>} Complete response object
+  */
+  async stream(req, handlers = {}) {
+    const _req = new this.req_adapter(this, req);
+    const request_params = _req.to_platform(true);
+    if (this.streaming_chunk_splitting_regex) request_params.chunk_splitting_regex = this.streaming_chunk_splitting_regex;
+    return await new Promise((resolve, reject) => {
+      try {
+        this.active_stream = new SmartStreamer(this.endpoint_streaming, request_params);
+        const resp_adapter = new this.res_adapter(this);
+        this.active_stream.addEventListener("message", async (e) => {
+          if (this.is_end_of_stream(e)) {
+            await resp_adapter.handle_chunk(e.data);
+            this.stop_stream();
+            const final_resp = resp_adapter.to_openai();
+            handlers.done && await handlers.done(final_resp);
+            resolve(final_resp);
+            return;
+          }
+          try {
+            resp_adapter.handle_chunk(e.data);
+            handlers.chunk && await handlers.chunk(resp_adapter.to_openai());
+          } catch (error) {
+            console.error("Error processing stream chunk:", error);
+            handlers.error && handlers.error(e.data);
+            this.stop_stream();
+            reject(error);
+          }
+        });
+        this.active_stream.addEventListener("error", (e) => {
+          console.error("Stream error:", e);
+          handlers.error && handlers.error("*API Error. See console logs for details.*");
+          this.stop_stream();
+          reject(e);
+        });
+        this.active_stream.stream();
+      } catch (err) {
+        console.error("Failed to start stream:", err);
+        handlers.error && handlers.error("*API Error. See console logs for details.*");
+        this.stop_stream();
+        reject(err);
+      }
+    });
+  }
+  /**
+   * Check if a stream event indicates end of stream.
+   * @param {Event} event - Stream event
+   * @returns {boolean} True if end of stream
+   */
+  is_end_of_stream(event) {
+    return event.data === "data: [DONE]";
+  }
+  /**
+   * Stop active stream.
+   */
+  stop_stream() {
+    if (this.active_stream) {
+      this.active_stream.end();
+      this.active_stream = null;
+    }
+  }
+  /**
+   * Validate Anthropic adapter configuration.
+   * @returns {Object} { valid: boolean, message: string }
+   */
+  validate_config() {
+    if (!this.adapter_config.model_key || this.adapter_config.model_key === "undefined") return { valid: false, message: "No model selected." };
+    if (!this.api_key) {
+      return { valid: false, message: "API key is missing." };
+    }
+    if (!this.can_use_tools) {
+      return { valid: false, message: "Selected model does not support tools." };
+    }
+    return { valid: true, message: "Configuration is valid." };
+  }
+  /**
+   * Get the API key.
+   * @returns {string} The API key.
+   */
+  get api_key() {
+    return this.main.opts.api_key || this.adapter_config?.api_key;
+  }
+  /**
+  
+     * Get the number of choices.
+     * @returns {number} The number of choices.
+     */
+  get choices() {
+    return this.adapter_config.choices;
+  }
+  get models_endpoint() {
+    return this.adapter_config.models_endpoint;
+  }
+  get models_endpoint_method() {
+    return "POST";
+  }
+  /**
+   * Get the endpoint URL.
+   * @returns {string} The endpoint URL.
+   */
+  get endpoint() {
+    return this.adapter_config.endpoint;
+  }
+  /**
+   * Get the streaming endpoint URL.
+   * @returns {string} The streaming endpoint URL.
+   */
+  get endpoint_streaming() {
+    return this.adapter_config.endpoint_streaming || this.endpoint;
+  }
+  /**
+   * Get the maximum output tokens.
+   * @returns {number} The maximum output tokens.
+   */
+  get max_output_tokens() {
+    return this.adapter_config.max_output_tokens || 3e3;
+  }
+  /**
+   * Get the temperature.
+   * @returns {number} The temperature.
+   */
+  get temperature() {
+    return this.adapter_config.temperature;
+  }
+};
+var SmartChatModelRequestAdapter = class {
+  /**
+   * @constructor
+   * @param {SmartChatModelAdapter} adapter - The SmartChatModelAdapter instance
+   * @param {Object} req - The incoming request object
+   */
+  constructor(adapter, req = {}) {
+    this.adapter = adapter;
+    this._req = req;
+  }
+  /**
+   * Get the messages array from the request
+   * @returns {Array<Object>} Array of message objects
+   */
+  get messages() {
+    return this._req.messages || [];
+  }
+  /**
+   * Get the model identifier
+   * @returns {string} Model ID
+   */
+  get model() {
+    return this._req.model || this.adapter.model_config.id;
+  }
+  /**
+   * Get the temperature setting
+   * @returns {number} Temperature value
+   */
+  get temperature() {
+    return this._req.temperature;
+  }
+  /**
+   * Get the maximum tokens setting
+   * @returns {number} Max tokens value
+   */
+  get max_tokens() {
+    return this._req.max_tokens || this.adapter.model_config.max_output_tokens;
+  }
+  /**
+   * Get the streaming flag
+   * @returns {boolean} Whether to stream responses
+   */
+  get stream() {
+    return this._req.stream;
+  }
+  /**
+   * Get the tools array
+   * @returns {Array<Object>|null} Array of tool objects or null
+   */
+  get tools() {
+    return this._req.tools || null;
+  }
+  /**
+   * Get the tool choice setting
+   * @returns {string|Object|null} Tool choice configuration
+   */
+  get tool_choice() {
+    return this._req.tool_choice || null;
+  }
+  get frequency_penalty() {
+    return this._req.frequency_penalty;
+  }
+  get presence_penalty() {
+    return this._req.presence_penalty;
+  }
+  get top_p() {
+    return this._req.top_p;
+  }
+  /**
+   * Get request headers
+   * @returns {Object} Headers object
+   */
+  get_headers() {
+    const headers = {
+      "Content-Type": "application/json",
+      ...this.adapter.adapter_config.headers || {}
+    };
+    if (this.adapter.adapter_config.api_key_header !== "none") {
+      if (this.adapter.adapter_config.api_key_header) {
+        headers[this.adapter.adapter_config.api_key_header] = this.adapter.api_key;
+      } else if (this.adapter.api_key) {
+        headers["Authorization"] = `Bearer ${this.adapter.api_key}`;
+      }
+    }
+    return headers;
+  }
+  /**
+   * Convert request to platform-specific format
+   * @returns {Object} Platform-specific request parameters
+   */
+  to_platform(streaming = false) {
+    return this.to_openai(streaming);
+  }
+  /**
+   * Convert request to OpenAI format
+   * @returns {Object} Request parameters in OpenAI format
+   */
+  to_openai(streaming = false) {
+    const body = {
+      messages: this._transform_messages_to_openai(),
+      model: this.model,
+      max_tokens: this.max_tokens,
+      temperature: this.temperature,
+      stream: streaming,
+      ...this.tools && { tools: this._transform_tools_to_openai() }
+    };
+    if (body.tools?.length > 0 && this.tool_choice && this.tool_choice !== "none") {
+      body.tool_choice = this.tool_choice;
+    }
+    if (this.model?.startsWith("o1-")) {
+      body.messages = body.messages.filter((m) => m.role !== "system");
+      delete body.temperature;
+    }
+    if (typeof this._req.top_p === "number") body.top_p = this._req.top_p;
+    if (typeof this._req.presence_penalty === "number") body.presence_penalty = this._req.presence_penalty;
+    if (typeof this._req.frequency_penalty === "number") body.frequency_penalty = this._req.frequency_penalty;
+    return {
+      url: this.adapter.endpoint,
+      method: "POST",
+      headers: this.get_headers(),
+      body: JSON.stringify(body)
+    };
+  }
+  /**
+   * Transform messages to OpenAI format
+   * @returns {Array<Object>} Transformed messages array
+   * @private
+   */
+  _transform_messages_to_openai() {
+    return this.messages.map((message) => this._transform_single_message_to_openai(message));
+  }
+  /**
+   * Transform a single message to OpenAI format
+   * @param {Object} message - Message object to transform
+   * @returns {Object} Transformed message object
+   * @private
+   */
+  _transform_single_message_to_openai(message) {
+    const transformed = {
+      role: this._get_openai_role(message.role),
+      content: this._get_openai_content(message)
+    };
+    if (message.name) transformed.name = message.name;
+    if (message.tool_calls) transformed.tool_calls = this._transform_tool_calls_to_openai(message.tool_calls);
+    if (message.image_url) transformed.image_url = message.image_url;
+    if (message.tool_call_id) transformed.tool_call_id = message.tool_call_id;
+    return transformed;
+  }
+  /**
+   * Get the OpenAI role for a given role.
+   * @param {string} role - The role to transform.
+   * @returns {string} The transformed role.
+   * @private
+   */
+  _get_openai_role(role) {
+    return role;
+  }
+  /**
+   * Get the OpenAI content for a given content.
+   * @param {string} content - The content to transform.
+   * @returns {string} The transformed content.
+   * @private
+   */
+  _get_openai_content(message) {
+    return message.content;
+  }
+  /**
+   * Transform tool calls to OpenAI format.
+   * @param {Array} tool_calls - Array of tool call objects.
+   * @returns {Array} Transformed tool calls array.
+   * @private
+   */
+  _transform_tool_calls_to_openai(tool_calls) {
+    return tool_calls.map((tool_call) => ({
+      id: tool_call.id,
+      type: tool_call.type,
+      function: {
+        name: tool_call.function.name,
+        arguments: tool_call.function.arguments
+      }
+    }));
+  }
+  /**
+   * Transform tools to OpenAI format.
+   * @returns {Array} Transformed tools array.
+   * @private
+   */
+  _transform_tools_to_openai() {
+    return this.tools.map((tool2) => ({
+      type: tool2.type,
+      function: {
+        name: tool2.function.name,
+        description: tool2.function.description,
+        parameters: tool2.function.parameters
+      }
+    }));
+  }
+};
+var SmartChatModelResponseAdapter = class {
+  // must be getter to prevent erroneous assignment
+  static get platform_res() {
+    return {
+      id: "",
+      object: "chat.completion",
+      created: 0,
+      model: "",
+      choices: [],
+      usage: {}
+    };
+  }
+  /**
+   * @constructor
+   * @param {SmartChatModelAdapter} adapter - The SmartChatModelAdapter instance
+   * @param {Object} res - The response object
+   */
+  constructor(adapter, res) {
+    this.adapter = adapter;
+    this._res = res || this.constructor.platform_res;
+  }
+  /**
+   * Get response ID
+   * @returns {string|null} Response ID
+   */
+  get id() {
+    return this._res.id || null;
+  }
+  /**
+   * Get response object type
+   * @returns {string|null} Object type
+   */
+  get object() {
+    return this._res.object || null;
+  }
+  /**
+   * Get creation timestamp
+   * @returns {number|null} Creation timestamp
+   */
+  get created() {
+    return this._res.created || null;
+  }
+  /**
+   * Get response choices
+   * @returns {Array<Object>} Array of choice objects
+   */
+  get choices() {
+    return this._res.choices || [];
+  }
+  /**
+   * Get first tool call if present
+   * @returns {Object|null} Tool call object
+   */
+  get tool_call() {
+    return this.message.tool_calls?.[0] || null;
+  }
+  /**
+   * Get tool name from first tool call
+   * @returns {string|null} Tool name
+   */
+  get tool_name() {
+    return this.tool_call?.tool_name || null;
+  }
+  /**
+   * Get tool call parameters
+   * @returns {Object|null} Tool parameters
+   */
+  get tool_call_content() {
+    return this.tool_call?.parameters || null;
+  }
+  /**
+   * Get token usage statistics
+   * @returns {Object|null} Usage statistics
+   */
+  get usage() {
+    return this._res.usage || null;
+  }
+  get error() {
+    return this._res.error || null;
+  }
+  /**
+   * Convert response to OpenAI format
+   * @returns {Object} Response in OpenAI format
+   */
+  to_openai() {
+    const res = {
+      id: this.id,
+      object: this.object,
+      created: this.created,
+      choices: this._transform_choices_to_openai(),
+      usage: this._transform_usage_to_openai(),
+      raw: this._res
+    };
+    if (this.error) res.error = this.error;
+    return res;
+  }
+  /**
+   * Parse chunk adds delta to content as expected output format
+   */
+  handle_chunk(chunk) {
+    if (chunk === "data: [DONE]") return;
+    chunk = JSON.parse(chunk.split("data: ")[1] || "{}");
+    if (Object.keys(chunk).length === 0) return;
+    if (!this._res.choices[0]) {
+      this._res.choices.push({
+        message: {
+          index: 0,
+          role: "assistant",
+          content: ""
+        }
+      });
+    }
+    if (!this._res.id) {
+      this._res.id = chunk.id;
+    }
+    if (chunk.choices?.[0]?.delta?.content) {
+      this._res.choices[0].message.content += chunk.choices[0].delta.content;
+    }
+    if (chunk.choices?.[0]?.delta?.tool_calls) {
+      if (!this._res.choices[0].message.tool_calls) {
+        this._res.choices[0].message.tool_calls = [{
+          id: "",
+          type: "function",
+          function: {
+            name: "",
+            arguments: ""
+          }
+        }];
+      }
+      if (chunk.choices[0].delta.tool_calls[0].id) {
+        this._res.choices[0].message.tool_calls[0].id += chunk.choices[0].delta.tool_calls[0].id;
+      }
+      if (chunk.choices[0].delta.tool_calls[0].function.name) {
+        this._res.choices[0].message.tool_calls[0].function.name += chunk.choices[0].delta.tool_calls[0].function.name;
+      }
+      if (chunk.choices[0].delta.tool_calls[0].function.arguments) {
+        this._res.choices[0].message.tool_calls[0].function.arguments += chunk.choices[0].delta.tool_calls[0].function.arguments;
+      }
+    }
+  }
+  /**
+   * Transform choices to OpenAI format.
+   * @returns {Array} Transformed choices array.
+   * @private
+   */
+  _transform_choices_to_openai() {
+    return this.choices.map((choice) => ({
+      index: choice.index,
+      message: this._transform_message_to_openai(choice.message),
+      finish_reason: this._get_openai_finish_reason(choice.finish_reason)
+    }));
+  }
+  /**
+   * Transform a single message to OpenAI format.
+   * @param {Object} message - The message object to transform.
+   * @returns {Object} Transformed message object.
+   * @private
+   */
+  _transform_message_to_openai(message = {}) {
+    const transformed = {
+      role: this._get_openai_role(message.role),
+      content: this._get_openai_content(message)
+    };
+    if (message.name) transformed.name = message.name;
+    if (message.tool_calls) transformed.tool_calls = this._transform_tool_calls_to_openai(message.tool_calls);
+    if (message.image_url) transformed.image_url = message.image_url;
+    return transformed;
+  }
+  /**
+   * Get the OpenAI role for a given role.
+   * @param {string} role - The role to transform.
+   * @returns {string} The transformed role.
+   * @private
+   */
+  _get_openai_role(role) {
+    return role;
+  }
+  /**
+   * Get the OpenAI content for a given content.
+   * @param {string} content - The content to transform.
+   * @returns {string} The transformed content.
+   * @private
+   */
+  _get_openai_content(message) {
+    return message.content;
+  }
+  /**
+   * Get the OpenAI finish reason for a given finish reason.
+   * @param {string} finish_reason - The finish reason to transform.
+   * @returns {string} The transformed finish reason.
+   * @private
+   */
+  _get_openai_finish_reason(finish_reason) {
+    return finish_reason;
+  }
+  /**
+   * Transform usage to OpenAI format.
+   * @returns {Object} Transformed usage object.
+   * @private
+   */
+  _transform_usage_to_openai() {
+    return this.usage;
+  }
+  /**
+   * Transform tool calls to OpenAI format.
+   * @param {Array} tool_calls - Array of tool call objects.
+   * @returns {Array} Transformed tool calls array.
+   * @private
+   */
+  _transform_tool_calls_to_openai(tool_calls) {
+    return tool_calls.map((tool_call) => ({
+      id: tool_call.id,
+      type: tool_call.type,
+      function: {
+        name: tool_call.function.name,
+        arguments: tool_call.function.arguments
+      }
+    }));
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-chat-model/adapters/anthropic.js
+var SmartChatModelAnthropicAdapter = class extends SmartChatModelApiAdapter {
+  static key = "anthropic";
+  static defaults = {
+    description: "Anthropic Claude",
+    type: "API",
+    endpoint: "https://api.anthropic.com/v1/messages",
+    // streaming: false,
+    streaming: true,
+    api_key_header: "x-api-key",
+    headers: {
+      "anthropic-version": "2023-06-01",
+      "anthropic-beta": "tools-2024-04-04",
+      "anthropic-dangerous-direct-browser-access": true
+    },
+    adapter: "Anthropic",
+    models_endpoint: false,
+    default_model: "claude-3-5-sonnet-latest",
+    signup_url: "https://console.anthropic.com/login?returnTo=%2Fsettings%2Fkeys",
+    can_use_tools: true
+  };
+  /**
+   * Get request adapter class
+   * @returns {typeof SmartChatModelAnthropicRequestAdapter} Request adapter class
+   */
+  get req_adapter() {
+    return SmartChatModelAnthropicRequestAdapter;
+  }
+  /**
+   * Get response adapter class
+   * @returns {typeof SmartChatModelAnthropicResponseAdapter} Response adapter class
+   */
+  res_adapter = SmartChatModelAnthropicResponseAdapter;
+  /**
+   * Validate parameters for getting models
+   * @returns {boolean} Always true since models are hardcoded
+   */
+  validate_get_models_params() {
+    return true;
+  }
+  /**
+   * Get available models (hardcoded list)
+   * @returns {Promise<Object>} Map of model objects
+   */
+  get_models() {
+    return Promise.resolve(this.models);
+  }
+  is_end_of_stream(event) {
+    return event.data.includes("message_stop");
+  }
+  /**
+   * Get hardcoded list of available models
+   * @returns {Object} Map of model objects with capabilities and limits
+   */
+  get models() {
+    return {
+      // ── Claude 4 family ──────────────────────────────────────────────────────
+      "claude-opus-4-20250514": {
+        name: "Claude Opus 4 (2025-05-14)",
+        id: "claude-opus-4-20250514",
+        model_name: "claude-opus-4-20250514",
+        description: "Anthropic's Claude Opus 4 (2025-05-14)",
+        max_input_tokens: 2e5,
+        max_output_tokens: 4e3,
+        multimodal: true
+      },
+      "claude-sonnet-4-20250514": {
+        name: "Claude Sonnet 4 (2025-05-14)",
+        id: "claude-sonnet-4-20250514",
+        model_name: "claude-sonnet-4-20250514",
+        description: "Anthropic's Claude Sonnet 4 (2025-05-14)",
+        max_input_tokens: 2e5,
+        max_output_tokens: 4e3,
+        multimodal: true
+      },
+      // ── Claude 3.7 family ───────────────────────────────────────────────────
+      "claude-3-7-sonnet-latest": {
+        name: "Claude 3.7 Sonnet (Latest)",
+        id: "claude-3-7-sonnet-latest",
+        model_name: "claude-3-7-sonnet-latest",
+        description: "Anthropic's Claude Sonnet 3.7 (Latest)",
+        max_input_tokens: 2e5,
+        max_output_tokens: 4e3,
+        multimodal: true
+      },
+      "claude-3-7-sonnet-20250219": {
+        name: "Claude 3.7 Sonnet (2025-02-19)",
+        id: "claude-3-7-sonnet-20250219",
+        model_name: "claude-3-7-sonnet-20250219",
+        description: "Anthropic's Claude Sonnet 3.7 (2025-02-19)",
+        max_input_tokens: 2e5,
+        max_output_tokens: 4e3,
+        multimodal: true
+      },
+      // ── Claude 3.5 family ───────────────────────────────────────────────────
+      "claude-3-5-sonnet-latest": {
+        name: "Claude 3.5 Sonnet (Latest)",
+        id: "claude-3-5-sonnet-latest",
+        model_name: "claude-3.5-sonnet-latest",
+        description: "Anthropic's Claude Sonnet 3.5 (Latest)",
+        max_input_tokens: 2e5,
+        max_output_tokens: 4e3,
+        multimodal: true
+      },
+      "claude-3-5-sonnet-20241022": {
+        name: "Claude 3.5 Sonnet (2024-10-22)",
+        id: "claude-3-5-sonnet-20241022",
+        model_name: "claude-3-5-sonnet-20241022",
+        description: "Anthropic's Claude Sonnet 3.5 (2024-10-22)",
+        max_input_tokens: 2e5,
+        max_output_tokens: 4e3,
+        multimodal: true
+      },
+      "claude-3.5-sonnet-20240620": {
+        // kept original id typo for backward compatibility
+        name: "Claude 3.5 Sonnet (2024-06-20)",
+        id: "claude-3.5-sonnet-20240620",
+        model_name: "claude-3.5-sonnet-20240620",
+        description: "Anthropic's Claude Sonnet 3.5 (2024-06-20)",
+        max_input_tokens: 2e5,
+        max_output_tokens: 4e3,
+        multimodal: true
+      },
+      "claude-3-5-haiku-latest": {
+        name: "Claude 3.5 Haiku (Latest)",
+        id: "claude-3-5-haiku-latest",
+        model_name: "claude-3.5-haiku-latest",
+        description: "Anthropic's Claude Haiku 3.5 (Latest)",
+        max_input_tokens: 2e5,
+        max_output_tokens: 4e3
+      },
+      "claude-3-5-haiku-20241022": {
+        name: "Claude 3.5 Haiku (2024-10-22)",
+        id: "claude-3-5-haiku-20241022",
+        model_name: "claude-3-5-haiku-20241022",
+        description: "Anthropic's Claude Haiku 3.5 (2024-10-22)",
+        max_input_tokens: 2e5,
+        max_output_tokens: 4e3
+      },
+      // ── Claude 3 family ─────────────────────────────────────────────────────
+      "claude-3-opus-latest": {
+        name: "Claude 3 Opus (Latest)",
+        id: "claude-3-opus-latest",
+        model_name: "claude-3-opus-latest",
+        description: "Anthropic's Claude Opus 3 (Latest)",
+        max_input_tokens: 2e5,
+        max_output_tokens: 4e3,
+        multimodal: true
+      },
+      "claude-3-opus-20240229": {
+        name: "Claude 3 Opus (2024-02-29)",
+        id: "claude-3-opus-20240229",
+        model_name: "claude-3-opus-20240229",
+        description: "Anthropic's Claude Opus 3 (2024-02-29)",
+        max_input_tokens: 2e5,
+        max_output_tokens: 4e3,
+        multimodal: true
+      },
+      "claude-3-sonnet-20240229": {
+        name: "Claude 3 Sonnet (2024-02-29)",
+        id: "claude-3-sonnet-20240229",
+        model_name: "claude-3-sonnet-20240229",
+        description: "Anthropic's Claude Sonnet 3 (2024-02-29)",
+        max_input_tokens: 2e5,
+        max_output_tokens: 4e3,
+        multimodal: true
+      },
+      "claude-3-haiku-20240307": {
+        name: "Claude 3 Haiku (2024-03-07)",
+        id: "claude-3-haiku-20240307",
+        model_name: "claude-3-haiku-20240307",
+        description: "Anthropic's Claude Haiku 3 (2024-03-07)",
+        max_input_tokens: 2e5,
+        max_output_tokens: 4e3,
+        multimodal: true
+      }
+    };
+  }
+};
+var SmartChatModelAnthropicRequestAdapter = class extends SmartChatModelRequestAdapter {
+  /**
+   * Convert request to Anthropic format
+   * @returns {Object} Request parameters in Anthropic format
+   */
+  to_platform(streaming = false) {
+    return this.to_anthropic(streaming);
+  }
+  /**
+   * Convert request to Anthropic format
+   * @returns {Object} Request parameters in Anthropic format
+   */
+  to_anthropic(streaming = false) {
+    this.anthropic_body = {
+      model: this.model,
+      max_tokens: this.max_tokens,
+      temperature: this.temperature,
+      stream: streaming
+    };
+    this.anthropic_body.messages = this._transform_messages_to_anthropic();
+    if (this.tools) {
+      this.anthropic_body.tools = this._transform_tools_to_anthropic();
+    }
+    if (this.tool_choice) {
+      if (this.tool_choice === "auto") {
+        this.anthropic_body.tool_choice = { type: "auto" };
+      } else if (typeof this.tool_choice === "object" && this.tool_choice.function) {
+        this.anthropic_body.tool_choice = { type: "tool", name: this.tool_choice.function.name };
+      }
+    }
+    return {
+      url: this.adapter.endpoint,
+      method: "POST",
+      headers: this.get_headers(),
+      body: JSON.stringify(this.anthropic_body)
+    };
+  }
+  /**
+   * Transform messages to Anthropic format
+   * @returns {Array<Object>} Messages in Anthropic format
+   * @private
+   */
+  _transform_messages_to_anthropic() {
+    let anthropic_messages = [];
+    for (const message of this.messages) {
+      if (message.role === "system") {
+        if (!this.anthropic_body.system) this.anthropic_body.system = "";
+        else this.anthropic_body.system += "\n\n";
+        this.anthropic_body.system += Array.isArray(message.content) ? message.content.map((part) => part.text).join("\n") : message.content;
+      } else if (message.role === "tool") {
+        const msg = {
+          role: "user",
+          content: [
+            {
+              type: "tool_result",
+              tool_use_id: message.tool_call_id,
+              content: message.content
+            }
+          ]
+        };
+        anthropic_messages.push(msg);
+      } else {
+        const msg = {
+          role: this._get_anthropic_role(message.role),
+          content: this._get_anthropic_content(message.content)
+        };
+        if (message.tool_calls?.length > 0) msg.content = this._transform_tool_calls_to_content(message.tool_calls);
+        anthropic_messages.push(msg);
+      }
+    }
+    return anthropic_messages;
+  }
+  /**
+   * Transform tool calls to Anthropic format
+   * @param {Array<Object>} tool_calls - Tool calls
+   * @returns {Array<Object>} Tool calls in Anthropic format
+   * @private
+   */
+  _transform_tool_calls_to_content(tool_calls) {
+    return tool_calls.map((tool_call) => ({
+      type: "tool_use",
+      id: tool_call.id,
+      name: tool_call.function.name,
+      input: JSON.parse(tool_call.function.arguments)
+    }));
+  }
+  /**
+   * Transform role to Anthropic format
+   * @param {string} role - Original role
+   * @returns {string} Role in Anthropic format
+   * @private
+   */
+  _get_anthropic_role(role) {
+    const role_map = {
+      function: "assistant",
+      // Anthropic doesn't have a function role, so we'll treat it as assistant
+      tool: "user"
+    };
+    return role_map[role] || role;
+  }
+  /**
+   * Transform content to Anthropic format
+   * @param {string|Array} content - Original content
+   * @returns {string|Array} Content in Anthropic format
+   * @private
+   */
+  _get_anthropic_content(content) {
+    if (Array.isArray(content)) {
+      return content.map((item) => {
+        if (item.type === "text") return { type: "text", text: item.text };
+        if (item.type === "image_url") {
+          return {
+            type: "image",
+            source: {
+              type: "base64",
+              media_type: item.image_url.url.split(";")[0].split(":")[1],
+              data: item.image_url.url.split(",")[1]
+            }
+          };
+        }
+        if (item.type === "file" && item.file?.filename?.toLowerCase().endsWith(".pdf")) {
+          if (item.file?.file_data) {
+            return {
+              type: "document",
+              source: {
+                type: "base64",
+                media_type: "application/pdf",
+                data: item.file.file_data.split(",")[1]
+              }
+            };
+          }
+        }
+        return item;
+      });
+    }
+    return content;
+  }
+  /**
+   * Transform tools to Anthropic format
+   * @returns {Array<Object>} Tools in Anthropic format
+   * @private
+   */
+  _transform_tools_to_anthropic() {
+    if (!this.tools) return void 0;
+    return this.tools.map((tool2) => ({
+      name: tool2.function.name,
+      description: tool2.function.description,
+      input_schema: tool2.function.parameters
+    }));
+  }
+};
+var SmartChatModelAnthropicResponseAdapter = class extends SmartChatModelResponseAdapter {
+  static get platform_res() {
+    return {
+      content: [],
+      id: "",
+      model: "",
+      role: "assistant",
+      stop_reason: null,
+      stop_sequence: null,
+      type: "message",
+      usage: {
+        input_tokens: 0,
+        output_tokens: 0
+      }
+    };
+  }
+  /**
+   * Convert response to OpenAI format
+   * @returns {Object} Response in OpenAI format
+   */
+  to_openai() {
+    return {
+      id: this._res.id,
+      object: "chat.completion",
+      created: Date.now(),
+      choices: [
+        {
+          index: 0,
+          message: this._transform_message_to_openai(),
+          finish_reason: this._get_openai_finish_reason(this._res.stop_reason)
+        }
+      ],
+      usage: this._transform_usage_to_openai()
+    };
+  }
+  /**
+   * Transform message to OpenAI format
+   * @returns {Object} Message in OpenAI format
+   * @private
+   */
+  _transform_message_to_openai() {
+    const message = {
+      role: "assistant",
+      content: "",
+      tool_calls: []
+    };
+    if (Array.isArray(this._res.content)) {
+      for (const content of this._res.content) {
+        if (content.type === "text") {
+          message.content += (message.content ? "\n\n" : "") + content.text;
+        } else if (content.type === "tool_use") {
+          message.tool_calls.push({
+            id: content.id,
+            type: "function",
+            function: {
+              name: content.name,
+              arguments: JSON.stringify(content.input)
+            }
+          });
+        }
+      }
+    } else {
+      message.content = this._res.content;
+    }
+    if (message.tool_calls.length === 0) {
+      delete message.tool_calls;
+    }
+    return message;
+  }
+  /**
+   * Transform finish reason to OpenAI format
+   * @param {string} stop_reason - Original finish reason
+   * @returns {string} Finish reason in OpenAI format
+   * @private
+   */
+  _get_openai_finish_reason(stop_reason) {
+    const reason_map = {
+      "end_turn": "stop",
+      "max_tokens": "length",
+      "tool_use": "function_call"
+    };
+    return reason_map[stop_reason] || stop_reason;
+  }
+  /**
+   * Transform usage statistics to OpenAI format
+   * @returns {Object} Usage statistics in OpenAI format
+   * @private
+   */
+  _transform_usage_to_openai() {
+    if (!this._res.usage) {
+      return {
+        prompt_tokens: 0,
+        completion_tokens: 0,
+        total_tokens: 0
+      };
+    }
+    return {
+      prompt_tokens: this._res.usage.input_tokens || 0,
+      completion_tokens: this._res.usage.output_tokens || 0,
+      total_tokens: (this._res.usage.input_tokens || 0) + (this._res.usage.output_tokens || 0)
+    };
+  }
+  handle_chunk(chunk) {
+    if (!chunk.startsWith("data: ")) return;
+    chunk = JSON.parse(chunk.slice(6));
+    if (!this._res.content.length) {
+      this._res.content = [
+        {
+          type: "text",
+          text: ""
+        }
+      ];
+    }
+    if (chunk.message?.id) {
+      this._res.id = chunk.message.id;
+    }
+    if (chunk.message?.model) {
+      this._res.model = chunk.message.model;
+    }
+    if (chunk.message?.role) {
+      this._res.role = chunk.message.role;
+    }
+    if (chunk.delta?.type === "text_delta") {
+      this._res.content[0].text += chunk.delta.text;
+    }
+    if (chunk.delta?.stop_reason) {
+      this._res.stop_reason = chunk.delta.stop_reason;
+    }
+    if (chunk.usage) {
+      this._res.usage = {
+        ...this._res.usage,
+        ...chunk.usage
+      };
+    }
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-chat-model/adapters/openai.js
+var SmartChatModelOpenaiAdapter = class extends SmartChatModelApiAdapter {
+  static key = "openai";
+  static defaults = {
+    description: "OpenAI",
+    type: "API",
+    endpoint: "https://api.openai.com/v1/chat/completions",
+    streaming: true,
+    models_endpoint: "https://api.openai.com/v1/models",
+    default_model: "gpt-4.1-mini",
+    signup_url: "https://platform.openai.com/api-keys",
+    can_use_tools: true
+  };
+  res_adapter = SmartChatModelOpenaiResponseAdapter;
+  /**
+   * Parse model data from OpenAI API response.
+   * Filters for GPT models and adds context window information.
+   * @param {Object} model_data - Raw model data from OpenAI
+   * @returns {Object} Map of model objects with capabilities and limits
+   */
+  parse_model_data(model_data) {
+    return model_data.data.filter((model) => ["gpt-", "o1-"].some((m) => model.id.startsWith(m)) && !model.id.includes("-instruct")).reduce((acc, model) => {
+      const out = {
+        model_name: model.id,
+        id: model.id,
+        multimodal: model.id.includes("vision") || model.id.includes("gpt-4-turbo") || model.id.startsWith("gpt-4o"),
+        can_use_tools: model.id.startsWith("o1-") ? false : true,
+        max_input_tokens: get_max_input_tokens(model.id)
+      };
+      acc[model.id] = out;
+      return acc;
+    }, {});
+  }
+  /**
+   * Override the HTTP method for fetching models.
+   */
+  models_endpoint_method = "GET";
+  /**
+   * Test the API key by attempting to fetch models.
+   * @returns {Promise<boolean>} True if API key is valid
+   */
+  async test_api_key() {
+    const models = await this.get_models();
+    return models.length > 0;
+  }
+  /**
+   * Get settings configuration for OpenAI adapter.
+   * Adds image resolution setting for multimodal models.
+   * @returns {Object} Settings configuration object
+   */
+  get settings_config() {
+    const config = super.settings_config;
+    if (this.adapter?.model_config?.multimodal) {
+      config["[CHAT_ADAPTER].image_resolution"] = {
+        name: "Image Resolution",
+        type: "dropdown",
+        description: "Select the image resolution for the chat model.",
+        option_1: "low",
+        option_2: "high",
+        default: "low"
+      };
+    }
+    return config;
+  }
+};
+function get_max_input_tokens(model_id) {
+  if (model_id.startsWith("gpt-4.1")) {
+    return 1e6;
+  }
+  if (model_id.startsWith("o")) {
+    return 2e5;
+  }
+  if (model_id.startsWith("gpt-4o") || model_id.startsWith("gpt-4.5") || model_id.startsWith("gpt-4-turbo")) {
+    return 128e3;
+  }
+  if (model_id.startsWith("gpt-4")) {
+    return 8192;
+  }
+  if (model_id.startsWith("gpt-3")) {
+    return 16385;
+  }
+  return 8e3;
+}
+var SmartChatModelOpenaiResponseAdapter = class extends SmartChatModelResponseAdapter {
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-chat-model/adapters/azure.js
+var SmartChatModelAzureAdapter = class extends SmartChatModelOpenaiAdapter {
+  static key = "azure";
+  static defaults = {
+    description: "Azure OpenAI",
+    type: "API",
+    adapter: "AzureOpenAI",
+    streaming: true,
+    api_key_header: "api-key",
+    azure_resource_name: "",
+    azure_deployment_name: "",
+    azure_api_version: "2024-10-01-preview",
+    default_model: "gpt-35-turbo",
+    signup_url: "https://learn.microsoft.com/azure/cognitive-services/openai/quickstart?tabs=command-line",
+    models_endpoint: "https://{azure_resource_name}.openai.azure.com/openai/deployments?api-version={azure_api_version}",
+    can_use_tools: true
+  };
+  /**
+   * Override the settings configuration to include Azure-specific fields.
+   */
+  get settings_config() {
+    return {
+      ...super.settings_config,
+      "[CHAT_ADAPTER].azure_resource_name": {
+        name: "Azure Resource Name",
+        type: "text",
+        description: "The name of your Azure OpenAI resource (e.g. 'my-azure-openai').",
+        default: ""
+      },
+      "[CHAT_ADAPTER].azure_deployment_name": {
+        name: "Azure Deployment Name",
+        type: "text",
+        description: "The name of your specific model deployment (e.g. 'gpt35-deployment').",
+        default: ""
+      },
+      "[CHAT_ADAPTER].azure_api_version": {
+        name: "Azure API Version",
+        type: "text",
+        description: "The API version for Azure OpenAI (e.g. '2024-10-01-preview').",
+        default: "2024-10-01-preview"
+      }
+    };
+  }
+  /**
+   * Build the endpoint dynamically based on Azure settings.
+   * Example:
+   *  https://<RESOURCE>.openai.azure.com/openai/deployments/<DEPLOYMENT>/chat/completions?api-version=2023-05-15
+   */
+  get endpoint() {
+    const { azure_resource_name, azure_deployment_name, azure_api_version } = this.adapter_config;
+    return `https://${azure_resource_name}.openai.azure.com/openai/deployments/${azure_deployment_name}/chat/completions?api-version=${azure_api_version}`;
+  }
+  /**
+   * For streaming, we can reuse the same endpoint. 
+   * The request body includes `stream: true` which the base class uses.
+   */
+  get endpoint_streaming() {
+    return this.endpoint;
+  }
+  /**
+   * The models endpoint for retrieving a list of your deployments.
+   * E.g.:
+   *   https://<RESOURCE>.openai.azure.com/openai/deployments?api-version=2023-05-15
+   */
+  get models_endpoint() {
+    const { azure_resource_name, azure_api_version } = this.adapter_config;
+    return `https://${azure_resource_name}.openai.azure.com/openai/deployments?api-version=${azure_api_version}`;
+  }
+  /**
+   * Azure returns a list of deployments in the shape:
+   * {
+   *   "object": "list",
+   *   "data": [
+   *     {
+   *       "id": "mydeployment",
+   *       "model": "gpt-35-turbo",
+   *       "status": "succeeded",
+   *       "createdAt": ...
+   *       "updatedAt": ...
+   *       ...
+   *     },
+   *     ...
+   *   ]
+   * }
+   * We'll parse them into a dictionary keyed by deployment ID.
+   */
+  parse_model_data(model_data) {
+    if (model_data.object !== "list" || !Array.isArray(model_data.data)) {
+      return { "_": { id: "No deployments found." } };
+    }
+    const parsed = {};
+    for (const d of model_data.data) {
+      parsed[d.id] = {
+        model_name: d.id,
+        id: d.id,
+        raw: d,
+        // You can add more details if you want:
+        description: `Model: ${d.model}, Status: ${d.status}`,
+        // Hard to guess tokens; omit or guess:
+        max_input_tokens: 4e3
+      };
+    }
+    return parsed;
+  }
+  /**
+   * Validate the Azure configuration fields.
+   */
+  validate_config() {
+    const { azure_resource_name, azure_deployment_name, azure_api_version } = this.adapter_config;
+    if (!azure_resource_name) {
+      return { valid: false, message: "Azure resource name is missing." };
+    }
+    if (!azure_deployment_name) {
+      return { valid: false, message: "Azure deployment name is missing." };
+    }
+    if (!azure_api_version) {
+      return { valid: false, message: "Azure API version is missing." };
+    }
+    if (!this.api_key) {
+      return { valid: false, message: "Azure OpenAI API key is missing." };
+    }
+    return { valid: true, message: "Configuration is valid." };
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-chat-model/adapters/google.js
+var SmartChatModelGeminiAdapter = class extends SmartChatModelApiAdapter {
+  static key = "gemini";
+  static defaults = {
+    description: "Google Gemini",
+    type: "API",
+    api_key_header: "none",
+    endpoint: "https://generativelanguage.googleapis.com/v1beta/models/MODEL_NAME:generateContent",
+    endpoint_streaming: "https://generativelanguage.googleapis.com/v1beta/models/MODEL_NAME:streamGenerateContent",
+    streaming: true,
+    adapter: "Gemini",
+    models_endpoint: "https://generativelanguage.googleapis.com/v1beta/models",
+    default_model: "gemini-1.5-pro",
+    signup_url: "https://ai.google.dev/",
+    can_use_tools: true
+  };
+  streaming_chunk_splitting_regex = /(\r\n|\n|\r){2}/g;
+  // handle Google's BS (split on double newlines only)
+  /**
+   * Get request adapter class
+   */
+  req_adapter = SmartChatModelGeminiRequestAdapter;
+  /**
+   * Get response adapter class
+   */
+  res_adapter = SmartChatModelGeminiResponseAdapter;
+  /**
+   * Uses Gemini's dedicated token counting endpoint
+   */
+  async count_tokens(input) {
+    const req = {
+      url: `https://generativelanguage.googleapis.com/v1beta/models/${this.model_key}:countTokens?key=${this.api_key}`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(this.prepare_token_count_body(input))
+    };
+    const resp = await this.http_adapter.request(req);
+    return resp.json.totalTokens;
+  }
+  /**
+   * Formats input for token counting based on type
+   * @private
+   */
+  prepare_token_count_body(input) {
+    if (typeof input === "string") {
+      return { contents: [{ parts: [{ text: input }] }] };
+    } else if (Array.isArray(input)) {
+      return { contents: input.map((msg) => this.transform_message_for_token_count(msg)) };
+    } else if (typeof input === "object") {
+      return { contents: [this.transform_message_for_token_count(input)] };
+    }
+    throw new Error("Invalid input for count_tokens");
+  }
+  /**
+   * Transforms message for token counting, handling text and images
+   * @private
+   */
+  transform_message_for_token_count(message) {
+    return {
+      role: message.role === "assistant" ? "model" : message.role,
+      parts: Array.isArray(message.content) ? message.content.map((part) => {
+        if (part.type === "text") return { text: part.text };
+        if (part.type === "image_url") return {
+          inline_data: {
+            mime_type: part.image_url.url.split(";")[0].split(":")[1],
+            data: part.image_url.url.split(",")[1]
+          }
+        };
+        return part;
+      }) : [{ text: message.content }]
+    };
+  }
+  /**
+   * Builds endpoint URLs with model and API key
+   */
+  get endpoint() {
+    return `https://generativelanguage.googleapis.com/v1beta/models/${this.model_key}:generateContent?key=${this.api_key}`;
+  }
+  get endpoint_streaming() {
+    return `https://generativelanguage.googleapis.com/v1beta/models/${this.model_key}:streamGenerateContent?key=${this.api_key}`;
+  }
+  // /**
+  //  * Extracts text from Gemini's streaming format
+  //  */
+  // get_text_chunk_from_stream(event) {
+  //   const data = JSON.parse(event.data);
+  //   return data.candidates[0]?.content?.parts[0]?.text || '';
+  // }
+  /**
+   * Get models endpoint URL with API key
+   * @returns {string} Complete models endpoint URL
+   */
+  get models_endpoint() {
+    return `${this.constructor.defaults.models_endpoint}?key=${this.api_key}`;
+  }
+  /**
+   * Get HTTP method for models endpoint
+   * @returns {string} HTTP method ("GET")
+   */
+  get models_endpoint_method() {
+    return "GET";
+  }
+  get models_request_params() {
+    return {
+      url: this.models_endpoint,
+      method: this.models_endpoint_method
+    };
+  }
+  /**
+   * Parse model data from Gemini API response
+   * @param {Object} model_data - Raw model data from API
+   * @returns {Object} Map of model objects with capabilities and limits
+   */
+  parse_model_data(model_data) {
+    return model_data.models.filter((model) => model.name.startsWith("models/gemini")).reduce((acc, model) => {
+      const out = {
+        model_name: model.name.split("/").pop(),
+        id: model.name.split("/").pop(),
+        max_input_tokens: model.inputTokenLimit,
+        max_output_tokens: model.maxOutputTokens,
+        description: model.description,
+        multimodal: model.name.includes("vision") || model.description.includes("multimodal"),
+        raw: model
+      };
+      acc[model.name.split("/").pop()] = out;
+      return acc;
+    }, {});
+  }
+  is_end_of_stream(event) {
+    return event.data.includes('"finishReason"');
+    return false;
+  }
+};
+var SmartChatModelGeminiRequestAdapter = class extends SmartChatModelRequestAdapter {
+  to_platform(streaming = false) {
+    return this.to_gemini(streaming);
+  }
+  to_gemini(streaming = false) {
+    const gemini_body = {
+      contents: this._transform_messages_to_gemini(),
+      generationConfig: {
+        temperature: this.temperature,
+        maxOutputTokens: this.max_tokens,
+        topK: this._req.topK || 1,
+        topP: this._req.topP || 1,
+        stopSequences: this._req.stop || []
+      },
+      safetySettings: [
+        {
+          category: "HARM_CATEGORY_HARASSMENT",
+          threshold: "BLOCK_NONE"
+        },
+        {
+          category: "HARM_CATEGORY_HATE_SPEECH",
+          threshold: "BLOCK_NONE"
+        },
+        {
+          category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+          threshold: "BLOCK_NONE"
+        },
+        {
+          category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+          threshold: "BLOCK_NONE"
+        }
+      ]
+    };
+    if (this.tools) gemini_body.tools = this._transform_tools_to_gemini();
+    if (gemini_body.tools && this.tool_choice !== "none") gemini_body.tool_config = this._transform_tool_choice_to_gemini();
+    return {
+      url: streaming ? this.adapter.endpoint_streaming : this.adapter.endpoint,
+      method: "POST",
+      headers: this.get_headers(),
+      body: JSON.stringify(gemini_body)
+    };
+  }
+  _transform_messages_to_gemini() {
+    let gemini_messages = [];
+    let system_message = "";
+    for (const message of this.messages) {
+      if (message.role === "system") {
+        system_message += message.content + "\n";
+      } else {
+        gemini_messages.push({
+          role: this._get_gemini_role(message.role),
+          parts: this._transform_content_to_gemini(message.content)
+        });
+      }
+    }
+    if (system_message) {
+      gemini_messages.unshift({
+        role: "user",
+        parts: [{ text: system_message.trim() }]
+      });
+    }
+    return gemini_messages;
+  }
+  _get_gemini_role(role) {
+    const role_map = {
+      user: "user",
+      assistant: "model",
+      function: "model"
+      // Gemini doesn't have a function role, so we'll treat it as model
+    };
+    return role_map[role] || role;
+  }
+  _transform_content_to_gemini(content) {
+    if (Array.isArray(content)) {
+      return content.map((part) => {
+        if (part.type === "text") return { text: part.text };
+        if (part.type === "image_url") {
+          return {
+            inline_data: {
+              mime_type: part.image_url.url.split(";")[0].split(":")[1],
+              data: part.image_url.url.split(",")[1]
+            }
+          };
+        }
+        if (part.type === "file" && part.file?.filename?.toLowerCase().endsWith(".pdf")) {
+          if (part.file?.file_data) {
+            return {
+              inline_data: {
+                mime_type: "application/pdf",
+                data: part.file.file_data.split(",")[1]
+              }
+            };
+          }
+        }
+        return part;
+      });
+    }
+    return [{ text: content }];
+  }
+  _transform_tools_to_gemini() {
+    return [{
+      function_declarations: this.tools.map((tool2) => ({
+        name: tool2.function.name,
+        description: tool2.function.description,
+        parameters: tool2.function.parameters
+      }))
+    }];
+  }
+  _transform_tool_choice_to_gemini() {
+    return {
+      function_calling_config: {
+        mode: "ANY",
+        allowed_function_names: this.tools.map((tool2) => tool2.function.name)
+      }
+    };
+  }
+};
+var SmartChatModelGeminiResponseAdapter = class extends SmartChatModelResponseAdapter {
+  static get platform_res() {
+    return {
+      candidates: [{
+        content: {
+          parts: [
+            {
+              text: ""
+            }
+          ],
+          role: ""
+        },
+        finishReason: ""
+      }],
+      promptFeedback: {},
+      usageMetadata: {}
+    };
+  }
+  to_openai() {
+    const first_candidate = this._res.candidates[0];
+    if (!this._res.id) this._res.id = "gemini-" + Date.now().toString();
+    return {
+      id: this._res.id,
+      object: "chat.completion",
+      created: Date.now(),
+      model: this.adapter.model_key,
+      choices: [{
+        index: 0,
+        message: first_candidate?.content ? this._transform_message_to_openai(first_candidate.content) : "",
+        finish_reason: this._get_openai_finish_reason(first_candidate.finishReason)
+      }],
+      usage: this._transform_usage_to_openai()
+    };
+  }
+  _transform_message_to_openai(content) {
+    const message = {
+      role: "assistant",
+      content: content.parts.filter((part) => part.text).map((part) => part.text).join("")
+    };
+    const function_call = content.parts.find((part) => part.functionCall);
+    if (function_call) {
+      message.tool_calls = [{
+        type: "function",
+        function: {
+          name: function_call.functionCall.name,
+          arguments: JSON.stringify(function_call.functionCall.args)
+        }
+      }];
+    }
+    return message;
+  }
+  _get_openai_finish_reason(finish_reason) {
+    const reason_map = {
+      "STOP": "stop",
+      "MAX_TOKENS": "length",
+      "SAFETY": "content_filter",
+      "RECITATION": "content_filter",
+      "OTHER": "null"
+    };
+    return reason_map[finish_reason] || finish_reason.toLowerCase();
+  }
+  _transform_usage_to_openai() {
+    if (!this._res.usageMetadata) {
+      return {
+        prompt_tokens: null,
+        completion_tokens: null,
+        total_tokens: null
+      };
+    }
+    return {
+      prompt_tokens: this._res.usageMetadata.promptTokenCount || null,
+      completion_tokens: this._res.usageMetadata.candidatesTokenCount || null,
+      total_tokens: this._res.usageMetadata.totalTokenCount || null
+    };
+  }
+  handle_chunk(chunk) {
+    let chunk_trimmed = chunk.trim();
+    if (["[", ","].includes(chunk_trimmed[0])) chunk_trimmed = chunk_trimmed.slice(1);
+    if (["]", ","].includes(chunk_trimmed[chunk_trimmed.length - 1])) chunk_trimmed = chunk_trimmed.slice(0, -1);
+    const data = JSON.parse(chunk_trimmed);
+    if (data.candidates?.[0]?.content?.parts?.[0]?.text?.length) {
+      this._res.candidates[0].content.parts[0].text += data.candidates[0].content.parts[0].text;
+    }
+    if (data.candidates?.[0]?.content?.role?.length) {
+      this._res.candidates[0].content.role = data.candidates[0].content.role;
+    }
+    if (data.candidates?.[0]?.finishReason?.length) {
+      this._res.candidates[0].finishReason += data.candidates[0].finishReason;
+    }
+    if (data.promptFeedback) {
+      this._res.promptFeedback = {
+        ...this._res.promptFeedback || {},
+        ...data.promptFeedback
+      };
+    }
+    if (data.usageMetadata) {
+      this._res.usageMetadata = {
+        ...this._res.usageMetadata || {},
+        ...data.usageMetadata
+      };
+    }
+    if (data.candidates?.[0]?.content?.parts?.[0]?.functionCall) {
+      if (!this._res.candidates[0].content.parts[0].functionCall) {
+        this._res.candidates[0].content.parts[0].functionCall = {
+          name: "",
+          args: {}
+        };
+      }
+      this._res.candidates[0].content.parts[0].functionCall.name += data.candidates[0].content.parts[0].functionCall.name;
+      if (data.candidates[0].content.parts[0].functionCall.args) {
+        Object.entries(data.candidates[0].content.parts[0].functionCall.args).forEach(([key, value]) => {
+          if (!this._res.candidates[0].content.parts[0].functionCall.args[key]) {
+            this._res.candidates[0].content.parts[0].functionCall.args[key] = "";
+          }
+          this._res.candidates[0].content.parts[0].functionCall.args[key] += value;
+        });
+      }
+    }
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-chat-model/adapters/open_router.js
+var SmartChatModelOpenRouterAdapter = class extends SmartChatModelApiAdapter {
+  static key = "open_router";
+  static defaults = {
+    description: "Open Router",
+    type: "API",
+    endpoint: "https://openrouter.ai/api/v1/chat/completions",
+    streaming: true,
+    adapter: "OpenRouter",
+    models_endpoint: "https://openrouter.ai/api/v1/models",
+    default_model: "mistralai/mistral-7b-instruct:free",
+    signup_url: "https://accounts.openrouter.ai/sign-up?redirect_url=https%3A%2F%2Fopenrouter.ai%2Fkeys",
+    can_use_tools: true
+  };
+  /**
+   * Get request adapter class
+   * @returns {typeof SmartChatModelOpenRouterRequestAdapter} Request adapter class
+   */
+  get req_adapter() {
+    return SmartChatModelOpenRouterRequestAdapter;
+  }
+  /**
+   * Get response adapter class
+   * @returns {typeof SmartChatModelOpenRouterResponseAdapter} Response adapter class
+   */
+  get res_adapter() {
+    return SmartChatModelOpenRouterResponseAdapter;
+  }
+  /**
+   * Get API key from various sources
+   * @returns {string|undefined} API key if available
+   */
+  get api_key() {
+    return this.main.opts.api_key || this.adapter_settings?.api_key || "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";
+  }
+  /**
+   * Count tokens in input text (rough estimate)
+   * @param {string|Object} input - Text to count tokens for
+   * @returns {Promise<number>} Estimated token count
+   */
+  async count_tokens(input) {
+    const text = typeof input === "string" ? input : JSON.stringify(input);
+    return Math.ceil(text.length / 4);
+  }
+  get models_request_params() {
+    return {
+      url: this.models_endpoint,
+      method: "GET"
+    };
+  }
+  /**
+   * Parse model data from OpenRouter API response
+   * @param {Object} model_data - Raw model data
+   * @returns {Object} Map of model objects with capabilities and limits
+   */
+  parse_model_data(model_data) {
+    if (model_data.data) {
+      model_data = model_data.data;
+    }
+    if (model_data.error) throw new Error(model_data.error);
+    return model_data.reduce((acc, model) => {
+      acc[model.id] = {
+        model_name: model.id,
+        id: model.id,
+        max_input_tokens: model.context_length,
+        description: model.name,
+        can_use_tools: model.description.includes("tool use") || model.description.includes("function call"),
+        multimodal: model.architecture.modality === "multimodal",
+        raw: model
+      };
+      return acc;
+    }, {});
+  }
+};
+var SmartChatModelOpenRouterRequestAdapter = class extends SmartChatModelRequestAdapter {
+  to_platform(stream = false) {
+    const req = this.to_openai(stream);
+    return req;
+  }
+  _get_openai_content(message) {
+    if (message.role === "user") {
+      if (Array.isArray(message.content) && message.content.every((part) => part.type === "text")) {
+        return message.content.map((part) => part.text).join("\n");
+      }
+    }
+    return message.content;
+  }
+};
+var SmartChatModelOpenRouterResponseAdapter = class extends SmartChatModelResponseAdapter {
+  static get platform_res() {
+    return {
+      id: "",
+      object: "chat.completion",
+      created: 0,
+      model: "",
+      choices: [],
+      usage: {}
+    };
+  }
+  to_platform() {
+    return this.to_openai();
+  }
+  get object() {
+    return "chat.completion";
+  }
+  get error() {
+    if (!this._res.error) return null;
+    const error = this._res.error;
+    if (!error.message) error.message = "";
+    if (this._res.error.metadata?.raw) {
+      if (typeof this._res.error.metadata.raw === "string") {
+        error.message += `
+
+${this._res.error.metadata.raw}`;
+      } else {
+        error.message += `
+
+${JSON.stringify(this._res.error.metadata.raw, null, 2)}`;
+      }
+    }
+    return error;
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-chat-model/adapters/lm_studio.js
+var SmartChatModelLmStudioAdapter = class extends SmartChatModelApiAdapter {
+  static key = "lm_studio";
+  /** @type {import('./_adapter.js').SmartChatModelAdapter['constructor']['defaults']} */
+  static defaults = {
+    description: "LM Studio (OpenAI\u2011compatible)",
+    type: "API",
+    endpoint: "http://localhost:1234/v1/chat/completions",
+    streaming: true,
+    adapter: "LM_Studio_OpenAI_Compat",
+    models_endpoint: "http://localhost:1234/v1/models",
+    default_model: "",
+    signup_url: "https://lmstudio.ai/docs/api/openai-api",
+    can_use_tools: true,
+    api_key: "no api key required"
+  };
+  /* ------------------------------------------------------------------ *
+   *  Request / Response classes
+   * ------------------------------------------------------------------ */
+  get req_adapter() {
+    return SmartChatModelLmStudioRequestAdapter;
+  }
+  get res_adapter() {
+    return SmartChatModelLmStudioResponseAdapter;
+  }
+  /* ------------------------------------------------------------------ *
+   *  Settings
+   * ------------------------------------------------------------------ */
+  /**
+   * Extend the base settings with a read‑only HTML block that reminds the
+   * user to enable CORS inside LM Studio. The Smart View renderer treats
+   * `type: "html"` as a static fragment, so no extra runtime logic is needed.
+   */
+  get settings_config() {
+    const config = super.settings_config;
+    delete config["[CHAT_ADAPTER].api_key"];
+    return {
+      ...config,
+      "[CHAT_ADAPTER].cors_instructions": {
+        /* visible only when this adapter is selected */
+        name: "CORS required",
+        type: "html",
+        value: "<p>Before sending requests from the browser you must enable CORS inside LM Studio:</p><p>Open the LM Studio application, choose <strong>Settings > OpenAI API Compatible</strong> and enable <strong>Allow Cross\u2011Origin Requests (CORS)</strong>. Restart the server afterwards.</p><p>With CORS enabled the local endpoint <code>http://localhost:1234</code> becomes reachable from web contexts.</p>"
+      }
+    };
+  }
+  /* ------------------------------------------------------------------ *
+   *  Model list helpers
+   * ------------------------------------------------------------------ */
+  /**
+   * LM Studio returns an OpenAI‑style list; normalise to the project shape.
+   */
+  parse_model_data(model_data) {
+    if (model_data.object !== "list" || !Array.isArray(model_data.data)) {
+      return { _: { id: "No models found." } };
+    }
+    const out = {};
+    for (const m of model_data.data) {
+      out[m.id] = {
+        id: m.id,
+        model_name: m.id,
+        description: `LM Studio model: ${m.id}`,
+        multimodal: false
+      };
+    }
+    return out;
+  }
+  get models_endpoint_method() {
+    return "get";
+  }
+  /**
+   * Count tokens in input text (no dedicated endpoint)
+   * Rough estimate: 1 token ~ 4 chars
+   * @param {string|Object} input
+   * @returns {Promise<number>}
+   */
+  async count_tokens(input) {
+    const text = typeof input === "string" ? input : JSON.stringify(input);
+    return Math.ceil(text.length / 4);
+  }
+  /**
+   * Test API key - LM Studio doesn't require API key. Always true.
+   * @returns {Promise<boolean>}
+   */
+  async test_api_key() {
+    return true;
+  }
+  get api_key() {
+    return "no api key required";
+  }
+  /**
+   * Validate configuration
+   */
+  validate_config() {
+    if (!this.adapter_config.model_key) {
+      return { valid: false, message: "No model selected." };
+    }
+    return { valid: true, message: "Configuration is valid." };
+  }
+};
+var SmartChatModelLmStudioRequestAdapter = class extends SmartChatModelRequestAdapter {
+  to_platform(streaming = false) {
+    const req = this.to_openai(streaming);
+    const body = JSON.parse(req.body);
+    if (this.tool_choice?.function?.name) {
+      const last_msg = body.messages[body.messages.length - 1];
+      if (typeof last_msg.content === "string") {
+        last_msg.content = [
+          { type: "text", text: last_msg.content }
+        ];
+      }
+      last_msg.content.push({
+        type: "text",
+        text: `Use the "${this.tool_choice.function.name}" tool.`
+      });
+      body.tool_choice = "required";
+    } else if (body.tool_choice && typeof body.tool_choice === "object") {
+      body.tool_choice = "auto";
+    }
+    req.body = JSON.stringify(body);
+    return req;
+  }
+};
+var SmartChatModelLmStudioResponseAdapter = class extends SmartChatModelResponseAdapter {
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-chat-model/adapters/ollama.js
+var SmartChatModelOllamaAdapter = class extends SmartChatModelApiAdapter {
+  static key = "ollama";
+  static defaults = {
+    description: "Ollama (Local)",
+    type: "API",
+    models_endpoint: "http://localhost:11434/api/tags",
+    endpoint: "http://localhost:11434/api/chat",
+    api_key: "na",
+    // streaming: false, // TODO: Implement streaming
+    streaming: true
+  };
+  req_adapter = SmartChatModelOllamaRequestAdapter;
+  res_adapter = SmartChatModelOllamaResponseAdapter;
+  /**
+   * Get parameters for models request - no auth needed for local instance
+   * @returns {Object} Request parameters
+   */
+  get models_request_params() {
+    return {
+      url: this.adapter_config.models_endpoint
+    };
+  }
+  /**
+   * Get available models from local Ollama instance
+   * @param {boolean} [refresh=false] - Whether to refresh cached models
+   * @returns {Promise<Object>} Map of model objects
+   */
+  async get_models(refresh = false) {
+    if (!refresh && this.adapter_config?.models && typeof this.adapter_config.models === "object" && Object.keys(this.adapter_config.models).length > 0) return this.adapter_config.models;
+    try {
+      const list_resp = await this.http_adapter.request(this.models_request_params);
+      const list_data = await list_resp.json();
+      const models_raw_data = [];
+      for (const model of list_data.models) {
+        const model_details_resp = await this.http_adapter.request({
+          url: `http://localhost:11434/api/show`,
+          method: "POST",
+          body: JSON.stringify({ model: model.name })
+        });
+        const model_details_data = await model_details_resp.json();
+        models_raw_data.push({ ...model_details_data, name: model.name });
+      }
+      const model_data = this.parse_model_data(models_raw_data);
+      this.adapter_settings.models = model_data;
+      this.model.re_render_settings();
+      return model_data;
+    } catch (error) {
+      console.error("Failed to fetch model data:", error);
+      return { "_": { id: `Failed to fetch models from ${this.model.adapter_name}` } };
+    }
+  }
+  /**
+   * Parse model data from Ollama API response
+   * @param {Object[]} model_data - Raw model data from Ollama
+   * @returns {Object} Map of model objects with capabilities and limits
+   */
+  parse_model_data(model_data) {
+    if (!Array.isArray(model_data)) {
+      this.model_data = {};
+      console.error("Invalid model data format from Ollama:", model_data);
+      return {};
+    }
+    if (model_data.length === 0) {
+      this.model_data = { "no_models_available": {
+        id: "no_models_available",
+        name: "No models currently available"
+      } };
+      return this.model_data;
+    }
+    return model_data.reduce((acc, model) => {
+      const out = {
+        model_name: model.name,
+        id: model.name,
+        multimodal: false,
+        max_input_tokens: Object.entries(model.model_info).find((m) => m[0].includes(".context_length"))[1],
+        can_use_tools: true
+        // TODO: CHECK MODELFILE FOR TOOLS SUPPORT
+      };
+      acc[model.name] = out;
+      return acc;
+    }, {});
+  }
+  /**
+   * Override settings config to remove API key setting since not needed for local instance
+   * @returns {Object} Settings configuration object
+   */
+  get settings_config() {
+    const config = super.settings_config;
+    delete config["[CHAT_ADAPTER].api_key"];
+    return config;
+  }
+  is_end_of_stream(event) {
+    return event.data.includes('"done_reason"');
+  }
+};
+var SmartChatModelOllamaRequestAdapter = class extends SmartChatModelRequestAdapter {
+  /**
+   * Convert request to Ollama format
+   * @returns {Object} Request parameters in Ollama format
+   */
+  to_platform(streaming = false) {
+    const ollama_body = {
+      model: this.model,
+      messages: this._transform_messages_to_ollama(),
+      options: this._transform_parameters_to_ollama(),
+      stream: streaming || this.stream
+      // format: 'json', // only used for tool calls since returns JSON in content body
+    };
+    if (this.tools) {
+      ollama_body.tools = this._transform_functions_to_tools();
+      if (this.tool_choice?.function?.name) {
+        ollama_body.messages[ollama_body.messages.length - 1].content += `
+
+Use the "${this.tool_choice.function.name}" tool.`;
+        ollama_body.format = "json";
+      }
+    }
+    return {
+      url: this.adapter.endpoint,
+      method: "POST",
+      body: JSON.stringify(ollama_body)
+    };
+  }
+  /**
+   * Transform messages to Ollama format
+   * @returns {Array} Messages in Ollama format
+   * @private
+   */
+  _transform_messages_to_ollama() {
+    return this.messages.map((message) => {
+      const ollama_message = {
+        role: message.role,
+        content: this._transform_content_to_ollama(message.content)
+      };
+      const images = this._extract_images_from_content(message.content);
+      if (images.length > 0) {
+        ollama_message.images = images.map((img) => img.replace(/^data:image\/[^;]+;base64,/, ""));
+      }
+      return ollama_message;
+    });
+  }
+  /**
+   * Transform content to Ollama format
+   * @param {string|Array} content - Message content
+   * @returns {string} Content in Ollama format
+   * @private
+   */
+  _transform_content_to_ollama(content) {
+    if (Array.isArray(content)) {
+      return content.filter((item) => item.type === "text").map((item) => item.text).join("\n");
+    }
+    return content;
+  }
+  /**
+   * Extract images from content
+   * @param {string|Array} content - Message content
+   * @returns {Array} Array of image URLs
+   * @private
+   */
+  _extract_images_from_content(content) {
+    if (!Array.isArray(content)) return [];
+    return content.filter((item) => item.type === "image_url").map((item) => item.image_url.url);
+  }
+  /**
+   * Transform functions to tools format
+   * @returns {Array} Tools array in Ollama format
+   * @private
+   */
+  _transform_functions_to_tools() {
+    return this.tools;
+  }
+  /**
+   * Transform parameters to Ollama options format
+   * @returns {Object} Options in Ollama format
+   * @private
+   */
+  _transform_parameters_to_ollama() {
+    const options = {};
+    if (this.max_tokens) options.num_predict = this.max_tokens;
+    if (this.temperature) options.temperature = this.temperature;
+    if (this.top_p) options.top_p = this.top_p;
+    if (this.frequency_penalty) options.frequency_penalty = this.frequency_penalty;
+    if (this.presence_penalty) options.presence_penalty = this.presence_penalty;
+    return options;
+  }
+};
+var SmartChatModelOllamaResponseAdapter = class extends SmartChatModelResponseAdapter {
+  static get platform_res() {
+    return {
+      model: "",
+      created_at: null,
+      message: {
+        role: "",
+        content: ""
+      },
+      total_duration: 0,
+      load_duration: 0,
+      prompt_eval_count: 0,
+      prompt_eval_duration: 0,
+      eval_count: 0,
+      eval_duration: 0
+    };
+  }
+  /**
+   * Convert response to OpenAI format
+   * @returns {Object} Response in OpenAI format
+   */
+  to_openai() {
+    return {
+      id: this._res.created_at,
+      object: "chat.completion",
+      created: Date.now(),
+      model: this._res.model,
+      choices: [
+        {
+          index: 0,
+          message: this._transform_message_to_openai(),
+          finish_reason: this._res.done_reason
+        }
+      ],
+      usage: this._transform_usage_to_openai()
+    };
+  }
+  /**
+   * Transform message to OpenAI format
+   * @returns {Object} Message in OpenAI format
+   * @private
+   */
+  _transform_message_to_openai() {
+    return {
+      role: this._res.message.role,
+      content: this._res.message.content,
+      tool_calls: this._res.message.tool_calls
+    };
+  }
+  /**
+   * Transform usage statistics to OpenAI format
+   * @returns {Object} Usage statistics in OpenAI format
+   * @private
+   */
+  _transform_usage_to_openai() {
+    return {
+      prompt_tokens: this._res.prompt_eval_count || 0,
+      completion_tokens: this._res.eval_count || 0,
+      total_tokens: (this._res.prompt_eval_count || 0) + (this._res.eval_count || 0)
+    };
+  }
+  /**
+   * Parse chunk adds delta to content as expected output format
+   */
+  handle_chunk(chunk) {
+    chunk = JSON.parse(chunk || "{}");
+    if (chunk.created_at && !this._res.created_at) {
+      this._res.created_at = chunk.created_at;
+    }
+    if (chunk.message?.content) {
+      this._res.message.content += chunk.message.content;
+    }
+    if (chunk.message?.role) {
+      this._res.message.role = chunk.message.role;
+    }
+    if (chunk.model) {
+      this._res.model = chunk.model;
+    }
+    if (chunk.message?.tool_calls) {
+      if (!this._res.message.tool_calls) {
+        this._res.message.tool_calls = [{
+          id: "",
+          type: "function",
+          function: {
+            name: "",
+            arguments: ""
+          }
+        }];
+      }
+      if (chunk.message.tool_calls[0].id) {
+        this._res.message.tool_calls[0].id += chunk.message.tool_calls[0].id;
+      }
+      if (chunk.message.tool_calls[0].function.name) {
+        this._res.message.tool_calls[0].function.name += chunk.message.tool_calls[0].function.name;
+      }
+      if (chunk.message.tool_calls[0].function.arguments) {
+        if (typeof chunk.message.tool_calls[0].function.arguments === "string") {
+          this._res.message.tool_calls[0].function.arguments += chunk.message.tool_calls[0].function.arguments;
+        } else {
+          this._res.message.tool_calls[0].function.arguments = chunk.message.tool_calls[0].function.arguments;
+        }
+      }
+    }
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-chat-model/adapters/_custom.js
+var adapters_map = {
+  "openai": {
+    req: SmartChatModelRequestAdapter,
+    res: SmartChatModelResponseAdapter
+  },
+  "anthropic": {
+    req: SmartChatModelAnthropicRequestAdapter,
+    res: SmartChatModelAnthropicResponseAdapter
+  },
+  "gemini": {
+    req: SmartChatModelGeminiRequestAdapter,
+    res: SmartChatModelGeminiResponseAdapter
+  },
+  "lm_studio": {
+    req: SmartChatModelLmStudioRequestAdapter,
+    res: SmartChatModelLmStudioResponseAdapter
+  },
+  "ollama": {
+    req: SmartChatModelOllamaRequestAdapter,
+    res: SmartChatModelOllamaResponseAdapter
+  }
+};
+var SmartChatModelCustomAdapter = class extends SmartChatModelApiAdapter {
+  static key = "custom";
+  static defaults = {
+    description: "Custom API (Local or Remote, OpenAI format)",
+    type: "API",
+    /**
+     * new default property: 'api_adapter' indicates which
+     * request/response adapter set to use internally
+     */
+    api_adapter: "openai"
+  };
+  /**
+   * Provide dynamic request/response classes
+   * based on current adapter_config.api_adapter setting
+   * ----------------------------------------------------
+   */
+  /**
+   * @override
+   * @returns {typeof SmartChatModelRequestAdapter}
+   */
+  get req_adapter() {
+    const adapter_name = this.adapter_config.api_adapter || "openai";
+    const map_entry = adapters_map[adapter_name];
+    return map_entry && map_entry.req ? map_entry.req : SmartChatModelRequestAdapter;
+  }
+  /**
+   * @override
+   * @returns {typeof SmartChatModelResponseAdapter}
+   */
+  get res_adapter() {
+    const adapter_name = this.adapter_config.api_adapter || "openai";
+    const map_entry = adapters_map[adapter_name];
+    return map_entry && map_entry.res ? map_entry.res : SmartChatModelResponseAdapter;
+  }
+  /**
+   * Synthesize a custom endpoint from the config fields.
+   * All fields are optional; fallback to a minimal default.
+   * @returns {string}
+   */
+  get endpoint() {
+    const protocol = this.adapter_config.protocol || "http";
+    const hostname = this.adapter_config.hostname || "localhost";
+    const port = this.adapter_config.port ? `:${this.adapter_config.port}` : "";
+    let path2 = this.adapter_config.path || "";
+    if (path2 && !path2.startsWith("/")) path2 = `/${path2}`;
+    return `${protocol}://${hostname}${port}${path2}`;
+  }
+  get_adapters_as_options() {
+    return Object.keys(adapters_map).map((adapter_name) => ({ value: adapter_name, name: adapter_name }));
+  }
+  /**
+   * Provide custom settings for configuring
+   * the user-defined fields plus the new 'api_adapter'.
+   * @override
+   * @returns {Object} settings configuration
+   */
+  get settings_config() {
+    return {
+      /**
+       * Select which specialized request/response adapter
+       * you'd like to use for your custom endpoint.
+       */
+      "[CHAT_ADAPTER].api_adapter": {
+        name: "API Adapter",
+        type: "dropdown",
+        description: "Pick a built-in or external adapter to parse request/response data.",
+        // Provide a short selection set, or dynamically gather from keys of adapters_map
+        options_callback: "adapter.get_adapters_as_options",
+        default: "openai"
+      },
+      "[CHAT_ADAPTER].id": {
+        name: "Model Name",
+        type: "text",
+        description: "Enter the model name for your endpoint if needed."
+      },
+      "[CHAT_ADAPTER].protocol": {
+        name: "Protocol",
+        type: "text",
+        description: "e.g. http or https"
+      },
+      "[CHAT_ADAPTER].hostname": {
+        name: "Hostname",
+        type: "text",
+        description: "e.g. localhost or some.remote.host"
+      },
+      "[CHAT_ADAPTER].port": {
+        name: "Port",
+        type: "number",
+        description: "Port number or leave blank"
+      },
+      "[CHAT_ADAPTER].path": {
+        name: "Path",
+        type: "text",
+        description: "Path portion of the URL (leading slash optional)"
+      },
+      "[CHAT_ADAPTER].streaming": {
+        name: "Streaming",
+        type: "toggle",
+        description: "Enable streaming if your API supports it."
+      },
+      "[CHAT_ADAPTER].max_input_tokens": {
+        name: "Max Input Tokens",
+        type: "number",
+        description: "Max number of tokens your model can handle in the prompt."
+      },
+      "[CHAT_ADAPTER].api_key": {
+        name: "API Key",
+        type: "password",
+        description: "If your service requires an API key, add it here."
+      }
+    };
+  }
+  /**
+   * Return 'true' for get_models params since user might
+   * not rely on auto-populating. 
+   * @override
+   * @returns {true}
+   */
+  validate_get_models_params() {
+    return true;
+  }
+  /**
+   * Unlike most API-based adapters, we do NOT force the user to have model_key set.
+   * So we override validate_config() to skip the "No model selected" error.
+   * Since this is a custom adapter, the onus is on the user to configure it correctly.
+   * @override
+   * @returns {Object} { valid: boolean, message: string }
+   */
+  validate_config() {
+    return { valid: true, message: "Configuration is valid." };
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-chat-model/adapters/groq.js
+var SmartChatModelGroqAdapter = class extends SmartChatModelApiAdapter {
+  static key = "groq";
+  static defaults = {
+    description: "Groq",
+    type: "API",
+    endpoint: "https://api.groq.com/openai/v1/chat/completions",
+    streaming: true,
+    adapter: "Groq",
+    models_endpoint: "https://api.groq.com/openai/v1/models",
+    default_model: "llama3-8b-8192",
+    signup_url: "https://groq.com",
+    can_use_tools: true
+  };
+  /**
+   * Request adapter class
+   * @returns {typeof SmartChatModelGroqRequestAdapter}
+   */
+  get req_adapter() {
+    return SmartChatModelGroqRequestAdapter;
+  }
+  /**
+   * Response adapter class
+   * @returns {typeof SmartChatModelGroqResponseAdapter}
+   */
+  get res_adapter() {
+    return SmartChatModelGroqResponseAdapter;
+  }
+  /**
+   * Retrieve the list of models from Groq's API.
+   * @returns {Promise<Object>} A dictionary of models keyed by their id
+   */
+  async get_models(refresh = false) {
+    if (!refresh && this.adapter_config?.models && Object.keys(this.adapter_config.models).length > 0) {
+      return this.adapter_config.models;
+    }
+    const request_params = {
+      url: this.models_endpoint,
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${this.api_key}`
+      }
+    };
+    try {
+      const resp = await this.http_adapter.request(request_params);
+      const data = await resp.json();
+      const model_data = this.parse_model_data(data);
+      this.adapter_settings.models = model_data;
+      this.model.re_render_settings();
+      return model_data;
+    } catch (error) {
+      console.error("Failed to fetch Groq model data:", error);
+      return { "_": { id: "Failed to fetch models from Groq" } };
+    }
+  }
+  /**
+   * Parse model data from Groq API format to a dictionary keyed by model ID.
+   * The API returns a list of model objects like:
+   * {
+   *   "object": "list",
+   *   "data": [ { "id": "...", "object": "model", ... }, ... ]
+   * }
+   * 
+   * We'll convert each model to:
+   * {
+   *   model_name: model.id,
+   *   id: model.id,
+   *   max_input_tokens: model.context_window,
+   *   description: `Owned by: ${model.owned_by}, context: ${model.context_window}`,
+   *   multimodal: Check if model name or description suggests multimodality
+   * }
+   */
+  parse_model_data(model_data) {
+    if (model_data.object !== "list" || !Array.isArray(model_data.data)) {
+      return { "_": { id: "No models found." } };
+    }
+    const parsed = {};
+    for (const m of model_data.data) {
+      parsed[m.id] = {
+        model_name: m.id,
+        id: m.id,
+        max_input_tokens: m.context_window || 8192,
+        description: `Owned by: ${m.owned_by}, context: ${m.context_window}`,
+        // A basic heuristic for multimodal: if 'vision' or 'tool' is in model id
+        // Adjust as needed based on known capabilities
+        multimodal: m.id.includes("vision")
+      };
+    }
+    return parsed;
+  }
+  /**
+   * Validate configuration for Groq
+   * @returns {Object} { valid: boolean, message: string }
+   */
+  validate_config() {
+    if (!this.adapter_config.model_key) return { valid: false, message: "No model selected." };
+    if (!this.api_key) {
+      return { valid: false, message: "API key is missing." };
+    }
+    return { valid: true, message: "Configuration is valid." };
+  }
+};
+var SmartChatModelGroqRequestAdapter = class extends SmartChatModelRequestAdapter {
+  _get_openai_content(message) {
+    if (["assistant", "tool"].includes(message.role)) {
+      if (Array.isArray(message.content)) {
+        return message.content.map((part) => {
+          if (typeof part === "string") return part;
+          if (part?.text) return part.text;
+          return "";
+        }).join("\n");
+      }
+    }
+    return message.content;
+  }
+};
+var SmartChatModelGroqResponseAdapter = class extends SmartChatModelResponseAdapter {
+};
+
+// node_modules/obsidian-smart-env/default.config.js
+var import_obsidian13 = require("obsidian");
+
+// node_modules/obsidian-smart-env/node_modules/smart-completions/smart_completions.js
+var SmartCompletions = class extends Collection {
+  /**
+   * Lazily instantiates and returns a chat_model. Similar to how
+   * SmartEntities implements embed_model. You can adapt this
+   * depending on how your environment is structured.
+   *
+   * @returns {Object|null} The chat model instance or null if not configured
+   */
+  get chat_model() {
+    if (!this._chat_model) {
+      this._chat_model = this.env.init_module("smart_chat_model", {
+        model_config: {},
+        settings: this.settings.chat_model ?? this.env.smart_chat_threads?.settings?.chat_model ?? {},
+        reload_model: this.reload_chat_model.bind(this),
+        re_render_settings: this.re_render_settings?.bind(this) ?? (() => {
+          console.log("no re_render_settings");
+        })
+      });
+    }
+    return this._chat_model;
+  }
+  /**
+   * Force unload & reload of chat model if user changes adapter or settings.
+   */
+  reload_chat_model() {
+    if (this._chat_model?.unload) {
+      this._chat_model.unload();
+    }
+    this._chat_model = null;
+  }
+  /**
+   * In addition to base collection settings, merges `chat_model.settings_config`.
+   * Allows the SmartCompletions UI to show chat-model relevant settings.
+   * @returns {Object} Merged settings config
+   */
+  get settings_config() {
+    return {};
+  }
+  /**
+   * (Optional) An array of request adapter classes. SmartCompletion items will invoke these
+   * in `run_completion_adapters()`. For example, we can list the context adapter or other custom ones.
+   */
+  get completion_adapters() {
+    if (!this._completion_adapters) {
+      this._completion_adapters = {};
+      Object.values(this.opts.completion_adapters).forEach((adapter) => {
+        this._completion_adapters[adapter.property_name] = adapter;
+      });
+    }
+    return this._completion_adapters;
+  }
+};
+
+// node_modules/smart-utils/coerce_primitives.js
+function coerce_primitives(value) {
+  if (typeof value !== "string") {
+    return value;
+  }
+  const trimmed_value = value.trim();
+  if (trimmed_value === "true") {
+    return true;
+  }
+  if (trimmed_value === "false") {
+    return false;
+  }
+  const float_pattern = /^-?\d+\.\d+$/;
+  if (float_pattern.test(trimmed_value)) {
+    const num = parseFloat(trimmed_value);
+    if (num.toString() === trimmed_value) {
+      return num;
+    }
+  }
+  const int_pattern = /^-?(?:0|[1-9]\d*)$/;
+  if (int_pattern.test(trimmed_value)) {
+    return Number(trimmed_value);
+  }
+  return value;
+}
+
+// node_modules/smart-utils/parse_xml_fragments.js
+function parse_xml_fragments(xml_input) {
+  if (typeof xml_input !== "string" || xml_input.trim() === "") {
+    return null;
+  }
+  const VERBATIM_TAGS = /* @__PURE__ */ new Set(["think"]);
+  const compress_whitespace = (str) => str.replace(/\s+/g, " ").trim();
+  const parse_attributes = (str) => {
+    if (!str) return {};
+    const attrs = {};
+    const attr_re = /(\w[\w.\-]*)\s*=\s*"([^"]*)"/g;
+    let m;
+    while ((m = attr_re.exec(str)) !== null) {
+      const [, key, raw_val] = m;
+      attrs[key] = coerce_primitives(raw_val);
+    }
+    return attrs;
+  };
+  const attach_child = (map, tag, node) => {
+    if (tag in map) {
+      const existing = map[tag];
+      map[tag] = Array.isArray(existing) ? [...existing, node] : [existing, node];
+    } else {
+      map[tag] = node;
+    }
+  };
+  const finalize_node = (ctx) => {
+    const text_raw = ctx.verbatim ? ctx.text.replace(/^\s*\n/, "").replace(/\s+$/, "") : compress_whitespace(ctx.text);
+    if (Object.keys(ctx.children_map).length) {
+      ctx.node.contents = ctx.children_map;
+    } else if (text_raw !== "") {
+      ctx.node.contents = ctx.verbatim ? text_raw : coerce_primitives(text_raw);
+    } else {
+      ctx.node.contents = null;
+    }
+  };
+  const cleaned = xml_input.replace(/<!--[\s\S]*?-->/g, "");
+  const token_re = /<[^>]+>|[^<]+/g;
+  const root_map = {};
+  const stack = [];
+  let match;
+  while ((match = token_re.exec(cleaned)) !== null) {
+    const token = match[0];
+    if (stack.length) {
+      const top = stack[stack.length - 1];
+      if (top.verbatim) {
+        if (token.startsWith(`</${top.tag_name}`)) {
+          stack.pop();
+          finalize_node(top);
+          if (stack.length === 0) {
+            attach_child(root_map, top.tag_name, top.node);
+          } else {
+            attach_child(stack[stack.length - 1].children_map, top.tag_name, top.node);
+          }
+          continue;
+        }
+        top.text += token;
+        continue;
+      }
+    }
+    if (token.startsWith("<")) {
+      if (token.startsWith("</")) {
+        const tag_name = token.slice(2, -1).trim();
+        if (!stack.length) return null;
+        const ctx = stack.pop();
+        if (ctx.tag_name !== tag_name) return null;
+        finalize_node(ctx);
+        if (stack.length === 0) {
+          attach_child(root_map, tag_name, ctx.node);
+        } else {
+          attach_child(stack[stack.length - 1].children_map, tag_name, ctx.node);
+        }
+      } else {
+        const self_closing = token.endsWith("/>");
+        const body = self_closing ? token.slice(1, -2) : token.slice(1, -1);
+        const first_space = body.indexOf(" ");
+        const tag_name = first_space === -1 ? body : body.slice(0, first_space);
+        const attr_str = first_space === -1 ? "" : body.slice(first_space + 1);
+        const attributes = parse_attributes(attr_str);
+        const node = Object.keys(attributes).length ? { attributes } : {};
+        if (self_closing) {
+          node.contents = null;
+          if (stack.length === 0) {
+            attach_child(root_map, tag_name, node);
+          } else {
+            attach_child(stack[stack.length - 1].children_map, tag_name, node);
+          }
+        } else {
+          stack.push({
+            tag_name,
+            node,
+            text: "",
+            children_map: {},
+            verbatim: VERBATIM_TAGS.has(tag_name)
+          });
+        }
+      }
+    } else {
+      if (stack.length) stack[stack.length - 1].text += token;
+    }
+  }
+  while (stack.length) {
+    const ctx = stack.pop();
+    finalize_node(ctx);
+    if (stack.length === 0) {
+      attach_child(root_map, ctx.tag_name, ctx.node);
+    } else {
+      attach_child(stack[stack.length - 1].children_map, ctx.tag_name, ctx.node);
+    }
+  }
+  return Object.keys(root_map).length ? root_map : null;
+}
+
+// node_modules/obsidian-smart-env/node_modules/smart-completions/smart_completion.js
+var SmartCompletion = class extends CollectionItem {
+  constructor(env, data = null) {
+    super(env, data);
+    this.run_adapter_item_constructors();
+  }
+  run_adapter_item_constructors() {
+    for (const [key, AdapterClass] of Object.entries(this.completion_adapters)) {
+      AdapterClass.item_constructor?.(this);
+    }
+  }
+  /**
+   * Default data structure for a new SmartCompletion item.
+   * @static
+   * @returns {Object}
+   */
+  static get defaults() {
+    return {
+      data: {
+        completion: {
+          request: {},
+          responses: [],
+          chat_model: null
+        }
+      }
+    };
+  }
+  /**
+   * get_key
+   * Overridden to produce a unique key based on a hash of this.data plus the current timestamp.
+   * @returns {string}
+   */
+  get_key() {
+    const hash = murmur_hash_32_alphanumeric(JSON.stringify(this.data));
+    const ts = Date.now();
+    return `${hash}-${ts}`;
+  }
+  /**
+   * Called automatically in many cases (via create_or_update).
+   * You can also call it manually if needed.
+   */
+  async init(completion_opts = {}) {
+    if (this.data.chat_model_config) {
+      this.chat_model = this.env.init_module("smart_chat_model", {
+        settings: this.data.chat_model_config
+      });
+    }
+    await this.build_request();
+    await this.complete(completion_opts);
+    await this.parse_response();
+    this.queue_save();
+    this.collection.process_save_queue();
+  }
+  /**
+   * Collects or transforms data into a final `completion.request` structure
+   * by running any applicable completion adapters.
+   * @returns {Promise<void>}
+   */
+  async build_request() {
+    this.data.completion.request = {};
+    const adapters = Object.entries(this.completion_adapters).map(([key, AdapterClass]) => ({
+      key,
+      AdapterClass,
+      order: AdapterClass.order ?? 0
+    })).sort((a, b) => a.order - b.order);
+    for (const { AdapterClass, key } of adapters) {
+      const property = AdapterClass.property_name;
+      if (property && this.data[property]) {
+        const adapter = new AdapterClass(this);
+        await adapter.to_request?.();
+      }
+    }
+    return this.data.completion.request;
+  }
+  async parse_response() {
+    const data_keys = Object.keys(this.data);
+    for (const key of data_keys) {
+      const AdapterClass = this.completion_adapters[key];
+      if (AdapterClass) {
+        const adapter = new AdapterClass(this);
+        await adapter.from_response?.();
+      }
+    }
+    return this.data.completion.responses;
+  }
+  /**
+   * Calls the underlying chat model, stores the response in completion.responses.
+   * @returns {Promise<void>}
+   */
+  async complete(opts = {}) {
+    if (!this.data.completion || !this.data.completion.request) {
+      console.warn("No completion.request found, skipping complete().");
+      return;
+    }
+    const chat_model = this.get_chat_model(opts);
+    this.data.completion.chat_model = {
+      model_key: chat_model.model_key,
+      platform_key: chat_model.adapter_name
+    };
+    if (!chat_model) {
+      console.warn("No chat model available for SmartCompletion. Check environment config.");
+      return;
+    }
+    try {
+      const request_payload = this.data.completion.request;
+      const stream = opts.stream;
+      const result = stream ? await chat_model.stream(request_payload, this.stream_handlers(opts.stream_handlers)) : await chat_model.complete(request_payload);
+      if (!stream) {
+        this.data.completion.responses.push({
+          timestamp: Date.now(),
+          ...result
+        });
+      }
+      const typing_indicator = this.container?.closest(".smart-chat-thread")?.querySelector(".smart-chat-typing-indicator");
+      if (typing_indicator) typing_indicator.style.display = "none";
+      this.queue_save();
+    } catch (err) {
+      console.error("Error in SmartCompletion.complete():", err);
+    }
+  }
+  stream_handlers(stream_handlers = {}) {
+    return {
+      chunk: async (resp) => {
+        this.data.completion.responses[0] = {
+          timestamp: Date.now(),
+          ...resp
+        };
+        await stream_handlers.chunk?.(this);
+      },
+      done: async (resp) => {
+        this.data.completion.responses[0] = {
+          timestamp: Date.now(),
+          ...resp
+        };
+        await stream_handlers.done?.(this);
+      },
+      error: async (err) => {
+        console.error("error", err);
+        await stream_handlers.error?.(err);
+      }
+    };
+  }
+  /**
+   * Access the completion adapters from the parent collection, if any.
+   */
+  get completion_adapters() {
+    return this.collection?.completion_adapters || {};
+  }
+  /**
+   * If a local chat_model config is present, creates a dedicated instance.
+   * Otherwise, returns the collection-level chat_model or null.
+   * @returns {Object|null}
+   */
+  get_chat_model() {
+    if (this.chat_model) {
+      return this.chat_model;
+    } else {
+      console.log("no chat_model, using collection chat_model");
+      return this.collection?.chat_model || null;
+    }
+  }
+  get response() {
+    return this.data.completion.responses[0];
+  }
+  /**
+   * @method response_text
+   * @returns {string} The best guess at the main text from the model's first response.
+   */
+  get response_text() {
+    const resp = this.data?.completion?.responses[0];
+    if (!resp) return "";
+    if (Array.isArray(resp.choices) && resp.choices[0]) {
+      const choice = resp.choices[0];
+      if (choice.message && choice.message.content) {
+        return choice.message.content;
+      }
+      if (choice.text) return choice.text;
+    }
+    if (resp.text) return resp.text;
+    return "";
+  }
+  get response_structured_output() {
+    if (!this.response) return null;
+    if (this.action_call) {
+      try {
+        const parsed2 = JSON.parse(this.action_call);
+        return parsed2;
+      } catch (e) {
+        console.log("failed to parse tool_call in response_structured_output");
+      }
+    }
+    if (!this.response_text) return null;
+    const parsed = parse_xml_fragments(this.response_text);
+    if (!parsed) return null;
+    return parsed;
+  }
+  get action_call() {
+    const resp = this.response;
+    if (!resp) return null;
+    return resp.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+  }
+  get messages() {
+    const messages = [];
+    if (this.data.system_message) {
+      messages.push({
+        role: "system",
+        content: this.data.system_message
+      });
+    }
+    if (this.data.user_message) {
+      messages.push({
+        role: "user",
+        content: this.data.user_message
+      });
+    }
+    if (this.response_text) {
+      messages.push({
+        role: "assistant",
+        content: this.response_text
+      });
+    }
+    return messages;
+  }
+  get is_completed() {
+    return this.data.completion.responses.length > 0;
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-collections/utils/ajson_merge.js
+function ajson_merge(existing, new_obj) {
+  if (new_obj === null) return null;
+  if (new_obj === void 0) return existing;
+  if (typeof new_obj !== "object") return new_obj;
+  if (typeof existing !== "object" || existing === null) existing = {};
+  const keys = Object.keys(new_obj);
+  const length = keys.length;
+  for (let i = 0; i < length; i++) {
+    const key = keys[i];
+    const new_val = new_obj[key];
+    const existing_val = existing[key];
+    if (Array.isArray(new_val)) {
+      existing[key] = new_val.slice();
+    } else if (is_object(new_val)) {
+      existing[key] = ajson_merge(is_object(existing_val) ? existing_val : {}, new_val);
+    } else if (new_val !== void 0) {
+      existing[key] = new_val;
+    }
+  }
+  return existing;
+}
+function is_object(obj) {
+  return obj !== null && typeof obj === "object" && !Array.isArray(obj);
+}
+
+// node_modules/obsidian-smart-env/node_modules/smart-collections/adapters/ajson_single_file.js
+var class_to_collection_key2 = {
+  "SmartSource": "smart_sources",
+  "SmartNote": "smart_sources",
+  // DEPRECATED
+  "SmartBlock": "smart_blocks",
+  "SmartDirectory": "smart_directories"
+};
+function _parse_ajson_key(ajson_key) {
+  let changed = false;
+  let [collection_key, ...item_key] = ajson_key.split(":");
+  if (class_to_collection_key2[collection_key]) {
+    collection_key = class_to_collection_key2[collection_key];
+    changed = true;
+  }
+  return {
+    collection_key,
+    item_key: item_key.join(":"),
+    changed
+  };
+}
+var AjsonSingleFileCollectionDataAdapter = class extends AjsonMultiFileCollectionDataAdapter {
+  /**
+   * Returns the single shared `.ajson` file path for this collection.
+   * @param {string} [key] - (unused) Item key, ignored in single-file mode.
+   * @returns {string} The single .ajson file path for the entire collection.
+   */
+  get_item_data_path(key) {
+    const file_name = (this.collection?.collection_key || "collection") + ".ajson";
+    const sep = this.fs?.sep || "/";
+    const dir = this.collection.data_dir || "data";
+    return [dir, file_name].join(sep);
+  }
+  /**
+   * Override process_load_queue to parse the entire single-file .ajson once,
+   * distributing final states to items.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
+  async process_load_queue() {
+    this.collection.show_process_notice("loading_collection");
+    if (!await this.fs.exists(this.collection.data_dir)) {
+      await this.fs.mkdir(this.collection.data_dir);
+    }
+    const path2 = this.get_item_data_path();
+    if (!await this.fs.exists(path2)) {
+      for (const item of Object.values(this.collection.items)) {
+        if (item._queue_load) {
+          item.queue_import?.();
+        }
+      }
+      this.collection.clear_process_notice("loading_collection");
+      return;
+    }
+    const raw_data = await this.fs.read(path2, "utf-8", { no_cache: true });
+    if (!raw_data) {
+      for (const item of Object.values(this.collection.items)) {
+        if (item._queue_load) {
+          item.queue_import?.();
+        }
+      }
+      this.collection.clear_process_notice("loading_collection");
+      return;
+    }
+    const { rewrite, file_data } = this.parse_single_file_ajson(raw_data);
+    if (rewrite) {
+      if (file_data.length) {
+        await this.fs.write(path2, file_data);
+      } else {
+        await this.fs.remove(path2);
+      }
+    }
+    for (const item of Object.values(this.collection.items)) {
+      item._queue_load = false;
+      item.loaded_at = Date.now();
+    }
+    this.collection.clear_process_notice("loading_collection");
+  }
+  /**
+   * Helper to parse single-file .ajson content, distributing states to items.
+   *
+   * @param {string} raw
+   * @returns {{ rewrite: boolean, file_data: string }}
+   */
+  parse_single_file_ajson(raw) {
+    let rewrite = false;
+    const lines = raw.trim().split("\n").filter(Boolean);
+    let data_map = {};
+    let line_count = 0;
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line.endsWith(",")) {
+        rewrite = true;
+      }
+      const trimmed = line.replace(/,$/, "");
+      const combined = "{" + trimmed + "}";
+      try {
+        const obj = JSON.parse(combined);
+        const [fullKey, value] = Object.entries(obj)[0];
+        let { collection_key, item_key, changed } = _parse_ajson_key(fullKey);
+        const newKey = `${collection_key}:${item_key}`;
+        if (!value) {
+          delete data_map[newKey];
+          if (changed || newKey !== fullKey) {
+            delete data_map[fullKey];
+          }
+          rewrite = true;
+        } else {
+          data_map[newKey] = value;
+          if (changed || newKey !== fullKey) {
+            delete data_map[fullKey];
+            rewrite = true;
+          }
+        }
+      } catch (err) {
+        console.warn("parse error for line: ", line, err);
+        rewrite = true;
+      }
+      line_count++;
+    }
+    for (const [ajson_key, val] of Object.entries(data_map)) {
+      const [collection_key, ...rest] = ajson_key.split(":");
+      const item_key = rest.join(":");
+      const collection = this.collection.env[collection_key];
+      if (!collection) continue;
+      let item = collection.get(item_key);
+      if (!item) {
+        const ItemClass = collection.item_type;
+        item = new ItemClass(this.env, val);
+        collection.set(item);
+      } else {
+        item.data = ajson_merge(item.data, val);
+      }
+      item.loaded_at = Date.now();
+      item._queue_load = false;
+      if (!val.key) val.key = item_key;
+    }
+    if (line_count > Object.keys(data_map).length) {
+      rewrite = true;
+    }
+    let minimal_lines = [];
+    for (const [ajson_key, val] of Object.entries(data_map)) {
+      minimal_lines.push(`${JSON.stringify(ajson_key)}: ${JSON.stringify(val)},`);
+    }
+    return {
+      rewrite,
+      file_data: minimal_lines.join("\n")
+    };
+  }
+  /**
+   * Override process_save_queue for single-file approach.
+   * We'll simply call save_item for each queued item, which appends a line to the same `.ajson`.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
+  async process_save_queue() {
+    this.collection.show_process_notice("saving_collection");
+    const save_queue = Object.values(this.collection.items).filter((item) => item._queue_save);
+    const time_start = Date.now();
+    const batch_size = 50;
+    for (let i = 0; i < save_queue.length; i += batch_size) {
+      const batch = save_queue.slice(i, i + batch_size);
+      await Promise.all(batch.map((item) => {
+        const adapter = this.create_item_adapter(item);
+        return adapter.save().catch((err) => {
+          console.warn(`Error saving item ${item.key}`, err);
+          item.queue_save();
+        });
+      }));
+    }
+    const deleted_items = Object.values(this.collection.items).filter((item) => item.deleted);
+    if (deleted_items.length) {
+      deleted_items.forEach((item) => {
+        delete this.collection.items[item.key];
+      });
+    }
+    console.log(`Saved (single-file) ${this.collection.collection_key} in ${Date.now() - time_start}ms`);
+    this.collection.clear_process_notice("saving_collection");
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-completions/utils/insert_user_message.js
+function insert_user_message(request, user_message, opts = {}) {
+  if (!user_message) return;
+  const { position = "end", new_user_message = false } = opts;
+  if (!request.messages) {
+    request.messages = [];
+  }
+  const last_user_index = request.messages.findLastIndex((x) => x.role === "user");
+  if (last_user_index === -1 || new_user_message) {
+    const new_user_message2 = {
+      role: "user",
+      content: [{ type: "text", text: user_message }]
+    };
+    request.messages.push(new_user_message2);
+    return;
+  }
+  const last_user_message = request.messages[last_user_index];
+  if (!Array.isArray(last_user_message.content)) {
+    last_user_message.content = [
+      {
+        type: "text",
+        text: last_user_message.content
+      }
+    ];
+  }
+  if (position === "start") {
+    last_user_message.content.unshift({
+      type: "text",
+      text: user_message
+    });
+  } else {
+    last_user_message.content.push({
+      type: "text",
+      text: user_message
+    });
+  }
+}
+
+// node_modules/obsidian-smart-env/node_modules/smart-completions/adapters/_adapter.js
+var SmartCompletionAdapter = class {
+  constructor(item) {
+    this.item = item;
+  }
+  get data() {
+    return this.item.data;
+  }
+  get env() {
+    return this.item.env;
+  }
+  get completion() {
+    return this.data.completion;
+  }
+  get request() {
+    return this.item.data.completion.request;
+  }
+  get response() {
+    return this.item.response;
+  }
+  insert_user_message(user_message, opts = {}) {
+    insert_user_message(this.request, user_message, opts);
+  }
+  // Override these methods in subclasses
+  static get property_name() {
+    return null;
+  }
+  /**
+   * @returns {Promise<void>}
+   */
+  async to_request() {
+  }
+  /**
+   * @returns {Promise<void>}
+   */
+  async from_response() {
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-completions/utils/insert_image.js
+async function insert_image(request, image_path, fs) {
+  const base64_image = await convert_image_to_base64(fs, image_path);
+  if (!base64_image) return;
+  const last_user_index = request.messages.findLastIndex((x) => x.role === "user");
+  const image_content = {
+    role: "user",
+    content: [{ type: "image_url", image_url: { url: base64_image } }]
+  };
+  if (last_user_index === -1) {
+    request.messages.unshift(image_content);
+  }
+  const last_user_message = request.messages[last_user_index];
+  if (!last_user_message) return console.warn("insert_image: no last_user_message");
+  if (!Array.isArray(last_user_message.content)) {
+    last_user_message.content = [];
+  }
+  last_user_message.content.push(image_content.content[0]);
+}
+async function convert_image_to_base64(fs, image_path) {
+  if (!image_path) return;
+  const image_exts = ["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", "ico"];
+  const ext = image_path.split(".").pop().toLowerCase();
+  if (!image_exts.includes(ext)) return;
+  try {
+    const base64_data = await fs.read(image_path, "base64");
+    const base64_url = `data:image/${ext};base64,${base64_data}`;
+    return base64_url;
+  } catch (err) {
+    console.warn(`Failed to convert image ${image_path} to base64`, err);
+  }
+}
+
+// node_modules/obsidian-smart-env/node_modules/smart-completions/utils/insert_pdf.js
+async function insert_pdf(request, pdf_path, fs) {
+  const base64_pdf = await convert_pdf_to_base64(fs, pdf_path);
+  if (!base64_pdf) return;
+  const last_user_index = request.messages.findLastIndex((x) => x.role === "user");
+  const pdf_content = {
+    role: "user",
+    content: [{
+      type: "file",
+      file: {
+        filename: pdf_path.split(/[\\/]/).pop(),
+        file_data: `data:application/pdf;base64,${base64_pdf}`
+        // <-- Prefix added
+      }
+    }]
+  };
+  if (last_user_index === -1) {
+    request.messages.unshift(pdf_content);
+    return;
+  }
+  const last_user_message = request.messages[last_user_index];
+  if (!last_user_message) return console.warn("insert_pdf: no last_user_message");
+  if (!Array.isArray(last_user_message.content)) {
+    last_user_message.content = [];
+  }
+  last_user_message.content.push(pdf_content.content[0]);
+}
+async function convert_pdf_to_base64(fs, pdf_path) {
+  if (!pdf_path) return;
+  const ext = pdf_path.split(".").pop().toLowerCase();
+  if (ext !== "pdf") return;
+  try {
+    const base64_data = await fs.read(pdf_path, "base64");
+    return base64_data;
+  } catch (err) {
+    console.warn(`Failed to convert PDF ${pdf_path} to base64`, err);
+  }
+}
+
+// node_modules/obsidian-smart-env/node_modules/smart-completions/adapters/context.js
+var SmartCompletionContextAdapter = class extends SmartCompletionAdapter {
+  static order = 10;
+  static get property_name() {
+    return "context_key";
+  }
+  async to_request() {
+    const context_key = this.data.context_key;
+    if (!context_key) return;
+    const context_opts = this.data.context_opts;
+    const context_collection = this.item.env.smart_contexts;
+    if (!context_collection) {
+      console.warn("No 'smart_contexts' collection found; skipping context adapter.");
+      return;
+    }
+    const ctx_item = context_collection.get(context_key);
+    if (!ctx_item) {
+      console.warn(`SmartContext not found for key '${context_key}'`);
+      return;
+    }
+    if (!ctx_item.has_context_items) {
+      console.warn(`SmartContext '${context_key}' has no context items; skipping context adapter.`);
+      return;
+    }
+    await ctx_item.save();
+    let compiled;
+    try {
+      compiled = await ctx_item.compile(context_opts);
+    } catch (err) {
+      console.warn("Error compiling ephemeral context", err);
+      return;
+    }
+    if (compiled.context) {
+      this.insert_user_message(compiled.context);
+      if (this.data.user_message) {
+        this.insert_user_message(this.data.user_message, { position: "end" });
+      }
+    }
+    if (compiled.images?.length > 0) {
+      await this.insert_images(compiled.images);
+    }
+    if (compiled.pdfs?.length > 0) {
+      await this.insert_pdfs(compiled.pdfs);
+    }
+  }
+  async insert_images(image_paths) {
+    if (!Array.isArray(image_paths) || !image_paths.length) return;
+    for (const img_path of image_paths) {
+      await insert_image(this.request, img_path, this.item.env.fs);
+    }
+  }
+  async insert_pdfs(pdf_paths) {
+    if (!Array.isArray(pdf_paths) || !pdf_paths.length) return;
+    for (const pdf_path of pdf_paths) {
+      await insert_pdf(this.request, pdf_path, this.item.env.fs);
+    }
+  }
+  /**
+   * No special post-processing after we get model response.
+   */
+  async from_response() {
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-completions/adapters/user.js
+var SmartCompletionUserAdapter = class extends SmartCompletionAdapter {
+  static order = 1;
+  /**
+   * @returns {string}
+   */
+  static get property_name() {
+    return "user_message";
+  }
+  get request() {
+    return this.item.data.completion.request;
+  }
+  /**
+   * to_request: Checks `data.user`, adds a user message to `request.messages`.
+   * @returns {Promise<void>}
+   */
+  async to_request() {
+    const user_message = this.data.user_message;
+    const new_user_message = this.data.new_user_message;
+    this.insert_user_message(user_message, {
+      position: "start",
+      // always at start so that other adapters may add again to end (e.g. context adapter)
+      new_user_message
+    });
+  }
+  /**
+   * from_response: No post-processing needed for default user message.
+   * @returns {Promise<void>}
+   */
+  async from_response() {
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-completions/adapters/action.js
+var ActionCompletionAdapter = class extends SmartCompletionAdapter {
+  static get property_name() {
+    return "action_key";
+  }
+  /**
+   * @returns {Promise<void>}
+   */
+  async to_request() {
+    const action_key = this.data.action_key;
+    if (!action_key) return;
+    const thread = this.item.thread;
+    if (thread.current_completion !== this.item) return console.log("ActionCompletionAdapter: skipping tools, not the current completion");
+    const action_opts = this.data.action_opts;
+    const action_collection = this.item.env.smart_actions;
+    if (!action_collection) {
+      console.warn("No 'smart_actions' collection found; skipping action adapter.");
+      return;
+    }
+    const action_item = action_collection.get(action_key);
+    if (!action_item) {
+      console.warn(`SmartAction not found for key '${action_key}'`);
+      return;
+    }
+    let tools;
+    try {
+      const action_module = action_item.module;
+      tools = action_module.tool ? [action_module.tool] : convert_openapi_to_tools(action_module.openapi);
+    } catch (err) {
+      console.warn("Error compiling ephemeral action", err);
+      return;
+    }
+    if (!tools) return;
+    if (!this.data.actions) this.data.actions = {};
+    this.data.actions[action_key] = true;
+    this.insert_tools(tools, { force: true });
+  }
+  get default_action_params() {
+    return this.data.action_opts || {};
+  }
+  /**
+   * @returns {Promise<void>}
+   */
+  async from_response() {
+    console.log("ActionCompletionAdapter: from_response");
+    const tool_call = this.response.choices[0].message?.tool_calls?.[0];
+    if (!tool_call) return console.warn("No tool call found in response");
+    const action_key = tool_call?.function?.name;
+    const tool_arguments = tool_call?.function?.arguments;
+    if (!action_key) return;
+    const action_collection = this.item.env.smart_actions;
+    if (!action_collection) return;
+    const action_item = action_collection.get(action_key);
+    if (!action_item) return;
+    let parsed_args = tool_arguments;
+    if (typeof parsed_args === "string") {
+      try {
+        parsed_args = JSON.parse(parsed_args);
+      } catch (err) {
+        console.warn("Could not parse tool_call arguments", err);
+        return;
+      }
+    }
+    const action_params = {
+      ...this.default_action_params,
+      ...parsed_args
+    };
+    const result = await action_item.run_action(action_params);
+    if (result && typeof result === "object" && result.final) {
+      if (!this.item.data.completion.responses[0]) {
+        this.item.data.completion.responses[0] = { choices: [{ message: {} }] };
+      } else if (!this.item.data.completion.responses[0].choices?.[0]) {
+        this.item.data.completion.responses[0].choices = [{ message: {} }];
+      }
+      this.item.data.completion.responses[0].choices[0].message = {
+        ...this.item.data.completion.responses[0].choices[0].message,
+        role: "assistant",
+        content: result.final
+      };
+    }
+    if (!this.data.actions) this.data.actions = {};
+    this.data.actions[action_key] = result;
+  }
+  /**
+   * Insert the ephemeral tools into the request
+   * @param {Array<object>} tools
+   * @param {object} opts
+   * @returns {void}
+   */
+  insert_tools(tools, opts = {}) {
+    this.request.tools = tools;
+    if (opts.force) {
+      this.request.tool_choice = {
+        type: "function",
+        function: {
+          name: tools[0].function.name
+        }
+      };
+    }
+  }
+};
+function convert_openapi_to_tools(openapi_spec) {
+  const tools = [];
+  for (const path2 in openapi_spec.paths) {
+    const methods = openapi_spec.paths[path2];
+    for (const method in methods) {
+      const endpoint = methods[method];
+      const parameters = endpoint.parameters || [];
+      const requestBody = endpoint.requestBody;
+      const properties = {};
+      const required = [];
+      parameters.forEach((param) => {
+        properties[param.name] = {
+          type: param.schema.type,
+          description: param.description || ""
+        };
+        if (param.required) required.push(param.name);
+      });
+      if (requestBody) {
+        const schema = requestBody.content["application/json"].schema;
+        Object.assign(properties, schema.properties);
+        if (schema.required) required.push(...schema.required);
+      }
+      tools.push({
+        type: "function",
+        function: {
+          name: endpoint.operationId || `${method}_${path2.replace(/\//g, "_").replace(/[{}]/g, "")}`,
+          description: endpoint.summary || endpoint.description || "",
+          parameters: {
+            type: "object",
+            properties,
+            required
+          }
+        }
+      });
+    }
+  }
+  return tools;
+}
+
+// node_modules/obsidian-smart-env/node_modules/smart-completions/adapters/action_xml.js
+function scaffold_xml(root_tag, root_desc, params) {
+  return [
+    `<${root_tag} instructions="${root_desc}">`,
+    ...Object.entries(params).map(
+      ([p, v]) => `  <${p} instructions="${v.description || ""}">VALUE</${p}>`
+    ),
+    `</${root_tag}>`
+  ].join("\n");
+}
+function strip_instruction_attrs(xml) {
+  return xml.replace(/\s+instructions="[^"]*"/g, "");
+}
+var ActionXmlCompletionAdapter = class extends ActionCompletionAdapter {
+  static get property_name() {
+    return "action_xml_key";
+  }
+  /* ────────────────────────────────────────────────────────────────────────
+     REQUEST CONSTRUCTION
+     ────────────────────────────────────────────────────────────────────── */
+  async to_request() {
+    const action_key = this.data.action_xml_key;
+    if (!action_key) return;
+    const thread = this.item.thread;
+    if (thread.current_completion !== this.item) return console.log("ActionXmlCompletionAdapter: skipping tools, not the current completion");
+    const action_item = this.env.smart_actions?.get(action_key);
+    if (!action_item) {
+      return console.warn(`SmartAction '${action_key}' not found`);
+    }
+    let tools;
+    try {
+      const mod = action_item.module;
+      tools = mod.tool ? [mod.tool] : convert_openapi_to_tools(mod.openapi);
+    } catch (err) {
+      return console.warn("Unable to compile OpenAPI \u2192 tools", err);
+    }
+    if (!tools?.length) return;
+    const func_def = tools[0].function;
+    const param_props = func_def.parameters?.properties || {};
+    const required_params = func_def.parameters?.required || [];
+    this._func_name = func_def.name;
+    this._required_params = required_params;
+    const action_instruction = [
+      "Important Instructions:",
+      `1. You must invoke the action '${func_def.name}' exactly once.`,
+      "2. You must respond *only* with XML in the exact structure provided below.",
+      "3. Replace VALUE with real arguments based on the property-specific instructions below.",
+      "4. Do not include any other text or instructions.",
+      "5. Follow these property-specific instructions for producing the XML response.",
+      "Action Instructions:",
+      `- ${func_def.description || ""}`,
+      "Property-Specific Instructions:",
+      ...Object.entries(param_props).map(
+        ([p, v]) => `- ${p}: ${v.description || ""}`
+      )
+    ].join("\n");
+    const xml_scaffold = scaffold_xml(func_def.name, func_def.description, param_props);
+    const xml_template = strip_instruction_attrs(xml_scaffold);
+    const action_instruction_msg = [
+      action_instruction,
+      `You are ready to invoke the action '${func_def.name}'.`
+    ].join("\n");
+    const xml_template_msg = [
+      `To invoke the action '${func_def.name}', respond *only* with XML in this exact structure (replace VALUE with real arguments based on the action and property-specific instructions above):`,
+      xml_template
+    ].join("\n");
+    this.insert_user_message(action_instruction_msg);
+    this.insert_user_message(xml_template_msg);
+    this.data.actions ??= {};
+    this.data.actions[action_key] = true;
+    this.data.action_key = action_key;
+  }
+  /* ────────────────────────────────────────────────────────────────────────
+     RESPONSE PARSING
+     ────────────────────────────────────────────────────────────────────── */
+  async from_response() {
+    const action_key = this.data.action_xml_key;
+    if (!action_key) return;
+    const assistant_msg = this.response?.choices?.[0]?.message;
+    if (!assistant_msg) {
+      return console.warn("ActionXmlCompletionAdapter: assistant message not found");
+    }
+    const func_name = this._func_name || action_key;
+    let parsed_xml = this.item?.response_structured_output;
+    let root_node = parsed_xml[func_name];
+    if (!root_node) {
+      const candidate = Object.keys(parsed_xml)[0];
+      console.warn(`ActionXmlCompletionAdapter: expected root <${func_name}>, found <${candidate}> \u2013 using candidate`);
+      root_node = parsed_xml[candidate];
+    }
+    if (!root_node) {
+      return console.warn(`ActionXmlCompletionAdapter: root tag '${func_name}' not found`);
+    }
+    const node_to_value = (node) => {
+      if (!node || typeof node !== "object") return node;
+      const { attributes = {}, contents } = node;
+      if (contents === null || typeof contents !== "object") {
+        return Object.keys(attributes).length ? { ...attributes, value: contents } : contents;
+      }
+      const out = {};
+      for (const [k, v] of Object.entries(contents)) {
+        out[k] = Array.isArray(v) ? v.map(node_to_value) : node_to_value(v);
+      }
+      return Object.keys(attributes).length ? { ...attributes, ...out } : out;
+    };
+    const args = node_to_value(root_node);
+    const missing = (this._required_params || []).filter(
+      (p) => args[p] === void 0 || args[p] === "" || args[p] === null
+    );
+    if (missing.length) {
+      return console.warn(`ActionXmlCompletionAdapter: missing ${missing.join(", ")}`);
+    }
+    assistant_msg.tool_calls = [
+      { function: { name: action_key, arguments: args } }
+    ];
+    delete assistant_msg.content;
+    await super.from_response();
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-completions/adapters/system.js
+var SmartCompletionSystemAdapter = class extends SmartCompletionAdapter {
+  /**
+   * Identifies the data property that triggers this adapter.
+   * @returns {string}
+   */
+  static get property_name() {
+    return "system_message";
+  }
+  /**
+   * to_request: If `data.system_message` is present, prepends a system message to request.messages.
+   * @returns {Promise<void>}
+   */
+  async to_request() {
+    const sys_msg = this.data.system_message;
+    if (!sys_msg) return;
+    if (!this.request.messages) {
+      this.request.messages = [];
+    }
+    this.request.messages.unshift({
+      role: "system",
+      content: sys_msg
+    });
+  }
+  /**
+   * from_response: No post-processing needed here.
+   * @returns {Promise<void>}
+   */
+  async from_response() {
+  }
+};
+
+// node_modules/obsidian-smart-env/node_modules/smart-completions/index.js
+var smart_completions_default_config = {
+  class: SmartCompletions,
+  data_adapter: AjsonSingleFileCollectionDataAdapter,
+  item_type: SmartCompletion,
+  completion_adapters: {
+    // SmartCompletionTemplateAdapter,
+    SmartCompletionContextAdapter,
+    SmartCompletionUserAdapter,
+    ActionCompletionAdapter,
+    ActionXmlCompletionAdapter,
+    SmartCompletionSystemAdapter
+  }
 };
 
 // node_modules/obsidian-smart-env/node_modules/smart-blocks/content_parsers/parse_blocks.js
@@ -10564,6 +14754,25 @@ var smart_env_config2 = {
         openai: SmartEmbedOpenAIAdapter,
         ollama: SmartEmbedOllamaAdapter
       }
+    },
+    smart_chat_model: {
+      class: SmartChatModel,
+      // DEPRECATED FORMAT: will be changed (requires SmartModel adapters getters update)
+      adapters: {
+        anthropic: SmartChatModelAnthropicAdapter,
+        azure: SmartChatModelAzureAdapter,
+        custom: SmartChatModelCustomAdapter,
+        gemini: SmartChatModelGeminiAdapter,
+        groq: SmartChatModelGroqAdapter,
+        lm_studio: SmartChatModelLmStudioAdapter,
+        ollama: SmartChatModelOllamaAdapter,
+        open_router: SmartChatModelOpenRouterAdapter,
+        openai: SmartChatModelOpenaiAdapter
+      },
+      http_adapter: new SmartHttpRequest({
+        adapter: SmartHttpObsidianRequestAdapter,
+        obsidian_request_url: import_obsidian13.requestUrl
+      })
     }
   },
   collections: {
@@ -10593,11 +14802,13 @@ var smart_env_config2 = {
         "txt": MarkdownBlockContentAdapter
         // "canvas": MarkdownBlockContentAdapter,
       }
-    }
+    },
+    smart_completions: smart_completions_default_config
   },
   item_types: {
     SmartSource,
-    SmartBlock
+    SmartBlock,
+    SmartCompletion
   },
   items: {
     smart_source: smart_source_default,
@@ -10653,9 +14864,9 @@ merge_env_config(smart_env_config2, smart_env_config);
 var default_config_default = smart_env_config2;
 
 // node_modules/obsidian-smart-env/utils/add_icons.js
-var import_obsidian13 = require("obsidian");
+var import_obsidian14 = require("obsidian");
 function add_smart_chat_icon() {
-  (0, import_obsidian13.addIcon)("smart-chat", `<defs>
+  (0, import_obsidian14.addIcon)("smart-chat", `<defs>
   <symbol id="smart-chat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
     <path d="M2 4c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v11c0 1.1-.9 2-2 2h-8l-5 4v-4H4c-1.1 0-2-.9-2-2Z" stroke-width="2"></path>
     <path d="M7 8c.5.3 1.3.3 1.8 0" stroke-width="2"></path>
@@ -10666,7 +14877,7 @@ function add_smart_chat_icon() {
 <use href="#smart-chat-icon" />`);
 }
 function add_smart_connections_icon() {
-  (0, import_obsidian13.addIcon)("smart-connections", `<path d="M50,20 L80,40 L80,60 L50,100" stroke="currentColor" stroke-width="4" fill="none"/>
+  (0, import_obsidian14.addIcon)("smart-connections", `<path d="M50,20 L80,40 L80,60 L50,100" stroke="currentColor" stroke-width="4" fill="none"/>
     <path d="M30,50 L55,70" stroke="currentColor" stroke-width="5" fill="none"/>
     <circle cx="50" cy="20" r="9" fill="currentColor"/>
     <circle cx="80" cy="40" r="9" fill="currentColor"/>
@@ -10676,7 +14887,7 @@ function add_smart_connections_icon() {
 }
 
 // node_modules/obsidian-smart-env/node_modules/smart-notices/smart_notices.js
-var import_obsidian14 = require("obsidian");
+var import_obsidian15 = require("obsidian");
 
 // node_modules/obsidian-smart-env/node_modules/smart-notices/notices.js
 var NOTICES = {
@@ -10993,7 +15204,7 @@ var SmartNotices = class {
    */
   _add_mute_button(id, container) {
     const btn = document.createElement("button");
-    (0, import_obsidian14.setIcon)(btn, "bell-off");
+    (0, import_obsidian15.setIcon)(btn, "bell-off");
     btn.addEventListener("click", () => {
       if (!this.settings.muted) this.settings.muted = {};
       this.settings.muted[id] = true;
@@ -11040,10 +15251,10 @@ css_sheet2.replaceSync(`.status-bar-item:has(.smart-env-status-container) {
 var styles_default = css_sheet2;
 
 // node_modules/obsidian-smart-env/sc_oauth.js
-var import_obsidian16 = require("obsidian");
+var import_obsidian17 = require("obsidian");
 
-// ../smart-plugins-obsidian/utils.js
-var import_obsidian15 = require("obsidian");
+// node_modules/obsidian-smart-env/node_modules/smart-plugins-obsidian/utils.js
+var import_obsidian16 = require("obsidian");
 function get_smart_server_url() {
   if (typeof window !== "undefined" && window.SMART_SERVER_URL_OVERRIDE) {
     return window.SMART_SERVER_URL_OVERRIDE;
@@ -11173,7 +15384,7 @@ async function write_files_with_adapter(adapter, baseFolder, files) {
   }
 }
 async function fetch_plugin_zip(repoName, token) {
-  const resp = await (0, import_obsidian15.requestUrl)({
+  const resp = await (0, import_obsidian16.requestUrl)({
     url: `${get_smart_server_url()}/plugin_download`,
     method: "POST",
     headers: {
@@ -11222,7 +15433,7 @@ function set_local_storage_token({ access_token, refresh_token }, oauth_storage_
 async function exchange_code_for_tokens(code, plugin) {
   const oauth_storage_prefix = plugin.app.vault.getName().toLowerCase().replace(/[^a-z0-9]/g, "_") + "_smart_plugins_oauth_";
   const url = `${get_smart_server_url()}/auth/oauth_exchange2`;
-  const resp = await (0, import_obsidian16.requestUrl)({
+  const resp = await (0, import_obsidian17.requestUrl)({
     url,
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -11273,31 +15484,31 @@ var SmartEnv2 = class extends SmartEnv {
     if (plugin.app.plugins.plugins["smart-connections"] && plugin.app.plugins.plugins["smart-connections"].env && !plugin.app.plugins.plugins["smart-connections"].env.constructor.version) {
       const update_notice = "Detected older SmartEnv with 'init_main'. Reloading without the outdated plugin. Please update Smart Connections.";
       console.warn(update_notice);
-      new import_obsidian17.Notice(update_notice, 0);
+      new import_obsidian18.Notice(update_notice, 0);
       disable_plugin(plugin.app, "smart-connections");
     }
     const opts = merge_env_config(main_env_opts, default_config_default);
     return await super.create(plugin, opts);
   }
   async load(force_load = false) {
-    if (!import_obsidian17.Platform.isMobile) {
+    if (!import_obsidian18.Platform.isMobile && !this.plugin.app.workspace.protocolHandlers.has("sc-op/callback")) {
       this.plugin.registerObsidianProtocolHandler("sc-op/callback", async (params) => {
         await this.handle_sc_op_oauth_callback(params);
       });
     }
-    if (import_obsidian17.Platform.isMobile && !force_load) {
+    if (import_obsidian18.Platform.isMobile && !force_load) {
       const frag = this.smart_view.create_doc_fragment(`<div><p>Smart Environment loading deferred on mobile.</p><button>Load Environment</button></div>`);
       frag.querySelector("button").addEventListener("click", () => {
         this.load(true);
       });
-      new import_obsidian17.Notice(frag, 0);
+      new import_obsidian18.Notice(frag, 0);
       return;
     }
     await super.load();
     const plugin = this.main;
     plugin.registerEvent(
       plugin.app.vault.on("create", (file) => {
-        if (file instanceof import_obsidian17.TFile && this.smart_sources?.source_adapters?.[file.extension]) {
+        if (file instanceof import_obsidian18.TFile && this.smart_sources?.source_adapters?.[file.extension]) {
           const source2 = this.smart_sources?.init_file_path(file.path);
           if (source2) this.smart_sources?.fs.include_file(file.path);
         }
@@ -11305,7 +15516,7 @@ var SmartEnv2 = class extends SmartEnv {
     );
     plugin.registerEvent(
       plugin.app.vault.on("rename", (file, old_path) => {
-        if (file instanceof import_obsidian17.TFile && this.smart_sources?.source_adapters?.[file.extension]) {
+        if (file instanceof import_obsidian18.TFile && this.smart_sources?.source_adapters?.[file.extension]) {
           const source2 = this.smart_sources?.init_file_path(file.path);
           if (source2) this.smart_sources?.fs.include_file(file.path);
         }
@@ -11324,7 +15535,7 @@ var SmartEnv2 = class extends SmartEnv {
     );
     plugin.registerEvent(
       plugin.app.vault.on("modify", (file) => {
-        if (file instanceof import_obsidian17.TFile && this.smart_sources?.source_adapters?.[file.extension]) {
+        if (file instanceof import_obsidian18.TFile && this.smart_sources?.source_adapters?.[file.extension]) {
           if (!this.sources_re_import_queue) this.sources_re_import_queue = {};
           if (this.sources_re_import_queue?.[file.path]) return;
           const source2 = this.smart_sources?.get(file.path);
@@ -11348,7 +15559,7 @@ var SmartEnv2 = class extends SmartEnv {
     );
     plugin.registerEvent(
       plugin.app.vault.on("delete", (file) => {
-        if (file instanceof import_obsidian17.TFile && this.smart_sources?.source_adapters?.[file.extension]) {
+        if (file instanceof import_obsidian18.TFile && this.smart_sources?.source_adapters?.[file.extension]) {
           delete this.smart_sources?.items[file.path];
         }
       })
@@ -11394,12 +15605,16 @@ var SmartEnv2 = class extends SmartEnv {
   }
   refresh_status() {
     if (!this.status_elm) {
+      const existing = this.main.app.statusBar.containerEl.querySelector(".smart-env-status-container");
+      if (existing) {
+        existing.closest(".status-bar-item")?.remove();
+      }
       this.status_elm = this.main.addStatusBarItem();
       this.smart_view.apply_style_sheet(styles_default);
       this.status_container = this.status_elm.createEl("a", { cls: "smart-env-status-container" });
       this.status_container.setAttribute("href", "https://smartconnections.app/community-supporters/?utm_source=status-bar");
       this.status_container.setAttribute("target", "_external");
-      (0, import_obsidian17.setIcon)(this.status_container, "smart-connections");
+      (0, import_obsidian18.setIcon)(this.status_container, "smart-connections");
       this.status_msg = this.status_container.createSpan("smart-env-status-msg");
     }
     const queue_length = Object.keys(this.sources_re_import_queue || {}).length;
@@ -11417,7 +15632,7 @@ var SmartEnv2 = class extends SmartEnv {
   get notices() {
     if (!this._notices) {
       this._notices = new SmartNotices(this, {
-        adapter: import_obsidian17.Notice
+        adapter: import_obsidian18.Notice
       });
     }
     return this._notices;
@@ -11451,17 +15666,17 @@ var SmartEnv2 = class extends SmartEnv {
   async handle_sc_op_oauth_callback(params) {
     const code = params.code;
     if (!code) {
-      new import_obsidian17.Notice("No OAuth code provided in URL. Login failed.");
+      new import_obsidian18.Notice("No OAuth code provided in URL. Login failed.");
       return;
     }
     try {
       await exchange_code_for_tokens(code, this.plugin);
       await install_smart_plugins_plugin(this.plugin);
-      new import_obsidian17.Notice("Smart Plugins installed / updated successfully!");
+      new import_obsidian18.Notice("Smart Plugins installed / updated successfully!");
       this.open_smart_plugins_settings();
     } catch (err) {
       console.error("OAuth callback error", err);
-      new import_obsidian17.Notice(`OAuth callback error: ${err.message}`);
+      new import_obsidian18.Notice(`OAuth callback error: ${err.message}`);
     }
   }
   /**
@@ -11484,6 +15699,25 @@ var SmartEnv2 = class extends SmartEnv {
     if (spTab) {
       this.plugin.app.setting.openTab(spTab);
     }
+  }
+  // WAIT FOR OBSIDIAN SYNC
+  async ready_to_load_collections() {
+    await new Promise((r) => setTimeout(r, 3e3));
+    await this.wait_for_obsidian_sync();
+  }
+  async wait_for_obsidian_sync() {
+    while (this.obsidian_is_syncing) {
+      console.log("Smart Connections: Waiting for Obsidian Sync to finish");
+      await new Promise((r) => setTimeout(r, 1e3));
+      if (!this.plugin) throw new Error("Plugin disabled while waiting for obsidian sync, reload required.");
+    }
+  }
+  get obsidian_is_syncing() {
+    const obsidian_sync_instance = this.plugin?.app?.internalPlugins?.plugins?.sync?.instance;
+    if (!obsidian_sync_instance) return false;
+    if (obsidian_sync_instance?.syncStatus.startsWith("Uploading")) return false;
+    if (obsidian_sync_instance?.syncStatus.startsWith("Fully synced")) return false;
+    return obsidian_sync_instance?.syncing;
   }
 };
 async function disable_plugin(app, plugin_id) {
@@ -11685,7 +15919,7 @@ var FileItemDataAdapter2 = class extends ItemDataAdapter2 {
 };
 
 // node_modules/smart-collections/adapters/ajson_multi_file.js
-var class_to_collection_key2 = {
+var class_to_collection_key3 = {
   "SmartSource": "smart_sources",
   "SmartNote": "smart_sources",
   // DEPRECATED
@@ -11906,8 +16140,8 @@ var AjsonMultiFileItemDataAdapter2 = class extends FileItemDataAdapter2 {
   _parse_ajson_key(ajson_key) {
     let changed;
     let [collection_key, ...item_key] = ajson_key.split(":");
-    if (class_to_collection_key2[collection_key]) {
-      collection_key = class_to_collection_key2[collection_key];
+    if (class_to_collection_key3[collection_key]) {
+      collection_key = class_to_collection_key3[collection_key];
       changed = true;
     }
     return {
@@ -13379,10 +17613,10 @@ var SmartViewAdapter2 = class {
 };
 
 // node_modules/smart-view/adapters/obsidian.js
-var import_obsidian18 = require("obsidian");
+var import_obsidian19 = require("obsidian");
 var SmartViewObsidianAdapter2 = class extends SmartViewAdapter2 {
   get setting_class() {
-    return import_obsidian18.Setting;
+    return import_obsidian19.Setting;
   }
   open_url(url) {
     window.open(url);
@@ -13390,16 +17624,13 @@ var SmartViewObsidianAdapter2 = class extends SmartViewAdapter2 {
   async render_file_select_component(elm, path2, value) {
     return super.render_text_component(elm, path2, value);
   }
-  async render_folder_select_component(elm, path2, value) {
-    return super.render_text_component(elm, path2, value);
-  }
   async render_markdown(markdown, scope) {
-    const component = scope.env.smart_connections_plugin?.connections_view || new import_obsidian18.Component();
+    const component = scope.env.smart_connections_plugin?.connections_view || new import_obsidian19.Component();
     if (!scope) return console.warn("Scope required for rendering markdown in Obsidian adapter");
     const frag = this.main.create_doc_fragment("<div><div class='inner'></div></div>");
     const container = frag.querySelector(".inner");
     try {
-      await import_obsidian18.MarkdownRenderer.render(
+      await import_obsidian19.MarkdownRenderer.render(
         scope.env.plugin.app,
         markdown,
         container,
@@ -13412,11 +17643,27 @@ var SmartViewObsidianAdapter2 = class extends SmartViewAdapter2 {
     return frag;
   }
   get_icon_html(name) {
-    return (0, import_obsidian18.getIcon)(name).outerHTML;
+    return (0, import_obsidian19.getIcon)(name).outerHTML;
   }
   // Obsidian Specific
   is_mod_event(event) {
-    return import_obsidian18.Keymap.isModEvent(event);
+    return import_obsidian19.Keymap.isModEvent(event);
+  }
+  render_folder_select_component(elm, path2, value, scope, settings_scope) {
+    const smart_setting = new this.setting_class(elm);
+    const folders = scope.env.plugin.app.vault.getAllFolders().sort((a, b) => a.path.localeCompare(b.path));
+    smart_setting.addDropdown((dropdown) => {
+      if (elm.dataset.required) dropdown.inputEl.setAttribute("required", true);
+      dropdown.addOption("", "No folder selected");
+      folders.forEach((folder) => {
+        dropdown.addOption(folder.path, folder.path);
+      });
+      dropdown.onChange((value2) => {
+        this.handle_on_change(path2, value2, elm, scope, settings_scope);
+      });
+      dropdown.setValue(value);
+    });
+    return smart_setting;
   }
 };
 
@@ -13450,8 +17697,8 @@ async function post_process12(scope, frag, opts = {}) {
 }
 
 // node_modules/obsidian-smart-env/modals/story.js
-var import_obsidian19 = require("obsidian");
-var StoryModal = class _StoryModal extends import_obsidian19.Modal {
+var import_obsidian20 = require("obsidian");
+var StoryModal = class _StoryModal extends import_obsidian20.Modal {
   constructor(plugin, { title, url }) {
     super(plugin.app);
     this.plugin = plugin;
@@ -13468,7 +17715,7 @@ var StoryModal = class _StoryModal extends import_obsidian19.Modal {
     const container = this.contentEl.createEl("div", {
       cls: "sc-story-container"
     });
-    if (import_obsidian19.Platform.isMobile) {
+    if (import_obsidian20.Platform.isMobile) {
       const btn = container.createEl("button", { text: "Open in browser" });
       btn.addEventListener("click", () => {
         open_url_externally(this.plugin, this.url);
@@ -14136,7 +18383,7 @@ var SmartModel2 = class {
 };
 
 // node_modules/smart-chat-model/smart_chat_model.js
-var SmartChatModel = class extends SmartModel2 {
+var SmartChatModel2 = class extends SmartModel2 {
   scope_name = "smart_chat_model";
   static defaults = {
     adapter: "openai"
@@ -14229,7 +18476,7 @@ var SmartChatModel = class extends SmartModel2 {
       adapter: {
         name: "Chat Model Platform",
         type: "dropdown",
-        description: "Select a chat model platform to use with Smart Chat.",
+        description: "Select a platform/provider for chat models.",
         options_callback: "get_platforms_as_options",
         is_scope: true,
         // trigger re-render of settings when changed
@@ -14327,7 +18574,7 @@ var SmartHttpObsidianRequestAdapter2 = class extends SmartHttpRequestAdapter2 {
       }
       response = await this.main.opts.obsidian_request_url({ ...request_params, throw: false });
       if (response.status === 400) throw new Error("Obsidian request failed");
-      return new SmartHttpObsidianResponseAdapter(response);
+      return new SmartHttpObsidianResponseAdapter2(response);
     } catch (error) {
       console.error("Error in SmartHttpObsidianRequestAdapter.request():");
       console.error(JSON.stringify(request_params, null, 2));
@@ -14337,7 +18584,7 @@ var SmartHttpObsidianRequestAdapter2 = class extends SmartHttpRequestAdapter2 {
     }
   }
 };
-var SmartHttpObsidianResponseAdapter = class extends SmartHttpResponseAdapter2 {
+var SmartHttpObsidianResponseAdapter2 = class extends SmartHttpResponseAdapter2 {
   async status() {
     return this.response.status;
   }
@@ -14382,7 +18629,7 @@ var SmartHttpResponseFetchAdapter2 = class extends SmartHttpResponseAdapter2 {
 };
 
 // node_modules/smart-chat-model/streamer.js
-var SmartStreamer = class {
+var SmartStreamer2 = class {
   constructor(url, options = {}) {
     const {
       method = "GET",
@@ -14680,7 +18927,7 @@ var SmartModelAdapter2 = class {
 };
 
 // node_modules/smart-chat-model/adapters/_adapter.js
-var SmartChatModelAdapter = class extends SmartModelAdapter2 {
+var SmartChatModelAdapter2 = class extends SmartModelAdapter2 {
   /**
    * @override in sub-class with adapter-specific default configurations
    * @property {string} id - The adapter identifier
@@ -14755,7 +19002,7 @@ var SmartChatModelAdapter = class extends SmartModelAdapter2 {
       "[CHAT_ADAPTER].model_key": {
         name: "Chat Model",
         type: "dropdown",
-        description: "Select a chat model to use with Smart Chat.",
+        description: "Select a chat model.",
         options_callback: "adapter.get_models_as_options",
         callback: "reload_model",
         default: this.constructor.defaults.default_model
@@ -14782,20 +19029,20 @@ var SmartChatModelAdapter = class extends SmartModelAdapter2 {
 };
 
 // node_modules/smart-chat-model/adapters/_api.js
-var SmartChatModelApiAdapter = class extends SmartChatModelAdapter {
+var SmartChatModelApiAdapter2 = class extends SmartChatModelAdapter2 {
   /**
    * Get the request adapter class.
    * @returns {SmartChatModelRequestAdapter} The request adapter class
    */
   get req_adapter() {
-    return SmartChatModelRequestAdapter;
+    return SmartChatModelRequestAdapter2;
   }
   /**
    * Get the response adapter class.
    * @returns {SmartChatModelResponseAdapter} The response adapter class
    */
   get res_adapter() {
-    return SmartChatModelResponseAdapter;
+    return SmartChatModelResponseAdapter2;
   }
   /**
    * Get or initialize the HTTP adapter.
@@ -14933,7 +19180,7 @@ var SmartChatModelApiAdapter = class extends SmartChatModelAdapter {
     if (this.streaming_chunk_splitting_regex) request_params.chunk_splitting_regex = this.streaming_chunk_splitting_regex;
     return await new Promise((resolve, reject) => {
       try {
-        this.active_stream = new SmartStreamer(this.endpoint_streaming, request_params);
+        this.active_stream = new SmartStreamer2(this.endpoint_streaming, request_params);
         const resp_adapter = new this.res_adapter(this);
         this.active_stream.addEventListener("message", async (e) => {
           if (this.is_end_of_stream(e)) {
@@ -15050,7 +19297,7 @@ var SmartChatModelApiAdapter = class extends SmartChatModelAdapter {
     return this.adapter_config.temperature;
   }
 };
-var SmartChatModelRequestAdapter = class {
+var SmartChatModelRequestAdapter2 = class {
   /**
    * @constructor
    * @param {SmartChatModelAdapter} adapter - The SmartChatModelAdapter instance
@@ -15248,7 +19495,7 @@ var SmartChatModelRequestAdapter = class {
     }));
   }
 };
-var SmartChatModelResponseAdapter = class {
+var SmartChatModelResponseAdapter2 = class {
   // must be getter to prevent erroneous assignment
   static get platform_res() {
     return {
@@ -15470,7 +19717,7 @@ var SmartChatModelResponseAdapter = class {
 };
 
 // node_modules/smart-chat-model/adapters/anthropic.js
-var SmartChatModelAnthropicAdapter = class extends SmartChatModelApiAdapter {
+var SmartChatModelAnthropicAdapter2 = class extends SmartChatModelApiAdapter2 {
   static key = "anthropic";
   static defaults = {
     description: "Anthropic Claude",
@@ -15495,13 +19742,13 @@ var SmartChatModelAnthropicAdapter = class extends SmartChatModelApiAdapter {
    * @returns {typeof SmartChatModelAnthropicRequestAdapter} Request adapter class
    */
   get req_adapter() {
-    return SmartChatModelAnthropicRequestAdapter;
+    return SmartChatModelAnthropicRequestAdapter2;
   }
   /**
    * Get response adapter class
    * @returns {typeof SmartChatModelAnthropicResponseAdapter} Response adapter class
    */
-  res_adapter = SmartChatModelAnthropicResponseAdapter;
+  res_adapter = SmartChatModelAnthropicResponseAdapter2;
   /**
    * Validate parameters for getting models
    * @returns {boolean} Always true since models are hardcoded
@@ -15648,7 +19895,7 @@ var SmartChatModelAnthropicAdapter = class extends SmartChatModelApiAdapter {
     };
   }
 };
-var SmartChatModelAnthropicRequestAdapter = class extends SmartChatModelRequestAdapter {
+var SmartChatModelAnthropicRequestAdapter2 = class extends SmartChatModelRequestAdapter2 {
   /**
    * Convert request to Anthropic format
    * @returns {Object} Request parameters in Anthropic format
@@ -15799,7 +20046,7 @@ var SmartChatModelAnthropicRequestAdapter = class extends SmartChatModelRequestA
     }));
   }
 };
-var SmartChatModelAnthropicResponseAdapter = class extends SmartChatModelResponseAdapter {
+var SmartChatModelAnthropicResponseAdapter2 = class extends SmartChatModelResponseAdapter2 {
   static get platform_res() {
     return {
       content: [],
@@ -15937,7 +20184,7 @@ var SmartChatModelAnthropicResponseAdapter = class extends SmartChatModelRespons
 };
 
 // node_modules/smart-chat-model/adapters/openai.js
-var SmartChatModelOpenaiAdapter = class extends SmartChatModelApiAdapter {
+var SmartChatModelOpenaiAdapter2 = class extends SmartChatModelApiAdapter2 {
   static key = "openai";
   static defaults = {
     description: "OpenAI",
@@ -15949,7 +20196,7 @@ var SmartChatModelOpenaiAdapter = class extends SmartChatModelApiAdapter {
     signup_url: "https://platform.openai.com/api-keys",
     can_use_tools: true
   };
-  res_adapter = SmartChatModelOpenaiResponseAdapter;
+  res_adapter = SmartChatModelOpenaiResponseAdapter2;
   /**
    * Parse model data from OpenAI API response.
    * Filters for GPT models and adds context window information.
@@ -15963,7 +20210,7 @@ var SmartChatModelOpenaiAdapter = class extends SmartChatModelApiAdapter {
         id: model.id,
         multimodal: model.id.includes("vision") || model.id.includes("gpt-4-turbo") || model.id.startsWith("gpt-4o"),
         can_use_tools: model.id.startsWith("o1-") ? false : true,
-        max_input_tokens: get_max_input_tokens(model.id)
+        max_input_tokens: get_max_input_tokens2(model.id)
       };
       acc[model.id] = out;
       return acc;
@@ -16001,7 +20248,7 @@ var SmartChatModelOpenaiAdapter = class extends SmartChatModelApiAdapter {
     return config;
   }
 };
-function get_max_input_tokens(model_id) {
+function get_max_input_tokens2(model_id) {
   if (model_id.startsWith("gpt-4.1")) {
     return 1e6;
   }
@@ -16019,11 +20266,11 @@ function get_max_input_tokens(model_id) {
   }
   return 8e3;
 }
-var SmartChatModelOpenaiResponseAdapter = class extends SmartChatModelResponseAdapter {
+var SmartChatModelOpenaiResponseAdapter2 = class extends SmartChatModelResponseAdapter2 {
 };
 
 // node_modules/smart-chat-model/adapters/azure.js
-var SmartChatModelAzureAdapter = class extends SmartChatModelOpenaiAdapter {
+var SmartChatModelAzureAdapter2 = class extends SmartChatModelOpenaiAdapter2 {
   static key = "azure";
   static defaults = {
     description: "Azure OpenAI",
@@ -16148,7 +20395,7 @@ var SmartChatModelAzureAdapter = class extends SmartChatModelOpenaiAdapter {
 };
 
 // node_modules/smart-chat-model/adapters/google.js
-var SmartChatModelGeminiAdapter = class extends SmartChatModelApiAdapter {
+var SmartChatModelGeminiAdapter2 = class extends SmartChatModelApiAdapter2 {
   static key = "gemini";
   static defaults = {
     description: "Google Gemini",
@@ -16168,11 +20415,11 @@ var SmartChatModelGeminiAdapter = class extends SmartChatModelApiAdapter {
   /**
    * Get request adapter class
    */
-  req_adapter = SmartChatModelGeminiRequestAdapter;
+  req_adapter = SmartChatModelGeminiRequestAdapter2;
   /**
    * Get response adapter class
    */
-  res_adapter = SmartChatModelGeminiResponseAdapter;
+  res_adapter = SmartChatModelGeminiResponseAdapter2;
   /**
    * Uses Gemini's dedicated token counting endpoint
    */
@@ -16280,7 +20527,7 @@ var SmartChatModelGeminiAdapter = class extends SmartChatModelApiAdapter {
     return false;
   }
 };
-var SmartChatModelGeminiRequestAdapter = class extends SmartChatModelRequestAdapter {
+var SmartChatModelGeminiRequestAdapter2 = class extends SmartChatModelRequestAdapter2 {
   to_platform(streaming = false) {
     return this.to_gemini(streaming);
   }
@@ -16397,7 +20644,7 @@ var SmartChatModelGeminiRequestAdapter = class extends SmartChatModelRequestAdap
     };
   }
 };
-var SmartChatModelGeminiResponseAdapter = class extends SmartChatModelResponseAdapter {
+var SmartChatModelGeminiResponseAdapter2 = class extends SmartChatModelResponseAdapter2 {
   static get platform_res() {
     return {
       candidates: [{
@@ -16519,7 +20766,7 @@ var SmartChatModelGeminiResponseAdapter = class extends SmartChatModelResponseAd
 };
 
 // node_modules/smart-chat-model/adapters/open_router.js
-var SmartChatModelOpenRouterAdapter = class extends SmartChatModelApiAdapter {
+var SmartChatModelOpenRouterAdapter2 = class extends SmartChatModelApiAdapter2 {
   static key = "open_router";
   static defaults = {
     description: "Open Router",
@@ -16537,14 +20784,14 @@ var SmartChatModelOpenRouterAdapter = class extends SmartChatModelApiAdapter {
    * @returns {typeof SmartChatModelOpenRouterRequestAdapter} Request adapter class
    */
   get req_adapter() {
-    return SmartChatModelOpenRouterRequestAdapter;
+    return SmartChatModelOpenRouterRequestAdapter2;
   }
   /**
    * Get response adapter class
    * @returns {typeof SmartChatModelOpenRouterResponseAdapter} Response adapter class
    */
   get res_adapter() {
-    return SmartChatModelOpenRouterResponseAdapter;
+    return SmartChatModelOpenRouterResponseAdapter2;
   }
   /**
    * Get API key from various sources
@@ -16592,7 +20839,7 @@ var SmartChatModelOpenRouterAdapter = class extends SmartChatModelApiAdapter {
     }, {});
   }
 };
-var SmartChatModelOpenRouterRequestAdapter = class extends SmartChatModelRequestAdapter {
+var SmartChatModelOpenRouterRequestAdapter2 = class extends SmartChatModelRequestAdapter2 {
   to_platform(stream = false) {
     const req = this.to_openai(stream);
     return req;
@@ -16606,7 +20853,7 @@ var SmartChatModelOpenRouterRequestAdapter = class extends SmartChatModelRequest
     return message.content;
   }
 };
-var SmartChatModelOpenRouterResponseAdapter = class extends SmartChatModelResponseAdapter {
+var SmartChatModelOpenRouterResponseAdapter2 = class extends SmartChatModelResponseAdapter2 {
   static get platform_res() {
     return {
       id: "",
@@ -16643,7 +20890,7 @@ ${JSON.stringify(this._res.error.metadata.raw, null, 2)}`;
 };
 
 // node_modules/smart-chat-model/adapters/lm_studio.js
-var SmartChatModelLmStudioAdapter = class extends SmartChatModelApiAdapter {
+var SmartChatModelLmStudioAdapter2 = class extends SmartChatModelApiAdapter2 {
   static key = "lm_studio";
   /** @type {import('./_adapter.js').SmartChatModelAdapter['constructor']['defaults']} */
   static defaults = {
@@ -16662,10 +20909,10 @@ var SmartChatModelLmStudioAdapter = class extends SmartChatModelApiAdapter {
    *  Request / Response classes
    * ------------------------------------------------------------------ */
   get req_adapter() {
-    return SmartChatModelLmStudioRequestAdapter;
+    return SmartChatModelLmStudioRequestAdapter2;
   }
   get res_adapter() {
-    return SmartChatModelLmStudioResponseAdapter;
+    return SmartChatModelLmStudioResponseAdapter2;
   }
   /* ------------------------------------------------------------------ *
    *  Settings
@@ -16742,7 +20989,7 @@ var SmartChatModelLmStudioAdapter = class extends SmartChatModelApiAdapter {
     return { valid: true, message: "Configuration is valid." };
   }
 };
-var SmartChatModelLmStudioRequestAdapter = class extends SmartChatModelRequestAdapter {
+var SmartChatModelLmStudioRequestAdapter2 = class extends SmartChatModelRequestAdapter2 {
   to_platform(streaming = false) {
     const req = this.to_openai(streaming);
     const body = JSON.parse(req.body);
@@ -16765,11 +21012,11 @@ var SmartChatModelLmStudioRequestAdapter = class extends SmartChatModelRequestAd
     return req;
   }
 };
-var SmartChatModelLmStudioResponseAdapter = class extends SmartChatModelResponseAdapter {
+var SmartChatModelLmStudioResponseAdapter2 = class extends SmartChatModelResponseAdapter2 {
 };
 
 // node_modules/smart-chat-model/adapters/ollama.js
-var SmartChatModelOllamaAdapter = class extends SmartChatModelApiAdapter {
+var SmartChatModelOllamaAdapter2 = class extends SmartChatModelApiAdapter2 {
   static key = "ollama";
   static defaults = {
     description: "Ollama (Local)",
@@ -16780,8 +21027,8 @@ var SmartChatModelOllamaAdapter = class extends SmartChatModelApiAdapter {
     // streaming: false, // TODO: Implement streaming
     streaming: true
   };
-  req_adapter = SmartChatModelOllamaRequestAdapter;
-  res_adapter = SmartChatModelOllamaResponseAdapter;
+  req_adapter = SmartChatModelOllamaRequestAdapter2;
+  res_adapter = SmartChatModelOllamaResponseAdapter2;
   /**
    * Get parameters for models request - no auth needed for local instance
    * @returns {Object} Request parameters
@@ -16864,7 +21111,7 @@ var SmartChatModelOllamaAdapter = class extends SmartChatModelApiAdapter {
     return event.data.includes('"done_reason"');
   }
 };
-var SmartChatModelOllamaRequestAdapter = class extends SmartChatModelRequestAdapter {
+var SmartChatModelOllamaRequestAdapter2 = class extends SmartChatModelRequestAdapter2 {
   /**
    * Convert request to Ollama format
    * @returns {Object} Request parameters in Ollama format
@@ -16955,7 +21202,7 @@ Use the "${this.tool_choice.function.name}" tool.`;
     return options;
   }
 };
-var SmartChatModelOllamaResponseAdapter = class extends SmartChatModelResponseAdapter {
+var SmartChatModelOllamaResponseAdapter2 = class extends SmartChatModelResponseAdapter2 {
   static get platform_res() {
     return {
       model: "",
@@ -17062,29 +21309,29 @@ var SmartChatModelOllamaResponseAdapter = class extends SmartChatModelResponseAd
 };
 
 // node_modules/smart-chat-model/adapters/_custom.js
-var adapters_map = {
+var adapters_map2 = {
   "openai": {
-    req: SmartChatModelRequestAdapter,
-    res: SmartChatModelResponseAdapter
+    req: SmartChatModelRequestAdapter2,
+    res: SmartChatModelResponseAdapter2
   },
   "anthropic": {
-    req: SmartChatModelAnthropicRequestAdapter,
-    res: SmartChatModelAnthropicResponseAdapter
+    req: SmartChatModelAnthropicRequestAdapter2,
+    res: SmartChatModelAnthropicResponseAdapter2
   },
   "gemini": {
-    req: SmartChatModelGeminiRequestAdapter,
-    res: SmartChatModelGeminiResponseAdapter
+    req: SmartChatModelGeminiRequestAdapter2,
+    res: SmartChatModelGeminiResponseAdapter2
   },
   "lm_studio": {
-    req: SmartChatModelLmStudioRequestAdapter,
-    res: SmartChatModelLmStudioResponseAdapter
+    req: SmartChatModelLmStudioRequestAdapter2,
+    res: SmartChatModelLmStudioResponseAdapter2
   },
   "ollama": {
-    req: SmartChatModelOllamaRequestAdapter,
-    res: SmartChatModelOllamaResponseAdapter
+    req: SmartChatModelOllamaRequestAdapter2,
+    res: SmartChatModelOllamaResponseAdapter2
   }
 };
-var SmartChatModelCustomAdapter = class extends SmartChatModelApiAdapter {
+var SmartChatModelCustomAdapter2 = class extends SmartChatModelApiAdapter2 {
   static key = "custom";
   static defaults = {
     description: "Custom API (Local or Remote, OpenAI format)",
@@ -17106,8 +21353,8 @@ var SmartChatModelCustomAdapter = class extends SmartChatModelApiAdapter {
    */
   get req_adapter() {
     const adapter_name = this.adapter_config.api_adapter || "openai";
-    const map_entry = adapters_map[adapter_name];
-    return map_entry && map_entry.req ? map_entry.req : SmartChatModelRequestAdapter;
+    const map_entry = adapters_map2[adapter_name];
+    return map_entry && map_entry.req ? map_entry.req : SmartChatModelRequestAdapter2;
   }
   /**
    * @override
@@ -17115,8 +21362,8 @@ var SmartChatModelCustomAdapter = class extends SmartChatModelApiAdapter {
    */
   get res_adapter() {
     const adapter_name = this.adapter_config.api_adapter || "openai";
-    const map_entry = adapters_map[adapter_name];
-    return map_entry && map_entry.res ? map_entry.res : SmartChatModelResponseAdapter;
+    const map_entry = adapters_map2[adapter_name];
+    return map_entry && map_entry.res ? map_entry.res : SmartChatModelResponseAdapter2;
   }
   /**
    * Synthesize a custom endpoint from the config fields.
@@ -17132,7 +21379,7 @@ var SmartChatModelCustomAdapter = class extends SmartChatModelApiAdapter {
     return `${protocol}://${hostname}${port}${path2}`;
   }
   get_adapters_as_options() {
-    return Object.keys(adapters_map).map((adapter_name) => ({ value: adapter_name, name: adapter_name }));
+    return Object.keys(adapters_map2).map((adapter_name) => ({ value: adapter_name, name: adapter_name }));
   }
   /**
    * Provide custom settings for configuring
@@ -17218,7 +21465,7 @@ var SmartChatModelCustomAdapter = class extends SmartChatModelApiAdapter {
 };
 
 // node_modules/smart-chat-model/adapters/groq.js
-var SmartChatModelGroqAdapter = class extends SmartChatModelApiAdapter {
+var SmartChatModelGroqAdapter2 = class extends SmartChatModelApiAdapter2 {
   static key = "groq";
   static defaults = {
     description: "Groq",
@@ -17236,14 +21483,14 @@ var SmartChatModelGroqAdapter = class extends SmartChatModelApiAdapter {
    * @returns {typeof SmartChatModelGroqRequestAdapter}
    */
   get req_adapter() {
-    return SmartChatModelGroqRequestAdapter;
+    return SmartChatModelGroqRequestAdapter2;
   }
   /**
    * Response adapter class
    * @returns {typeof SmartChatModelGroqResponseAdapter}
    */
   get res_adapter() {
-    return SmartChatModelGroqResponseAdapter;
+    return SmartChatModelGroqResponseAdapter2;
   }
   /**
    * Retrieve the list of models from Groq's API.
@@ -17319,7 +21566,7 @@ var SmartChatModelGroqAdapter = class extends SmartChatModelApiAdapter {
     return { valid: true, message: "Configuration is valid." };
   }
 };
-var SmartChatModelGroqRequestAdapter = class extends SmartChatModelRequestAdapter {
+var SmartChatModelGroqRequestAdapter2 = class extends SmartChatModelRequestAdapter2 {
   _get_openai_content(message) {
     if (["assistant", "tool"].includes(message.role)) {
       if (Array.isArray(message.content)) {
@@ -17333,11 +21580,11 @@ var SmartChatModelGroqRequestAdapter = class extends SmartChatModelRequestAdapte
     return message.content;
   }
 };
-var SmartChatModelGroqResponseAdapter = class extends SmartChatModelResponseAdapter {
+var SmartChatModelGroqResponseAdapter2 = class extends SmartChatModelResponseAdapter2 {
 };
 
 // src/smart_env.config.js
-var import_obsidian23 = require("obsidian");
+var import_obsidian24 = require("obsidian");
 
 // node_modules/smart-collections/utils/collection_instance_name_from.js
 function collection_instance_name_from2(class_name) {
@@ -19366,6 +23613,9 @@ var SmartSource2 = class extends SmartEntity2 {
       }
     }
   }
+  /**
+   * @deprecated likely extraneous
+   */
   async parse_content(content = null) {
     const parse_fns = this.env?.opts?.collections?.smart_sources?.content_parsers || [];
     for (const fn of parse_fns) {
@@ -23198,23 +27448,23 @@ var smart_env_config3 = {
   },
   modules: {
     smart_chat_model: {
-      class: SmartChatModel,
+      class: SmartChatModel2,
       // DEPRECATED FORMAT: will be changed (requires SmartModel adapters getters update)
       adapters: {
-        anthropic: SmartChatModelAnthropicAdapter,
-        azure: SmartChatModelAzureAdapter,
+        anthropic: SmartChatModelAnthropicAdapter2,
+        azure: SmartChatModelAzureAdapter2,
         // cohere: SmartChatModelCohereAdapter,
-        custom: SmartChatModelCustomAdapter,
-        gemini: SmartChatModelGeminiAdapter,
-        groq: SmartChatModelGroqAdapter,
-        lm_studio: SmartChatModelLmStudioAdapter,
-        ollama: SmartChatModelOllamaAdapter,
-        open_router: SmartChatModelOpenRouterAdapter,
-        openai: SmartChatModelOpenaiAdapter
+        custom: SmartChatModelCustomAdapter2,
+        gemini: SmartChatModelGeminiAdapter2,
+        groq: SmartChatModelGroqAdapter2,
+        lm_studio: SmartChatModelLmStudioAdapter2,
+        ollama: SmartChatModelOllamaAdapter2,
+        open_router: SmartChatModelOpenRouterAdapter2,
+        openai: SmartChatModelOpenaiAdapter2
       },
       http_adapter: new SmartHttpRequest2({
         adapter: SmartHttpObsidianRequestAdapter2,
-        obsidian_request_url: import_obsidian23.requestUrl
+        obsidian_request_url: import_obsidian24.requestUrl
       })
     },
     smart_fs: {
@@ -23274,17 +27524,17 @@ var smart_env_config3 = {
 };
 
 // src/components/connections_result.js
-var import_obsidian25 = require("obsidian");
+var import_obsidian26 = require("obsidian");
 
 // node_modules/obsidian-smart-env/utils/register_block_hover_popover.js
-var import_obsidian24 = require("obsidian");
+var import_obsidian25 = require("obsidian");
 function register_block_hover_popover(parent, target, env, block_key, plugin) {
   target.addEventListener("mouseover", async (ev) => {
-    if (import_obsidian24.Keymap.isModEvent(ev)) {
+    if (import_obsidian25.Keymap.isModEvent(ev)) {
       const block = env.smart_blocks.get(block_key);
       const markdown = await block?.read();
       if (markdown) {
-        const popover = new import_obsidian24.HoverPopover(parent, target);
+        const popover = new import_obsidian25.HoverPopover(parent, target);
         const frag = env.smart_view.create_doc_fragment(`<div class="markdown-embed is-loaded">
                 <div class="markdown-embed-content node-insert-event">
                   <div class="markdown-preview-view markdown-rendered node-insert-event show-indentation-guide allow-fold-headings allow-fold-lists">
@@ -23296,7 +27546,7 @@ function register_block_hover_popover(parent, target, env, block_key, plugin) {
         popover.hoverEl.classList.add("smart-block-popover");
         popover.hoverEl.appendChild(frag);
         const sizer = popover.hoverEl.querySelector(".markdown-preview-sizer");
-        import_obsidian24.MarkdownRenderer.render(plugin.app, markdown, sizer, "/", popover);
+        import_obsidian25.MarkdownRenderer.render(plugin.app, markdown, sizer, "/", popover);
       }
     }
   });
@@ -23313,6 +27563,7 @@ async function build_html21(result, opts = {}) {
       data-link="${item.link?.replace(/"/g, "&quot;") || ""}"
       data-collection="${item.collection_key}"
       data-score="${score}"
+      data-key="${item.key}"
       draggable="true"
     >
       <span class="header">
@@ -23333,7 +27584,7 @@ async function render27(result_scope, opts = {}) {
   return await post_process24.call(this, result_scope, frag, opts);
 }
 async function post_process24(result_scope, frag, opts = {}) {
-  const { item, score } = result_scope;
+  const { item } = result_scope;
   const env = item.env;
   const plugin = env.smart_connections_plugin;
   const app = plugin.app;
@@ -23369,7 +27620,7 @@ ${await entity.read()}`;
     }
     const link = _result_elm.dataset.link || _result_elm.dataset.path;
     if (_result_elm.classList.contains("sc-collapsed")) {
-      if (import_obsidian25.Keymap.isModEvent(event)) {
+      if (import_obsidian26.Keymap.isModEvent(event)) {
         plugin.open_note(link, event);
       } else {
         toggle_result(_result_elm);
@@ -23414,7 +27665,48 @@ ${await entity.read()}`;
     attributes: true,
     attributeOldValue: true,
     attributeFilter: ["class"]
-    // Only observe class changes
+  });
+  plugin.registerDomEvent(result_elm, "contextmenu", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const curr_key = result_elm.closest(".sc-list")?.dataset.key;
+    if (!curr_key) {
+      return;
+    }
+    const curr_collection = curr_key.includes("#") ? env.smart_blocks : env.smart_sources;
+    const curr_item = curr_collection.get(curr_key);
+    if (!curr_item) return;
+    const menu = new import_obsidian26.Menu(app);
+    menu.addItem((menu_item) => {
+      menu_item.setTitle(`Hide ${item.name}`).setIcon("eye-off").onClick(() => {
+        try {
+          if (!curr_item.data.hidden_connections) curr_item.data.hidden_connections = {};
+          curr_item.data.hidden_connections[result_elm.dataset.key] = Date.now();
+          curr_item.queue_save();
+          result_elm.style.display = "none";
+          curr_item.collection.save();
+        } catch (err) {
+          new import_obsidian26.Notice("Hide failed \u2013 check console");
+          console.error(err);
+        }
+      });
+    });
+    menu.addSeparator();
+    menu.addItem((menu_item) => {
+      menu_item.setTitle(`Unhide All (${Object.keys(curr_item.data.hidden_connections || {}).length})`).setIcon("eye").onClick(() => {
+        try {
+          if (!curr_item.data.hidden_connections) return;
+          delete curr_item.data.hidden_connections;
+          curr_item.queue_save();
+          result_elm.closest(".sc-connections-view")?.querySelector('[title="Refresh"]')?.click();
+          curr_item.collection.save();
+        } catch (err) {
+          new import_obsidian26.Notice("Unhide failed \u2013 check console");
+          console.error(err);
+        }
+      });
+    });
+    menu.showAtMouseEvent(event);
   });
   const expanded_view = env.settings.smart_view_filter.expanded_view ?? env.settings.expanded_view;
   if (!expanded_view) return result_elm;
@@ -23441,6 +27733,8 @@ async function build_html22(scope_plugin) {
       <div data-user-agreement></div>
       <div id="smart-connections-getting-started-container">
         <button class="sc-getting-started-button">Getting started guide</button>
+        <button class="sc-report-bug-button">Report a bug</button>
+        <button class="sc-request-feature-button">Request a feature</button>
       </div>
       <div data-connections-settings-container>
         <h2>Connections view</h2>
@@ -23505,6 +27799,18 @@ async function post_process25(scope_plugin, frag) {
       });
     });
   }
+  frag.querySelector(".sc-report-bug-button")?.addEventListener("click", () => {
+    open_url_externally(
+      scope_plugin,
+      "https://github.com/brianpetro/obsidian-smart-connections/issues/new?template=bug_report.yml"
+    );
+  });
+  frag.querySelector(".sc-request-feature-button")?.addEventListener("click", () => {
+    open_url_externally(
+      scope_plugin,
+      "https://github.com/brianpetro/obsidian-smart-connections/issues/new?template=feature_request.yml"
+    );
+  });
   return frag;
 }
 
@@ -23523,16 +27829,16 @@ var smart_env_config4 = {
 };
 
 // src/views/smart_view.obsidian.js
-var import_obsidian27 = require("obsidian");
+var import_obsidian28 = require("obsidian");
 
 // node_modules/obsidian-smart-env/utils/wait_for_env_to_load.js
-var import_obsidian26 = require("obsidian");
+var import_obsidian27 = require("obsidian");
 async function wait_for_env_to_load(scope, opts = {}) {
   const { wait_for_states = ["loaded"] } = opts;
   const container = scope.container || scope.containerEl;
   if (!wait_for_states.includes(scope.env?.state)) {
     let clicked_load_env = false;
-    while (scope.env.state === "init" && import_obsidian26.Platform.isMobile && !clicked_load_env) {
+    while (scope.env.state === "init" && import_obsidian27.Platform.isMobile && !clicked_load_env) {
       if (container) {
         container.empty();
         scope.env.smart_view.safe_inner_html(container, "<button>Load Smart Environment</button>");
@@ -23547,7 +27853,7 @@ async function wait_for_env_to_load(scope, opts = {}) {
     }
     while (!wait_for_states.includes(scope.env.state)) {
       if (container) {
-        const loading_msg = scope.env?.smart_connections_plugin?.obsidian_is_syncing ? "Waiting for Obsidian Sync to finish..." : "Loading Obsidian Smart Environment...";
+        const loading_msg = scope.env?.obsidian_is_syncing ? "Waiting for Obsidian Sync to finish..." : "Loading Obsidian Smart Environment...";
         container.empty();
         scope.env.smart_view.safe_inner_html(container, loading_msg);
       } else {
@@ -23559,7 +27865,7 @@ async function wait_for_env_to_load(scope, opts = {}) {
 }
 
 // src/views/smart_view.obsidian.js
-var SmartObsidianView = class extends import_obsidian27.ItemView {
+var SmartObsidianView = class extends import_obsidian28.ItemView {
   /**
    * Creates an instance of SmartObsidianView.
    * @param {any} leaf
@@ -23695,8 +28001,8 @@ var SmartObsidianView = class extends import_obsidian27.ItemView {
 };
 
 // src/views/sc_connections.obsidian.js
-var import_obsidian28 = require("obsidian");
 var import_obsidian29 = require("obsidian");
+var import_obsidian30 = require("obsidian");
 var ScConnectionsView = class extends SmartObsidianView {
   static get view_type() {
     return "smart-connections-view";
@@ -23719,7 +28025,7 @@ var ScConnectionsView = class extends SmartObsidianView {
         if (typeof this.container.checkVisibility === "function" && this.container.checkVisibility() === false) {
           return console.log("Connections view event: active-leaf-change: not visible, skipping");
         }
-        if (import_obsidian28.Platform.isMobile && this.plugin.app.workspace.activeLeaf.view.constructor.view_type === this.constructor.view_type) {
+        if (import_obsidian29.Platform.isMobile && this.plugin.app.workspace.activeLeaf.view.constructor.view_type === this.constructor.view_type) {
           this.render_view();
           return;
         }
@@ -23734,10 +28040,12 @@ var ScConnectionsView = class extends SmartObsidianView {
     this.status_elm.innerText = "Loading...";
     this.entities_count_elm.dataset.key = entity.key;
     this.status_elm.dataset.key = entity.key;
+    const exclude_keys = Object.keys(entity.data.hidden_connections || {});
     const results = await entity.find_connections({
       ...opts,
       exclude_source_connections: entity.env.smart_blocks.settings.embed_blocks,
-      exclude_key_ends_with: "---frontmatter---"
+      exclude_key_ends_with: "---frontmatter---",
+      exclude_keys
     });
     const results_frag = await entity.env.render_component("connections_results", results, opts);
     this.env.smart_view.empty(this.results_container);
@@ -23849,7 +28157,7 @@ function post_process_note_inspect_opener(view, frag, opts = {}) {
   });
   return frag;
 }
-var SmartNoteInspectModal = class extends import_obsidian29.Modal {
+var SmartNoteInspectModal = class extends import_obsidian30.Modal {
   constructor(smart_connections_plugin, entity) {
     super(smart_connections_plugin.app);
     this.smart_connections_plugin = smart_connections_plugin;
@@ -23899,7 +28207,7 @@ var ScLookupView = class extends SmartObsidianView {
 };
 
 // src/views/smart_chat.obsidian.js
-var import_obsidian30 = require("obsidian");
+var import_obsidian31 = require("obsidian");
 var SmartChatsView = class extends SmartObsidianView {
   static get view_type() {
     return "smart-chat-v0";
@@ -24058,7 +28366,7 @@ var SmartChatsView = class extends SmartObsidianView {
     if (this.textarea.value.endsWith("[[")) this.textarea.value = this.textarea.value.slice(0, -2);
   }
 };
-var ScChatHistoryModal = class extends import_obsidian30.FuzzySuggestModal {
+var ScChatHistoryModal = class extends import_obsidian31.FuzzySuggestModal {
   constructor(app, view) {
     super(app);
     this.app = app;
@@ -24078,7 +28386,7 @@ var ScChatHistoryModal = class extends import_obsidian30.FuzzySuggestModal {
     this.view.open_thread(thread_name);
   }
 };
-var ScOmniModal = class extends import_obsidian30.FuzzySuggestModal {
+var ScOmniModal = class extends import_obsidian31.FuzzySuggestModal {
   constructor(app, view) {
     super(app);
     this.app = app;
@@ -24110,7 +28418,7 @@ var ScOmniModal = class extends import_obsidian30.FuzzySuggestModal {
     this.view.open_modal(item);
   }
 };
-var ContextSelectModal = class extends import_obsidian30.FuzzySuggestModal {
+var ContextSelectModal = class extends import_obsidian31.FuzzySuggestModal {
   constructor(app, view) {
     super(app);
     this.app = app;
@@ -24128,7 +28436,7 @@ var ContextSelectModal = class extends import_obsidian30.FuzzySuggestModal {
 var ScFileSelectModal = class extends ContextSelectModal {
   constructor(app, view) {
     super(app, view);
-    const mod_key = import_obsidian30.Platform.isMacOS ? `\u2318` : `ctrl`;
+    const mod_key = import_obsidian31.Platform.isMacOS ? `\u2318` : `ctrl`;
     this.setInstructions([
       {
         command: `\u2190`,
@@ -24156,7 +28464,7 @@ var ScFileSelectModal = class extends ContextSelectModal {
     return item.basename;
   }
   selectSuggestion(item, evt) {
-    if (import_obsidian30.Keymap.isModEvent(evt)) this.view.insert_system_prompt(item.item);
+    if (import_obsidian31.Keymap.isModEvent(evt)) this.view.insert_system_prompt(item.item);
     else {
       const link = `[[${item.item.path}]] `;
       if (evt.shiftKey) this.view.insert_selection("!" + link);
@@ -24289,8 +28597,8 @@ var SmartChatGPTView = class extends SmartObsidianView {
 };
 
 // src/views/sc_private_chat.obsidian.js
-var import_obsidian31 = require("obsidian");
-var SmartPrivateChatView = class extends import_obsidian31.ItemView {
+var import_obsidian32 = require("obsidian");
+var SmartPrivateChatView = class extends import_obsidian32.ItemView {
   static get view_type() {
     return "smart-private-chat";
   }
@@ -24344,16 +28652,16 @@ var SmartPrivateChatView = class extends import_obsidian31.ItemView {
 };
 
 // node_modules/smart-chat-obsidian/src/smart_chat.obsidian.js
-var import_obsidian33 = require("obsidian");
+var import_obsidian34 = require("obsidian");
 
 // node_modules/smart-chat-obsidian/node_modules/obsidian-smart-env/utils/wait_for_env_to_load.js
-var import_obsidian32 = require("obsidian");
+var import_obsidian33 = require("obsidian");
 async function wait_for_env_to_load2(scope, opts = {}) {
   const { wait_for_states = ["loaded"] } = opts;
   const container = scope.container || scope.containerEl;
   if (!wait_for_states.includes(scope.env?.state)) {
     let clicked_load_env = false;
-    while (scope.env.state === "init" && import_obsidian32.Platform.isMobile && !clicked_load_env) {
+    while (scope.env.state === "init" && import_obsidian33.Platform.isMobile && !clicked_load_env) {
       if (container) {
         container.empty();
         scope.env.smart_view.safe_inner_html(container, "<button>Load Smart Environment</button>");
@@ -24368,7 +28676,7 @@ async function wait_for_env_to_load2(scope, opts = {}) {
     }
     while (!wait_for_states.includes(scope.env.state)) {
       if (container) {
-        const loading_msg = scope.env?.smart_connections_plugin?.obsidian_is_syncing ? "Waiting for Obsidian Sync to finish..." : "Loading Obsidian Smart Environment...";
+        const loading_msg = scope.env?.obsidian_is_syncing ? "Waiting for Obsidian Sync to finish..." : "Loading Obsidian Smart Environment...";
         container.empty();
         scope.env.smart_view.safe_inner_html(container, loading_msg);
       } else {
@@ -24380,7 +28688,7 @@ async function wait_for_env_to_load2(scope, opts = {}) {
 }
 
 // node_modules/smart-chat-obsidian/src/smart_chat.obsidian.js
-var SmartChatView = class extends import_obsidian33.ItemView {
+var SmartChatView = class extends import_obsidian34.ItemView {
   /**
    * @param {WorkspaceLeaf} leaf
    * @param {Plugin} plugin
@@ -25587,7 +29895,7 @@ var FileItemDataAdapter3 = class extends ItemDataAdapter3 {
 };
 
 // node_modules/smart-chat-obsidian/node_modules/smart-collections/adapters/ajson_multi_file.js
-var class_to_collection_key3 = {
+var class_to_collection_key4 = {
   "SmartSource": "smart_sources",
   "SmartNote": "smart_sources",
   // DEPRECATED
@@ -25808,8 +30116,8 @@ var AjsonMultiFileItemDataAdapter3 = class extends FileItemDataAdapter3 {
   _parse_ajson_key(ajson_key) {
     let changed;
     let [collection_key, ...item_key] = ajson_key.split(":");
-    if (class_to_collection_key3[collection_key]) {
-      collection_key = class_to_collection_key3[collection_key];
+    if (class_to_collection_key4[collection_key]) {
+      collection_key = class_to_collection_key4[collection_key];
       changed = true;
     }
     return {
@@ -25850,7 +30158,7 @@ var AjsonMultiFileItemDataAdapter3 = class extends FileItemDataAdapter3 {
 };
 
 // node_modules/smart-chat-obsidian/node_modules/smart-collections/utils/ajson_merge.js
-function ajson_merge(existing, new_obj) {
+function ajson_merge2(existing, new_obj) {
   if (new_obj === null) return null;
   if (new_obj === void 0) return existing;
   if (typeof new_obj !== "object") return new_obj;
@@ -25863,31 +30171,31 @@ function ajson_merge(existing, new_obj) {
     const existing_val = existing[key];
     if (Array.isArray(new_val)) {
       existing[key] = new_val.slice();
-    } else if (is_object(new_val)) {
-      existing[key] = ajson_merge(is_object(existing_val) ? existing_val : {}, new_val);
+    } else if (is_object2(new_val)) {
+      existing[key] = ajson_merge2(is_object2(existing_val) ? existing_val : {}, new_val);
     } else if (new_val !== void 0) {
       existing[key] = new_val;
     }
   }
   return existing;
 }
-function is_object(obj) {
+function is_object2(obj) {
   return obj !== null && typeof obj === "object" && !Array.isArray(obj);
 }
 
 // node_modules/smart-chat-obsidian/node_modules/smart-collections/adapters/ajson_single_file.js
-var class_to_collection_key4 = {
+var class_to_collection_key5 = {
   "SmartSource": "smart_sources",
   "SmartNote": "smart_sources",
   // DEPRECATED
   "SmartBlock": "smart_blocks",
   "SmartDirectory": "smart_directories"
 };
-function _parse_ajson_key(ajson_key) {
+function _parse_ajson_key2(ajson_key) {
   let changed = false;
   let [collection_key, ...item_key] = ajson_key.split(":");
-  if (class_to_collection_key4[collection_key]) {
-    collection_key = class_to_collection_key4[collection_key];
+  if (class_to_collection_key5[collection_key]) {
+    collection_key = class_to_collection_key5[collection_key];
     changed = true;
   }
   return {
@@ -25896,7 +30204,7 @@ function _parse_ajson_key(ajson_key) {
     changed
   };
 }
-var AjsonSingleFileCollectionDataAdapter = class extends AjsonMultiFileCollectionDataAdapter3 {
+var AjsonSingleFileCollectionDataAdapter2 = class extends AjsonMultiFileCollectionDataAdapter3 {
   /**
    * Returns the single shared `.ajson` file path for this collection.
    * @param {string} [key] - (unused) Item key, ignored in single-file mode.
@@ -25975,7 +30283,7 @@ var AjsonSingleFileCollectionDataAdapter = class extends AjsonMultiFileCollectio
       try {
         const obj = JSON.parse(combined);
         const [fullKey, value] = Object.entries(obj)[0];
-        let { collection_key, item_key, changed } = _parse_ajson_key(fullKey);
+        let { collection_key, item_key, changed } = _parse_ajson_key2(fullKey);
         const newKey = `${collection_key}:${item_key}`;
         if (!value) {
           delete data_map[newKey];
@@ -26007,7 +30315,7 @@ var AjsonSingleFileCollectionDataAdapter = class extends AjsonMultiFileCollectio
         item = new ItemClass(this.env, val);
         collection.set(item);
       } else {
-        item.data = ajson_merge(item.data, val);
+        item.data = ajson_merge2(item.data, val);
       }
       item.loaded_at = Date.now();
       item._queue_load = false;
@@ -26091,7 +30399,7 @@ var AjsonSingleFileItemDataAdapter = class extends AjsonMultiFileItemDataAdapter
   }
 };
 var ajson_single_file_default = {
-  collection: AjsonSingleFileCollectionDataAdapter,
+  collection: AjsonSingleFileCollectionDataAdapter2,
   item: AjsonSingleFileItemDataAdapter
 };
 
@@ -26135,9 +30443,13 @@ async function lookup_context(params = {}) {
   }
   if (!other_params.filter) other_params.filter = {};
   if (in_folder && in_folder !== "/") {
-    if (!other_params.filter.key_starts_with) {
-      const folder_prefix = in_folder.endsWith("/") ? in_folder : `${in_folder}/`;
-      other_params.filter.key_starts_with = folder_prefix;
+    if (env.smart_sources.fs.folders[in_folder]) {
+      if (!other_params.filter.key_starts_with) {
+        const folder_prefix = in_folder.endsWith("/") ? in_folder : `${in_folder}/`;
+        other_params.filter.key_starts_with = folder_prefix;
+      }
+    } else {
+      console.warn(`Folder "${in_folder}" does not exist in the vault. Skipping folder scoping.`);
     }
   }
   if (existing_item_keys.length) {
@@ -26184,7 +30496,7 @@ var tool = {
         },
         in_folder: {
           type: "string",
-          description: "Use only if absolutely required. Prefer excluding this parameter. Limits the lookup to items in this folder."
+          description: "Use only if absolutely required. Exclude unles asked for a specific folder. Limits the lookup to items in this folder."
         }
         // EXCLUDED because used internally and the model currently isn't aware of the current context key
         // context_key: {
@@ -26309,7 +30621,7 @@ function get_initial_message2(language) {
   return language_settings.initial_message;
 }
 
-// node_modules/smart-chat-obsidian/node_modules/smart-utils/file_tree.js
+// node_modules/smart-chat-obsidian/node_modules/smart-context-obsidian/node_modules/smart-utils/file_tree.js
 function build_file_tree_string(paths = []) {
   if (!Array.isArray(paths) || paths.length === 0) return "";
   const root = {};
@@ -26381,6 +30693,15 @@ function build_tree_string(node, prefix = "") {
     }
   });
   return output;
+}
+
+// node_modules/smart-chat-obsidian/node_modules/smart-context-obsidian/src/utils/replace_folder_tree_var.js
+function replace_folder_tree_var(prompt) {
+  let paths = smart_env.smart_sources?.fs?.folder_paths ?? [];
+  paths = paths.map((p) => p.endsWith("/") ? p : p + "/");
+  const tree = build_file_tree_string([...new Set(paths)]);
+  prompt = prompt.replace(/{{\s*folder_tree\s*}}/gi, tree);
+  return prompt;
 }
 
 // node_modules/smart-chat-obsidian/src/items/smart_chat_thread.js
@@ -26486,10 +30807,7 @@ var SmartChatThread = class extends CollectionItem3 {
 ${opts.system_message}` : opts.system_message;
     }
     if (prompt.includes("{{folder_tree}}")) {
-      let paths = this.env.smart_sources?.fs?.folder_paths ?? [];
-      paths = paths.map((p) => p.endsWith("/") ? p : p + "/");
-      const tree = build_file_tree_string([...new Set(paths)]);
-      prompt = prompt.replace(/{{\s*folder_tree\s*}}/gi, tree);
+      prompt = replace_folder_tree_var(prompt);
     }
     return prompt;
   }
@@ -26624,12 +30942,12 @@ var SmartChatThreads = class extends Collection3 {
 var smart_chat_threads_default = {
   class: SmartChatThreads,
   collection_key: "smart_chat_threads",
-  data_adapter: AjsonSingleFileCollectionDataAdapter,
+  data_adapter: AjsonSingleFileCollectionDataAdapter2,
   item_type: SmartChatThread
 };
 
 // node_modules/smart-chat-obsidian/node_modules/smart-completions/smart_completions.js
-var SmartCompletions = class extends Collection3 {
+var SmartCompletions2 = class extends Collection3 {
   /**
    * Lazily instantiates and returns a chat_model. Similar to how
    * SmartEntities implements embed_model. You can adapt this
@@ -26744,7 +31062,7 @@ function fmix_322(h) {
 }
 
 // node_modules/smart-chat-obsidian/node_modules/smart-utils/coerce_primitives.js
-function coerce_primitives(value) {
+function coerce_primitives2(value) {
   if (typeof value !== "string") {
     return value;
   }
@@ -26770,7 +31088,7 @@ function coerce_primitives(value) {
 }
 
 // node_modules/smart-chat-obsidian/node_modules/smart-utils/parse_xml_fragments.js
-function parse_xml_fragments(xml_input) {
+function parse_xml_fragments2(xml_input) {
   if (typeof xml_input !== "string" || xml_input.trim() === "") {
     return null;
   }
@@ -26783,7 +31101,7 @@ function parse_xml_fragments(xml_input) {
     let m;
     while ((m = attr_re.exec(str)) !== null) {
       const [, key, raw_val] = m;
-      attrs[key] = coerce_primitives(raw_val);
+      attrs[key] = coerce_primitives2(raw_val);
     }
     return attrs;
   };
@@ -26800,7 +31118,7 @@ function parse_xml_fragments(xml_input) {
     if (Object.keys(ctx.children_map).length) {
       ctx.node.contents = ctx.children_map;
     } else if (text_raw !== "") {
-      ctx.node.contents = ctx.verbatim ? text_raw : coerce_primitives(text_raw);
+      ctx.node.contents = ctx.verbatim ? text_raw : coerce_primitives2(text_raw);
     } else {
       ctx.node.contents = null;
     }
@@ -26883,7 +31201,7 @@ function parse_xml_fragments(xml_input) {
 }
 
 // node_modules/smart-chat-obsidian/node_modules/smart-completions/smart_completion.js
-var SmartCompletion = class extends CollectionItem3 {
+var SmartCompletion2 = class extends CollectionItem3 {
   constructor(env, data = null) {
     super(env, data);
     this.run_adapter_item_constructors();
@@ -27074,7 +31392,7 @@ var SmartCompletion = class extends CollectionItem3 {
       }
     }
     if (!this.response_text) return null;
-    const parsed = parse_xml_fragments(this.response_text);
+    const parsed = parse_xml_fragments2(this.response_text);
     if (!parsed) return null;
     return parsed;
   }
@@ -27111,7 +31429,7 @@ var SmartCompletion = class extends CollectionItem3 {
 };
 
 // node_modules/smart-chat-obsidian/node_modules/smart-completions/utils/insert_user_message.js
-function insert_user_message(request, user_message, opts = {}) {
+function insert_user_message2(request, user_message, opts = {}) {
   if (!user_message) return;
   const { position = "end", new_user_message = false } = opts;
   if (!request.messages) {
@@ -27149,7 +31467,7 @@ function insert_user_message(request, user_message, opts = {}) {
 }
 
 // node_modules/smart-chat-obsidian/node_modules/smart-completions/adapters/_adapter.js
-var SmartCompletionAdapter = class {
+var SmartCompletionAdapter2 = class {
   constructor(item) {
     this.item = item;
   }
@@ -27169,7 +31487,7 @@ var SmartCompletionAdapter = class {
     return this.item.response;
   }
   insert_user_message(user_message, opts = {}) {
-    insert_user_message(this.request, user_message, opts);
+    insert_user_message2(this.request, user_message, opts);
   }
   // Override these methods in subclasses
   static get property_name() {
@@ -27187,59 +31505,9 @@ var SmartCompletionAdapter = class {
   }
 };
 
-// node_modules/smart-chat-obsidian/node_modules/smart-completions/adapters/template.js
-var SmartCompletionTemplateAdapter = class extends SmartCompletionAdapter {
-  /**
-   * @returns {string}
-   */
-  static get property_name() {
-    return "template_key";
-  }
-  /**
-   * to_request: Locates the template item, injects relevant fields into request.
-   * @returns {Promise<void>}
-   */
-  async to_request() {
-    const template_key = this.data.template_key;
-    if (!template_key) return;
-    const template_collection = this.item.env.smart_templates;
-    if (!template_collection) {
-      console.warn("No 'smart_templates' collection found; skipping template adapter.");
-      return;
-    }
-    const template_item = template_collection.get(template_key);
-    if (!template_item) {
-      console.warn(`Template item not found for key '${template_key}'`);
-      return;
-    }
-    const template_content = await template_item.get_template();
-    const template_templates = this.data.template_templates;
-    const system_prompt = compile_template_instructions(template_content, template_templates);
-    this.insert_user_message(system_prompt);
-  }
-  /**
-   * from_response: No post-processing needed for this template usage.
-   * @returns {Promise<void>}
-   */
-  async from_response() {
-  }
-};
-function compile_template_instructions(template_text, template_templates = {}) {
-  if (!template_templates.before) template_templates.before = `Important: use the following template to format your response:
-- should output exact headings
-- should interpret non-heading template text as instructions
-  - each non-heading template text should be considered specific to the respective heading
-  
----BEGIN TEMPLATE---`;
-  if (!template_templates.after) template_templates.after = `---END TEMPLATE---`;
-  return `${template_templates.before}
-${template_text}
-${template_templates.after}`;
-}
-
 // node_modules/smart-chat-obsidian/node_modules/smart-completions/utils/insert_image.js
-async function insert_image(request, image_path, fs) {
-  const base64_image = await convert_image_to_base64(fs, image_path);
+async function insert_image2(request, image_path, fs) {
+  const base64_image = await convert_image_to_base642(fs, image_path);
   if (!base64_image) return;
   const last_user_index = request.messages.findLastIndex((x) => x.role === "user");
   const image_content = {
@@ -27256,7 +31524,7 @@ async function insert_image(request, image_path, fs) {
   }
   last_user_message.content.push(image_content.content[0]);
 }
-async function convert_image_to_base64(fs, image_path) {
+async function convert_image_to_base642(fs, image_path) {
   if (!image_path) return;
   const image_exts = ["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", "ico"];
   const ext = image_path.split(".").pop().toLowerCase();
@@ -27271,8 +31539,8 @@ async function convert_image_to_base64(fs, image_path) {
 }
 
 // node_modules/smart-chat-obsidian/node_modules/smart-completions/utils/insert_pdf.js
-async function insert_pdf(request, pdf_path, fs) {
-  const base64_pdf = await convert_pdf_to_base64(fs, pdf_path);
+async function insert_pdf2(request, pdf_path, fs) {
+  const base64_pdf = await convert_pdf_to_base642(fs, pdf_path);
   if (!base64_pdf) return;
   const last_user_index = request.messages.findLastIndex((x) => x.role === "user");
   const pdf_content = {
@@ -27297,7 +31565,7 @@ async function insert_pdf(request, pdf_path, fs) {
   }
   last_user_message.content.push(pdf_content.content[0]);
 }
-async function convert_pdf_to_base64(fs, pdf_path) {
+async function convert_pdf_to_base642(fs, pdf_path) {
   if (!pdf_path) return;
   const ext = pdf_path.split(".").pop().toLowerCase();
   if (ext !== "pdf") return;
@@ -27310,7 +31578,7 @@ async function convert_pdf_to_base64(fs, pdf_path) {
 }
 
 // node_modules/smart-chat-obsidian/node_modules/smart-completions/adapters/context.js
-var SmartCompletionContextAdapter = class extends SmartCompletionAdapter {
+var SmartCompletionContextAdapter2 = class extends SmartCompletionAdapter2 {
   static order = 10;
   static get property_name() {
     return "context_key";
@@ -27357,13 +31625,13 @@ var SmartCompletionContextAdapter = class extends SmartCompletionAdapter {
   async insert_images(image_paths) {
     if (!Array.isArray(image_paths) || !image_paths.length) return;
     for (const img_path of image_paths) {
-      await insert_image(this.request, img_path, this.item.env.fs);
+      await insert_image2(this.request, img_path, this.item.env.fs);
     }
   }
   async insert_pdfs(pdf_paths) {
     if (!Array.isArray(pdf_paths) || !pdf_paths.length) return;
     for (const pdf_path of pdf_paths) {
-      await insert_pdf(this.request, pdf_path, this.item.env.fs);
+      await insert_pdf2(this.request, pdf_path, this.item.env.fs);
     }
   }
   /**
@@ -27374,7 +31642,7 @@ var SmartCompletionContextAdapter = class extends SmartCompletionAdapter {
 };
 
 // node_modules/smart-chat-obsidian/node_modules/smart-completions/adapters/user.js
-var SmartCompletionUserAdapter = class extends SmartCompletionAdapter {
+var SmartCompletionUserAdapter2 = class extends SmartCompletionAdapter2 {
   static order = 1;
   /**
    * @returns {string}
@@ -27407,7 +31675,7 @@ var SmartCompletionUserAdapter = class extends SmartCompletionAdapter {
 };
 
 // node_modules/smart-chat-obsidian/node_modules/smart-completions/adapters/action.js
-var ActionCompletionAdapter = class extends SmartCompletionAdapter {
+var ActionCompletionAdapter2 = class extends SmartCompletionAdapter2 {
   static get property_name() {
     return "action_key";
   }
@@ -27433,7 +31701,7 @@ var ActionCompletionAdapter = class extends SmartCompletionAdapter {
     let tools;
     try {
       const action_module = action_item.module;
-      tools = action_module.tool ? [action_module.tool] : convert_openapi_to_tools(action_module.openapi);
+      tools = action_module.tool ? [action_module.tool] : convert_openapi_to_tools2(action_module.openapi);
     } catch (err) {
       console.warn("Error compiling ephemeral action", err);
       return;
@@ -27507,7 +31775,7 @@ var ActionCompletionAdapter = class extends SmartCompletionAdapter {
     }
   }
 };
-function convert_openapi_to_tools(openapi_spec) {
+function convert_openapi_to_tools2(openapi_spec) {
   const tools = [];
   for (const path2 in openapi_spec.paths) {
     const methods = openapi_spec.paths[path2];
@@ -27547,7 +31815,7 @@ function convert_openapi_to_tools(openapi_spec) {
 }
 
 // node_modules/smart-chat-obsidian/node_modules/smart-completions/adapters/action_xml.js
-function scaffold_xml(root_tag, root_desc, params) {
+function scaffold_xml2(root_tag, root_desc, params) {
   return [
     `<${root_tag} instructions="${root_desc}">`,
     ...Object.entries(params).map(
@@ -27556,10 +31824,10 @@ function scaffold_xml(root_tag, root_desc, params) {
     `</${root_tag}>`
   ].join("\n");
 }
-function strip_instruction_attrs(xml) {
+function strip_instruction_attrs2(xml) {
   return xml.replace(/\s+instructions="[^"]*"/g, "");
 }
-var ActionXmlCompletionAdapter = class extends ActionCompletionAdapter {
+var ActionXmlCompletionAdapter2 = class extends ActionCompletionAdapter2 {
   static get property_name() {
     return "action_xml_key";
   }
@@ -27578,7 +31846,7 @@ var ActionXmlCompletionAdapter = class extends ActionCompletionAdapter {
     let tools;
     try {
       const mod = action_item.module;
-      tools = mod.tool ? [mod.tool] : convert_openapi_to_tools(mod.openapi);
+      tools = mod.tool ? [mod.tool] : convert_openapi_to_tools2(mod.openapi);
     } catch (err) {
       return console.warn("Unable to compile OpenAPI \u2192 tools", err);
     }
@@ -27602,8 +31870,8 @@ var ActionXmlCompletionAdapter = class extends ActionCompletionAdapter {
         ([p, v]) => `- ${p}: ${v.description || ""}`
       )
     ].join("\n");
-    const xml_scaffold = scaffold_xml(func_def.name, func_def.description, param_props);
-    const xml_template = strip_instruction_attrs(xml_scaffold);
+    const xml_scaffold = scaffold_xml2(func_def.name, func_def.description, param_props);
+    const xml_template = strip_instruction_attrs2(xml_scaffold);
     const action_instruction_msg = [
       action_instruction,
       `You are ready to invoke the action '${func_def.name}'.`
@@ -27667,7 +31935,7 @@ var ActionXmlCompletionAdapter = class extends ActionCompletionAdapter {
 };
 
 // node_modules/smart-chat-obsidian/node_modules/smart-completions/adapters/system.js
-var SmartCompletionSystemAdapter = class extends SmartCompletionAdapter {
+var SmartCompletionSystemAdapter2 = class extends SmartCompletionAdapter2 {
   /**
    * Identifies the data property that triggers this adapter.
    * @returns {string}
@@ -27699,22 +31967,22 @@ var SmartCompletionSystemAdapter = class extends SmartCompletionAdapter {
 };
 
 // node_modules/smart-chat-obsidian/node_modules/smart-completions/index.js
-var smart_completions_default_config = {
-  class: SmartCompletions,
-  data_adapter: AjsonSingleFileCollectionDataAdapter,
-  item_type: SmartCompletion,
+var smart_completions_default_config2 = {
+  class: SmartCompletions2,
+  data_adapter: AjsonSingleFileCollectionDataAdapter2,
+  item_type: SmartCompletion2,
   completion_adapters: {
-    SmartCompletionTemplateAdapter,
-    SmartCompletionContextAdapter,
-    SmartCompletionUserAdapter,
-    ActionCompletionAdapter,
-    ActionXmlCompletionAdapter,
-    SmartCompletionSystemAdapter
+    // SmartCompletionTemplateAdapter,
+    SmartCompletionContextAdapter: SmartCompletionContextAdapter2,
+    SmartCompletionUserAdapter: SmartCompletionUserAdapter2,
+    ActionCompletionAdapter: ActionCompletionAdapter2,
+    ActionXmlCompletionAdapter: ActionXmlCompletionAdapter2,
+    SmartCompletionSystemAdapter: SmartCompletionSystemAdapter2
   }
 };
 
 // node_modules/smart-chat-obsidian/src/adapters/smart-completions/thread.js
-var ThreadCompletionAdapter = class extends SmartCompletionAdapter {
+var ThreadCompletionAdapter = class extends SmartCompletionAdapter2 {
   static order = -1;
   /**
    * @returns {string}
@@ -27782,8 +32050,8 @@ var ThreadCompletionAdapter = class extends SmartCompletionAdapter {
 };
 
 // node_modules/smart-chat-obsidian/src/collections/smart_completions.js
-smart_completions_default_config.completion_adapters["ThreadCompletionAdapter"] = ThreadCompletionAdapter;
-var smart_completions_default = smart_completions_default_config;
+smart_completions_default_config2.completion_adapters["ThreadCompletionAdapter"] = ThreadCompletionAdapter;
+var smart_completions_default = smart_completions_default_config2;
 
 // node_modules/smart-chat-obsidian/node_modules/smart-contexts/smart_contexts.js
 var SmartContexts = class extends Collection3 {
@@ -27958,6 +32226,72 @@ var SmartContexts = class extends Collection3 {
     return collection.get(key);
   }
 };
+
+// node_modules/smart-chat-obsidian/node_modules/smart-contexts/utils/get_snapshot.js
+async function get_snapshot(ctx, opts = {}) {
+  const snapshot = {
+    items: {},
+    // depth ⇒ { path ⇒ item }
+    truncated_items: [],
+    skipped_items: [],
+    missing_items: [],
+    images: [],
+    char_count: opts.items ? Object.values(opts.items).reduce((p, i) => p + i.char_count, 0) : 0
+  };
+  const seen = new Set(Object.keys(opts.items || {}));
+  const keys_at_depth = { 0: ctx.get_item_keys_by_depth(0) };
+  const max_depth = opts.link_depth ?? 0;
+  for (let depth = 0; depth <= max_depth; depth++) {
+    const depth_keys = keys_at_depth[depth] || [];
+    if (!depth_keys.length) continue;
+    const ctx_items = ctx.get_context_items(depth_keys);
+    const curr_depth = snapshot.items[depth] = {};
+    for (const item of ctx_items) {
+      await item.add_to_snapshot(snapshot, { ...opts, depth });
+      seen.add(item.path);
+    }
+    if (depth !== max_depth) {
+      const accumulate = new Set(keys_at_depth[depth + 1] || []);
+      for (const context_item of Object.values(curr_depth)) {
+        if (!context_item) continue;
+        if (opts.inlinks) {
+          const inlinks = context_item.inlinks ?? context_item.ref?.inlinks ?? [];
+          inlinks.forEach((p) => {
+            if (!seen.has(p)) accumulate.add(p);
+          });
+        }
+        const outlinks = context_item.outlinks ?? context_item.ref?.outlinks ?? [];
+        outlinks.forEach((p) => {
+          if (!seen.has(p)) accumulate.add(p);
+        });
+      }
+      keys_at_depth[depth + 1] = Array.from(accumulate);
+    }
+  }
+  if (opts.items) {
+    snapshot.items[0] = { ...snapshot.items[0], ...opts.items };
+  }
+  return snapshot;
+}
+
+// node_modules/smart-chat-obsidian/node_modules/smart-contexts/utils/merge_context_opts.js
+function merge_context_opts(context_item, input_opts = {}) {
+  const cset = context_item.collection.settings || {};
+  const local_opts = context_item.data.context_opts || {};
+  const merged_templates = {
+    ...cset.templates ? JSON.parse(JSON.stringify(cset.templates)) : {},
+    ...local_opts.templates && typeof local_opts.templates === "object" ? local_opts.templates : {},
+    ...input_opts.templates && typeof input_opts.templates === "object" ? input_opts.templates : {}
+  };
+  return {
+    ...input_opts,
+    link_depth: input_opts.link_depth ?? local_opts.link_depth ?? cset.link_depth ?? 0,
+    inlinks: input_opts.inlinks ?? local_opts.inlinks ?? Boolean(cset.inlinks),
+    excluded_headings: input_opts.excluded_headings ?? local_opts.excluded_headings ?? (Array.isArray(cset.excluded_headings) ? [...cset.excluded_headings] : []),
+    max_len: input_opts.max_len ?? local_opts.max_len ?? cset.max_len ?? 0,
+    templates: merged_templates
+  };
+}
 
 // node_modules/smart-chat-obsidian/node_modules/smart-blocks/parsers/markdown.js
 function parse_markdown_blocks3(markdown, opts = {}) {
@@ -28393,141 +32727,121 @@ function get_markdown_links3(content) {
   );
 }
 
-// node_modules/smart-chat-obsidian/node_modules/smart-contexts/utils/get_snapshot.js
-async function get_snapshot(ctx, opts) {
-  const snapshot = {
-    items: {},
-    truncated_items: [],
-    skipped_items: [],
-    missing_items: [],
-    images: [],
-    char_count: opts.items ? Object.values(opts.items).reduce((acc, i) => acc + i.char_count, 0) : 0
-  };
-  const keys_at_depth = {};
-  keys_at_depth[0] = ctx.get_item_keys_by_depth(0);
-  const max_depth = opts.link_depth ?? 0;
-  for (let depth = 0; depth <= max_depth; depth++) {
-    const curr_depth = await process_depth(
-      snapshot,
-      keys_at_depth[depth],
-      ctx,
-      opts
-    );
-    snapshot.items[depth] = curr_depth;
-    if (depth !== max_depth) {
-      keys_at_depth[depth + 1] = Object.keys(Object.values(curr_depth).reduce((acc, i) => {
-        if (opts.inlinks) {
-          i.ref.inlinks.forEach((inlink) => {
-            if (!is_already_in_snapshot(inlink.path, snapshot)) {
-              acc[inlink] = true;
-            }
-          });
-        }
-        i.ref.outlinks.forEach((outlink) => {
-          if (!is_already_in_snapshot(outlink.path, snapshot)) {
-            acc[outlink] = true;
-          }
-        });
-        return acc;
-      }, {}));
+// node_modules/smart-chat-obsidian/node_modules/smart-contexts/context_item.js
+var BaseContextItem = class {
+  constructor(ctx, key) {
+    ctx.env.create_env_getter(this);
+    this.ctx = ctx;
+    this.key = key;
+    const ctx_data = ctx.data?.context_items?.[key];
+    if (ctx_data && typeof ctx_data === "object" && "content" in ctx_data) {
+      this.content = String(ctx_data.content ?? "");
     }
   }
-  if (opts.items) {
-    snapshot.items[0] = {
-      ...snapshot.items[0],
-      ...opts.items
-    };
+  get name() {
+    return this.path.split("/").pop();
   }
-  return snapshot;
-}
-async function process_depth(snapshot, curr_depth_keys, ctx, opts) {
-  const ctx_items = (curr_depth_keys ?? []).map((key) => ctx.get_ref(key)).filter(Boolean);
-  const non_source_keys = curr_depth_keys.filter((key) => !ctx.get_ref(key));
-  for (const key of non_source_keys) {
-    const smart_fs = ctx.env.smart_sources.fs;
-    const files = await smart_fs.adapter.list_files_recursive(key);
-    if (!files.length) {
-      snapshot.missing_items.push(key);
-      continue;
-    }
-    for (const file of files) {
-      if (is_already_in_snapshot(file.path, snapshot)) {
-        continue;
-      }
-      const item = ctx.get_ref(file.path);
-      if (item) {
-        ctx_items.push(item);
-      } else {
-        const image_exts = ["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", "ico"];
-        if (image_exts.some((ext) => file.path.endsWith(`.${ext}`))) {
-          snapshot.images.push(file.path);
-        } else if (file.path.endsWith(".pdf")) {
-          if (!snapshot.pdfs) snapshot.pdfs = [];
-          snapshot.pdfs.push(file.path);
-        } else {
-          snapshot.missing_items.push(file.path);
-        }
-      }
-    }
+  get path() {
+    return this.key;
   }
-  const curr_depth = {};
-  const batch = [];
-  for (const context_item of ctx_items) {
-    if (is_already_in_snapshot(context_item.key, snapshot)) {
-      continue;
-    }
-    batch.push(process_item(context_item));
+  /* fallback empty link arrays so link‑depth traversal works */
+  get inlinks() {
+    return this._inlinks ?? [];
   }
-  await Promise.all(batch);
-  return curr_depth;
-  async function process_item(context_item) {
-    let content = await context_item.read();
-    if (!opts.calculating && content.split("\n").some((line) => line.startsWith("```dataview"))) {
-      content = await context_item.read({ render_output: true });
-      context_item.data.outlinks = get_markdown_links3(content);
-    }
-    const excluded_headings = opts.excluded_headings || [];
-    const [new_content, exclusions, removed_char_count] = strip_excluded_headings(content, excluded_headings);
-    if (!ctx.settings.follow_links_in_excluded) {
-      context_item.data.outlinks = get_markdown_links3(new_content);
-    }
-    snapshot.char_count += new_content.length;
-    curr_depth[context_item.path] = {
-      ref: context_item,
-      path: context_item.path,
-      content: new_content,
-      mtime: context_item.mtime,
-      char_count: new_content.length,
+  get outlinks() {
+    return this._outlinks ?? [];
+  }
+  set inlinks(links) {
+    this._inlinks = Array.isArray(links) ? links : [];
+  }
+  set outlinks(links) {
+    links = links.map((link) => {
+      const link_ref = link?.target || link;
+      if (link_ref.startsWith("http")) return null;
+      const link_path = this.env.smart_sources.fs.get_link_target_path(link_ref, this.key);
+      return link_path;
+    }).filter((link_path) => link_path);
+    this._outlinks = Array.isArray(links) ? links : [];
+  }
+  async add_to_snapshot(snapshot, opts = {}) {
+    if (typeof this.content !== "string") return;
+    this.outlinks = get_markdown_links3(this.content);
+    const [clean, exclusions, excluded_char_count] = strip_excluded_headings(this.content, opts.excluded_headings ?? []);
+    const depth = opts.depth || 0;
+    if (!snapshot.items[depth]) snapshot.items[depth] = {};
+    snapshot.items[depth][this.key] = {
+      path: this.key,
+      content: clean,
+      char_count: clean.length,
+      mtime: Date.now(),
+      // inline items have no mtime
       exclusions,
-      excluded_char_count: removed_char_count
+      excluded_char_count,
+      inlinks: this.inlinks,
+      outlinks: this.outlinks
     };
+    snapshot.char_count += clean.length;
   }
-}
-function is_already_in_snapshot(item_path, snapshot) {
-  return Object.values(snapshot.items).some((depthObj) => depthObj?.[item_path]);
-}
+  async find_connections(opts = {}) {
+    return await this.env.smart_sources.lookup({ hypotheticals: [
+      this.data.content
+    ] });
+  }
+};
+var SourceContextItem = class extends BaseContextItem {
+  constructor(context, ref) {
+    super(context, ref.key);
+    this.ref = ref;
+  }
+  get inlinks() {
+    return this.ref.inlinks || [];
+  }
+  get outlinks() {
+    return this.ref.outlinks || [];
+  }
+  async add_to_snapshot(snapshot, opts) {
+    let raw = await this.ref.read();
+    if (!opts.calculating && raw.split("\n").some((line) => line.startsWith("```dataview"))) {
+      raw = await this.ref.read({ render_output: true });
+      this.ref.data.outlinks = get_markdown_links3(raw);
+    }
+    const [content, exclusions, excluded_char_count] = strip_excluded_headings(raw, opts.excluded_headings ?? []);
+    if (!snapshot.items) snapshot.items = [];
+    if (!snapshot.items[0]) snapshot.items[0] = {};
+    snapshot.items[0][this.path] = {
+      ref: this.ref,
+      path: this.path,
+      mtime: this.ref.mtime,
+      content,
+      char_count: content.length,
+      exclusions,
+      excluded_char_count
+    };
+    snapshot.char_count += content.length;
+  }
+  async find_connections(opts = {}) {
+    return await this.ref.find_connections(opts);
+  }
+};
+var ImageContextItem = class extends BaseContextItem {
+  async add_to_snapshot(snapshot) {
+    if (!snapshot.images) snapshot.images = [];
+    snapshot.images.push(this.path);
+  }
+};
+var PdfContextItem = class extends BaseContextItem {
+  async add_to_snapshot(snapshot) {
+    if (!snapshot.pdfs) snapshot.pdfs = [];
+    snapshot.pdfs.push(this.path);
+  }
+};
 
-// node_modules/smart-chat-obsidian/node_modules/smart-contexts/utils/merge_context_opts.js
-function merge_context_opts(context_item, input_opts = {}) {
-  const cset = context_item.collection.settings || {};
-  const local_opts = context_item.data.context_opts || {};
-  const merged_templates = {
-    ...cset.templates ? JSON.parse(JSON.stringify(cset.templates)) : {},
-    ...local_opts.templates && typeof local_opts.templates === "object" ? local_opts.templates : {},
-    ...input_opts.templates && typeof input_opts.templates === "object" ? input_opts.templates : {}
-  };
-  return {
-    ...input_opts,
-    link_depth: input_opts.link_depth ?? local_opts.link_depth ?? cset.link_depth ?? 0,
-    inlinks: input_opts.inlinks ?? local_opts.inlinks ?? Boolean(cset.inlinks),
-    excluded_headings: input_opts.excluded_headings ?? local_opts.excluded_headings ?? (Array.isArray(cset.excluded_headings) ? [...cset.excluded_headings] : []),
-    max_len: input_opts.max_len ?? local_opts.max_len ?? cset.max_len ?? 0,
-    templates: merged_templates
-  };
-}
+// node_modules/smart-chat-obsidian/node_modules/smart-contexts/utils/image_extension_regex.js
+var image_extension_regex = /\.(png|jpe?g|gif|bmp|webp|svg|ico|mp4)$/i;
 
 // node_modules/smart-chat-obsidian/node_modules/smart-contexts/smart_context.js
 var SmartContext = class extends CollectionItem3 {
+  static version = 1;
   static get defaults() {
     return {
       data: {
@@ -28567,6 +32881,24 @@ var SmartContext = class extends CollectionItem3 {
     items.forEach((item) => this.add_item(item));
   }
   /**
+   * Return *ContextItem* instances (any depth) for a given key array.
+   * @param {string[]} keys
+   */
+  get_context_items(keys = this.context_item_keys) {
+    return keys.map((k) => this.get_context_item(k)).filter(Boolean);
+  }
+  /** Map any key to ContextItem subclass */
+  get_context_item(key) {
+    const ctx_item = this.data?.context_items?.[key];
+    if (ctx_item && typeof ctx_item === "object" && "content" in ctx_item) {
+      return new BaseContextItem(this, key);
+    }
+    if (image_extension_regex.test(key)) return new ImageContextItem(this, key);
+    if (key.endsWith(".pdf")) return new PdfContextItem(this, key);
+    const src = this.env.smart_sources.get(key) || this.env.smart_blocks.get(key);
+    return src ? new SourceContextItem(this, src) : null;
+  }
+  /**
    * get_snapshot
    * Gathers items at depth=0..link_depth, respects exclusions, and tracks truncated/skipped items.
    * @async
@@ -28596,19 +32928,22 @@ var SmartContext = class extends CollectionItem3 {
   }
   /**
    * @method get_ref
+   * @deprecated moving to using ContextItem instances
    * Looks up a reference in the environment. Distinguishes block vs source by '#' presence.
    */
   get_ref(key) {
     return this.collection.get_ref(key);
   }
   get_item_keys_by_depth(depth) {
-    this.convert_data_context_items_bool_to_object();
     return Object.keys(this.data.context_items).filter((k) => {
       const item_depth = this.data.context_items[k].d;
       if (item_depth === depth) return true;
       if (typeof item_depth === "undefined" && depth === 0) return true;
       return false;
     });
+  }
+  get context_item_keys() {
+    return Object.keys(this.data?.context_items || {});
   }
   /**
    * If no user-provided key, fallback to a stable hash of the context_items.
@@ -28621,18 +32956,6 @@ var SmartContext = class extends CollectionItem3 {
   }
   get has_context_items() {
     return Object.keys(this.data.context_items || {}).length > 0;
-  }
-  /**
-   * Backwards compatibility (remove in v2)
-   * Converts context_items from boolean to object with depth d=0
-   */
-  convert_data_context_items_bool_to_object() {
-    if (Object.values(this.data.context_items).every((v) => v === true)) {
-      Object.keys(this.data.context_items).forEach((k) => {
-        this.data.context_items[k] = { d: 0 };
-      });
-      this.queue_save();
-    }
   }
 };
 
@@ -28879,7 +33202,7 @@ var DefaultContextCompileAdapter = class extends ContextCompileAdapter {
 // node_modules/smart-chat-obsidian/node_modules/smart-contexts/index.js
 var smart_contexts_default_config = {
   class: SmartContexts,
-  data_adapter: AjsonSingleFileCollectionDataAdapter,
+  data_adapter: AjsonSingleFileCollectionDataAdapter2,
   compile_adapters: {
     DefaultContextCompileAdapter
   },
@@ -29006,12 +33329,18 @@ css_sheet4.replaceSync(`/**
   animation: save_confirmation 1s ease-out;
   background-color: rgba(46, 204, 113, 0.1);
   transition: background-color 1s ease;
+}
+
+.sc-tree-item .sc-tree-score {
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 500;
 }`);
 var chat_default = css_sheet4;
 
 // node_modules/smart-chat-obsidian/src/chat_history_modal.js
-var import_obsidian34 = require("obsidian");
-var ChatHistoryModal = class extends import_obsidian34.FuzzySuggestModal {
+var import_obsidian35 = require("obsidian");
+var ChatHistoryModal = class extends import_obsidian35.FuzzySuggestModal {
   /**
    * @param {Object} plugin - Main plugin instance with `app` and `env`.
    */
@@ -29222,7 +33551,7 @@ function thread_has_user_message(thread) {
 }
 
 // node_modules/smart-chat-obsidian/node_modules/smart-context-obsidian/src/views/context_selector_modal.js
-var import_obsidian35 = require("obsidian");
+var import_obsidian36 = require("obsidian");
 
 // node_modules/smart-chat-obsidian/node_modules/smart-context-obsidian/node_modules/smart-file-system/utils/ignore.js
 var TEXT_FILE_EXTENSIONS = [
@@ -29382,9 +33711,9 @@ function get_visible_open_files(app) {
 }
 
 // node_modules/smart-chat-obsidian/node_modules/smart-context-obsidian/src/views/context_selector_modal.js
-var ContextSelectorModal = class extends import_obsidian35.FuzzySuggestModal {
+var ContextSelectorModal = class extends import_obsidian36.FuzzySuggestModal {
   static open(env, opts) {
-    const plugin = env.smart_contexts_plugin || env.smart_chat_plugin || env.smart_connections_plugin;
+    const plugin = env.smart_contexts_plugin || env.smart_chat_plugin || env.smart_connections_plugin || env.plugin;
     if (!env.context_selector_modal) {
       env.context_selector_modal = new this(plugin, opts);
     }
@@ -29414,12 +33743,12 @@ var ContextSelectorModal = class extends import_obsidian35.FuzzySuggestModal {
     this.plugin.env.create_env_getter(this);
     this.mod_key_was_held = false;
     this.modalEl.addEventListener("keydown", (e) => {
-      this.mod_key_was_held = import_obsidian35.Keymap.isModifier(e, "Mod");
+      this.mod_key_was_held = import_obsidian36.Keymap.isModifier(e, "Mod");
       if (e.key === "Enter") this.selectActiveSuggestion(e);
       if (e.key === "Escape") this.close(true);
     });
     this.resultContainerEl.addEventListener("click", (e) => {
-      this.mod_key_was_held = import_obsidian35.Keymap.isModifier(e, "Mod");
+      this.mod_key_was_held = import_obsidian36.Keymap.isModifier(e, "Mod");
     });
   }
   /* ───────────────────────────────────────────────────────────── */
@@ -29794,10 +34123,21 @@ async function post_process27(ctx, container, opts = {}) {
     actions_el.appendChild(send_btn);
   }
   const tree_el = container.querySelector(".sc-context-tree");
-  const stats_el = container.querySelector(".sc-context-stats");
+  const context_tree_container = await ctx.env.render_component("context_tree", ctx, { ...opts, update_callback });
+  const context_items_with_score = Object.entries(ctx.data.context_items).filter(([key, value]) => {
+    return value?.score !== void 0 && value?.score !== null;
+  }).forEach(([key, value]) => {
+    const label = context_tree_container.querySelector(`.sc-tree-item[data-path="${key}"]`);
+    if (label) {
+      const score_span = this.create_doc_fragment(`<span class="sc-tree-score" title="Relevance score">${value.score.toFixed(2)}</span>`);
+      label.insertAfter(score_span, label.querySelector(".sc-tree-remove"));
+    }
+  });
+  ;
   tree_el.replaceWith(
-    await ctx.env.render_component("context_tree", ctx, { ...opts, update_callback })
+    context_tree_container
   );
+  const stats_el = container.querySelector(".sc-context-stats");
   stats_el.replaceWith(
     await ctx.env.render_component("context_stats", ctx, { ...opts })
   );
@@ -30291,7 +34631,7 @@ function post_process30(completion, frag, opts = {}) {
 }
 
 // node_modules/smart-chat-obsidian/src/components/message_assistant.js
-var import_obsidian36 = require("obsidian");
+var import_obsidian37 = require("obsidian");
 async function build_html28(completion, opts = {}) {
   const text = completion.response_text || "";
   return `
@@ -30327,12 +34667,12 @@ async function post_process31(completion, frag, opts = {}) {
   const copyButton = frag.querySelector(".smart-chat-message-copy-button");
   this.empty(content);
   const plugin = completion.env.smart_chat_plugin || completion.env.smart_connections_plugin;
-  await import_obsidian36.MarkdownRenderer.render(
+  await import_obsidian37.MarkdownRenderer.render(
     plugin.app,
     completion.response_text,
     content,
     "",
-    new import_obsidian36.Component()
+    new import_obsidian37.Component()
   );
   copyButton?.addEventListener("click", async () => {
     try {
@@ -30341,7 +34681,7 @@ async function post_process31(completion, frag, opts = {}) {
         return;
       }
       await navigator.clipboard.writeText(completion.response_text || "");
-      new import_obsidian36.Notice("Copied to clipboard");
+      new import_obsidian37.Notice("Copied to clipboard");
     } catch (err) {
       console.error("Failed to copy raw markdown:", err);
     }
@@ -30513,7 +34853,7 @@ function post_process32(completion, frag, opts = {}) {
 }
 
 // node_modules/smart-chat-obsidian/src/components/message_user.js
-var import_obsidian37 = require("obsidian");
+var import_obsidian38 = require("obsidian");
 function build_html31(completion, opts = {}) {
   const text = completion.data.user_message || "";
   return `
@@ -30534,12 +34874,12 @@ async function post_process33(completion, frag, opts = {}) {
   const content = frag.querySelector(".smart-chat-message-content");
   this.empty(content);
   const plugin = completion.env.smart_chat_plugin || completion.env.smart_connections_plugin;
-  await import_obsidian37.MarkdownRenderer.render(
+  await import_obsidian38.MarkdownRenderer.render(
     plugin.app,
     completion.data.user_message,
     content,
     "",
-    new import_obsidian37.Component()
+    new import_obsidian38.Component()
   );
   return frag;
 }
@@ -30816,7 +35156,7 @@ css_sheet8.replaceSync(`.smart-chat-thread {
 var thread_default = css_sheet8;
 
 // node_modules/smart-chat-obsidian/src/components/thread.js
-var import_obsidian38 = require("obsidian");
+var import_obsidian39 = require("obsidian");
 
 // node_modules/smart-chat-obsidian/src/utils/insert_text_in_chunks.js
 function split_into_chunks(text, size = 1024) {
@@ -30944,10 +35284,10 @@ function parse_dropped_data(dt) {
 
 // node_modules/smart-chat-obsidian/src/components/thread.js
 function should_send_message(e, requiredModifier) {
-  const pressed_shift = import_obsidian38.Keymap.isModifier(e, "Shift");
-  const pressed_mod = import_obsidian38.Keymap.isModifier(e, "Mod");
-  const pressed_alt = import_obsidian38.Keymap.isModifier(e, "Alt");
-  const pressed_meta = import_obsidian38.Keymap.isModifier(e, "Meta");
+  const pressed_shift = import_obsidian39.Keymap.isModifier(e, "Shift");
+  const pressed_mod = import_obsidian39.Keymap.isModifier(e, "Mod");
+  const pressed_alt = import_obsidian39.Keymap.isModifier(e, "Alt");
+  const pressed_meta = import_obsidian39.Keymap.isModifier(e, "Meta");
   if (requiredModifier === "none") {
     return !pressed_shift && !pressed_mod && !pressed_alt && !pressed_meta;
   }
@@ -31354,7 +35694,28 @@ function build_path_tree(selected_items = []) {
       remainder = remainder.slice(0, key_idx);
       has_block = true;
     }
-    const segments = remainder ? remainder.split("/") : [];
+    const segments = [];
+    if (remainder) {
+      let seg = "";
+      let in_wikilink = false;
+      for (let i = 0; i < remainder.length; i++) {
+        if (!in_wikilink && remainder.slice(i, i + 2) === "[[") {
+          in_wikilink = true;
+          seg += "[[";
+          i++;
+        } else if (in_wikilink && remainder.slice(i, i + 2) === "]]") {
+          in_wikilink = false;
+          seg += "]]";
+          i++;
+        } else if (!in_wikilink && remainder[i] === "/") {
+          segments.push(seg);
+          seg = "";
+        } else {
+          seg += remainder[i];
+        }
+      }
+      if (seg) segments.push(seg);
+    }
     if (block_key_seg) segments.push(block_key_seg);
     if (block_id_seg) segments.push(block_id_seg);
     return { segments, has_block };
@@ -31554,7 +35915,7 @@ function get_links_to_depth(target_source, max_depth = 1, {
 }
 
 // node_modules/smart-context-obsidian/node_modules/obsidian-smart-env/utils/open_note.js
-var import_obsidian39 = require("obsidian");
+var import_obsidian40 = require("obsidian");
 async function open_note(plugin, target_path, event = null, opts = {}) {
   const { new_tab = false } = opts;
   const env = plugin.env;
@@ -31577,8 +35938,8 @@ async function open_note(plugin, target_path, event = null, opts = {}) {
   }
   let leaf;
   if (event) {
-    const is_mod = import_obsidian39.Keymap.isModEvent(event);
-    const is_alt = import_obsidian39.Keymap.isModifier(event, "Alt");
+    const is_mod = import_obsidian40.Keymap.isModEvent(event);
+    const is_alt = import_obsidian40.Keymap.isModifier(event, "Alt");
     if (is_mod && is_alt) {
       leaf = plugin.app.workspace.splitActiveLeaf("vertical");
     } else if (is_mod || new_tab) {
@@ -31599,10 +35960,10 @@ async function open_note(plugin, target_path, event = null, opts = {}) {
 }
 
 // node_modules/smart-context-obsidian/src/components/context_tree.js
-var import_obsidian42 = require("obsidian");
+var import_obsidian43 = require("obsidian");
 
 // node_modules/smart-context-obsidian/src/views/context_selector_modal.js
-var import_obsidian40 = require("obsidian");
+var import_obsidian41 = require("obsidian");
 
 // node_modules/smart-context-obsidian/node_modules/smart-file-system/utils/ignore.js
 var TEXT_FILE_EXTENSIONS2 = [
@@ -31762,9 +36123,9 @@ function get_visible_open_files2(app) {
 }
 
 // node_modules/smart-context-obsidian/src/views/context_selector_modal.js
-var ContextSelectorModal2 = class extends import_obsidian40.FuzzySuggestModal {
+var ContextSelectorModal2 = class extends import_obsidian41.FuzzySuggestModal {
   static open(env, opts) {
-    const plugin = env.smart_contexts_plugin || env.smart_chat_plugin || env.smart_connections_plugin;
+    const plugin = env.smart_contexts_plugin || env.smart_chat_plugin || env.smart_connections_plugin || env.plugin;
     if (!env.context_selector_modal) {
       env.context_selector_modal = new this(plugin, opts);
     }
@@ -31794,12 +36155,12 @@ var ContextSelectorModal2 = class extends import_obsidian40.FuzzySuggestModal {
     this.plugin.env.create_env_getter(this);
     this.mod_key_was_held = false;
     this.modalEl.addEventListener("keydown", (e) => {
-      this.mod_key_was_held = import_obsidian40.Keymap.isModifier(e, "Mod");
+      this.mod_key_was_held = import_obsidian41.Keymap.isModifier(e, "Mod");
       if (e.key === "Enter") this.selectActiveSuggestion(e);
       if (e.key === "Escape") this.close(true);
     });
     this.resultContainerEl.addEventListener("click", (e) => {
-      this.mod_key_was_held = import_obsidian40.Keymap.isModifier(e, "Mod");
+      this.mod_key_was_held = import_obsidian41.Keymap.isModifier(e, "Mod");
     });
   }
   /* ───────────────────────────────────────────────────────────── */
@@ -32032,14 +36393,14 @@ var ContextSelectorModal2 = class extends import_obsidian40.FuzzySuggestModal {
 };
 
 // node_modules/smart-context-obsidian/node_modules/obsidian-smart-env/utils/register_block_hover_popover.js
-var import_obsidian41 = require("obsidian");
+var import_obsidian42 = require("obsidian");
 function register_block_hover_popover2(parent, target, env, block_key, plugin) {
   target.addEventListener("mouseover", async (ev) => {
-    if (import_obsidian41.Keymap.isModEvent(ev)) {
+    if (import_obsidian42.Keymap.isModEvent(ev)) {
       const block = env.smart_blocks.get(block_key);
       const markdown = await block?.read();
       if (markdown) {
-        const popover = new import_obsidian41.HoverPopover(parent, target);
+        const popover = new import_obsidian42.HoverPopover(parent, target);
         const frag = env.smart_view.create_doc_fragment(`<div class="markdown-embed is-loaded">
                 <div class="markdown-embed-content node-insert-event">
                   <div class="markdown-preview-view markdown-rendered node-insert-event show-indentation-guide allow-fold-headings allow-fold-lists">
@@ -32051,7 +36412,7 @@ function register_block_hover_popover2(parent, target, env, block_key, plugin) {
         popover.hoverEl.classList.add("smart-block-popover");
         popover.hoverEl.appendChild(frag);
         const sizer = popover.hoverEl.querySelector(".markdown-preview-sizer");
-        import_obsidian41.MarkdownRenderer.render(plugin.app, markdown, sizer, "/", popover);
+        import_obsidian42.MarkdownRenderer.render(plugin.app, markdown, sizer, "/", popover);
       }
     }
   });
@@ -32092,7 +36453,8 @@ async function render44(ctx, opts = {}) {
 }
 async function post_process38(ctx, container, opts = {}) {
   const env = ctx?.env;
-  const plugin = env?.smart_context_plugin || env?.smart_chat_plugin || env?.smart_connections_plugin;
+  const plugin = env?.smart_context_plugin || // uses early-release version if available
+  env?.smart_chat_plugin || env?.smart_connections_plugin || env?.plugin;
   const ContextSelectorModalClass = plugin.ContextSelectorModal || ContextSelectorModal2;
   const render_tree = () => {
     const items = get_selected_items2(ctx);
@@ -32113,12 +36475,15 @@ async function post_process38(ctx, container, opts = {}) {
         });
       });
       container.querySelectorAll(".sc-tree-connections").forEach((btn) => {
-        const icon = (0, import_obsidian42.getIcon)("smart-connections");
+        if (!btn.dataset.path) return;
+        const target = ctx.get_ref(btn.dataset.path);
+        if (!target) return;
+        const icon = (0, import_obsidian43.getIcon)("smart-connections");
         btn.appendChild(icon);
         btn.addEventListener("click", async (e) => {
           const p = e.currentTarget.dataset.path;
-          const target = ctx.get_ref(p);
-          const connections = await target.find_connections();
+          const target2 = ctx.get_ref(p);
+          const connections = await target2.find_connections();
           const modal = ContextSelectorModalClass.open(env, {
             ctx,
             update_callback: opts.update_callback
@@ -32132,7 +36497,7 @@ async function post_process38(ctx, container, opts = {}) {
         if (!target) return;
         const links = get_links_to_depth(target, 3);
         if (!links.length) return;
-        const icon = (0, import_obsidian42.getIcon)("link");
+        const icon = (0, import_obsidian43.getIcon)("link");
         btn.appendChild(icon);
         btn.addEventListener("click", () => {
           const p = btn.dataset.path;
@@ -32190,7 +36555,7 @@ async function post_process38(ctx, container, opts = {}) {
 }
 
 // node_modules/smart-context-obsidian/src/utils/show_stats_notice.js
-var import_obsidian43 = require("obsidian");
+var import_obsidian44 = require("obsidian");
 function show_stats_notice(stats, contextMsg) {
   let noticeMsg = `Copied to clipboard! (${contextMsg})`;
   if (stats) {
@@ -32206,24 +36571,24 @@ function show_stats_notice(stats, contextMsg) {
       }
     }
   }
-  new import_obsidian43.Notice(noticeMsg);
+  new import_obsidian44.Notice(noticeMsg);
 }
 
 // node_modules/smart-context-obsidian/src/utils/copy_to_clipboard.js
-var import_obsidian44 = require("obsidian");
+var import_obsidian45 = require("obsidian");
 async function copy_to_clipboard(text) {
   try {
     if (navigator?.clipboard?.writeText) {
       await navigator.clipboard.writeText(text);
-    } else if (!import_obsidian44.Platform.isMobile) {
+    } else if (!import_obsidian45.Platform.isMobile) {
       const { clipboard } = require("electron");
       clipboard.writeText(text);
     } else {
-      new import_obsidian44.Notice("Unable to copy text: no valid method found.");
+      new import_obsidian45.Notice("Unable to copy text: no valid method found.");
     }
   } catch (err) {
     console.error("Failed to copy text:", err);
-    new import_obsidian44.Notice("Failed to copy.");
+    new import_obsidian45.Notice("Failed to copy.");
   }
 }
 
@@ -32256,8 +36621,8 @@ var smart_env_config6 = {
 };
 
 // src/sc_settings_tab.js
-var import_obsidian45 = require("obsidian");
-var ScSettingsTab = class extends import_obsidian45.PluginSettingTab {
+var import_obsidian46 = require("obsidian");
+var ScSettingsTab = class extends import_obsidian46.PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
     this.plugin = plugin;
@@ -32292,7 +36657,7 @@ var ScSettingsTab = class extends import_obsidian45.PluginSettingTab {
 };
 
 // node_modules/obsidian-smart-env/utils/open_note.js
-var import_obsidian46 = require("obsidian");
+var import_obsidian47 = require("obsidian");
 async function open_note2(plugin, target_path, event = null, opts = {}) {
   const { new_tab = false } = opts;
   const env = plugin.env;
@@ -32315,8 +36680,8 @@ async function open_note2(plugin, target_path, event = null, opts = {}) {
   }
   let leaf;
   if (event) {
-    const is_mod = import_obsidian46.Keymap.isModEvent(event);
-    const is_alt = import_obsidian46.Keymap.isModifier(event, "Alt");
+    const is_mod = import_obsidian47.Keymap.isModEvent(event);
+    const is_alt = import_obsidian47.Keymap.isModifier(event, "Alt");
     if (is_mod && is_alt) {
       leaf = plugin.app.workspace.splitActiveLeaf("vertical");
     } else if (is_mod || new_tab) {
@@ -32337,7 +36702,7 @@ async function open_note2(plugin, target_path, event = null, opts = {}) {
 }
 
 // node_modules/smart-notices/smart_notices.js
-var import_obsidian47 = require("obsidian");
+var import_obsidian48 = require("obsidian");
 
 // node_modules/smart-notices/notices.js
 var NOTICES2 = {
@@ -32654,7 +37019,7 @@ var SmartNotices2 = class {
    */
   _add_mute_button(id, container) {
     const btn = document.createElement("button");
-    (0, import_obsidian47.setIcon)(btn, "bell-off");
+    (0, import_obsidian48.setIcon)(btn, "bell-off");
     btn.addEventListener("click", () => {
       if (!this.settings.muted) this.settings.muted = {};
       this.settings.muted[id] = true;
@@ -32683,8 +37048,8 @@ var SmartNotices2 = class {
 };
 
 // src/modals/connections.js
-var import_obsidian48 = require("obsidian");
-var ConnectionsModal = class extends import_obsidian48.FuzzySuggestModal {
+var import_obsidian49 = require("obsidian");
+var ConnectionsModal = class extends import_obsidian49.FuzzySuggestModal {
   constructor(plugin) {
     super(plugin.app);
     this.plugin = plugin;
@@ -32733,14 +37098,14 @@ var ConnectionsModal = class extends import_obsidian48.FuzzySuggestModal {
   onChooseItem(connection, evt) {
     const target_path = connection.item.path;
     this.plugin.open_note(target_path, evt);
-    if (import_obsidian48.Keymap.isModifier(evt, "Mod")) {
+    if (import_obsidian49.Keymap.isModifier(evt, "Mod")) {
       this.open();
     }
   }
 };
 
 // node_modules/smart-chat-obsidian/src/settings_tab.js
-var import_obsidian49 = require("obsidian");
+var import_obsidian50 = require("obsidian");
 
 // node_modules/smart-chat-obsidian/src/settings_tab.css
 var css_sheet11 = new CSSStyleSheet();
@@ -32757,7 +37122,7 @@ css_sheet11.replaceSync(`@media (max-width: 768px) {
 var settings_tab_default = css_sheet11;
 
 // node_modules/smart-chat-obsidian/src/settings_tab.js
-var SmartChatSettingTab = class extends import_obsidian49.PluginSettingTab {
+var SmartChatSettingTab = class extends import_obsidian50.PluginSettingTab {
   /**
    * @param {import('obsidian').App} app - The current Obsidian app instance
    * @param {import('./main.js').default} plugin - The main plugin object
@@ -32826,16 +37191,16 @@ var SmartChatSettingTab = class extends import_obsidian49.PluginSettingTab {
 };
 
 // src/bases/connections_score_column_modal.js
-var import_obsidian50 = require("obsidian");
-
-// src/views/release_notes_view.js
 var import_obsidian51 = require("obsidian");
 
+// src/views/release_notes_view.js
+var import_obsidian52 = require("obsidian");
+
 // releases/3.0.0.md
-var __default = '# Smart Connections `v3`\r\n## New Features\r\n\r\n### Smart Chat v1\r\n- Effectively utilizes the Smart Environment architecture to facilitate deeper integration and new features.\r\n#### Improved Smart Chat UI\r\n- New context builder\r\n	- makes managing conversation context easier\r\n- Drag images and notes into the chat window to add as context\r\n- Separate settings tab specifically for chat features\r\n#### *Improved Smart Chat compatibility with Local Models*\r\n- Note lookup (RAG) now compatible with models that don\'t support tool calling\r\n	- Disable tool calling in the settings\r\n### Ollama embedding adapter\r\n- use Ollama to create embeddings\r\n\r\n## Fixed\r\n- renders content in connections results when all result items are expanded by default\r\n## Housekeeping\r\n- Updated README\r\n	- Improved Getting Started section\r\n	- Removed extraneous details\r\n- Improved version release process\r\n- Smart Chat `v0` (legacy)\r\n	- Smart Chat `v0` will continue to be available for a short time and will be removed in `v3.1` unless unforeseen issues arise in which case it will be removed sooner.\r\n	- Smart Chat `v0` code was moved from `brianpetro/jsbrains` to the Smart Connections repo\r\n\r\n## patch `v3.0.1`\r\n\r\nImproved Mobile UX and cleaned up extraneous code.\r\n\r\n## patch `v3.0.3`\r\n\r\nFixed issue where connections results would not render if expand-all results was toggled on.\r\n\r\n## patch `v3.0.4`\r\n\r\nPrevented frontmatter blocks from being included in connections results. Fixed toggle-fold-all logic.\r\n\r\n## patch `v3.0.5`\r\n\r\nFixes Ollama Embedding model loading issue in the settings.\r\n\r\n## patch `v3.0.6`\r\n\r\nFixed release notes should only show once after update.\r\n\r\n## patch `v3.0.7`\r\n\r\nAdded "current/dynamic" option in bases connection score modal to add score based on current file. Fixed issue causing Ollama to seemingly embed at 0 tokens/sec. Fixed bases integration modal failing on new bases.\r\n\r\n## patch `v3.0.8`\r\n\r\n- Improved bases integration UX\r\n	- prevent throwing error on erroroneous input in `cos_sim` base function\r\n	- gracefully handle when smart_env is not loaded yet\r\n- Reduced max size of markdown file that will be imported from 1MB to 300KB (prevent long initial import)\r\n	- advanced configuration available via `smart_sources.obsidian_markdown_source_content_adapter.max_import_size` in `smart_env.json`\r\n- Removed deprecated Smart Search API registered to window since `smart_env` object is now globally accessible\r\n- Fixed bug causing expanded connections results to render twice\r\n\r\n## patch `v3.0.9`\r\n\r\n- Reworked the context builder UX in Smart Chat to prevent confusion\r\n	- Context is now added to the chat regardless of how the context selector modal is closed\r\n	- Removed "Back" button in favor of "Back" suggestion item\r\n- Fixed using `@` to open context selector in Smart Chat\r\n	- "Done" button now appears in the context selector modal when it is opened from the keyboard\r\n\r\n## patch `v3.0.10`\r\n\r\nFixed Google Gemini integration in the new Smart Chat\r\n\r\n## patch `v3.0.11`\r\n\r\nFixes unexpected scroll issue when dragging file from connections view (issue #1073)\r\n\r\n## patch `v3.0.12`\r\n\r\nFixes pasted text: should paste lines in correct order (no longer reversed)\r\n\r\n## patch `v3.0.13`\r\n\r\n- Prevents trying to process embed queue if embed model is not loaded\r\n	- Particularly for Ollama which may not be turned on when Obsidian starts\r\n	- Re-checks for Ollama server in intervals of a minute\r\n	- Embed queue can be restarted by clicking "Reload sources" in the Smart Environment settings\r\n\r\n## patch `v3.0.14`\r\n\r\n- Improved hover popover for blocks in connections results and context builder\r\n- Refactored `context_builder` component to extract `context_tree` component and prevent passing UI components\r\n  - these components are frequently re-used, the updated architecture should make it easier to maintain and extend\r\n- Fixed: should not embed blocks with size less than `min_chars`\r\n- Fixed: Smart Chat completion requests should have a properly ordered `messages` array\r\n\r\n## patch `v3.0.15`\r\n\r\n- Fixed: some Ollama embedding models triggering re-embedding every restart\r\n\r\n## patch `v3.0.16`\r\n\r\n- Fixed: no models available in Ollama should no longer cause issues in the settings\r\n\r\n## patch `v3.0.17`\r\n\r\n- Improved embedding processing UX\r\n	- show notification immediately to allow pausing sooner\r\n	- show notification every 30 seconds in addition to every 100 embeddings\r\n- Fixed: Smart Environment settings tab should be visible during "loading" state\r\n	- prevents "Loading Obsidian Smart Environment..." message from appearing indefinitely in instances where the environment fails to load from errors related to specific embedding models\r\n\r\n## patch `v3.0.18`\r\n\r\n- Fixed: Smart Connections view rendering on mobile\r\n	- should render when opening the view from the sidebar\r\n	- should update the results to the currently active file\r\n\r\n## patch `v3.0.19`\r\n\r\n- Added: model info to Smart Chat view\r\n	- shows before the first message and anytime the model changes since the last message\r\n- Fixed: ChatGPT sign-in with Google account\r\n	- should now work as expected\r\n	- will require re-signing in to ChatGPT after update\r\n- Fixed: Smart Chat thread adapter should better handle past completions to prevent unexpected behavior\r\n	- prevented `build_request` from outputting certain request content unless the completion is the current completion\r\n		- logic is specific to completion adapters (actions, actions_xml, thread)\r\n\r\n## patch `v3.0.20`\r\n\r\n- Fixed: Smart Environment settings tab should be visible during "loading" and "loaded" states\r\n- Fixed: Open URL externally should use window.open with "_external" if webviewer plugin is installed\r\n\r\n## patch `v3.0.21`\r\n\r\n- Implemented Smart Completions fallback to Smart Chat configuration\r\n	- WHY: enables use via global `smart_env` instance without requiring `chat_model` parameters in every request\r\n\r\n## patch `v3.0.22`\r\n\r\n- Improved connections view event handling\r\n	- prevent throwing error when no view container is present on iOS\r\n\r\n## patch `v3.0.23`\r\n\r\n- Added Getting Started guide\r\n	- opens automatically for new users\r\n	- can be opened manually via command `Show getting started`\r\n	- can be opened from the connections view "Help" icon\r\n	- can be opened from the main settings "Open getting started guide" button\r\n\r\n## patch `v3.0.24`\r\n\r\nFix Lookup tab not displaying.\r\n\r\n## patch `v3.0.25`\r\n\r\nFixed connections view help button failing to open\r\n\r\n## patch `v3.0.26`\r\n\r\nTemp disable bases integration since Obsidian changed how the integration works and there is currently no clear path to updating.\r\n\r\n## patch `v3.0.27`\r\n\r\n- Added: Smart Chat lookup now supports folder-based filtering\r\n	- mention a folder when requesting a lookup using self-referential pronoun (no special folder syntax required)\r\n		- ex. "Summarize my thoughts on this topic based on notes in my Content folder"\r\n- Added: Smart Chat system prompt now allows `{{folder_tree}}` variable\r\n	- this variable will be replaced with the folder tree of the current vault\r\n	- useful for providing context about the vault structure to the model\r\n- Improved: Smart Chat system message UI\r\n	- now collapses when longer than 10 lines\r\n\r\n## patch `v3.0.28`\r\n\r\nFixed: Getting Started slideshow UX on mobile.\r\n\r\n## patch `v3.0.29`\r\n\r\n- Fixed: prevented regex special characters from throwing error when excluded file/folder contains them\r\n- Fixed: Smart Chat should return lookup context results when Smart Blocks are disabled\r\n\r\n## patch `v3.0.30`\r\n\r\n- Added: Drag multiple files into the Smart Chat window to add as context\r\n- Fixed: Smart Connections results remain stable when dragging connection from bottom of the list\r\n\r\n## patch `v3.0.31`\r\n\r\n- Added: Smart Chat: "Retrieve more" button in lookup results\r\n	- allows retrieving more results from the lookup\r\n	- includes retrieved context in subsequent lookup to provide more context to the model\r\n- Improved: Smart Chat: prior message handling in subsequent completions\r\n\r\n## patch `v3.0.32`\r\n\r\n- Added: Anthropic Claude Sonnet 4 & Opus 4 to Smart Chat\r\n- Improved: Smart Chat new note button no longer automatically addes open notes as context \r\n	- Added: "Add visible" and "Add open" notes options to Smart Context selector \r\n	- Added: "Add context" button above chat input on new chat for quick access to context selector\r\n- Fixed: Removing an item in the context selector updates the stats\r\n- Fixed: Smart Chat system message should render no more than once per turn\r\n\r\n## patch `v3.0.33`\r\n\r\n- Improved: Context Tree styles improved by samhiatt (PR #1091)\r\n- Improved: Smart Chat message should be full width if container is less than 600px\r\n- Fixed: Smart Chat model selection should handle when Ollama is available but no models are installed\r\n\r\n## patch `v3.0.34`\r\n\r\n- Added: Multi-modal support (images as context) using Ollama models\r\n	- requires Ollama models that support multi-modal input like `gemma3:4b`\r\n\r\n\r\n## patch `v3.0.37`\r\n\r\n- Fixed: Ollama `max_tokens` parameter should accurately reflect the model\'s max tokens\r\n- Fixed: Getting Started slideshow should only show automatically for new users\r\n\r\n## patch `v3.0.38`\r\n\r\n- Fixed: Smart Chat LM Studio models handling of `tool_choice` parameter\r\n\r\n## patch `v3.0.39`\r\n\r\n- Improved: Release notes user experience to use the same as the native Obsidian release notes\r\n	- Now uses new tab instead of modal to display the release notes\r\n- Fixed: Reduced vector length OpenAI embedding models should be selectable in the settings\r\n\r\n## patch `v3.0.40`\r\n\r\n- Added: Smart Chat: Support for PDFs as context in compatible models\r\n	- Currently works with Anthropic, Google Gemini, and OpenAI models\r\n	- PDFs must be manually added to the chat context. The context lookup action will not surface the PDFs because they are not embedded.\r\n- Improved: Smart Chat: LM Studio settings\r\n	- Added: Instructions for setting up LM Studio (CORS)\r\n	- Removed: Unecessary API key setting\r\n\r\n## patch `v3.0.41`\r\n\r\n- Fix: Bug in outlinks parsing was preventing embedding processing in some cases\r\n\r\n## patch `v3.0.42`\r\n\r\n- Added: `re_import_wait_time` setting to Smart Environment settings\r\n	- allows setting the time to wait before re-importing and embedding a note after it has been modified\r\n	- WHY: improves real-time nature of the connections\r\n- Improved: Connections view: Handling when current note hasn\'t been imported\r\n	- removed notification\r\n	- added refresh instructions to the connections view\r\n- Improved: Connections view when no results are found\r\n - added "No connections found" message\r\n - added instructions for reloading sources from the settings\r\n- Reduced size of bundled plugin from ~6.5MB to ~1MB (>80% reduction)\r\n - removed tokenizer that\'s only used by OpenAI embedding models\r\n - removed sourcemap since it\'s removed by Obsidian anyway\r\n - WHY: make the code easier to read (trust through transparency)\r\n- Fixed: Embeddings should update when file is changed\r\n\r\n## patch `v3.0.43`\r\n\r\n- Fixed: Smart Chat: Context tree connections icon should show connections in the suggestions when clicked\r\n\r\n## patch `v3.0.44`\r\n\r\n- Improved: Settings descriptions for the Connections view\r\n- Changed: Moved "muted notices" settings to the obsidian-smart-env module\r\n\r\n## patch `v3.0.45`\n\r\n- Added: Status element for indicating embedding queue for changed notes\r\n	- click to begin embedding otherwise waits until `re_import_wait_time` has passed\r\n- Fixed: Smart Environment: only changed blocks should re-embed when the note is modified\r\n	- Adds block has check to parse_blocks to prevent `queue_embed` from being called on blocks that haven\'t changed\r\n- Fixed: Release notes should open in a new tab instead of relpacing the current tab\r\n- Moved: Smart Plugins access to the obsidian-smart-env module';
+var __default = '# Smart Connections `v3`\r\n## New Features\r\n\r\n### Smart Chat v1\r\n- Effectively utilizes the Smart Environment architecture to facilitate deeper integration and new features.\r\n#### Improved Smart Chat UI\r\n- New context builder\r\n	- makes managing conversation context easier\r\n- Drag images and notes into the chat window to add as context\r\n- Separate settings tab specifically for chat features\r\n#### *Improved Smart Chat compatibility with Local Models*\r\n- Note lookup (RAG) now compatible with models that don\'t support tool calling\r\n	- Disable tool calling in the settings\r\n### Ollama embedding adapter\r\n- use Ollama to create embeddings\r\n\r\n## Fixed\r\n- renders content in connections results when all result items are expanded by default\r\n## Housekeeping\r\n- Updated README\r\n	- Improved Getting Started section\r\n	- Removed extraneous details\r\n- Improved version release process\r\n- Smart Chat `v0` (legacy)\r\n	- Smart Chat `v0` will continue to be available for a short time and will be removed in `v3.1` unless unforeseen issues arise in which case it will be removed sooner.\r\n	- Smart Chat `v0` code was moved from `brianpetro/jsbrains` to the Smart Connections repo\r\n\r\n## patch `v3.0.1`\r\n\r\nImproved Mobile UX and cleaned up extraneous code.\r\n\r\n## patch `v3.0.3`\r\n\r\nFixed issue where connections results would not render if expand-all results was toggled on.\r\n\r\n## patch `v3.0.4`\r\n\r\nPrevented frontmatter blocks from being included in connections results. Fixed toggle-fold-all logic.\r\n\r\n## patch `v3.0.5`\r\n\r\nFixes Ollama Embedding model loading issue in the settings.\r\n\r\n## patch `v3.0.6`\r\n\r\nFixed release notes should only show once after update.\r\n\r\n## patch `v3.0.7`\r\n\r\nAdded "current/dynamic" option in bases connection score modal to add score based on current file. Fixed issue causing Ollama to seemingly embed at 0 tokens/sec. Fixed bases integration modal failing on new bases.\r\n\r\n## patch `v3.0.8`\r\n\r\n- Improved bases integration UX\r\n	- prevent throwing error on erroroneous input in `cos_sim` base function\r\n	- gracefully handle when smart_env is not loaded yet\r\n- Reduced max size of markdown file that will be imported from 1MB to 300KB (prevent long initial import)\r\n	- advanced configuration available via `smart_sources.obsidian_markdown_source_content_adapter.max_import_size` in `smart_env.json`\r\n- Removed deprecated Smart Search API registered to window since `smart_env` object is now globally accessible\r\n- Fixed bug causing expanded connections results to render twice\r\n\r\n## patch `v3.0.9`\r\n\r\n- Reworked the context builder UX in Smart Chat to prevent confusion\r\n	- Context is now added to the chat regardless of how the context selector modal is closed\r\n	- Removed "Back" button in favor of "Back" suggestion item\r\n- Fixed using `@` to open context selector in Smart Chat\r\n	- "Done" button now appears in the context selector modal when it is opened from the keyboard\r\n\r\n## patch `v3.0.10`\r\n\r\nFixed Google Gemini integration in the new Smart Chat\r\n\r\n## patch `v3.0.11`\r\n\r\nFixes unexpected scroll issue when dragging file from connections view (issue #1073)\r\n\r\n## patch `v3.0.12`\r\n\r\nFixes pasted text: should paste lines in correct order (no longer reversed)\r\n\r\n## patch `v3.0.13`\r\n\r\n- Prevents trying to process embed queue if embed model is not loaded\r\n	- Particularly for Ollama which may not be turned on when Obsidian starts\r\n	- Re-checks for Ollama server in intervals of a minute\r\n	- Embed queue can be restarted by clicking "Reload sources" in the Smart Environment settings\r\n\r\n## patch `v3.0.14`\r\n\r\n- Improved hover popover for blocks in connections results and context builder\r\n- Refactored `context_builder` component to extract `context_tree` component and prevent passing UI components\r\n  - these components are frequently re-used, the updated architecture should make it easier to maintain and extend\r\n- Fixed: should not embed blocks with size less than `min_chars`\r\n- Fixed: Smart Chat completion requests should have a properly ordered `messages` array\r\n\r\n## patch `v3.0.15`\r\n\r\n- Fixed: some Ollama embedding models triggering re-embedding every restart\r\n\r\n## patch `v3.0.16`\r\n\r\n- Fixed: no models available in Ollama should no longer cause issues in the settings\r\n\r\n## patch `v3.0.17`\r\n\r\n- Improved embedding processing UX\r\n	- show notification immediately to allow pausing sooner\r\n	- show notification every 30 seconds in addition to every 100 embeddings\r\n- Fixed: Smart Environment settings tab should be visible during "loading" state\r\n	- prevents "Loading Obsidian Smart Environment..." message from appearing indefinitely in instances where the environment fails to load from errors related to specific embedding models\r\n\r\n## patch `v3.0.18`\r\n\r\n- Fixed: Smart Connections view rendering on mobile\r\n	- should render when opening the view from the sidebar\r\n	- should update the results to the currently active file\r\n\r\n## patch `v3.0.19`\r\n\r\n- Added: model info to Smart Chat view\r\n	- shows before the first message and anytime the model changes since the last message\r\n- Fixed: ChatGPT sign-in with Google account\r\n	- should now work as expected\r\n	- will require re-signing in to ChatGPT after update\r\n- Fixed: Smart Chat thread adapter should better handle past completions to prevent unexpected behavior\r\n	- prevented `build_request` from outputting certain request content unless the completion is the current completion\r\n		- logic is specific to completion adapters (actions, actions_xml, thread)\r\n\r\n## patch `v3.0.20`\r\n\r\n- Fixed: Smart Environment settings tab should be visible during "loading" and "loaded" states\r\n- Fixed: Open URL externally should use window.open with "_external" if webviewer plugin is installed\r\n\r\n## patch `v3.0.21`\r\n\r\n- Implemented Smart Completions fallback to Smart Chat configuration\r\n	- WHY: enables use via global `smart_env` instance without requiring `chat_model` parameters in every request\r\n\r\n## patch `v3.0.22`\r\n\r\n- Improved connections view event handling\r\n	- prevent throwing error when no view container is present on iOS\r\n\r\n## patch `v3.0.23`\r\n\r\n- Added Getting Started guide\r\n	- opens automatically for new users\r\n	- can be opened manually via command `Show getting started`\r\n	- can be opened from the connections view "Help" icon\r\n	- can be opened from the main settings "Open getting started guide" button\r\n\r\n## patch `v3.0.24`\r\n\r\nFix Lookup tab not displaying.\r\n\r\n## patch `v3.0.25`\r\n\r\nFixed connections view help button failing to open\r\n\r\n## patch `v3.0.26`\r\n\r\nTemp disable bases integration since Obsidian changed how the integration works and there is currently no clear path to updating.\r\n\r\n## patch `v3.0.27`\r\n\r\n- Added: Smart Chat lookup now supports folder-based filtering\r\n	- mention a folder when requesting a lookup using self-referential pronoun (no special folder syntax required)\r\n		- ex. "Summarize my thoughts on this topic based on notes in my Content folder"\r\n- Added: Smart Chat system prompt now allows `{{folder_tree}}` variable\r\n	- this variable will be replaced with the folder tree of the current vault\r\n	- useful for providing context about the vault structure to the model\r\n- Improved: Smart Chat system message UI\r\n	- now collapses when longer than 10 lines\r\n\r\n## patch `v3.0.28`\r\n\r\nFixed: Getting Started slideshow UX on mobile.\r\n\r\n## patch `v3.0.29`\r\n\r\n- Fixed: prevented regex special characters from throwing error when excluded file/folder contains them\r\n- Fixed: Smart Chat should return lookup context results when Smart Blocks are disabled\r\n\r\n## patch `v3.0.30`\r\n\r\n- Added: Drag multiple files into the Smart Chat window to add as context\r\n- Fixed: Smart Connections results remain stable when dragging connection from bottom of the list\r\n\r\n## patch `v3.0.31`\r\n\r\n- Added: Smart Chat: "Retrieve more" button in lookup results\r\n	- allows retrieving more results from the lookup\r\n	- includes retrieved context in subsequent lookup to provide more context to the model\r\n- Improved: Smart Chat: prior message handling in subsequent completions\r\n\r\n## patch `v3.0.32`\r\n\r\n- Added: Anthropic Claude Sonnet 4 & Opus 4 to Smart Chat\r\n- Improved: Smart Chat new note button no longer automatically addes open notes as context \r\n	- Added: "Add visible" and "Add open" notes options to Smart Context selector \r\n	- Added: "Add context" button above chat input on new chat for quick access to context selector\r\n- Fixed: Removing an item in the context selector updates the stats\r\n- Fixed: Smart Chat system message should render no more than once per turn\r\n\r\n## patch `v3.0.33`\r\n\r\n- Improved: Context Tree styles improved by samhiatt (PR #1091)\r\n- Improved: Smart Chat message should be full width if container is less than 600px\r\n- Fixed: Smart Chat model selection should handle when Ollama is available but no models are installed\r\n\r\n## patch `v3.0.34`\r\n\r\n- Added: Multi-modal support (images as context) using Ollama models\r\n	- requires Ollama models that support multi-modal input like `gemma3:4b`\r\n\r\n\r\n## patch `v3.0.37`\r\n\r\n- Fixed: Ollama `max_tokens` parameter should accurately reflect the model\'s max tokens\r\n- Fixed: Getting Started slideshow should only show automatically for new users\r\n\r\n## patch `v3.0.38`\r\n\r\n- Fixed: Smart Chat LM Studio models handling of `tool_choice` parameter\r\n\r\n## patch `v3.0.39`\r\n\r\n- Improved: Release notes user experience to use the same as the native Obsidian release notes\r\n	- Now uses new tab instead of modal to display the release notes\r\n- Fixed: Reduced vector length OpenAI embedding models should be selectable in the settings\r\n\r\n## patch `v3.0.40`\r\n\r\n- Added: Smart Chat: Support for PDFs as context in compatible models\r\n	- Currently works with Anthropic, Google Gemini, and OpenAI models\r\n	- PDFs must be manually added to the chat context. The context lookup action will not surface the PDFs because they are not embedded.\r\n- Improved: Smart Chat: LM Studio settings\r\n	- Added: Instructions for setting up LM Studio (CORS)\r\n	- Removed: Unecessary API key setting\r\n\r\n## patch `v3.0.41`\r\n\r\n- Fix: Bug in outlinks parsing was preventing embedding processing in some cases\r\n\r\n## patch `v3.0.42`\r\n\r\n- Added: `re_import_wait_time` setting to Smart Environment settings\r\n	- allows setting the time to wait before re-importing and embedding a note after it has been modified\r\n	- WHY: improves real-time nature of the connections\r\n- Improved: Connections view: Handling when current note hasn\'t been imported\r\n	- removed notification\r\n	- added refresh instructions to the connections view\r\n- Improved: Connections view when no results are found\r\n - added "No connections found" message\r\n - added instructions for reloading sources from the settings\r\n- Reduced size of bundled plugin from ~6.5MB to ~1MB (>80% reduction)\r\n - removed tokenizer that\'s only used by OpenAI embedding models\r\n - removed sourcemap since it\'s removed by Obsidian anyway\r\n - WHY: make the code easier to read (trust through transparency)\r\n- Fixed: Embeddings should update when file is changed\r\n\r\n## patch `v3.0.43`\r\n\r\n- Fixed: Smart Chat: Context tree connections icon should show connections in the suggestions when clicked\r\n\r\n## patch `v3.0.44`\r\n\r\n- Improved: Settings descriptions for the Connections view\r\n- Changed: Moved "muted notices" settings to the obsidian-smart-env module\r\n\r\n## patch `v3.0.45`\r\n\r\n- Added: Status element for indicating embedding queue for changed notes\r\n	- click to begin embedding otherwise waits until `re_import_wait_time` has passed\r\n- Fixed: Smart Environment: only changed blocks should re-embed when the note is modified\r\n	- Adds block has check to parse_blocks to prevent `queue_embed` from being called on blocks that haven\'t changed\r\n- Fixed: Release notes should open in a new tab instead of relpacing the current tab\r\n- Moved: Smart Plugins access to the obsidian-smart-env module\r\n\r\n## patch `v3.0.46`\r\n\r\n- Added: Smart Chat: Include relevance score for item in context tree if retrieved from a lookup\r\n	- allows users to see how relevant the item is to the current chat context\r\n- Added: Snowflake Arctic Embed models to the built-in embedding adapter (transformers)\r\n	- Snowflake/snowflake-arctic-embed-xs\r\n	- Snowflake/snowflake-arctic-embed-s\r\n	- Snowflake/snowflake-arctic-embed-m\r\n- Added: Report a bug and Request a feature buttons to the settings\r\n- Fixed: Smart Context: Tree should not split paths with slashes or hashtags within wikilinks\r\n	- ex. `[[some/path.md#subpath]]` should not be split into `some/path.md` and `subpath`\r\n- Improved: Smart Chat: Prevent trying to use folder scope in lookup when the folder provided by the AI does not exist\r\n\r\n## patch `v3.0.47`\n\r\n- Added: Hide connections in connections view\r\n	- Right-click on a connection result to open the new context menu\r\n	- Select "Hide" to hide the connection result\r\n	- Select "Unhide All" to unhide all hidden connections for the current item\r\n- Updated: Smart Contexts to use new ContextItem architecture\r\n	- The new architecture allows for more flexibility and better performance';
 
 // src/views/release_notes_view.js
-var ReleaseNotesView = class _ReleaseNotesView extends import_obsidian51.ItemView {
+var ReleaseNotesView = class _ReleaseNotesView extends import_obsidian52.ItemView {
   static get view_type() {
     return "smart-release-notes-view";
   }
@@ -32875,7 +37240,7 @@ var ReleaseNotesView = class _ReleaseNotesView extends import_obsidian51.ItemVie
       await new Promise((resolve) => setTimeout(resolve, 100));
       console.warn("Waiting for containerEl to be ready...", this.container);
     }
-    import_obsidian51.MarkdownRenderer.render(
+    import_obsidian52.MarkdownRenderer.render(
       this.app,
       __default,
       this.container,
@@ -32902,11 +37267,11 @@ var ReleaseNotesView = class _ReleaseNotesView extends import_obsidian51.ItemVie
 
 // src/index.js
 var {
-  Notice: Notice6,
+  Notice: Notice7,
   Plugin,
-  requestUrl: requestUrl4,
+  requestUrl: requestUrl5,
   Platform: Platform8
-} = import_obsidian52.default;
+} = import_obsidian53.default;
 var SmartConnectionsPlugin = class extends Plugin {
   get item_views() {
     return {
@@ -32920,7 +37285,7 @@ var SmartConnectionsPlugin = class extends Plugin {
   }
   // GETTERS
   get obsidian() {
-    return import_obsidian52.default;
+    return import_obsidian53.default;
   }
   get smart_env_config() {
     if (!this._smart_env_config) {
@@ -33004,10 +37369,6 @@ var SmartConnectionsPlugin = class extends Plugin {
       console.warn(`Error registering code block: ${name}`, error);
     }
   }
-  async ready_to_load_collections() {
-    await new Promise((r) => setTimeout(r, 3e3));
-    await this.wait_for_obsidian_sync();
-  }
   get settings() {
     return this.env?.settings || {};
   }
@@ -33051,7 +37412,7 @@ var SmartConnectionsPlugin = class extends Plugin {
   }
   async check_for_update() {
     try {
-      const { json: response } = await requestUrl4({
+      const { json: response } = await requestUrl5({
         url: "https://api.github.com/repos/brianpetro/obsidian-smart-connections/releases/latest",
         method: "GET",
         headers: {
@@ -33223,28 +37584,13 @@ ${message ? "# " + message + "\n" : ""}${ignore}`);
   get plugin_is_enabled() {
     return this.app?.plugins?.enabledPlugins?.has("smart-connections");
   }
-  // WAIT FOR OBSIDIAN SYNC
-  async wait_for_obsidian_sync() {
-    while (this.obsidian_is_syncing) {
-      if (!this.plugin_is_enabled) throw new Error("Smart Connections: plugin disabled while waiting for obsidian sync");
-      console.log("Smart Connections: Waiting for Obsidian Sync to finish");
-      await new Promise((r) => setTimeout(r, 1e3));
-    }
-  }
-  get obsidian_is_syncing() {
-    const obsidian_sync_instance = this.app?.internalPlugins?.plugins?.sync?.instance;
-    if (!obsidian_sync_instance) return false;
-    if (obsidian_sync_instance?.syncStatus.startsWith("Uploading")) return false;
-    if (obsidian_sync_instance?.syncStatus.startsWith("Fully synced")) return false;
-    return obsidian_sync_instance?.syncing;
-  }
   // DEPRECATED
   /**
    * @deprecated use SmartEnv.notices instead
    */
   get notices() {
     if (this.env?.notices) return this.env.notices;
-    if (!this._notices) this._notices = new SmartNotices2(this.env, Notice6);
+    if (!this._notices) this._notices = new SmartNotices2(this.env, Notice7);
     return this._notices;
   }
   async load_new_user_state() {

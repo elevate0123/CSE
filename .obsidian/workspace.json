@@ -37,7 +37,8 @@
               "title": "Umm al-Ulum wa Abuha Study Plan"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -110,13 +111,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "00 Insaan-aur-Aalam/Umm al-Ulum wa Abuha GRQ.md",
+                "file": "00 Insaan-aur-Aalam/Umm al-Ulum wa Abuha Study Plan.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Umm al-Ulum wa Abuha GRQ"
+              "title": "Outline of Umm al-Ulum wa Abuha Study Plan"
             }
           },
           {
@@ -162,6 +163,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bpmn-plugin:New BPMN": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "templates:Insert template": false,
@@ -171,10 +173,14 @@
       "canvas:Create new canvas": false
     }
   },
-  "active": "82ac31a8bee7b7ee",
+  "active": "bc6d6c6392b87f45",
   "lastOpenFiles": [
-    "00 Insaan-aur-Aalam/Umm al-Ulum wa Abuha Study Plan.md",
+    "00 Insaan-aur-Aalam/إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ.md",
     "00 Insaan-aur-Aalam/Umm al-Ulum wa Abuha GRQ.md",
+    "00 Insaan-aur-Aalam/Niyyat Book.md",
+    "00 Insaan-aur-Aalam/Umm al-Ulum wa Abuha Study Plan.md",
+    "D2 - Mermaid - Graphviz.md",
+    "BPMN, CMMN, & DMN.md",
     "00 Insaan-aur-Aalam/Umm al-Ulum Ref.md",
     "00 Insaan-aur-Aalam/Islam and Psychology GRQ.md",
     "00 Insaan-aur-Aalam/Islam and Psychology A Modern Guide to the Soul.md",
@@ -199,10 +205,6 @@
     "00 Insaan-aur-Aalam/28 SITrust/Syed Hamza Miya - Marriage Program.pdf",
     "00 Insaan-aur-Aalam/28 SITrust/Surah Aale Imraan SITrust.canvas",
     "00 Insaan-aur-Aalam/28 SITrust/Surah Muzzammil Canvas.canvas",
-    "00 Insaan-aur-Aalam/28 SITrust/SITrust Introduction.md",
-    "00 Insaan-aur-Aalam/28 SITrust/Ramadan Targets.md",
-    "00 Insaan-aur-Aalam/28 SITrust/Ramadan Targets - Overview.md",
-    "00 Insaan-aur-Aalam/28 SITrust/Milad Letter.md",
     "00 Insaan-aur-Aalam/28 SITrust/Elocution Competition.pdf",
     "00 Insaan-aur-Aalam/28 SITrust/Asma al-Husna Preface.pdf",
     "00 Insaan-aur-Aalam/28 SITrust/2 Pager Intro.pdf",
