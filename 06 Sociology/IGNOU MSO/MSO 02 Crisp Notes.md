@@ -1051,10 +1051,10 @@ graph TD
     end
 
     F --> G{Hypothesis Testing};
-    G --> G1[1. Formulate Hypothesis H1];
-    G1 --> G2[2. Formulate Null Hypothesis H₀];
-    G2 --> G3[3. Collect & Analyze Data];
-    G3 --> G4["4. Reject or Fail to Reject H₀"];
+    G --> G1[1 Formulate Hypothesis H1];
+    G1 --> G2[2 Formulate Null Hypothesis H₀];
+    G2 --> G3[3 Collect & Analyze Data];
+    G3 --> G4["4 Reject or Fail to Reject H₀"];
     G4 --> H[Conclusion about Theory];
 ```
 
@@ -1121,35 +1121,162 @@ graph TD
     H --> I[Goal: Overcome single-method bias and increase confidence in results];
 ```
 
+---
+---
+
+### **Theme 11: Measures of Central Tendency**
+
+**(Keywords: Central Tendency, Mean, Median, Mode, Average, Skewness)**
+
+#### **Introduction**
+
+In quantitative data analysis, once data is collected, the first step is often to summarize it. **Measures of central tendency** are statistical measures that identify a single value as a representative or "central" point of a data distribution. They provide a simple yet powerful summary of the "average" or "typical" score in a dataset. The three most common measures of central tendency are the **mean, median, and mode**.
+
+#### **1. The Mean (Arithmetic Average)**
+
+*   **Definition:** The mean is the most common measure of average. It is calculated by **summing all the values in a dataset and dividing by the total number of values.**
+*   **When to Use:** It is best used for **interval or ratio level data** (where numbers have a meaningful order and distance, e.g., age, income, test scores) and for distributions that are relatively symmetrical (not heavily skewed).
+*   **Advantage:** It is the most stable measure and uses all the data points in its calculation, making it a very comprehensive summary.
+*   **Disadvantage:** Its main weakness is that it is **highly sensitive to extreme values or outliers**. A single very high or very low score can dramatically pull the mean in its direction, making it a misleading representation of the center.
+    *   **Example:** In a dataset of incomes {20k, 25k, 30k, 35k, 200k}, the mean is 62k, which is not representative of the typical income in the group.
+
+#### **2. The Median (The Midpoint)**
+
+*   **Definition:** The median is the **middle value** in a dataset that has been arranged in ascending or descending order. It is the point that divides the distribution exactly in half (50% of scores are above it, and 50% are below).
+*   **When to Use:** It is particularly useful for **skewed distributions** or when there are extreme outliers. It can also be used for **ordinal data** (data that can be ranked, e.g., "strongly agree" to "strongly disagree").
+*   **Advantage:** Its primary advantage is that it is **not affected by extreme values**. It provides a much better measure of the center for skewed data.
+    *   **Example:** In the income dataset {20k, 25k, **30k**, 35k, 200k}, the median is 30k, which is a much more accurate representation of the typical income.
+*   **Disadvantage:** It does not use all the data points in its calculation and can be less stable than the mean in some statistical procedures.
+
+#### **3. The Mode (The Most Frequent Value)**
+
+*   **Definition:** The mode is the **value that appears most frequently** in a dataset. A dataset can have one mode (unimodal), two modes (bimodal), or more.
+*   **When to Use:** It is the only measure of central tendency that can be used for **nominal or categorical data** (data that represents categories with no inherent order, e.g., gender, religion, marital status).
+*   **Advantage:** It is easy to identify and is useful for understanding the most common category or score.
+*   **Disadvantage:** It can be an unstable measure, as a small change in the data can drastically change the mode. In many datasets, there may be no mode at all if no value repeats.
+
+#### **4. Relationship between Mean, Median, and Mode**
+
+The relationship between these three measures provides important information about the **skewness** (asymmetry) of a distribution:
+*   **In a Symmetrical Distribution (e.g., a perfect "bell curve"):** The **Mean = Median = Mode**. They all fall at the exact same central point.
+*   **In a Positively Skewed Distribution (skewed to the right):** The tail is on the right. The order is: **Mode < Median < Mean**. The mean is pulled to the right by the high-value outliers.
+*   **In a Negatively Skewed Distribution (skewed to the left):** The tail is on the left. The order is: **Mean < Median < Mode**. The mean is pulled to the left by the low-value outliers.
+
+
+### **Mermaid Diagram: Measures of Central Tendency & Skewness**
+
+
 ```mermaid
 graph TD
-    A[Research Question];
-    A --> B(Method 1 - e.g., Survey);
-    A --> C(Method 2 - e.g., Interview);
-    A --> D(Data Source 1 - e.g., Students);
-    A --> E(Data Source 2 - e.g., Teachers);
+    A[Distribution of Data];
+    A --> B{Measures of Central Tendency};
+    B --> C[Mean The Average];
+    B --> D[Median The Middle Point];
+    B --> E[Mode The Most Frequent];
 
-    subgraph Triangulation Strategy
-        B & C --> F[Methodological Triangulation];
-        D & E --> G[Data Triangulation];
+    subgraph Relationship & Skewness
+        F(Symmetrical Distribution) --> G["Mean = Median = Mode"];
+        H(Positively Skewed) --> I["Mode < Median < Mean"];
+        J(Negatively Skewed) --> K["Mean < Median < Mode"];
     end
-
-    F & G --> H((Robust & Valid Findings));
-    H --> I[Goal: Overcome single-method bias and increase confidence in results];
 ```
+### **Quick Revision Scaffold**
+
+- **Central Tendency:** A single value representing the "center" of a dataset.
+- **The Three Measures:**
+    1. **Mean:** The arithmetic **average**. **Pro:** Uses all data. **Con:** Sensitive to **outliers**.
+    2. **Median:** The **middle** value. **Pro:** Not affected by outliers. **Con:** Ignores most data points. Best for **skewed data**.
+    3. **Mode:** The **most frequent** value. **Pro:** The only measure for **categorical/nominal** data. **Con:** Can be unstable or non-existent.
+- **Skewness:** The relationship between the three reveals the shape of the distribution.
+
+---
+
+### **Theme 12: The Role of Theory in Research**
+
+**(Keywords: Theory, Research, Deduction, Induction, Empirical Generalization, Theory-building)**
+
+#### **Introduction**
+
+The relationship between **theory** and **research** is the cornerstone of scientific inquiry. They are not separate activities but are locked in a continuous, dialectical relationship. **Theory** provides a framework of concepts and propositions that explains a social phenomenon, while **research** is the process of systematically collecting and analyzing empirical data. Theory guides research, and the findings of research, in turn, refine, extend, or challenge existing theory. This interplay occurs through two main logical pathways: **deduction** and **induction**.
+
+#### **1. The Role of Theory in Guiding Research (Deductive Approach)**
+
+In the deductive approach, theory comes first and guides the entire research process. This is the classic model of **quantitative, theory-testing research**.
+
+1.  **Provides a Conceptual Framework:** Theory gives the researcher the key concepts and ideas to focus on. It tells them what is important to study.
+2.  **Formulation of Hypotheses:** A specific, testable hypothesis is logically **deduced** from the general propositions of a theory.
+    *   **Example:** From the general **Conflict Theory** (a theory), a researcher might deduce the specific **hypothesis** that "workers in non-unionized factories will report higher levels of job dissatisfaction than those in unionized factories."
+3.  **Guides Data Collection:** The theory and hypothesis determine what data needs to be collected and which variables need to be measured.
+4.  **Interpretation of Findings:** The theory provides the framework for interpreting the results of the data analysis. The findings are used to either **confirm or reject** the initial theory.
+
+#### **2. The Role of Research in Shaping Theory (Inductive Approach)**
+
+In the inductive approach, research comes first and is used to build theory. This is the classic model of **qualitative, theory-building research**.
+
+1.  **Initiating Inquiry:** An interesting or puzzling empirical observation can initiate a line of research that leads to a new theory.
+2.  **Generating Empirical Generalizations:** Through systematic observation (e.g., in an ethnographic study), the researcher identifies patterns and regularities in the data. These are called **empirical generalizations**.
+3.  **Building Theory:** The researcher then moves from these specific observations to formulate a more abstract, general theory that can explain them.
+    *   **Example:** After observing several different street-corner gangs, a researcher might inductively build a general theory about the role of ritual and status in urban youth subcultures.
+4.  **Refining and Extending Existing Theory:** Research findings can also challenge an existing theory, revealing its limitations and forcing it to be modified or extended. **Robert K. Merton's** refinement of functionalism (introducing concepts like dysfunction) is a classic example of research findings shaping theory.
+
+#### **3. The Continuous Cycle of Theory and Research**
+
+As described by **Walter Wallace's "Wheel of Science,"** theory and research are not a one-way street but a continuous cycle.
+
+*   A theory leads to a hypothesis (**deduction**).
+*   The hypothesis is tested through research (**observation**).
+*   The observations lead to empirical generalizations (**induction**).
+*   These generalizations are used to create or refine the theory.
+*   ...and the cycle begins again.
+
+#### **Conclusion**
+
+Theory without research is empty speculation, and research without theory is just a meaningless collection of facts. They are mutually dependent. Theory provides the conceptual lens and direction for research, while research provides the empirical grounding and the reality check that prevents theory from losing touch with the social world. This dynamic, cyclical relationship is what drives the accumulation of knowledge in sociology.
+
+
+### **Mermaid Diagram: The Wheel of Science (Wallace)**
+
+
+```mermaid
+graph TD
+    A(Theories) -- Deduction --> B(Hypotheses);
+    B -- Research Design --> C(Observations);
+    C -- Induction --> D(Empirical Generalizations);
+    D -- Theory Building --> A;
+
+    subgraph Top-Down Logic
+        A & B;
+    end
+    
+    subgraph Bottom-Up Logic
+        C & D;
+    end
+```
+
+### **Quick Revision Scaffold**
+
+- **Core Idea:** Theory and Research are in a continuous, **dialectical cycle**.
+- **Two Logical Paths:**
+    1. **Deduction (Theory -> Data):**
+        - Theory guides research by providing concepts and a testable **hypothesis**.
+        - This is the model for **quantitative, theory-testing** research.
+    2. **Induction (Data -> Theory):**
+        - Research guides theory by generating **empirical generalizations** from observations.
+        - This is the model for **qualitative, theory-building** research.
+- **Conclusion:** Theory without research is empty; research without theory is blind.
 
 ---
 ---
 
 ## **Tier 3: Strategic Awareness Topics (MSO-002)**
 
-| Sl. No. | Theme / Concept | Core Idea in One Sentence | Key Thinker(s) / Concepts | How to Use in an Answer |
-| :--- | :--- | :--- | :--- | :--- |
-| 1 | **Karl Popper & Falsification** | A theory is only scientific if it can be **falsified** (proven wrong); science progresses by eliminating false theories, not by proving true ones. | **Karl Popper** | **Falsifiability:** The criterion for demarcating science from non-science. **Critique of Induction:** We can't prove a general law from a limited number of observations. | Use as a sophisticated critique of simple positivism. Argue that the goal of quantitative research isn't just to "verify" a hypothesis but to rigorously test it against a **null hypothesis** in an attempt to falsify it. |
-| 2 | **Rationalism** | The philosophical view that **reason**, rather than sensory experience, is the primary source and test of knowledge. | **René Descartes** | **"I think, therefore I am" (*Cogito, ergo sum*):** Descartes' foundational principle. **Deductive Logic:** Moving from general principles to specific conclusions. | Contrast with **Empiricism** (knowledge from experience), which is the foundation of Positivism. Explain that while sociology is largely empirical, deductive reasoning (central to rationalism) is crucial for theory-building and hypothesis formulation. |
-| 3 | **Participatory Research** | A research approach where professional researchers and community members collaborate as **co-researchers** to understand and take action on a problem that affects the community. | **Paulo Freire** (Pedagogy of the Oppressed) | **Action Research:** A key type where the goal is to solve an immediate problem. **Empowerment:** The research process itself is meant to empower the community. | Use as an example of a research approach that directly challenges the traditional, hierarchical researcher-subject relationship. It is a practical application of **Feminist** and **Critical** methodologies. |
-| 4 | **Use of ICT / SPSS in Research** | Information and Communication Technologies (ICTs) and statistical software like SPSS have revolutionized research by enabling large-scale data collection, rapid analysis, and global dissemination. | **SPSS (Statistical Package for the Social Sciences)** | **Advantages:** Speed, accuracy in complex calculations, handling large datasets, data visualization (graphs/charts). **Disadvantages:** Can lead to a "black box" approach where the researcher doesn't understand the underlying statistics; risk of misinterpretation. | Use to add a contemporary dimension to answers on quantitative methods. When discussing surveys or statistical analysis, mention that software like SPSS makes this process efficient but requires the researcher to be ethically and theoretically informed. |
-| 5 | **Life History Method** | An in-depth qualitative method that involves collecting a person's entire life story to understand how their individual biography intersects with broader historical and social forces. | **W.I. Thomas & F. Znaniecki** (*The Polish Peasant in Europe and America*) | **Biography vs. Life History:** Biography is written by another; life history is the subject's own account. | Use as a specific type of **in-depth interview** or **case study**. It is excellent for understanding subjective experience and the micro-macro link (how personal troubles connect to public issues, as C. Wright Mills would say). |
+| Sl. No. | Theme / Concept                   | Core Idea in One Sentence                                                                                                                                                                            | Key Thinker(s) / Concepts                                                   | How to Use in an Answer                                                                                                                                                                                                                                                   |                                                                                                                                                                                                                                                               |
+| :------ | :-------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1       | **Karl Popper & Falsification**   | A theory is only scientific if it can be **falsified** (proven wrong); science progresses by eliminating false theories, not by proving true ones.                                                   | **Karl Popper**                                                             | **Falsifiability:** The criterion for demarcating science from non-science. **Critique of Induction:** We can't prove a general law from a limited number of observations.                                                                                                | Use as a sophisticated critique of simple positivism. Argue that the goal of quantitative research isn't just to "verify" a hypothesis but to rigorously test it against a **null hypothesis** in an attempt to falsify it.                                   |
+| 2       | **Rationalism**                   | The philosophical view that **reason**, rather than sensory experience, is the primary source and test of knowledge.                                                                                 | **René Descartes**                                                          | **"I think, therefore I am" (*Cogito, ergo sum*):** Descartes' foundational principle. **Deductive Logic:** Moving from general principles to specific conclusions.                                                                                                       | Contrast with **Empiricism** (knowledge from experience), which is the foundation of Positivism. Explain that while sociology is largely empirical, deductive reasoning (central to rationalism) is crucial for theory-building and hypothesis formulation.   |
+| 3       | **Participatory Research**        | A research approach where professional researchers and community members collaborate as **co-researchers** to understand and take action on a problem that affects the community.                    | **Paulo Freire** (Pedagogy of the Oppressed)                                | **Action Research:** A key type where the goal is to solve an immediate problem. **Empowerment:** The research process itself is meant to empower the community.                                                                                                          | Use as an example of a research approach that directly challenges the traditional, hierarchical researcher-subject relationship. It is a practical application of **Feminist** and **Critical** methodologies.                                                |
+| 4       | **Use of ICT / SPSS in Research** | Information and Communication Technologies (ICTs) and statistical software like SPSS have revolutionized research by enabling large-scale data collection, rapid analysis, and global dissemination. | **SPSS (Statistical Package for the Social Sciences)**                      | **Advantages:** Speed, accuracy in complex calculations, handling large datasets, data visualization (graphs/charts). **Disadvantages:** Can lead to a "black box" approach where the researcher doesn't understand the underlying statistics; risk of misinterpretation. | Use to add a contemporary dimension to answers on quantitative methods. When discussing surveys or statistical analysis, mention that software like SPSS makes this process efficient but requires the researcher to be ethically and theoretically informed. |
+| 5       | **Life History Method**           | An in-depth qualitative method that involves collecting a person's entire life story to understand how their individual biography intersects with broader historical and social forces.              | **W.I. Thomas & F. Znaniecki** (*The Polish Peasant in Europe and America*) | **Biography vs. Life History:** Biography is written by another; life history is the subject's own account.                                                                                                                                                               | Use as a specific type of **in-depth interview** or **case study**. It is excellent for understanding subjective experience and the micro-macro link (how personal troubles connect to public issues, as C. Wright Mills would say).                          |
 
 ---
 ---
@@ -1214,13 +1341,13 @@ graph TD
 
 ### **Summary of Key Recommendations (Tabular Format)**
 
-| Sr. No. | Note Theme (in Crisp Notes) | Primary Notes to be Added (Core Concepts) | Secondary Notes to be Added (Value Addition) |
-| :--- | :--- | :--- | :--- |
-| 1 | **Theme 2: Philosophy of Research** | **Add Detail to Interpretivist Traditions:**<br>• **Hermeneutics:** Mention **Gadamer's "Hermeneutic Circle"** and **Dilthey's** distinction between explaining (natural science) and understanding (human science).<br>• **Phenomenology:** Link it specifically to **Alfred Schutz** and his concept of the "life-world." | **Mention Key Rationalist Thinker:**<br>• When contrasting with Empiricism/Positivism, mention **René Descartes** ("I think, therefore I am") as the key figure of Rationalism. |
-| 2 | **Theme 7: Research Design** | **The 10 Steps of the Research Process:**<br>• List the key stages: Define Problem -> Lit Review -> Hypothesis -> Pilot Study -> Data Collection -> Analysis -> Report. | **Mention the Role of Theory Building:**<br>• Briefly explain the **Deductive** (theory-testing) and **Inductive** (theory-building) approaches to show the link between theory and the research process. |
-| 3 | **Theme 3: Data Collection Methods** | **Distinguish Questionnaire vs. Schedule:**<br>• **Questionnaire:** Self-administered, requires literacy.<br>• **Schedule:** Interviewer-administered, can be used with anyone.<br>• **Add Ethnographic Vocabulary:** Explain the roles of **Gatekeepers** and **Key Informants**. | **Mention Types of Observation:**<br>• Clarify the distinction between **Overt** (participants know) and **Covert** (participants don't know) observation and the ethical issues with the latter. |
-| 4 | **Theme: Data Analysis** *(New Tier 2 Note)* | **Techniques of Qualitative Content Analysis:**<br>• **Summarising:** Reducing to core content.<br>• **Explicative:** Clarifying ambiguous content.<br>• **Structuring:** Identifying formal patterns. | **Mention CAQDAS:**<br>• Add the term **CAQDAS** (Computer-Assisted Qualitative Data Analysis Software) like NVivo as the modern tool for this process. |
-| 5 | **Theme: Participatory Research** | **Distinguish RRA vs. PRA:**<br>• **RRA (Rapid Rural Appraisal):** Expert-led, extractive.<br>• **PRA (Participatory Rural Appraisal):** Community-led, empowering. | **Mention Paulo Freire:**<br>• Link the philosophy of participatory research to **Paulo Freire's** work on critical pedagogy and empowering the oppressed. |
+| Sr. No. | Note Theme (in Crisp Notes)                  | Primary Notes to be Added (Core Concepts)                                                                                                                                                                                                                                                                                   | Secondary Notes to be Added (Value Addition)                                                                                                                                                              |
+| :------ | :------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1       | **Theme 2: Philosophy of Research**          | **Add Detail to Interpretivist Traditions:**<br>• **Hermeneutics:** Mention **Gadamer's "Hermeneutic Circle"** and **Dilthey's** distinction between explaining (natural science) and understanding (human science).<br>• **Phenomenology:** Link it specifically to **Alfred Schutz** and his concept of the "life-world." | **Mention Key Rationalist Thinker:**<br>• When contrasting with Empiricism/Positivism, mention **René Descartes** ("I think, therefore I am") as the key figure of Rationalism.                           |
+| 2       | **Theme 7: Research Design**                 | **The 10 Steps of the Research Process:**<br>• List the key stages: Define Problem -> Lit Review -> Hypothesis -> Pilot Study -> Data Collection -> Analysis -> Report.                                                                                                                                                     | **Mention the Role of Theory Building:**<br>• Briefly explain the **Deductive** (theory-testing) and **Inductive** (theory-building) approaches to show the link between theory and the research process. |
+| 3       | **Theme 3: Data Collection Methods**         | **Distinguish Questionnaire vs. Schedule:**<br>• **Questionnaire:** Self-administered, requires literacy.<br>• **Schedule:** Interviewer-administered, can be used with anyone.<br>• **Add Ethnographic Vocabulary:** Explain the roles of **Gatekeepers** and **Key Informants**.                                          | **Mention Types of Observation:**<br>• Clarify the distinction between **Overt** (participants know) and **Covert** (participants don't know) observation and the ethical issues with the latter.         |
+| 4       | **Theme: Data Analysis** *(New Tier 2 Note)* | **Techniques of Qualitative Content Analysis:**<br>• **Summarising:** Reducing to core content.<br>• **Explicative:** Clarifying ambiguous content.<br>• **Structuring:** Identifying formal patterns.                                                                                                                      | **Mention CAQDAS:**<br>• Add the term **CAQDAS** (Computer-Assisted Qualitative Data Analysis Software) like NVivo as the modern tool for this process.                                                   |
+| 5       | **Theme: Participatory Research**            | **Distinguish RRA vs. PRA:**<br>• **RRA (Rapid Rural Appraisal):** Expert-led, extractive.<br>• **PRA (Participatory Rural Appraisal):** Community-led, empowering.                                                                                                                                                         | **Mention Paulo Freire:**<br>• Link the philosophy of participatory research to **Paulo Freire's** work on critical pedagogy and empowering the oppressed.                                                |
 
 
 ---

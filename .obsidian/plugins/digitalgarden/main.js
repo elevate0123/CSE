@@ -10648,6 +10648,9 @@ var ExcalidrawCompiler = class {
       if (includeExcaliDrawJs) {
         excaliDrawCode += excaliDrawBundle;
       }
+      if (excaliDrawJson.appState) {
+        excaliDrawJson.appState.zoom = { value: 1 };
+      }
       excaliDrawCode += excalidraw(
         JSON.stringify(excaliDrawJson),
         drawingId

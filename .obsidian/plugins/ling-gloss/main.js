@@ -73,8 +73,7 @@ var arrayFill = (array, limit, func) => {
   }
   return array;
 };
-var CssClassRegex = /[^a-z0-9_-]+/ig;
-var sanitizeCssClass = (classes) => Array.isArray(classes) ? classes.map((cls) => cls.replace(CssClassRegex, "-")) : classes.replace(CssClassRegex, "-");
+var sanitizeCssClasses = (classes) => classes.filter((cls) => cls.length > 0).map((cls) => cls.replace(/[^a-z0-9_-]+/ig, "-"));
 
 // src/data/gloss.ts
 var getDefaultGlossOptions = () => ({
@@ -341,6 +340,8 @@ var GlossParser = class {
   }
   handleGlossCommand(data, params, level) {
     var _a, _b;
+    if (data.nlevel)
+      throw "command \u201C@@\u201D is only allowed in regular mode";
     checkNoValues(params);
     arrayFill(data.elements, params.length, () => createGlossElement());
     for (const [index, elem] of data.elements.entries()) {
@@ -349,6 +350,8 @@ var GlossParser = class {
     }
   }
   handleMultiGlossCommand(data, params) {
+    if (!data.nlevel)
+      throw "command \u201C@@\u201D is only allowed in n-level mode";
     checkNoValues(params);
     checkValueSimple(params.first(), "invalid gloss element");
     const bits = gatherValuesQuoted(params);
@@ -390,9 +393,19 @@ var GlossParser = class {
   }
 };
 
+// src/data/settings.ts
+var getDefaultAlignMarkers = () => ["-", "=", "~"];
+var getDefaultPluginSettings = () => ({
+  alignMode: "none",
+  alignCenter: false,
+  alignLevel: 0,
+  alignCustom: getDefaultAlignMarkers(),
+  gloss: getDefaultGlossOptions()
+});
+
 // src/render/helpers.ts
 var getStyleKind = (kind) => kind.length > 0 ? `ling-gloss-${kind}` : "ling-gloss";
-var getStyleClasses = (classes) => sanitizeCssClass(classes).filter((cls) => cls.length > 0).map((cls) => `ling-style-${cls}`);
+var getStyleClasses = (classes) => sanitizeCssClasses(classes).map((cls) => `ling-style-${cls}`);
 var getLevelMetadata = (level) => {
   switch (level) {
     case 0:
@@ -418,6 +431,9 @@ var renderBlock = (target, options) => {
 
 // src/render/main.ts
 var GlossRenderer = class {
+  constructor(settings) {
+    this.settings = settings;
+  }
   renderErrors(target, errors) {
     target.empty();
     for (const error of errors) {
@@ -425,6 +441,7 @@ var GlossRenderer = class {
     }
   }
   renderGloss(target, data) {
+    var _a;
     const { styles, altSpaces, useMarkup } = data.options;
     if (useMarkup) {
       return this.renderErrors(target, ["advanced markup is not supported at the time"]);
@@ -451,8 +468,21 @@ var GlossRenderer = class {
     });
     if (data.elements.length > 0) {
       const elements = gloss.createDiv({ cls: getStyleKind("elements") });
+      const alignMarkers = this.getAlignMarkers();
       for (const { levels } of data.elements) {
         const element = elements.createDiv({ cls: getStyleKind("element") });
+        if (alignMarkers) {
+          const level = (_a = levels[this.settings.get("alignLevel")]) != null ? _a : "";
+          const isLeft = alignMarkers.some((mark) => level.startsWith(mark));
+          const isRight = alignMarkers.some((mark) => level.endsWith(mark));
+          if (isLeft && !isRight) {
+            element.addClass(getStyleKind("align-left"));
+          } else if (!isLeft && isRight) {
+            element.addClass(getStyleKind("align-right"));
+          } else if (this.settings.get("alignCenter")) {
+            element.addClass(getStyleKind("align-center"));
+          }
+        }
         for (const [levelNo, level] of levels.entries()) {
           const [levelKind, styleKey] = getLevelMetadata(levelNo);
           const glaSpaces = altSpaces && levelNo === 0;
@@ -484,6 +514,16 @@ var GlossRenderer = class {
       return this.renderErrors(target, ["this gloss contains no elements"]);
     }
   }
+  getAlignMarkers() {
+    switch (this.settings.get("alignMode")) {
+      case "none":
+        return null;
+      case "default":
+        return getDefaultAlignMarkers();
+      case "custom":
+        return this.settings.get("alignCustom");
+    }
+  }
   formatText(text, altSpaces, useMarkup) {
     if (altSpaces) {
       text = text.replace(/[_]+/, " ");
@@ -497,6 +537,15 @@ var GlossRenderer = class {
 
 // src/settings/main.ts
 var import_obsidian = require("obsidian");
+
+// src/settings/helpers.ts
+var makeDesc = (builder) => {
+  const desc = new DocumentFragment();
+  builder(desc);
+  return desc;
+};
+
+// src/settings/main.ts
 var PluginSettingsTab = class extends import_obsidian.PluginSettingTab {
   constructor(plugin, settings) {
     super(plugin.app, plugin);
@@ -504,30 +553,84 @@ var PluginSettingsTab = class extends import_obsidian.PluginSettingTab {
   }
   display() {
     this.containerEl.empty();
+    this.addAlignModeSettings();
     this.addSwitchSettings();
     this.addStyleSettings();
   }
+  addAlignModeSettings() {
+    const { alignMode, alignCenter, alignLevel, alignCustom } = this.settings.get();
+    new import_obsidian.Setting(this.containerEl).setName("Align gloss elements").setDesc(makeDesc((desc) => {
+      desc.appendText("Horizontal alignment of gloss elements that have certain marker characters on either side.");
+      desc.createEl("br");
+      desc.appendText("The default markers are: ");
+      desc.createEl("code", { text: "-" });
+      desc.appendText(" (hyphen), ");
+      desc.createEl("code", { text: "=" });
+      desc.appendText(" (equals sign), ");
+      desc.createEl("code", { text: "~" });
+      desc.appendText(" (tilde).");
+    })).addDropdown((component) => {
+      component.addOptions({
+        none: "No alignment",
+        default: "Default markers",
+        custom: "Custom markers"
+      }).setValue(alignMode).onChange(async (value) => {
+        await this.settings.update({
+          alignMode: value
+        });
+      });
+    });
+    new import_obsidian.Setting(this.containerEl).setName("Default center alignment").setDesc("Center align gloss elements which do not have any alignment markers on either side.").addToggle((component) => {
+      component.setValue(alignCenter).onChange(async (value) => {
+        await this.settings.update({
+          alignCenter: value
+        });
+      });
+    });
+    new import_obsidian.Setting(this.containerEl).setName("Gloss line for alignment").setDesc("The line on which gloss elements are checked for the selected alignment markers.").addDropdown((component) => {
+      component.addOptions({
+        0: "Level A",
+        1: "Level B",
+        2: "Level C"
+      }).setValue(alignLevel.toFixed(0)).onChange(async (value) => {
+        await this.settings.update({
+          alignLevel: Number(value)
+        });
+      });
+    });
+    new import_obsidian.Setting(this.containerEl).setName("Custom alignment markers").setDesc(makeDesc((desc) => {
+      desc.appendText("Space separated list of custom marker characters for gloss element alignment.");
+      desc.createEl("br");
+      desc.appendText("Only has an effect when the gloss element alignment is set to \u201CCustom markers\u201D.");
+    })).addText((component) => {
+      component.setValue(alignCustom.join(" ")).onChange(async (value) => {
+        await this.settings.update({
+          alignCustom: value.split(/\s+/)
+        });
+      });
+    });
+  }
   addSwitchSettings() {
-    const desc = new DocumentFragment();
-    desc.appendText("Default feature switch settings for all glosses.");
-    desc.createEl("br");
-    desc.appendText("To unset the enabled ones, the ");
-    desc.createEl("code", { text: " \\set*" });
-    desc.appendText(" command can be used.");
-    new import_obsidian.Setting(this.containerEl).setName("Feature switches").setDesc(desc).setHeading();
+    new import_obsidian.Setting(this.containerEl).setName("Feature switches").setDesc(makeDesc((desc) => {
+      desc.appendText("Default feature switch settings for all glosses.");
+      desc.createEl("br");
+      desc.appendText("To unset the enabled ones, the ");
+      desc.createEl("code", { text: " \\set*" });
+      desc.appendText(" command can be used.");
+    })).setHeading();
     this.addSwitchSettingByKey("altSpaces", "Alternate spaces", "glaspaces");
     this.addSwitchSettingByKey("useMarkup", "Process markup", "markup");
   }
   addStyleSettings() {
-    const desc = new DocumentFragment();
-    desc.appendText("Default style classes for all glosses. The ");
-    desc.createEl("code", { text: "\\set" });
-    desc.appendText(" command will append to these.");
-    desc.createEl("br");
-    desc.appendText("To replace or remove these, the ");
-    desc.createEl("code", { text: "\\set*" });
-    desc.appendText(" command can be used instead.");
-    new import_obsidian.Setting(this.containerEl).setName("Style classes").setDesc(desc).setHeading();
+    new import_obsidian.Setting(this.containerEl).setName("Style classes").setDesc(makeDesc((desc) => {
+      desc.appendText("Default style classes for all glosses. The ");
+      desc.createEl("code", { text: "\\set" });
+      desc.appendText(" command will append to these.");
+      desc.createEl("br");
+      desc.appendText("To replace or remove these, the ");
+      desc.createEl("code", { text: "\\set*" });
+      desc.appendText(" command can be used instead.");
+    })).setHeading();
     this.addStyleSettingByKey("global", "Global styles", "style");
     this.addStyleSettingByKey("levelA", "Gloss level A", "glastyle");
     this.addStyleSettingByKey("levelB", "Gloss level B", "glbstyle");
@@ -539,16 +642,16 @@ var PluginSettingsTab = class extends import_obsidian.PluginSettingTab {
   }
   addStyleSettingByKey(style, label, command) {
     const { styles } = this.settings.get("gloss");
-    const desc = new DocumentFragment();
-    desc.appendText("Default style classes for the ");
-    desc.createEl("code", { text: `\\set ${command}` });
-    desc.appendText(" option.");
-    new import_obsidian.Setting(this.containerEl).setName(label).setDesc(desc).addText((component) => {
+    new import_obsidian.Setting(this.containerEl).setName(label).setDesc(makeDesc((desc) => {
+      desc.appendText("Default style classes for the ");
+      desc.createEl("code", { text: `\\set ${command}` });
+      desc.appendText(" option.");
+    })).addText((component) => {
       component.setPlaceholder("class1 class2 ...").setValue(styles[style].join(" ")).onChange(async (value) => {
         await this.settings.update({
           gloss: {
             styles: {
-              [style]: sanitizeCssClass(value.split(/\s+/))
+              [style]: sanitizeCssClasses(value.split(/\s+/))
             }
           }
         });
@@ -558,11 +661,11 @@ var PluginSettingsTab = class extends import_obsidian.PluginSettingTab {
   }
   addSwitchSettingByKey(flag, label, command) {
     const gloss = this.settings.get("gloss");
-    const desc = new DocumentFragment();
-    desc.appendText("Default switch setting for the ");
-    desc.createEl("code", { text: `\\set ${command}` });
-    desc.appendText(" option.");
-    new import_obsidian.Setting(this.containerEl).setName(label).setDesc(desc).addToggle((component) => {
+    new import_obsidian.Setting(this.containerEl).setName(label).setDesc(makeDesc((desc) => {
+      desc.appendText("Default switch setting for the ");
+      desc.createEl("code", { text: `\\set ${command}` });
+      desc.appendText(" option.");
+    })).addToggle((component) => {
       component.setValue(gloss[flag]).onChange(async (value) => {
         await this.settings.update({
           gloss: {
@@ -573,11 +676,6 @@ var PluginSettingsTab = class extends import_obsidian.PluginSettingTab {
     });
   }
 };
-
-// src/data/settings.ts
-var getDefaultPluginSettings = () => ({
-  gloss: getDefaultGlossOptions()
-});
 
 // src/settings/wrapper.ts
 var PluginSettingsWrapper = class {
@@ -598,7 +696,7 @@ var PluginSettingsWrapper = class {
     await this.save();
   }
   get(key) {
-    return this.settings[key];
+    return key != null ? this.settings[key] : this.settings;
   }
   set(key, value) {
     this.settings[key] = value;
@@ -611,7 +709,7 @@ var LingGlossPlugin = class extends import_obsidian2.Plugin {
     super(...arguments);
     this.settings = new PluginSettingsWrapper(this);
     this.parser = new GlossParser(this.settings);
-    this.renderer = new GlossRenderer();
+    this.renderer = new GlossRenderer(this.settings);
   }
   async onload() {
     await this.settings.load();
