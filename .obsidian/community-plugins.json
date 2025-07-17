@@ -9,13 +9,10 @@
   "obsidian-outliner",
   "obsidian-argdown-plugin",
   "obsidian-dictionary-plugin",
-  "mehrmaid",
   "phrasesync",
   "diagram-zoom-drag",
-  "obsidian-graphviz",
   "obsidian-style-settings",
   "cursor-position-history",
-  "creases",
   "persistent-view-pro",
   "persistent-view-pro-max",
   "obsidian-remember-file-state",
@@ -25,5 +22,8 @@
   "better-export-pdf",
   "d2-obsidian",
   "cut-the-fluff",
-  "bpmn-plugin"
+  "bpmn-plugin",
+  "editing-toolbar",
+  "cm-typewriter-scroll-obsidian",
+  "mermaid-tools"
 ]

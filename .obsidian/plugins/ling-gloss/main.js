@@ -418,7 +418,7 @@ var getLevelMetadata = (level) => {
       return ["level-x", "levelX"];
   }
 };
-var formatWhitespace = (text) => text.replace(/\s+/g, "\xA0");
+var formatWhitespace = (text, nbsp = false) => text.replace(/\s+/g, nbsp ? "\xA0" : " ");
 var renderBlock = (target, options) => {
   var _a, _b, _c;
   if (options.text.length < 1 && !options.always)
@@ -464,7 +464,7 @@ var GlossRenderer = class {
       kind: "preamble",
       cls: styles.preamble,
       text: data.preamble,
-      format: (text) => this.formatText(text, false, useMarkup)
+      format: (text) => this.formatText(text, { useMarkup })
     });
     if (data.elements.length > 0) {
       const elements = gloss.createDiv({ cls: getStyleKind("elements") });
@@ -491,7 +491,7 @@ var GlossRenderer = class {
             cls: styles[styleKey],
             text: level,
             always: true,
-            format: (text) => this.formatText(text, glaSpaces, useMarkup)
+            format: (text) => this.formatText(text, { useMarkup, glaSpaces, useNbsp: true })
           });
         }
       }
@@ -502,7 +502,7 @@ var GlossRenderer = class {
         kind: "translation",
         cls: styles.translation,
         text: data.translation,
-        format: (text) => this.formatText(text, false, useMarkup)
+        format: (text) => this.formatText(text, { useMarkup })
       });
       renderBlock(postamble, {
         kind: "source",
@@ -524,14 +524,14 @@ var GlossRenderer = class {
         return this.settings.get("alignCustom");
     }
   }
-  formatText(text, altSpaces, useMarkup) {
-    if (altSpaces) {
+  formatText(text, format) {
+    if (format.glaSpaces) {
       text = text.replace(/[_]+/, " ");
     }
-    if (useMarkup) {
+    if (format.useMarkup) {
       throw "not implemented yet";
     }
-    return formatWhitespace(text);
+    return formatWhitespace(text, format.useNbsp);
   }
 };
 
