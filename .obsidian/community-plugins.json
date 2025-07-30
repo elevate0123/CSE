@@ -25,5 +25,6 @@
   "bpmn-plugin",
   "editing-toolbar",
   "cm-typewriter-scroll-obsidian",
-  "mermaid-tools"
+  "mermaid-tools",
+  "obsidian-pandoc"
 ]

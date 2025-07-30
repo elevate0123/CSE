@@ -1,8 +1,8 @@
 {
   "translucency": true,
-  "theme": "moonstone",
+  "theme": "obsidian",
   "baseFontSize": 16,
-  "cssTheme": "Prism",
+  "cssTheme": "Sanctum",
   "textFontFamily": "Inter",
   "accentColor": "#1ce933",
   "interfaceFontFamily": "",
