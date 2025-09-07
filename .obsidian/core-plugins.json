@@ -18,7 +18,7 @@
   "zk-prefixer": false,
   "random-note": false,
   "outline": true,
-  "word-count": false,
+  "word-count": true,
   "slides": true,
   "audio-recorder": false,
   "workspaces": true,
@@ -28,5 +28,7 @@
   "canvas": true,
   "bookmarks": true,
   "properties": false,
-  "webviewer": false
+  "webviewer": false,
+  "footnotes": true,
+  "bases": true
 }

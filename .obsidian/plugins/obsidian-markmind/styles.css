@@ -1406,6 +1406,25 @@ th {
     background-color: transparent;
 }
 
+.theme-dark .mm-node .mm-node-content table tr,
+.theme-dark .mm-node-note-container table tr {
+    background-color: #222;
+    border-top: 1px solid hsl(210deg 16.85% 50.93%);
+}
+
+.theme-dark .mm-node .mm-node-content table tr:nth-child(2n),
+.theme-dark .mm-node-note-container table tr:nth-child(2n) {
+    background-color: #222;
+    border-top: 1px solid hsl(210deg 16.85% 50.93%);
+}
+
+.theme-dark .mm-node .mm-node-content table th,
+.theme-dark .mm-node .mm-node-content table td,
+.theme-dark .mm-node-note-container table th,
+.theme-dark .mm-node-note-container table td {
+    border: 1px solid #3f3f3f;
+}
+
 /* .mm-node .mm-node-content img[align=right] {
     padding-left: 20px;
   }

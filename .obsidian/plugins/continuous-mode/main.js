@@ -35,28 +35,23 @@ class ContinuousModePlugin extends obsidian.Plugin {
 		/*-----------------------------------------------*/
 		// HELPERS
 		const workspace = this.app.workspace; 
-		const getAllTabGroups = () => {
-			let root_children = workspace.rootSplit?.children || [], 
-				left_children = workspace.leftSplit?.children || [], 
-				right_children = workspace.rightSplit?.children || [], 
-				floating_children = workspace.floatingSplit?.children || [],
-				all_tab_groups = [];
-			let nodes = (floating_children).concat(root_children,right_children,left_children);
-			if ( nodes[0] === undefined ) { return []; }
-			nodes?.forEach( node => { if ( node && node.type === 'tabs' ) { all_tab_groups.push(node) } else { all_tab_groups = getTabGroupsRecursively(node,all_tab_groups) } });
-			return all_tab_groups;
-		}
-		const getTabGroupsRecursively = (begin_node,all_tab_groups) => {
-			let all_children = begin_node?.children;
-			if ( all_children === undefined ) { return }
-			all_tab_groups = all_tab_groups || [];
-			if ( begin_node.children ) {
-				begin_node.children.forEach(function(child) {
-					if (child.type === 'tabs') { all_tab_groups.push(child); }
-					all_children = all_children.concat(getTabGroupsRecursively(child,all_tab_groups));
-				});
-			}
-			return all_tab_groups;
+		const getAllTabGroups = (split) => {
+			let tab_groups = [];
+			this.app.workspace.iterateAllLeaves(
+				leaf => {
+					switch(true) {
+						case leaf.parent.type !== 'tabs':																			break;
+						case (/root/i.test(split)) && leaf.getRoot() !== workspace.rootSplit:												// get root tab groups only
+						case (/left/i.test(split)) && leaf.getRoot() !== workspace.leftSplit:												// get root tab groups only
+						case (/right/i.test(split)) && leaf.getRoot() !== workspace.rightSplit:										break;	// get root tab groups only
+						case (/root/i.test(split)) && leaf.getRoot() === workspace.rootSplit:												// get root tab groups only
+						case (/left/i.test(split)) && leaf.getRoot() === workspace.leftSplit:												// get root tab groups only
+						case (/right/i.test(split)) && leaf.getRoot() === workspace.rightSplit:		tab_groups.push(leaf.parent);	break;	// get root tab groups only
+						default:																	tab_groups.push(leaf.parent);	break;	// get all tab groups
+					} 
+				}
+			)
+			return [...new Set(tab_groups)];
 		}
 		const getTabGroupById = (id) =>		{ return getAllTabGroups()?.find( tab_group => tab_group.id === id ); }			// get tab group by id, not dataset-tab-group-id
 		const getTabHeaderIndex = (e) =>	{ return Array.from(e.target.parentElement.children).indexOf(e.target); }
@@ -111,7 +106,7 @@ class ContinuousModePlugin extends obsidian.Plugin {
 		const findDuplicateLeaves = (leaves) => {
 		  const seen = [], duplicateLeaves = [];
 			leaves.forEach(leaf => {
-				if ( !seen.includes(leaf.view.file) ) { seen.push(leaf); } else { duplicateLeaves.push(leaf); }
+				if ( !seen.includes(leaf?.view?.file) ) { seen.push(leaf); } else { duplicateLeaves.push(leaf); }
 			});
 			return [seen,duplicateLeaves];
 		}
@@ -350,11 +345,11 @@ class ContinuousModePlugin extends obsidian.Plugin {
 		}
 		const scrollItemsIntoView = obsidian.debounce( async (e,el) => {
 			let target = ( el ? el : /body/i.test(e?.target?.tagName) ? workspace.getActiveViewOfType(obsidian.View).containerEl : e?.target || e?.containerEl );
-			if ( target === undefined || target.closest('.is_continuous_mode') === null ) { return }										// ignore e.target ancestor is not in continuous mode
+			if ( target === undefined || target.closest('.is_continuous_mode') === null || /menu-item-title/.test(e?.target?.className) ) { return } // ignore e.target ancestor is not in continuous mode
 			switch(true) {
 				case ( target.closest('.mod-sidedock.mod-left-split,.mod-sidedock.mod-right-split') !== null ):	scrollSideBarItems(target);	break;	// scroll sidebar items
 				case ( /workspace-tab-header|workspace-leaf/.test(target.className) ):		scrollRootItems(e,target);						break;	// scroll leaf into view
-				default:							 										scrollTabHeader();	scrollToActiveLine(e);		break;	// scroll active line into view
+				default: 							 										scrollTabHeader();	scrollToActiveLine(e);		break;	// scroll active line into view
 			}
 		},0);
 		/*-----------------------------------------------*/
@@ -373,6 +368,7 @@ class ContinuousModePlugin extends obsidian.Plugin {
 																														scrollSideBarItems(el);	return;	// scroll focused left/right split item into view
 				case !active_leaf.parent.containerEl.classList.contains('is_continuous_mode'): 													return; // not in continuous mode
 				case isCompactMode():			compactModeNavigation(e,active_leaf,activeTabGroupChildren);									return;	// use compact mode navigation
+				case /metadata-input|multi-select/.test(e.target.classList):
 				case e.target.closest('.view-header') !== null:																							// allow arrows in note headers
 				case getActiveLeaf()?.containerEl?.closest('.mod-root') === null && !getActiveEditor()?.hasFocus():										// not in editor
 				case e.target.querySelector('.canvas-node.is-focused') && /Arrow/.test(e.key): 															// editing canvas
@@ -546,15 +542,13 @@ class ContinuousModePlugin extends obsidian.Plugin {
 				&& !this.settings.excludedNames.includes( item.basename +'.'+ item.extension )														// remove items excluded by name
 			);
 			switch(true) {																															// warnings:
+				case items.length > this.settings.maximumItemsToOpen && !window.confirm('Continuous Mode:\nOpening '+ this.settings.maximumItemsToOpen +' of '+ items.length +' items.\n\n(Change the “Maximum number of items to open at one time” setting to adjust this value.)'):									resetPinnedLeaves(); return; // opening multiple items
 				case (/replace/.test(action)) && this.settings.disableWarnings !== true 
-					&& !window.confirm('You are about to replace all items in the active split. Are you sure you want to do this? (This warning can be disabled in the settings.)'): 
-																														resetPinnedLeaves(); return; // confirm
-				case items.length > 99 && this.settings.disableWarnings !== true 
-					&& !window.confirm('Are you sure you want to open '+ items.length +' items? (This warning can be disabled in the settings.)'):
-																														resetPinnedLeaves(); return;// warn on opening > 99 notes
+					&& !window.confirm('Continuous Mode:\nYou are about to replace all items currently open in the active split.\nAre you sure you want to do this?\n\n(This warning can be disabled in the settings.)'): 
+																														resetPinnedLeaves(); return; // confirm replacing open items
 				case items.length === 0:
-					alert(type === 'document links' ? 'No document links found.' : 
-						'No readable files found.\nCheck the Settings to see if you have included any specific file types to be opened in Continuous Mode.'); 
+					alert(type === 'document links' ? 'Continuous Mode: No document links found.' : 
+						'Continuous Mode:\n\nNo readable files found.\n\nCheck the Settings to see if you have included any specific file types to be opened in Continuous Mode.'); 
 																														resetPinnedLeaves(); return; // alert no items found
 			}
 			switch(true) {
@@ -677,6 +671,7 @@ class ContinuousModePlugin extends obsidian.Plugin {
 		this.registerDomEvent(document,'click', (e) => {
 			let action = this.settings.allowSingleClickOpenFolderAction, path = '', items = null, active_leaf, active_compact_leaf;
 			switch(true) {
+				case ( /tree-item-icon/.test(e.target.className) ):												e.stopPropagation();					break;
 				case typeof e.target.className === 'string' && e.target?.className?.includes('metadata-'):												break;
 				case e.target.classList.contains('continuous_mode_open_links_button'):																			// nobreak
 				case e.target.closest('.continuous_mode_open_links_button') !== null:												showLinksMenu(e);	break;	// open links in continuous mode
@@ -689,12 +684,14 @@ class ContinuousModePlugin extends obsidian.Plugin {
 					break;
 				case ( /nav-folder-title/.test(e.target.className) && this.settings.allowSingleClickOpenFolder === true )  								// open file explorer folders on single click
 						&& e.target.closest('.nav-folder-collapse-indicator') === null && e.target.closest('.collapse-icon') === null
-						&& !e.altKey && !e.ctrlKey && !e.shiftKey && e.button !== 2
-						&& action !== 'disabled':
-					sleep(0).then( () => {
-						path = e.target.closest('.nav-folder-title')?.dataset?.path, items = this.app.vault.getFolderByPath(path)?.children;
-						openItemsInContinuousMode(items,action,'folder');
-					});																																	break;
+						&& !e.altKey && !e.ctrlKey && !e.shiftKey && e.button !== 2:
+						switch(true) {
+							case action === 'disabled':						return alert("Continuous Mode:\nPlease select a single click action in the settings.");
+							default:	sleep(0).then( () => {
+											path = e.target.closest('.nav-folder-title')?.dataset?.path, items = this.app.vault.getFolderByPath(path)?.children;
+											openItemsInContinuousMode(items,action,'folder');
+										});
+						}																																	break;
 				case e.target.classList.contains('menu-item-title'):																							// focus tab and scroll into view
 					sleep(0).then( () => {
 						active_leaf = workspace.activeTabGroup.children.find(child => child.tabHeaderEl.className.includes('is-active'));
@@ -711,6 +708,7 @@ class ContinuousModePlugin extends obsidian.Plugin {
 			let action = this.settings.allowSingleClickOpenFolderAction, path = '', items = null, active_leaf, active_compact_leaf;
 			const testStr = /append .+ in active tab group|replace active tab group|open .+ in new split|compact mode:/i;
 			switch(true) {
+				case ( /tree-item-icon/.test(e.target.className) ):												e.stopPropagation();					break;
 				case ( e.target.classList.contains('menu-item-title') && testStr.test(e.target.innerText) ):	setPinnedLeaves();						break; // CM menu items
 				case ( /nav-folder-title/.test(e.target.className) && this.settings.allowSingleClickOpenFolder === true && !e.altKey && !e.ctrlKey && !e.shiftKey && e.button !== 2 ):
 					setPinnedLeaves();
@@ -731,6 +729,7 @@ class ContinuousModePlugin extends obsidian.Plugin {
 		});
 		this.registerDomEvent(document,'mouseup', (e) => {
 			switch(true) {
+				case ( /tree-item-icon/.test(e.target.className) ):												e.stopPropagation();
 				case this.settings.allowSingleClickOpenFolder === false:
 				case this.settings.allowSingleClickOpenFolderAction === 'disabled':
 				case ( /Toggle Compact Mode/.test(e.target.innerText) ):																						// from Tab Group Menu
@@ -768,13 +767,14 @@ class ContinuousModePlugin extends obsidian.Plugin {
 			}
 		});	
 		this.registerDomEvent(window,'dragstart', (e) => {
-			if ( !e.target.closest('.workspace-tabs')?.classList.contains('is_continuous_mode')) { return; }
+			if ( e.target.nodeType !== 1 || !e.target?.closest('.workspace-tabs')?.classList?.contains('is_continuous_mode') ) { return; }
 			if ( e.target.classList.contains('workspace-tab-header') ) { onTabHeaderDragEnd(e,getTabHeaderIndex(e)); }					// get initial tab header index for onTabHeaderDragEnd()
 		});
 		/*-----------------------------------------------*/
 		// ADD CONTEXTUAL MENU ITEMS
 		const addContinuousModeMenuItem = (item, tab_group_id, leaf) => {																// add continuous mode menu items (toggle, headers, sort)
 			let tab_group = getTabGroupById(tab_group_id?.split('_')[1]), tab_group_el = tab_group?.containerEl, tab_group_classList = tab_group_el?.classList;
+			let isLeftLeaf = workspace.leftSplit === leaf?.parent?.parent;
 			item.setTitle('Continuous Mode')
 				.setIcon('scroll-text')
 				.setSection( leaf ? 'pane' : 'action' )
@@ -787,7 +787,7 @@ class ContinuousModePlugin extends obsidian.Plugin {
 					})
 				})
 				.addSeparator()
-				.addItem((item12) => {
+				.addItem( (item12) => {
 					if ( tab_group === workspace.rootSplit.children[0] ) {
 						item12.setTitle('Toggle Compact Mode')
 						.setIcon('compactMode')
@@ -991,7 +991,7 @@ class ContinuousModePlugin extends obsidian.Plugin {
 				if ( !!editor.containerEl.querySelectorAll('.cm-active .cm-link, .cm-active .cm-hmd-internal-link, .cm-active .cm-link-alias') ) {	// prevent adding CM menus twice
 					menu.addItem((item) => { 
 						let links = getDocumentLinks(editor.editorComponent.view.file,editor.editorComponent.view.leaf), files = getFilesFromLinks(links);
-						addContinuousModeMenuItem(item,this.app.appId +'_'+ editor?.editorComponent.owner.leaf.parent.id)								// add continuous mode items
+						addContinuousModeMenuItem(item,this.app.appId +'_'+ editor?.editorComponent.owner.leaf.parent.id,)								// add continuous mode items
 						if ( links.length > 0 ) { openItemsInContinuousModeMenuItems(item,files,'document links'); }										// add open document links items
 					});
 				}
@@ -1043,7 +1043,7 @@ class ContinuousModePlugin extends obsidian.Plugin {
 			this.app.workspace.on('leaf-menu', (menu,leaf) => {																					// on leaf-menu (e.g. sidebar tab headers)
 				if ( leaf !== workspace.getActiveViewOfType(obsidian.View).leaf ) { workspace.setActiveLeaf(leaf,{focus:true}); }
 				if ( leaf.containerEl.closest('.mod-left-split,.mod-right-split') ) {
-					menu.addItem((item) => { addContinuousModeMenuItem(item,this.app.appId +'_'+ leaf.parent.id ) });
+					menu.addItem((item) => { addContinuousModeMenuItem(item,this.app.appId +'_'+ leaf.parent.id,leaf ) });
 				}
 			})
 		);
@@ -1091,9 +1091,9 @@ class ContinuousModePlugin extends obsidian.Plugin {
 				name:	( side === 'active' ? 'Toggle Continuous Mode in active tab group' : side === 'root' ? 'Toggle Continuous Mode in root tab groups' : 'Toggle Continuous Mode in '+side+' sidebar'),
 				callback: () => {
 					switch(side) {
-						case 'left':	getTabGroupsRecursively(workspace.leftSplit).forEach( tab_group => toggleCM(tab_group) );		break;
-						case 'right':	getTabGroupsRecursively(workspace.rightSplit).forEach( tab_group => toggleCM(tab_group) );		break;
-						case 'root':	getTabGroupsRecursively(workspace.rootSplit).forEach( tab_group => toggleCM(tab_group) );		break;
+						case 'left':	getAllTabGroups('left').forEach( tab_group => toggleCM(tab_group) );		break;
+						case 'right':	getAllTabGroups('right').forEach( tab_group => toggleCM(tab_group) );		break;
+						case 'root':	getAllTabGroups('root').forEach( tab_group => toggleCM(tab_group) );		break;
 						default: 		toggleCM(workspace.activeTabGroup); 
 					}
 				}
@@ -1128,7 +1128,7 @@ class ContinuousModePlugin extends obsidian.Plugin {
 				callback: () => {
 					let items = workspace.getLeavesOfType('file-explorer')[0].view.tree.focusedItem?.file?.children || workspace.getLeavesOfType('file-explorer')[0].view.tree?.focusedItem?.file || workspace.getLeavesOfType('file-explorer')[0].view.tree?.activeDom?.file;
 					if ( !items ) { 
-						alert('No file explorer item selected') 
+						alert('Continuous Mode:\nNo file explorer item selected') 
 					} else {
 						setPinnedLeaves();
 						openItemsInContinuousMode(items,'open_'+action,'folder'); 
@@ -1165,7 +1165,7 @@ class ContinuousModePlugin extends obsidian.Plugin {
 					if ( workspace.activeTabGroup.containerEl.classList.contains('is_continuous_mode') ) {
 						sortItems(this.app.appId +'_'+ workspace.activeTabGroup.id,key);
 					} else {
-						alert('Active tab group is not in continuous mode.');
+						alert('Continuous Mode:\nActive tab group is not in continuous mode.');
 					}
 				}
 			});
@@ -1302,7 +1302,7 @@ let ContinuousModeSettings = class extends obsidian.PluginSettingTab {
 		  });
 		});
 		new obsidian.Setting(containerEl).setName('Maximum number of items to open at one time').setDesc('Leave empty (or set to 0) to open all items at once. Otherwise, setting a value here allows you to incrementally open the items in a folder (or search results or document links) by repeatedly selecting “Append items in Continuous Mode.” Useful for dealing with folders containing a large number of items. (Note: The “single click” action above must be set to one of the “Append” options.)')
-			.addText((A) => A.setPlaceholder("").setValue(this.plugin.settings.maximumItemsToOpen?.toString() || '')
+			.addText((A) => A.setPlaceholder("").setValue(this.plugin.settings.maximumItemsToOpen?.toString() || '0')
 			.onChange(async (value) => {
 				if ( isNaN(Number(value)) || !Number.isInteger(Number(value)) ) { 
 					alert('Please enter a positive integer, 0, or leave blank.');
