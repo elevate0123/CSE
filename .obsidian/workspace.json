@@ -53,22 +53,52 @@
             }
           },
           {
-            "id": "4a5c24f497bc3418",
+            "id": "d1cc587b2389c356",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Kettle Bell.md",
+                "file": "00 Insaan-aur-Aalam/Dua Booklet - Rabbana + Prophetic.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": false
               },
               "icon": "lucide-file",
-              "title": "Kettle Bell"
+              "title": "Dua Booklet - Rabbana + Prophetic"
             }
           },
           {
-            "id": "1d1c3ed0756f7483",
+            "id": "c777e2865fd88cac",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "00 Insaan-aur-Aalam/Aqaid Course GRQ.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": false
+              },
+              "icon": "lucide-file",
+              "title": "Aqaid Course GRQ"
+            }
+          },
+          {
+            "id": "3f0a4d1f2f4c4631",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "00 Insaan-aur-Aalam/Why accept religion Minhaj Exam.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": false
+              },
+              "icon": "lucide-file",
+              "title": "Why accept religion Minhaj Exam"
+            }
+          },
+          {
+            "id": "cc85388c5c2bd64f",
             "type": "leaf",
             "state": {
               "type": "home-tab-view",
@@ -78,7 +108,7 @@
             }
           }
         ],
-        "currentTab": 4
+        "currentTab": 5
       }
     ],
     "direction": "vertical"
@@ -151,12 +181,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "00 Insaan-aur-Aalam/Why accept religion Minhaj Exam.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of Why accept religion Minhaj Exam"
             }
           },
           {
@@ -199,7 +230,9 @@
             "type": "leaf",
             "state": {
               "type": "footnotes",
-              "state": {},
+              "state": {
+                "file": "00 Insaan-aur-Aalam/Dua Booklet - Rabbana + Prophetic.md"
+              },
               "icon": "lucide-file-signature",
               "title": "Footnotes"
             }
@@ -214,8 +247,7 @@
               "title": "Mermaid Toolbar"
             }
           }
-        ],
-        "currentTab": 4
+        ]
       }
     ],
     "direction": "horizontal",
@@ -231,13 +263,19 @@
       "markdown-importer:Open format converter": false,
       "workspaces:Manage workspace layouts": false,
       "canvas:Create new canvas": false,
-      "mermaid-tools:Open Mermaid Toolbar": false,
-      "bpmn-plugin:New BPMN": false
+      "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "57c2cbaf14f9621a",
+  "active": "3f0a4d1f2f4c4631",
   "lastOpenFiles": [
+    "00 Insaan-aur-Aalam/Aqaid Course GRQ.md",
+    "00 Insaan-aur-Aalam/Why accept religion Minhaj Exam.md",
+    "06 Sociology/IGNOU MSO/MSO SY Assignments.md",
+    "D2 - Mermaid - Graphviz.md",
+    "00 Insaan-aur-Aalam/Dua Booklet - Rabbana + Prophetic.md",
+    "06 Sociology/IGNOU MSO/MSO 03 Gemini Notes.md",
     "Kettle Bell.md",
+    "00 Insaan-aur-Aalam/Last Sermon D2 Based on Scaffolds.md",
     "00 Insaan-aur-Aalam/Last Sermon Dossier.md",
     "06 Sociology/IGNOU MSO/Untitled.canvas",
     "06 Sociology/IGNOU MSO/MSOE 04 Urban Sociology Shibu YT.md",
@@ -254,15 +292,9 @@
     "00 Insaan-aur-Aalam/Marriage En Final 001.md",
     "00 Insaan-aur-Aalam/Marriage Draft 01.md",
     "06 Sociology/IGNOU MSO/MSO 04 QRM.md",
-    "D2 - Mermaid - Graphviz.md",
     "Resume Pointer Story.md",
     "Frameworks.md",
     "Home.md",
-    "00 Insaan-aur-Aalam/Last Sermon D2 Based on Scaffolds.md",
-    "00 Insaan-aur-Aalam/Last Sermon D1 Integrated Rich.md",
-    "00 Insaan-aur-Aalam/Kimiya e Sa'aadat Study Notes Ghazali.md",
-    "00 Insaan-aur-Aalam/Marriage Ur D4 Final.md",
-    "00 Insaan-aur-Aalam/Ghazali Ihya Structure Hamza Yusuf.md",
     "00 Insaan-aur-Aalam/28 SITrust/Asma al-Husna - Frontmatter Points.pdf",
     "00 Insaan-aur-Aalam/28 SITrust/Syed Hamza Miya - Marriage Program.pdf",
     "00 Insaan-aur-Aalam/28 SITrust/Surah Aale Imraan SITrust.canvas",
