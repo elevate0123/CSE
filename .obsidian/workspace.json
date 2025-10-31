@@ -23,6 +23,16 @@
             }
           },
           {
+            "id": "731590c806f084f4",
+            "type": "leaf",
+            "state": {
+              "type": "home-tab-view",
+              "state": {},
+              "icon": "search",
+              "title": "Home tab"
+            }
+          },
+          {
             "id": "533fb91d3e9871b8",
             "type": "leaf",
             "state": {
@@ -37,7 +47,8 @@
               "title": "Aqaid Course GRQ"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -110,13 +121,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/Last Sermon Dossier.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Last Sermon Dossier"
+              "title": "Outline"
             }
           },
           {
@@ -195,45 +205,48 @@
       "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "b4638bf8521650a7",
+  "active": "e459e1e86db6a176",
   "lastOpenFiles": [
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/Last Sermon D2 Based on Scaffolds.md",
-    "00 Insaan-aur-Aalam/My Learnings/Aqaid Course GRQ.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/Last Sermon D1 Integrated Rich.md",
-    "00 Insaan-aur-Aalam/Deen Kamil Hindi.md",
-    "00 Insaan-aur-Aalam/Dua Booklet - Rabbana + Prophetic.md",
-    "00 Insaan-aur-Aalam/Insaan-aur-Aalam.md",
-    "00 Insaan-aur-Aalam/Niyyat Book.md",
-    "00 Insaan-aur-Aalam/Untitled.md",
-    "00 Insaan-aur-Aalam/إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ.md",
-    "X Misc/Frameworks.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Marriage Book/Marriage Urdu.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Marriage Book/Marriage Ur D4 Final.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Marriage Book/Marriage Ur Draft 1.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Marriage Book/Marriage Ur D3  Proofread.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Marriage Book/Marriage Ur D2.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Marriage Book/Marriage Polished.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Marriage Book/Marriage Masterpiece.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Marriage Book/Marriage Draft 01.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Marriage Book/Marriage En Final 001.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Marriage Book/Marriage Draft - First.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Marriage Book/Marriage Book Outline-Structure.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Marriage Book",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor",
-    "UPSC/04 GS 4 Ethics/Tabular - Single Source of Truth.md",
-    "UPSC/04 GS 4 Ethics/PYQ Pointers.md",
-    "UPSC/04 GS 4 Ethics/Ethics Theory.md",
-    "UPSC/04 GS 4 Ethics/Sec A Frameworks and Examples.md",
-    "UPSC/04 GS 4 Ethics/Case Study Frameworks.md",
-    "UPSC/04 GS 4 Ethics",
-    "UPSC/03 GS 3/Internal Security final.docx",
-    "UPSC/03 GS 3/Internal Security 1.html",
-    "UPSC/03 GS 3",
-    "UPSC/02 GS 2",
+    "00 Insaan-aur-Aalam/Maqala/دور حاضر میں دین اسلام Zulqarnain Miya Pakistan.pdf",
+    "00 Insaan-aur-Aalam/Maqala/آزاد.docx",
+    "00 Insaan-aur-Aalam/Maqala/SIT_Trust_Deed_Page1 (Medium).png",
+    "00 Insaan-aur-Aalam/Maqala/SIT_Trust_Deed.pdf",
+    "00 Insaan-aur-Aalam/Maqala/Mufti Muti Ur Rehman InPage File.inp",
+    "00 Insaan-aur-Aalam/Maqala/Mufti Aqeel Shabbir.pdf",
+    "00 Insaan-aur-Aalam/Maqala/M Aqil 2.pdf",
+    "00 Insaan-aur-Aalam/Maqala/M Aqil 1.pdf",
+    "00 Insaan-aur-Aalam/Maqala/Isteqamate Deen by Arshad Ali Jilani.pdf",
+    "00 Insaan-aur-Aalam/Maqala/Isteqamate Deen By Arshad Ali Jilani.inp",
+    "00 Insaan-aur-Aalam/Maqala/ISBN_Deed.png",
+    "00 Insaan-aur-Aalam/Maqala/Ashraf 02 maaqaalaa.pdf",
+    "00 Insaan-aur-Aalam/Maqala/Ashraf 01 maqala....pdf",
+    "00 Insaan-aur-Aalam/Maqala/Almas_SIT_ID.jpg",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 62 __ Surah Younus 44 to Surah Hood 5 __ Pir Saen Ghulam Rasol Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 61 __ Soorat Younus 1 to 43 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 59 __ Soorat Al-Toba 58 to 93 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 58 __ Soorat Al-Toba 1 to 58 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 48 __ Al-Anaam Ayat 01 to 42 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 47 __ Al-Maidah 83 to 120 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 46 #part 3 __ Al-Maidah 73 to 82 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 46 #part 2 __ Al-Maidah 67 to 72 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 46 #part 1 __ Al-Maidah 55 to 66 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 45 #part 2 __ Al-Maidah 48 to 54 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 45 #part 1 __ Al-Maidah 43 to 47 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 44 #part 2 __ Al-Maidah 27 to 42 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 41 #part -2 _ Al-Nisa Ayat 159 to 164 _ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 40 __ Soorat Al-Nisa Ayat 124 to 147 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 39 __ Soorat Al-Nisa Ayat 87 to 123 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 38 __ Soorat Al-Nisa Ayat 66 to 86 __ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 37 _ Soorat Al-Nisa 44 to 65 _ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 36 _ Soorat Al-Nisa Ayat 25 to 43 _ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 35 _ Soorat Al-Nisa Ayat 18 to 24 _ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 34 _ Soorat Al-Nisa Ayat 1 to 17 _ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 33 _ Surat Aale-Imran Ayat 173 to 200 _ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 32 _ Soorat Ale-Imran Ayat 154 to 172 _ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 31 _ Soorat Ale-Imran Ayat 128 to 153 _ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 30 _ Soorat Aale-Imran 105 to 127 _ Peer Saen Ghulam Rasool Qasmi.md",
+    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 29 _ Soorat Aale-Imran Ayat 93 to 104 _ Peer Saen Ghulam Rasool Qasmi.md",
     "UPSC/01 GS 1/GS 1 Syllabus.canvas",
-    "UPSC/01 GS 1",
-    "UPSC/05 Essay",
-    "UPSC",
     "06 Sociology/IGNOU MSO/Untitled.canvas",
     "00 Insaan-aur-Aalam/28 SITrust/Surah Aale Imraan SITrust.canvas",
     "00 Insaan-aur-Aalam/28 SITrust/Surah Muzzammil Canvas.canvas",
