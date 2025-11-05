@@ -1066,6 +1066,12 @@ th {
     word-wrap: break-word
 }
 
+.mm-node-edit code,
+.cm-node-text code {
+    word-break: break-all;
+    white-space: break-spaces;
+}
+
 /* .cm-node-text mjx-math,
 .mm-node-edit mjx-math {
     max-width: 100%;

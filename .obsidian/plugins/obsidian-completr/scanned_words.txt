@@ -4704,6 +4704,10 @@ Azami
 Animosity
 Arabi
 Awasim
+Amina
+Archives
+AWE
+Awe
 al
 agar
 asani
@@ -8493,6 +8497,8 @@ astronauts
 artfully
 auction
 afterthoughts
+awake
+agonize
 Husna
 Hazrat
 Hashr
@@ -11922,6 +11928,7 @@ Hadithic
 Haddad
 Hamid
 Hajjaj
+Hurmah
 Kitaab
 Kitaabe
 Kitab
@@ -15314,6 +15321,7 @@ Khwarizmi
 Kisa
 Khaled
 Knot
+Khabbat
 ki
 ke
 kuch
@@ -21011,6 +21019,14 @@ slippery
 scrupulously
 schizophrenic
 scanning
+stretches
+stained
+star
+sing
+subconsciously
+seasoning
+spelling
+supremely
 mai
 mehsoos
 ma
@@ -24183,6 +24199,10 @@ metals
 misogynist
 marketplaces
 muster
+murdered
+martyr
+mise
+microfinance
 Tehreer
 Taha
 Tarjame
@@ -26905,6 +26925,7 @@ Thing
 Times
 Tawil
 Twin
+Triangulate
 Points
 Pehle
 Parehsaniya
@@ -30265,6 +30286,14 @@ Proportion
 Plant
 Philip
 Peak
+Pew
+Personified
+Packaging
+Plug
+Pass
+Poet
+PRO
+Prove
 Iss
 Inn
 Imam
@@ -35284,6 +35313,12 @@ Ignored
 Izala
 Istibsar
 Islamophobia
+Impression
+Ishaq
+Ignition
+Intrigue
+Inject
+INTRO
 Likhne
 Lekis
 Lock
@@ -41229,6 +41264,12 @@ Mistake
 Munqidh
 Maturidi
 Mansur
+MANDATE
+Michelin
+Mise
+Muhtasib
+Madate
+Martyrdom
 Sahih
 Surah
 Shaikh
@@ -44325,6 +44366,13 @@ Sahihayn
 Seventh
 Syria
 Shuttle
+Sumayyah
+Smooth
+Stake
+SOLUTION
+SECTION
+Strictly
+Subheadings
 Bukhari
 Bache
 Budhe
@@ -47436,6 +47484,10 @@ Bayazid
 Bastami
 Bishr
 Bibliography
+Barometer
+Bookends
+Baseline
+Buildings
 points
 par
 paas
@@ -50461,6 +50513,9 @@ plummeted
 paralyzing
 patriarch
 plunder
+phased
+prepped
+poignant
 nazar
 naam
 ne
@@ -54538,6 +54593,10 @@ rigged
 recalibrates
 roared
 redesigned
+receding
+rafat
+refinements
+readiness
 hue
 hua
 ho
@@ -60025,6 +60084,11 @@ elucidated
 exaggeration
 evocative
 erects
+endured
+escalated
+energize
+enslaving
+epic
 bade
 bhi
 ba
@@ -62153,6 +62217,7 @@ bag
 brick
 bartered
 bang
+bare
 level
 likhi
 lekin
@@ -64189,6 +64254,8 @@ labyrinth
 levirate
 lyrical
 lynchpin
+lingers
+loads
 jisme
 jaye
 jo
@@ -70632,6 +70699,13 @@ cratered
 chasm
 codifier
 cleared
+coats
+charted
+chieftains
+chefs
+chopped
+corrects
+climactic
 isme
 iss
 isliye
@@ -74805,6 +74879,10 @@ implodes
 irreconcilable
 ironclad
 imperceptible
+impotence
+imprisoned
+interlude
+imagery
 tashreeh
 topic
 thodi
@@ -77293,6 +77371,7 @@ twofold
 trumped
 trickles
 threaten
+tokenism
 zamane
 zaruri
 zariye
@@ -82703,6 +82782,9 @@ Gibril
 Ghalati
 Gulf
 Gospels
+Grit
+Genocide
+Gradualism
 dusre
 diya
 door
@@ -85830,6 +85912,11 @@ disturbingly
 disagreed
 deceiver
 drafted
+diagnosed
+defiance
+daring
+designers
+dossiers
 wo
 wajah
 waqt
@@ -87946,6 +88033,10 @@ warlord
 warnings
 withheld
 wicked
+wand
+workable
+weeds
+weighty
 uss
 unn
 uski
@@ -90689,6 +90780,8 @@ unequivocal
 unlink
 unfettered
 unfurled
+unearned
+urgently
 Ul
 Upliftment
 Us
@@ -94462,6 +94555,7 @@ Uthman
 Uterine
 Unverifiable
 Unfurled
+Unpayable
 Wird
 Wazifa
 Welcome
@@ -96867,6 +96961,7 @@ Warley
 Watt
 Wrestling
 WHY
+Weaponized
 Chahte
 Communities
 Community
@@ -100038,6 +100133,9 @@ CODE
 Challenger
 Catastrophic
 CARICATURE
+CLIMAX
+Conquest
+COMPLETE
 guftagu
 group
 ghaans
@@ -102134,6 +102232,8 @@ governor
 geology
 gametes
 grudging
+gritty
+gendercide
 filhal
 fa
 for
@@ -104307,6 +104407,8 @@ fudged
 forgetfulness
 fray
 fallibility
+falter
+forgiving
 Yaad
 Yeh
 Yaa
@@ -105978,6 +106080,7 @@ YOUR
 Yahlaku
 Yunus
 Yahduruhu
+Yasir
 Fayada
 Family
 Fostering
@@ -108273,6 +108376,7 @@ Faqih
 Farq
 Firaq
 Fortunes
+Forged
 Rozana
 Revision
 Roti
@@ -121395,6 +121499,8 @@ Denffer
 Dalal
 Deliverance
 Deficit
+Download
+Daraba
 vast
 various
 vision
@@ -123091,6 +123197,8 @@ vies
 viruses
 vanquished
 verdict
+vignettes
+vignette
 of
 on
 operates
@@ -128128,6 +128236,8 @@ Extremists
 Exited
 EPILOGUE
 Economists
+Edelman
+EXECUTIVE
 Jannat
 Jahannam
 Jab
@@ -130348,6 +130458,7 @@ Jama
 Jeans
 Jabir
 Jonathan
+Jahl
 Qqabid
 Quran
 Questions
@@ -132550,6 +132661,7 @@ Qadianiyyah
 Qahir
 Qadi
 Qawasim
+Qard
 Vehicle
 Vision
 Volunteer
@@ -136581,6 +136693,7 @@ Overhauled
 Optics
 Overwhelming
 Oaths
+Orphan
 quality
 quantified
 qualitatively
