@@ -350,15 +350,15 @@ graph TD
         A1[The City as a Social Organism]
     end
 
-    subgraph B [Key Ecological Processes (Robert Park)]
+    subgraph B [Key Ecological Processes Robert Park]
         B1[Competition] --> B2[Invasion & Succession];
     end
 
     subgraph C [The Resulting Social Structure]
-        C1[Formation of "Natural Areas" (e.g., Slums, Enclaves)]
+        C1[Formation of "Natural Areas" e.g., Slums, Enclaves]
     end
 
-    subgraph D [The Spatial Model (Ernest Burgess)]
+    subgraph D [The Spatial Model Ernest Burgess]
         D1[The Concentric Zone Theory]
         D1 --> D2["Zone I: CBD"]
         D2 --> D3["Zone II: Transition"]
@@ -370,7 +370,7 @@ graph TD
     subgraph E [Critical Evaluation]
         E1[Biological Determinism]
         E2[Empirically Limited to Chicago]
-        E3[Neglects Power & Capital (Marxist Critique)]
+        E3[Neglects Power & Capital Marxist Critique]
     end
 
     A --> B;
