@@ -1373,9 +1373,9 @@ var require_core = __commonJS({
              *     var instance = MyType.create();
              */
             create: function() {
-              var instance8 = this.extend();
-              instance8.init.apply(instance8, arguments);
-              return instance8;
+              var instance9 = this.extend();
+              instance9.init.apply(instance9, arguments);
+              return instance9;
             },
             /**
              * Initializes a newly created object.
@@ -2432,8 +2432,8 @@ var require_logger = __commonJS({
   "node_modules/js-logger/src/logger.js"(exports, module2) {
     (function(global2) {
       "use strict";
-      var Logger10 = {};
-      Logger10.VERSION = "1.6.1";
+      var Logger12 = {};
+      Logger12.VERSION = "1.6.1";
       var logHandler;
       var contextualLoggersByNameMap = {};
       var bind2 = function(scope, func) {
@@ -2455,13 +2455,13 @@ var require_logger = __commonJS({
       var defineLogLevel = function(value, name) {
         return { value, name };
       };
-      Logger10.TRACE = defineLogLevel(1, "TRACE");
-      Logger10.DEBUG = defineLogLevel(2, "DEBUG");
-      Logger10.INFO = defineLogLevel(3, "INFO");
-      Logger10.TIME = defineLogLevel(4, "TIME");
-      Logger10.WARN = defineLogLevel(5, "WARN");
-      Logger10.ERROR = defineLogLevel(8, "ERROR");
-      Logger10.OFF = defineLogLevel(99, "OFF");
+      Logger12.TRACE = defineLogLevel(1, "TRACE");
+      Logger12.DEBUG = defineLogLevel(2, "DEBUG");
+      Logger12.INFO = defineLogLevel(3, "INFO");
+      Logger12.TIME = defineLogLevel(4, "TIME");
+      Logger12.WARN = defineLogLevel(5, "WARN");
+      Logger12.ERROR = defineLogLevel(8, "ERROR");
+      Logger12.OFF = defineLogLevel(99, "OFF");
       var ContextualLogger = function(defaultContext) {
         this.context = defaultContext;
         this.setLevel(defaultContext.filterLevel);
@@ -2484,28 +2484,28 @@ var require_logger = __commonJS({
           return lvl.value >= filterLevel.value;
         },
         trace: function() {
-          this.invoke(Logger10.TRACE, arguments);
+          this.invoke(Logger12.TRACE, arguments);
         },
         debug: function() {
-          this.invoke(Logger10.DEBUG, arguments);
+          this.invoke(Logger12.DEBUG, arguments);
         },
         info: function() {
-          this.invoke(Logger10.INFO, arguments);
+          this.invoke(Logger12.INFO, arguments);
         },
         warn: function() {
-          this.invoke(Logger10.WARN, arguments);
+          this.invoke(Logger12.WARN, arguments);
         },
         error: function() {
-          this.invoke(Logger10.ERROR, arguments);
+          this.invoke(Logger12.ERROR, arguments);
         },
         time: function(label) {
           if (typeof label === "string" && label.length > 0) {
-            this.invoke(Logger10.TIME, [label, "start"]);
+            this.invoke(Logger12.TIME, [label, "start"]);
           }
         },
         timeEnd: function(label) {
           if (typeof label === "string" && label.length > 0) {
-            this.invoke(Logger10.TIME, [label, "end"]);
+            this.invoke(Logger12.TIME, [label, "end"]);
           }
         },
         // Invokes the logger callback if it's not being filtered.
@@ -2515,9 +2515,9 @@ var require_logger = __commonJS({
           }
         }
       };
-      var globalLogger = new ContextualLogger({ filterLevel: Logger10.OFF });
+      var globalLogger = new ContextualLogger({ filterLevel: Logger12.OFF });
       (function() {
-        var L = Logger10;
+        var L = Logger12;
         L.enabledFor = bind2(globalLogger, globalLogger.enabledFor);
         L.trace = bind2(globalLogger, globalLogger.trace);
         L.debug = bind2(globalLogger, globalLogger.debug);
@@ -2528,10 +2528,10 @@ var require_logger = __commonJS({
         L.error = bind2(globalLogger, globalLogger.error);
         L.log = L.info;
       })();
-      Logger10.setHandler = function(func) {
+      Logger12.setHandler = function(func) {
         logHandler = func;
       };
-      Logger10.setLevel = function(level) {
+      Logger12.setLevel = function(level) {
         globalLogger.setLevel(level);
         for (var key in contextualLoggersByNameMap) {
           if (contextualLoggersByNameMap.hasOwnProperty(key)) {
@@ -2539,13 +2539,13 @@ var require_logger = __commonJS({
           }
         }
       };
-      Logger10.getLevel = function() {
+      Logger12.getLevel = function() {
         return globalLogger.getLevel();
       };
-      Logger10.get = function(name) {
+      Logger12.get = function(name) {
         return contextualLoggersByNameMap[name] || (contextualLoggersByNameMap[name] = new ContextualLogger(merge3({ name }, globalLogger.context)));
       };
-      Logger10.createDefaultHandler = function(options) {
+      Logger12.createDefaultHandler = function(options) {
         options = options || {};
         options.formatter = options.formatter || function defaultMessageFormatter(messages, context) {
           if (context.name) {
@@ -2564,7 +2564,7 @@ var require_logger = __commonJS({
           messages = Array.prototype.slice.call(messages);
           var hdlr = console.log;
           var timerLabel;
-          if (context.level === Logger10.TIME) {
+          if (context.level === Logger12.TIME) {
             timerLabel = (context.name ? "[" + context.name + "] " : "") + messages[0];
             if (messages[1] === "start") {
               if (console.time) {
@@ -2580,15 +2580,15 @@ var require_logger = __commonJS({
               }
             }
           } else {
-            if (context.level === Logger10.WARN && console.warn) {
+            if (context.level === Logger12.WARN && console.warn) {
               hdlr = console.warn;
-            } else if (context.level === Logger10.ERROR && console.error) {
+            } else if (context.level === Logger12.ERROR && console.error) {
               hdlr = console.error;
-            } else if (context.level === Logger10.INFO && console.info) {
+            } else if (context.level === Logger12.INFO && console.info) {
               hdlr = console.info;
-            } else if (context.level === Logger10.DEBUG && console.debug) {
+            } else if (context.level === Logger12.DEBUG && console.debug) {
               hdlr = console.debug;
-            } else if (context.level === Logger10.TRACE && console.trace) {
+            } else if (context.level === Logger12.TRACE && console.trace) {
               hdlr = console.trace;
             }
             options.formatter(messages, context);
@@ -2596,22 +2596,22 @@ var require_logger = __commonJS({
           }
         };
       };
-      Logger10.useDefaults = function(options) {
-        Logger10.setLevel(options && options.defaultLevel || Logger10.DEBUG);
-        Logger10.setHandler(Logger10.createDefaultHandler(options));
+      Logger12.useDefaults = function(options) {
+        Logger12.setLevel(options && options.defaultLevel || Logger12.DEBUG);
+        Logger12.setHandler(Logger12.createDefaultHandler(options));
       };
-      Logger10.setDefaults = Logger10.useDefaults;
+      Logger12.setDefaults = Logger12.useDefaults;
       if (typeof define === "function" && define.amd) {
-        define(Logger10);
+        define(Logger12);
       } else if (typeof module2 !== "undefined" && module2.exports) {
-        module2.exports = Logger10;
+        module2.exports = Logger12;
       } else {
-        Logger10._prevLogger = global2.Logger;
-        Logger10.noConflict = function() {
-          global2.Logger = Logger10._prevLogger;
-          return Logger10;
+        Logger12._prevLogger = global2.Logger;
+        Logger12.noConflict = function() {
+          global2.Logger = Logger12._prevLogger;
+          return Logger12;
         };
-        global2.Logger = Logger10;
+        global2.Logger = Logger12;
       }
     })(exports);
   }
@@ -10309,17 +10309,17 @@ var generateGardenSnapshot_exports = {};
 __export(generateGardenSnapshot_exports, {
   generateGardenSnapshot: () => generateGardenSnapshot
 });
-var import_obsidian16, import_promises, SNAPSHOT_PATH, generateGardenSnapshot;
+var import_obsidian17, import_promises, SNAPSHOT_PATH, generateGardenSnapshot;
 var init_generateGardenSnapshot = __esm({
   "src/test/snapshot/generateGardenSnapshot.ts"() {
     "use strict";
-    import_obsidian16 = require("obsidian");
+    import_obsidian17 = require("obsidian");
     import_promises = __toESM(require("fs/promises"));
     SNAPSHOT_PATH = "src/test/snapshot/snapshot.md";
     generateGardenSnapshot = (settings, publisher) => __async(void 0, null, function* () {
       const devPluginPath = settings.devPluginPath;
       if (!devPluginPath) {
-        new import_obsidian16.Notice("devPluginPath missing, run generateGardenSettings.mjs");
+        new import_obsidian17.Notice("devPluginPath missing, run generateGardenSettings.mjs");
         return;
       }
       const marked = yield publisher.getFilesMarkedForPublishing();
@@ -10341,11 +10341,11 @@ var init_generateGardenSnapshot = __esm({
       }
       fileString += "==========\n";
       const fullSnapshotPath = `${devPluginPath}/${SNAPSHOT_PATH}`;
-      if (import_obsidian16.Platform.isDesktop) {
+      if (import_obsidian17.Platform.isDesktop) {
         yield import_promises.default.writeFile(fullSnapshotPath, fileString);
       }
-      new import_obsidian16.Notice(`Snapshot written to ${fullSnapshotPath}`);
-      new import_obsidian16.Notice(`Check snapshot to make sure nothing has accidentally changed`);
+      new import_obsidian17.Notice(`Snapshot written to ${fullSnapshotPath}`);
+      new import_obsidian17.Notice(`Check snapshot to make sure nothing has accidentally changed`);
     });
   }
 });
@@ -10356,7 +10356,7 @@ __export(main_exports, {
   default: () => DigitalGarden
 });
 module.exports = __toCommonJS(main_exports);
-var import_obsidian17 = require("obsidian");
+var import_obsidian18 = require("obsidian");
 
 // src/publisher/Publisher.ts
 var import_obsidian4 = require("obsidian");
@@ -17688,7 +17688,323 @@ ${headerSection}
 };
 
 // src/publisher/Publisher.ts
-var import_js_logger4 = __toESM(require_logger());
+var import_js_logger5 = __toESM(require_logger());
+
+// src/repositoryConnection/RepositoryConnection.ts
+var import_js_logger3 = __toESM(require_logger());
+var logger = import_js_logger3.default.get("repository-connection");
+var IMAGE_PATH_BASE = "src/site/";
+var NOTE_PATH_BASE = "src/site/notes/";
+var RepositoryConnection = class {
+  constructor({ octoKit, userName, pageName }) {
+    this.pageName = pageName;
+    this.userName = userName;
+    this.octokit = octoKit;
+  }
+  getRepositoryName() {
+    return this.userName + "/" + this.pageName;
+  }
+  getBasePayload() {
+    return {
+      owner: this.userName,
+      repo: this.pageName
+    };
+  }
+  /** Get filetree with path and sha of each file from repository */
+  getContent(branch) {
+    return __async(this, null, function* () {
+      try {
+        const response = yield this.octokit.request(
+          `GET /repos/{owner}/{repo}/git/trees/{tree_sha}`,
+          __spreadProps(__spreadValues({}, this.getBasePayload()), {
+            tree_sha: branch,
+            recursive: "true",
+            // invalidate cache
+            headers: {
+              "If-None-Match": ""
+            }
+          })
+        );
+        if (response.status === 200) {
+          return response.data;
+        }
+      } catch (error) {
+        throw new Error(
+          `Could not get file ${""} from repository ${this.getRepositoryName()}`
+        );
+      }
+    });
+  }
+  getFile(path, branch) {
+    return __async(this, null, function* () {
+      logger.info(
+        `Getting file ${path} from repository ${this.getRepositoryName()}`
+      );
+      try {
+        const response = yield this.octokit.request(
+          "GET /repos/{owner}/{repo}/contents/{path}",
+          __spreadProps(__spreadValues({}, this.getBasePayload()), {
+            path,
+            ref: branch
+          })
+        );
+        if (response.status === 200 && !Array.isArray(response.data) && response.data.type === "file") {
+          return response.data;
+        }
+      } catch (error) {
+        throw new Error(
+          `Could not get file ${path} from repository ${this.getRepositoryName()}`
+        );
+      }
+    });
+  }
+  deleteFile(_0, _1) {
+    return __async(this, arguments, function* (path, { branch, sha }) {
+      try {
+        sha != null ? sha : sha = yield this.getFile(path, branch).then((file) => file == null ? void 0 : file.sha);
+        if (!sha) {
+          console.error(
+            `cannot find file ${path} on github, not removing`
+          );
+          return false;
+        }
+        const payload = __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          path,
+          message: `Delete content ${path}`,
+          sha,
+          branch
+        });
+        const result = yield this.octokit.request(
+          "DELETE /repos/{owner}/{repo}/contents/{path}",
+          payload
+        );
+        import_js_logger3.default.info(
+          `Deleted file ${path} from repository ${this.getRepositoryName()}`
+        );
+        return result;
+      } catch (error) {
+        logger.error(error);
+        return false;
+      }
+    });
+  }
+  getLatestRelease() {
+    return __async(this, null, function* () {
+      try {
+        const release = yield this.octokit.request(
+          "GET /repos/{owner}/{repo}/releases/latest",
+          this.getBasePayload()
+        );
+        if (!release || !release.data) {
+          logger.error("Could not get latest release");
+        }
+        return release.data;
+      } catch (error) {
+        logger.error("Could not get latest release", error);
+      }
+    });
+  }
+  getLatestCommit() {
+    return __async(this, null, function* () {
+      try {
+        const latestCommit = yield this.octokit.request(
+          `GET /repos/{owner}/{repo}/commits/HEAD?cacheBust=${Date.now()}`,
+          this.getBasePayload()
+        );
+        if (!latestCommit || !latestCommit.data) {
+          logger.error("Could not get latest commit");
+        }
+        return latestCommit.data;
+      } catch (error) {
+        logger.error("Could not get latest commit", error);
+      }
+    });
+  }
+  updateFile(_0) {
+    return __async(this, arguments, function* ({ path, sha, content, branch, message }) {
+      const payload = __spreadProps(__spreadValues({}, this.getBasePayload()), {
+        path,
+        message: message != null ? message : `Update file ${path}`,
+        content,
+        sha,
+        branch
+      });
+      try {
+        return yield this.octokit.request(
+          "PUT /repos/{owner}/{repo}/contents/{path}",
+          payload
+        );
+      } catch (error) {
+        logger.error(error);
+      }
+    });
+  }
+  // NB: Do not use this, it does not work for some reason.
+  //TODO: Fix this. For now use deleteNote and deleteImage instead
+  deleteFiles(filePaths) {
+    return __async(this, null, function* () {
+      const latestCommit = yield this.getLatestCommit();
+      if (!latestCommit) {
+        logger.error("Could not get latest commit");
+        return;
+      }
+      const normalizePath = (path) => path.startsWith("/") ? path.slice(1) : path;
+      const filesToDelete = filePaths.map((path) => {
+        if (path.endsWith(".md")) {
+          return `${NOTE_PATH_BASE}${normalizePath(path)}`;
+        }
+        return `${IMAGE_PATH_BASE}${normalizePath(path)}`;
+      });
+      const repoDataPromise = this.octokit.request(
+        "GET /repos/{owner}/{repo}",
+        __spreadValues({}, this.getBasePayload())
+      );
+      const latestCommitSha = latestCommit.sha;
+      const baseTreeSha = latestCommit.commit.tree.sha;
+      const baseTree = yield this.octokit.request(
+        "GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          tree_sha: baseTreeSha
+        })
+      );
+      const newTreeEntries = baseTree.data.tree.filter(
+        (item) => !filesToDelete.includes(item.path)
+      ).map(
+        (item) => ({
+          path: item.path,
+          mode: item.mode,
+          type: item.type,
+          sha: item.sha
+        })
+      );
+      const newTree = yield this.octokit.request(
+        "POST /repos/{owner}/{repo}/git/trees",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          tree: newTreeEntries
+        })
+      );
+      const commitMessage = "Deleted multiple files";
+      const newCommit = yield this.octokit.request(
+        "POST /repos/{owner}/{repo}/git/commits",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          message: commitMessage,
+          tree: newTree.data.sha,
+          parents: [latestCommitSha]
+        })
+      );
+      const defaultBranch = (yield repoDataPromise).data.default_branch;
+      yield this.octokit.request(
+        "PATCH /repos/{owner}/{repo}/git/refs/{ref}",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          ref: `heads/${defaultBranch}`,
+          sha: newCommit.data.sha
+        })
+      );
+    });
+  }
+  updateFiles(files) {
+    return __async(this, null, function* () {
+      const latestCommit = yield this.getLatestCommit();
+      if (!latestCommit) {
+        logger.error("Could not get latest commit");
+        return;
+      }
+      const repoDataPromise = this.octokit.request(
+        "GET /repos/{owner}/{repo}",
+        __spreadValues({}, this.getBasePayload())
+      );
+      const latestCommitSha = latestCommit.sha;
+      const baseTreeSha = latestCommit.commit.tree.sha;
+      const normalizePath = (path) => path.startsWith("/") ? path.slice(1) : path;
+      const treePromises = files.map((file) => __async(this, null, function* () {
+        const [text2, _] = file.compiledFile;
+        try {
+          const blob = yield this.octokit.request(
+            "POST /repos/{owner}/{repo}/git/blobs",
+            __spreadProps(__spreadValues({}, this.getBasePayload()), {
+              content: text2,
+              encoding: "utf-8"
+            })
+          );
+          return {
+            path: `${NOTE_PATH_BASE}${normalizePath(file.getPath())}`,
+            mode: "100644",
+            type: "blob",
+            sha: blob.data.sha
+          };
+        } catch (error) {
+          logger.error(error);
+        }
+      }));
+      const treeAssetPromises = files.flatMap((x) => x.compiledFile[1].images).map((asset) => __async(this, null, function* () {
+        try {
+          const blob = yield this.octokit.request(
+            "POST /repos/{owner}/{repo}/git/blobs",
+            __spreadProps(__spreadValues({}, this.getBasePayload()), {
+              content: asset.content,
+              encoding: "base64"
+            })
+          );
+          return {
+            path: `${IMAGE_PATH_BASE}${normalizePath(asset.path)}`,
+            mode: "100644",
+            type: "blob",
+            sha: blob.data.sha
+          };
+        } catch (error) {
+          logger.error(error);
+        }
+      }));
+      treePromises.push(...treeAssetPromises);
+      const treeList = yield Promise.all(treePromises);
+      const tree = treeList.filter((x) => x !== void 0);
+      const newTree = yield this.octokit.request(
+        "POST /repos/{owner}/{repo}/git/trees",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          base_tree: baseTreeSha,
+          tree
+        })
+      );
+      const commitMessage = "Published multiple files";
+      const newCommit = yield this.octokit.request(
+        "POST /repos/{owner}/{repo}/git/commits",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          message: commitMessage,
+          tree: newTree.data.sha,
+          parents: [latestCommitSha]
+        })
+      );
+      const defaultBranch = (yield repoDataPromise).data.default_branch;
+      yield this.octokit.request(
+        "PATCH /repos/{owner}/{repo}/git/refs/heads/{branch}",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          branch: defaultBranch,
+          sha: newCommit.data.sha
+        })
+      );
+    });
+  }
+  getRepositoryInfo() {
+    return __async(this, null, function* () {
+      const repoInfo = yield this.octokit.request("GET /repos/{owner}/{repo}", __spreadValues({}, this.getBasePayload())).catch((error) => {
+        logger.error(error);
+        logger.warn(
+          `Could not get repository info for ${this.getRepositoryName()}`
+        );
+        return void 0;
+      });
+      return repoInfo == null ? void 0 : repoInfo.data;
+    });
+  }
+  createBranch(branchName, sha) {
+    return __async(this, null, function* () {
+      yield this.octokit.request("POST /repos/{owner}/{repo}/git/refs", __spreadProps(__spreadValues({}, this.getBasePayload()), {
+        ref: `refs/heads/${branchName}`,
+        sha
+      }));
+    });
+  }
+};
 
 // node_modules/universal-user-agent/dist-web/index.js
 function getUserAgent() {
@@ -18518,323 +18834,46 @@ var Octokit = (_a = class {
   }
 }, _a.VERSION = VERSION5, _a.plugins = [], _a);
 
-// src/repositoryConnection/RepositoryConnection.ts
-var import_js_logger3 = __toESM(require_logger());
-var logger = import_js_logger3.default.get("repository-connection");
-var oktokitLogger = import_js_logger3.default.get("octokit");
-var IMAGE_PATH_BASE = "src/site/";
-var NOTE_PATH_BASE = "src/site/notes/";
-var RepositoryConnection = class {
-  constructor({
-    gardenRepository,
-    githubToken,
-    githubUserName
-  }) {
-    this.gardenRepository = gardenRepository;
-    this.githubUserName = githubUserName;
-    this.octokit = new Octokit({ auth: githubToken, log: oktokitLogger });
-  }
-  getRepositoryName() {
-    return this.githubUserName + "/" + this.gardenRepository;
-  }
-  getBasePayload() {
+// src/repositoryConnection/PublishPlatformConnectionFactory.ts
+var import_js_logger4 = __toESM(require_logger());
+var oktokitLogger = import_js_logger4.default.get("octokit");
+var PublishPlatformConnectionFactory = class {
+  static createBaseGardenConnection() {
     return {
-      owner: this.githubUserName,
-      repo: this.gardenRepository
+      octoKit: new Octokit({ log: oktokitLogger }),
+      userName: "oleeskild",
+      pageName: "digitalgarden"
     };
   }
-  /** Get filetree with path and sha of each file from repository */
-  getContent(branch) {
+  static createPublishPlatformConnection(settings) {
     return __async(this, null, function* () {
-      try {
-        const response = yield this.octokit.request(
-          `GET /repos/{owner}/{repo}/git/trees/{tree_sha}`,
-          __spreadProps(__spreadValues({}, this.getBasePayload()), {
-            tree_sha: branch,
-            recursive: "true",
-            // invalidate cache
-            headers: {
-              "If-None-Match": ""
-            }
-          })
-        );
-        if (response.status === 200) {
-          return response.data;
-        }
-      } catch (error) {
-        throw new Error(
-          `Could not get file ${""} from repository ${this.getRepositoryName()}`
-        );
-      }
-    });
-  }
-  getFile(path, branch) {
-    return __async(this, null, function* () {
-      logger.info(
-        `Getting file ${path} from repository ${this.getRepositoryName()}`
-      );
-      try {
-        const response = yield this.octokit.request(
-          "GET /repos/{owner}/{repo}/contents/{path}",
-          __spreadProps(__spreadValues({}, this.getBasePayload()), {
-            path,
-            ref: branch
-          })
-        );
-        if (response.status === 200 && !Array.isArray(response.data) && response.data.type === "file") {
-          return response.data;
-        }
-      } catch (error) {
-        throw new Error(
-          `Could not get file ${path} from repository ${this.getRepositoryName()}`
-        );
-      }
-    });
-  }
-  deleteFile(_0, _1) {
-    return __async(this, arguments, function* (path, { branch, sha }) {
-      try {
-        sha != null ? sha : sha = yield this.getFile(path, branch).then((file) => file == null ? void 0 : file.sha);
-        if (!sha) {
-          console.error(
-            `cannot find file ${path} on github, not removing`
-          );
-          return false;
-        }
-        const payload = __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          path,
-          message: `Delete content ${path}`,
-          sha,
-          branch
+      if (settings.publishPlatform === "SelfHosted" /* SelfHosted */) {
+        return {
+          octoKit: new Octokit({
+            auth: settings.githubToken,
+            log: oktokitLogger
+          }),
+          userName: settings.githubUserName,
+          pageName: settings.githubRepo
+        };
+      } else if (settings.publishPlatform === "ForestryMd" /* ForestryMd */) {
+        const userName = "Forestry";
+        const token = settings.forestrySettings.apiKey;
+        const baseUrl = "https://api.forestry.md/app";
+        const octoKit = new Octokit({
+          baseUrl: `${baseUrl}/Garden`,
+          auth: token,
+          log: oktokitLogger
         });
-        const result = yield this.octokit.request(
-          "DELETE /repos/{owner}/{repo}/contents/{path}",
-          payload
-        );
-        import_js_logger3.default.info(
-          `Deleted file ${path} from repository ${this.getRepositoryName()}`
-        );
-        return result;
-      } catch (error) {
-        logger.error(error);
-        return false;
+        const pageName = settings.forestrySettings.forestryPageName;
+        return {
+          userName,
+          pageName,
+          octoKit
+        };
+      } else {
+        throw new Error("Publish platform not supported");
       }
-    });
-  }
-  getLatestRelease() {
-    return __async(this, null, function* () {
-      try {
-        const release = yield this.octokit.request(
-          "GET /repos/{owner}/{repo}/releases/latest",
-          this.getBasePayload()
-        );
-        if (!release || !release.data) {
-          logger.error("Could not get latest release");
-        }
-        return release.data;
-      } catch (error) {
-        logger.error("Could not get latest release", error);
-      }
-    });
-  }
-  getLatestCommit() {
-    return __async(this, null, function* () {
-      try {
-        const latestCommit = yield this.octokit.request(
-          `GET /repos/{owner}/{repo}/commits/HEAD?cacheBust=${Date.now()}`,
-          this.getBasePayload()
-        );
-        if (!latestCommit || !latestCommit.data) {
-          logger.error("Could not get latest commit");
-        }
-        return latestCommit.data;
-      } catch (error) {
-        logger.error("Could not get latest commit", error);
-      }
-    });
-  }
-  updateFile(_0) {
-    return __async(this, arguments, function* ({ path, sha, content, branch, message }) {
-      const payload = __spreadProps(__spreadValues({}, this.getBasePayload()), {
-        path,
-        message: message != null ? message : `Update file ${path}`,
-        content,
-        sha,
-        branch
-      });
-      try {
-        return yield this.octokit.request(
-          "PUT /repos/{owner}/{repo}/contents/{path}",
-          payload
-        );
-      } catch (error) {
-        logger.error(error);
-      }
-    });
-  }
-  // NB: Do not use this, it does not work for some reason.
-  //TODO: Fix this. For now use deleteNote and deleteImage instead
-  deleteFiles(filePaths) {
-    return __async(this, null, function* () {
-      const latestCommit = yield this.getLatestCommit();
-      if (!latestCommit) {
-        logger.error("Could not get latest commit");
-        return;
-      }
-      const normalizePath = (path) => path.startsWith("/") ? path.slice(1) : path;
-      const filesToDelete = filePaths.map((path) => {
-        if (path.endsWith(".md")) {
-          return `${NOTE_PATH_BASE}${normalizePath(path)}`;
-        }
-        return `${IMAGE_PATH_BASE}${normalizePath(path)}`;
-      });
-      const repoDataPromise = this.octokit.request(
-        "GET /repos/{owner}/{repo}",
-        __spreadValues({}, this.getBasePayload())
-      );
-      const latestCommitSha = latestCommit.sha;
-      const baseTreeSha = latestCommit.commit.tree.sha;
-      const baseTree = yield this.octokit.request(
-        "GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          tree_sha: baseTreeSha
-        })
-      );
-      const newTreeEntries = baseTree.data.tree.filter(
-        (item) => !filesToDelete.includes(item.path)
-      ).map(
-        (item) => ({
-          path: item.path,
-          mode: item.mode,
-          type: item.type,
-          sha: item.sha
-        })
-      );
-      const newTree = yield this.octokit.request(
-        "POST /repos/{owner}/{repo}/git/trees",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          tree: newTreeEntries
-        })
-      );
-      const commitMessage = "Deleted multiple files";
-      const newCommit = yield this.octokit.request(
-        "POST /repos/{owner}/{repo}/git/commits",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          message: commitMessage,
-          tree: newTree.data.sha,
-          parents: [latestCommitSha]
-        })
-      );
-      const defaultBranch = (yield repoDataPromise).data.default_branch;
-      yield this.octokit.request(
-        "PATCH /repos/{owner}/{repo}/git/refs/{ref}",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          ref: `heads/${defaultBranch}`,
-          sha: newCommit.data.sha
-        })
-      );
-    });
-  }
-  updateFiles(files) {
-    return __async(this, null, function* () {
-      const latestCommit = yield this.getLatestCommit();
-      if (!latestCommit) {
-        logger.error("Could not get latest commit");
-        return;
-      }
-      const repoDataPromise = this.octokit.request(
-        "GET /repos/{owner}/{repo}",
-        __spreadValues({}, this.getBasePayload())
-      );
-      const latestCommitSha = latestCommit.sha;
-      const baseTreeSha = latestCommit.commit.tree.sha;
-      const normalizePath = (path) => path.startsWith("/") ? path.slice(1) : path;
-      const treePromises = files.map((file) => __async(this, null, function* () {
-        const [text2, _] = file.compiledFile;
-        try {
-          const blob = yield this.octokit.request(
-            "POST /repos/{owner}/{repo}/git/blobs",
-            __spreadProps(__spreadValues({}, this.getBasePayload()), {
-              content: text2,
-              encoding: "utf-8"
-            })
-          );
-          return {
-            path: `${NOTE_PATH_BASE}${normalizePath(file.getPath())}`,
-            mode: "100644",
-            type: "blob",
-            sha: blob.data.sha
-          };
-        } catch (error) {
-          logger.error(error);
-        }
-      }));
-      const treeAssetPromises = files.flatMap((x) => x.compiledFile[1].images).map((asset) => __async(this, null, function* () {
-        try {
-          const blob = yield this.octokit.request(
-            "POST /repos/{owner}/{repo}/git/blobs",
-            __spreadProps(__spreadValues({}, this.getBasePayload()), {
-              content: asset.content,
-              encoding: "base64"
-            })
-          );
-          return {
-            path: `${IMAGE_PATH_BASE}${normalizePath(asset.path)}`,
-            mode: "100644",
-            type: "blob",
-            sha: blob.data.sha
-          };
-        } catch (error) {
-          logger.error(error);
-        }
-      }));
-      treePromises.push(...treeAssetPromises);
-      const treeList = yield Promise.all(treePromises);
-      const tree = treeList.filter((x) => x !== void 0);
-      const newTree = yield this.octokit.request(
-        "POST /repos/{owner}/{repo}/git/trees",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          base_tree: baseTreeSha,
-          tree
-        })
-      );
-      const commitMessage = "Published multiple files";
-      const newCommit = yield this.octokit.request(
-        "POST /repos/{owner}/{repo}/git/commits",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          message: commitMessage,
-          tree: newTree.data.sha,
-          parents: [latestCommitSha]
-        })
-      );
-      const defaultBranch = (yield repoDataPromise).data.default_branch;
-      yield this.octokit.request(
-        "PATCH /repos/{owner}/{repo}/git/refs/heads/{branch}",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          branch: defaultBranch,
-          sha: newCommit.data.sha
-        })
-      );
-    });
-  }
-  getRepositoryInfo() {
-    return __async(this, null, function* () {
-      const repoInfo = yield this.octokit.request("GET /repos/{owner}/{repo}", __spreadValues({}, this.getBasePayload())).catch((error) => {
-        logger.error(error);
-        logger.warn(
-          `Could not get repository info for ${this.getRepositoryName()}`
-        );
-        return void 0;
-      });
-      return repoInfo == null ? void 0 : repoInfo.data;
-    });
-  }
-  createBranch(branchName, sha) {
-    return __async(this, null, function* () {
-      yield this.octokit.request("POST /repos/{owner}/{repo}/git/refs", __spreadProps(__spreadValues({}, this.getBasePayload()), {
-        ref: `refs/heads/${branchName}`,
-        sha
-      }));
     });
   }
 };
@@ -18880,7 +18919,7 @@ var Publisher = class {
             images.forEach((i) => imagesToPublish.add(i));
           }
         } catch (e) {
-          import_js_logger4.default.error(e);
+          import_js_logger5.default.error(e);
         }
       }
       return {
@@ -18905,11 +18944,11 @@ var Publisher = class {
   delete(path, sha) {
     return __async(this, null, function* () {
       this.validateSettings();
-      const userGardenConnection = new RepositoryConnection({
-        gardenRepository: this.settings.githubRepo,
-        githubUserName: this.settings.githubUserName,
-        githubToken: this.settings.githubToken
-      });
+      const userGardenConnection = new RepositoryConnection(
+        yield PublishPlatformConnectionFactory.createPublishPlatformConnection(
+          this.settings
+        )
+      );
       const deleted = yield userGardenConnection.deleteFile(path, {
         sha
       });
@@ -18938,11 +18977,11 @@ var Publisher = class {
         return true;
       }
       try {
-        const userGardenConnection = new RepositoryConnection({
-          gardenRepository: this.settings.githubRepo,
-          githubUserName: this.settings.githubUserName,
-          githubToken: this.settings.githubToken
-        });
+        const userGardenConnection = new RepositoryConnection(
+          yield PublishPlatformConnectionFactory.createPublishPlatformConnection(
+            this.settings
+          )
+        );
         yield userGardenConnection.deleteFiles(filePaths);
         return true;
       } catch (error) {
@@ -18960,11 +18999,11 @@ var Publisher = class {
         return true;
       }
       try {
-        const userGardenConnection = new RepositoryConnection({
-          gardenRepository: this.settings.githubRepo,
-          githubUserName: this.settings.githubUserName,
-          githubToken: this.settings.githubToken
-        });
+        const userGardenConnection = new RepositoryConnection(
+          yield PublishPlatformConnectionFactory.createPublishPlatformConnection(
+            this.settings
+          )
+        );
         yield userGardenConnection.updateFiles(filesToPublish);
         return true;
       } catch (error) {
@@ -18977,14 +19016,14 @@ var Publisher = class {
     return __async(this, null, function* () {
       this.validateSettings();
       let message = `Update content ${path}`;
-      const userGardenConnection = new RepositoryConnection({
-        gardenRepository: this.settings.githubRepo,
-        githubUserName: this.settings.githubUserName,
-        githubToken: this.settings.githubToken
-      });
+      const userGardenConnection = new RepositoryConnection(
+        yield PublishPlatformConnectionFactory.createPublishPlatformConnection(
+          this.settings
+        )
+      );
       if (!remoteFileHash) {
         const file = yield userGardenConnection.getFile(path).catch(() => {
-          import_js_logger4.default.info(`File ${path} does not exist, adding`);
+          import_js_logger5.default.info(`File ${path} does not exist, adding`);
         });
         remoteFileHash = file == null ? void 0 : file.sha;
         if (!remoteFileHash) {
@@ -19021,23 +19060,32 @@ var Publisher = class {
     });
   }
   validateSettings() {
-    if (!this.settings.githubRepo) {
-      new import_obsidian4.Notice(
-        "Config error: You need to define a GitHub repo in the plugin settings"
-      );
-      throw {};
-    }
-    if (!this.settings.githubUserName) {
-      new import_obsidian4.Notice(
-        "Config error: You need to define a GitHub Username in the plugin settings"
-      );
-      throw {};
-    }
-    if (!this.settings.githubToken) {
-      new import_obsidian4.Notice(
-        "Config error: You need to define a GitHub Token in the plugin settings"
-      );
-      throw {};
+    if (this.settings.publishPlatform === "ForestryMd" /* ForestryMd */) {
+      if (!this.settings.forestrySettings.apiKey) {
+        new import_obsidian4.Notice(
+          "Config error: You need to define a Forestry.md Garden Key in the plugin settings"
+        );
+        throw {};
+      }
+    } else {
+      if (!this.settings.githubRepo) {
+        new import_obsidian4.Notice(
+          "Config error: You need to define a GitHub repo in the plugin settings"
+        );
+        throw {};
+      }
+      if (!this.settings.githubUserName) {
+        new import_obsidian4.Notice(
+          "Config error: You need to define a GitHub Username in the plugin settings"
+        );
+        throw {};
+      }
+      if (!this.settings.githubToken) {
+        new import_obsidian4.Notice(
+          "Config error: You need to define a GitHub Token in the plugin settings"
+        );
+        throw {};
+      }
     }
   }
 };
@@ -19073,6 +19121,10 @@ var import_obsidian7 = require("obsidian");
 
 // node_modules/svelte/src/runtime/internal/utils.js
 function noop() {
+}
+function is_promise(value) {
+  return !!value && (typeof value === "object" || typeof value === "function") && typeof /** @type {any} */
+  value.then === "function";
 }
 function run(fn2) {
   return fn2();
@@ -19239,6 +19291,9 @@ function set_data(text2, data) {
     return;
   text2.data = /** @type {string} */
   data;
+}
+function set_input_value(input, value) {
+  input.value = value == null ? "" : value;
 }
 function set_style(node, key, value, important) {
   if (value == null) {
@@ -19497,6 +19552,90 @@ function transition_out(block, local, detach2, callback) {
   }
 }
 
+// node_modules/svelte/src/runtime/internal/await_block.js
+function handle_promise(promise, info) {
+  const token = info.token = {};
+  function update2(type, index, key, value) {
+    if (info.token !== token)
+      return;
+    info.resolved = value;
+    let child_ctx = info.ctx;
+    if (key !== void 0) {
+      child_ctx = child_ctx.slice();
+      child_ctx[key] = value;
+    }
+    const block = type && (info.current = type)(child_ctx);
+    let needs_flush = false;
+    if (info.block) {
+      if (info.blocks) {
+        info.blocks.forEach((block2, i) => {
+          if (i !== index && block2) {
+            group_outros();
+            transition_out(block2, 1, 1, () => {
+              if (info.blocks[i] === block2) {
+                info.blocks[i] = null;
+              }
+            });
+            check_outros();
+          }
+        });
+      } else {
+        info.block.d(1);
+      }
+      block.c();
+      transition_in(block, 1);
+      block.m(info.mount(), info.anchor);
+      needs_flush = true;
+    }
+    info.block = block;
+    if (info.blocks)
+      info.blocks[index] = block;
+    if (needs_flush) {
+      flush();
+    }
+  }
+  if (is_promise(promise)) {
+    const current_component2 = get_current_component();
+    promise.then(
+      (value) => {
+        set_current_component(current_component2);
+        update2(info.then, 1, info.value, value);
+        set_current_component(null);
+      },
+      (error) => {
+        set_current_component(current_component2);
+        update2(info.catch, 2, info.error, error);
+        set_current_component(null);
+        if (!info.hasCatch) {
+          throw error;
+        }
+      }
+    );
+    if (info.current !== info.pending) {
+      update2(info.pending, 0);
+      return true;
+    }
+  } else {
+    if (info.current !== info.then) {
+      update2(info.then, 1, info.value, promise);
+      return true;
+    }
+    info.resolved = /** @type {T} */
+    promise;
+  }
+}
+function update_await_block_branch(info, ctx, dirty) {
+  const child_ctx = ctx.slice();
+  const { resolved } = info;
+  if (info.current === info.then) {
+    child_ctx[info.value] = resolved;
+  }
+  if (info.current === info.catch) {
+    child_ctx[info.error] = resolved;
+  }
+  info.block.p(child_ctx, dirty);
+}
+
 // node_modules/svelte/src/runtime/internal/each.js
 function ensure_array_like(array_like_or_iterator) {
   return (array_like_or_iterator == null ? void 0 : array_like_or_iterator.length) !== void 0 ? array_like_or_iterator : Array.from(array_like_or_iterator);
@@ -19571,7 +19710,7 @@ function make_dirty(component, i) {
   }
   component.$$.dirty[i / 31 | 0] |= 1 << i % 31;
 }
-function init(component, options, instance8, create_fragment8, not_equal, props, append_styles2, dirty = [-1]) {
+function init(component, options, instance9, create_fragment9, not_equal, props, append_styles2, dirty = [-1]) {
   const parent_component = current_component;
   set_current_component(component);
   const $$ = component.$$ = {
@@ -19597,7 +19736,7 @@ function init(component, options, instance8, create_fragment8, not_equal, props,
   };
   append_styles2 && append_styles2($$.root);
   let ready = false;
-  $$.ctx = instance8 ? instance8(component, options.props || {}, (i, ret, ...rest) => {
+  $$.ctx = instance9 ? instance9(component, options.props || {}, (i, ret, ...rest) => {
     const value = rest.length ? rest[0] : ret;
     if ($$.ctx && not_equal($$.ctx[i], $$.ctx[i] = value)) {
       if (!$$.skip_bound && $$.bound[i])
@@ -19610,7 +19749,7 @@ function init(component, options, instance8, create_fragment8, not_equal, props,
   $$.update();
   ready = true;
   run_all($$.before_update);
-  $$.fragment = create_fragment8 ? create_fragment8($$.ctx) : false;
+  $$.fragment = create_fragment9 ? create_fragment9($$.ctx) : false;
   if (options.target) {
     if (options.hydrate) {
       start_hydrating();
@@ -23353,7 +23492,7 @@ var PublishStatusManager = class {
       const unpublishedNotes = [];
       const publishedNotes = [];
       const changedNotes = [];
-      const contentTree = yield this.siteManager.userGardenConnection.getContent("HEAD");
+      const contentTree = yield (yield this.siteManager.getUserGardenConnection()).getContent("HEAD");
       if (!contentTree) {
         throw new Error("Could not get content tree from base garden");
       }
@@ -23398,74 +23537,13 @@ var PublishStatusManager = class {
   }
 };
 
-// src/publishFile/ObsidianFrontMatterEngine.ts
-var ObsidianFrontMatterEngine = class {
-  constructor(vault, metadataCache, file) {
-    this.generatedFrontMatter = {};
-    this.metadataCache = metadataCache;
-    this.vault = vault;
-    this.file = file;
-  }
-  set(key, value) {
-    this.generatedFrontMatter[key] = value;
-    return this;
-  }
-  remove(key) {
-    this.generatedFrontMatter[key] = void 0;
-    return this;
-  }
-  get(key) {
-    return this.getFrontMatterSnapshot()[key];
-  }
-  apply() {
-    return __async(this, null, function* () {
-      const newFrontMatter = this.getFrontMatterSnapshot();
-      const content = yield this.vault.cachedRead(this.file);
-      const yaml = this.frontMatterToYaml(newFrontMatter);
-      let newContent = "";
-      if (content.match(FRONTMATTER_REGEX)) {
-        newContent = content.replace(FRONTMATTER_REGEX, (_match) => {
-          return yaml;
-        });
-      } else {
-        newContent = `${yaml}
-${content}`;
-      }
-      yield this.vault.modify(this.file, newContent);
-    });
-  }
-  frontMatterToYaml(frontMatter) {
-    for (const key of Object.keys(frontMatter)) {
-      if (frontMatter[key] === void 0) {
-        delete frontMatter[key];
-      }
-    }
-    if (Object.keys(frontMatter).length === 0) {
-      return "";
-    }
-    let yaml = "---\n";
-    for (const key of Object.keys(frontMatter)) {
-      yaml += `${key}: ${frontMatter[key]}
-`;
-    }
-    yaml += "---";
-    return yaml;
-  }
-  getFrontMatterSnapshot() {
-    var _a2, _b;
-    const cachedFrontMatter = __spreadValues({}, (_b = this.metadataCache.getCache((_a2 = this.file) == null ? void 0 : _a2.path)) == null ? void 0 : _b.frontmatter);
-    delete cachedFrontMatter["position"];
-    return __spreadValues(__spreadValues({}, cachedFrontMatter), this.generatedFrontMatter);
-  }
-};
-
 // src/repositoryConnection/DigitalGardenSiteManager.ts
 var import_obsidian8 = require("obsidian");
-var import_js_logger6 = __toESM(require_logger());
+var import_js_logger7 = __toESM(require_logger());
 
 // src/repositoryConnection/TemplateManager.ts
-var import_js_logger5 = __toESM(require_logger());
-var logger2 = import_js_logger5.default.get("digital-garden-site-manager");
+var import_js_logger6 = __toESM(require_logger());
+var logger2 = import_js_logger6.default.get("digital-garden-site-manager");
 var TemplateUpdateChecker = class {
   constructor({
     baseGardenConnection,
@@ -23692,25 +23770,39 @@ var TemplateUpdater = class {
 var hasUpdates = (updater) => updater.filesToChange !== void 0;
 
 // src/repositoryConnection/DigitalGardenSiteManager.ts
-var logger3 = import_js_logger6.default.get("digital-garden-site-manager");
+var logger3 = import_js_logger7.default.get("digital-garden-site-manager");
 var DigitalGardenSiteManager = class {
   constructor(metadataCache, settings) {
     this.settings = settings;
     this.metadataCache = metadataCache;
     this.rewriteRules = getRewriteRules(settings.pathRewriteRules);
-    this.baseGardenConnection = new RepositoryConnection({
-      githubToken: settings.githubToken,
-      githubUserName: "oleeskild",
-      gardenRepository: "digitalgarden"
+    this.baseGardenConnection = new RepositoryConnection(
+      PublishPlatformConnectionFactory.createBaseGardenConnection()
+    );
+    this.userGardenConnection = null;
+    this.templateUpdater = null;
+  }
+  getTemplateUpdater() {
+    return __async(this, null, function* () {
+      if (!this.templateUpdater) {
+        this.templateUpdater = new TemplateUpdateChecker({
+          baseGardenConnection: this.baseGardenConnection,
+          userGardenConnection: yield this.getUserGardenConnection()
+        });
+      }
+      return this.templateUpdater;
     });
-    this.userGardenConnection = new RepositoryConnection({
-      githubToken: settings.githubToken,
-      githubUserName: settings.githubUserName,
-      gardenRepository: settings.githubRepo
-    });
-    this.templateUpdater = new TemplateUpdateChecker({
-      baseGardenConnection: this.baseGardenConnection,
-      userGardenConnection: this.userGardenConnection
+  }
+  getUserGardenConnection() {
+    return __async(this, null, function* () {
+      if (!this.userGardenConnection) {
+        this.userGardenConnection = new RepositoryConnection(
+          yield PublishPlatformConnectionFactory.createPublishPlatformConnection(
+            this.settings
+          )
+        );
+      }
+      return this.userGardenConnection;
     });
   }
   updateEnv() {
@@ -23747,14 +23839,14 @@ var DigitalGardenSiteManager = class {
       const keysToSet = __spreadValues(__spreadValues({}, envValues), this.settings.defaultNoteSettings);
       const envSettings = Object.entries(keysToSet).map(([key, value]) => `${key}=${value}`).join("\n");
       const base64Settings = gBase64.encode(envSettings);
-      const currentFile = yield this.userGardenConnection.getFile(".env");
+      const currentFile = yield (yield this.getUserGardenConnection()).getFile(".env");
       const decodedCurrentFile = gBase64.decode((_a2 = currentFile == null ? void 0 : currentFile.content) != null ? _a2 : "");
       if (decodedCurrentFile === envSettings) {
         logger3.info("No changes to .env file");
         new import_obsidian8.Notice("Settings already up to date!");
         return;
       }
-      yield this.userGardenConnection.updateFile({
+      yield (yield this.getUserGardenConnection()).updateFile({
         path: ".env",
         content: base64Settings,
         message: "Update settings",
@@ -23764,13 +23856,12 @@ var DigitalGardenSiteManager = class {
   }
   getNoteUrl(file) {
     var _a2;
-    if (!this.settings.gardenBaseUrl) {
+    const savedBaseUrl = this.settings.publishPlatform === "SelfHosted" /* SelfHosted */ ? this.settings.gardenBaseUrl : this.settings.forestrySettings.baseUrl;
+    if (!savedBaseUrl) {
       new import_obsidian8.Notice("Please set the garden base url in the settings");
       throw new Error("Garden base url not set");
     }
-    const baseUrl = `https://${extractBaseUrl(
-      this.settings.gardenBaseUrl
-    )}`;
+    const baseUrl = `https://${extractBaseUrl(savedBaseUrl)}`;
     const noteUrlPath = generateUrlPath(
       getGardenPathForNote(file.path, this.rewriteRules),
       this.settings.slugifyEnabled
@@ -23791,9 +23882,7 @@ var DigitalGardenSiteManager = class {
       if (path.startsWith("/")) {
         path = path.substring(1);
       }
-      const response = yield this.userGardenConnection.getFile(
-        NOTE_PATH_BASE2 + path
-      );
+      const response = yield (yield this.getUserGardenConnection()).getFile(NOTE_PATH_BASE2 + path);
       if (!response) {
         return "";
       }
@@ -23833,7 +23922,7 @@ var DigitalGardenSiteManager = class {
 };
 
 // src/views/DigitalGardenSettingTab.ts
-var import_obsidian15 = require("obsidian");
+var import_obsidian16 = require("obsidian");
 
 // node_modules/axios/lib/helpers/bind.js
 function bind(fn2, thisArg) {
@@ -25896,13 +25985,13 @@ var HttpStatusCode_default = HttpStatusCode;
 // node_modules/axios/lib/axios.js
 function createInstance(defaultConfig) {
   const context = new Axios_default(defaultConfig);
-  const instance8 = bind(Axios_default.prototype.request, context);
-  utils_default.extend(instance8, Axios_default.prototype, context, { allOwnKeys: true });
-  utils_default.extend(instance8, context, null, { allOwnKeys: true });
-  instance8.create = function create(instanceConfig) {
+  const instance9 = bind(Axios_default.prototype.request, context);
+  utils_default.extend(instance9, Axios_default.prototype, context, { allOwnKeys: true });
+  utils_default.extend(instance9, context, null, { allOwnKeys: true });
+  instance9.create = function create(instanceConfig) {
     return createInstance(mergeConfig(defaultConfig, instanceConfig));
   };
-  return instance8;
+  return instance9;
 }
 var axios = createInstance(defaults_default);
 axios.Axios = Axios_default;
@@ -25947,7 +26036,7 @@ var {
 } = axios_default;
 
 // src/views/SettingsView/SettingView.ts
-var import_obsidian13 = require("obsidian");
+var import_obsidian14 = require("obsidian");
 
 // src/ui/suggest/file-suggest.ts
 var import_obsidian10 = require("obsidian");
@@ -26487,26 +26576,26 @@ var passive = {
   passive: true
 };
 function effect3(_ref) {
-  var state = _ref.state, instance8 = _ref.instance, options = _ref.options;
+  var state = _ref.state, instance9 = _ref.instance, options = _ref.options;
   var _options$scroll = options.scroll, scroll = _options$scroll === void 0 ? true : _options$scroll, _options$resize = options.resize, resize = _options$resize === void 0 ? true : _options$resize;
   var window2 = getWindow(state.elements.popper);
   var scrollParents = [].concat(state.scrollParents.reference, state.scrollParents.popper);
   if (scroll) {
     scrollParents.forEach(function(scrollParent) {
-      scrollParent.addEventListener("scroll", instance8.update, passive);
+      scrollParent.addEventListener("scroll", instance9.update, passive);
     });
   }
   if (resize) {
-    window2.addEventListener("resize", instance8.update, passive);
+    window2.addEventListener("resize", instance9.update, passive);
   }
   return function() {
     if (scroll) {
       scrollParents.forEach(function(scrollParent) {
-        scrollParent.removeEventListener("scroll", instance8.update, passive);
+        scrollParent.removeEventListener("scroll", instance9.update, passive);
       });
     }
     if (resize) {
-      window2.removeEventListener("resize", instance8.update, passive);
+      window2.removeEventListener("resize", instance9.update, passive);
     }
   };
 }
@@ -27301,7 +27390,7 @@ function popperGenerator(generatorOptions) {
     };
     var effectCleanupFns = [];
     var isDestroyed = false;
-    var instance8 = {
+    var instance9 = {
       state,
       setOptions: function setOptions(setOptionsAction) {
         var options2 = typeof setOptionsAction === "function" ? setOptionsAction(state.options) : setOptionsAction;
@@ -27316,7 +27405,7 @@ function popperGenerator(generatorOptions) {
           return m.enabled;
         });
         runModifierEffects();
-        return instance8.update();
+        return instance9.update();
       },
       // Sync update – it will always be executed, even if not necessary. This
       // is useful for low frequency updates where sync behavior simplifies the
@@ -27352,7 +27441,7 @@ function popperGenerator(generatorOptions) {
               state,
               options: _options,
               name,
-              instance: instance8
+              instance: instance9
             }) || state;
           }
         }
@@ -27361,7 +27450,7 @@ function popperGenerator(generatorOptions) {
       // not necessary (debounced to run at most once-per-tick)
       update: debounce(function() {
         return new Promise(function(resolve) {
-          instance8.forceUpdate();
+          instance9.forceUpdate();
           resolve(state);
         });
       }),
@@ -27371,9 +27460,9 @@ function popperGenerator(generatorOptions) {
       }
     };
     if (!areValidElements(reference2, popper2)) {
-      return instance8;
+      return instance9;
     }
-    instance8.setOptions(options).then(function(state2) {
+    instance9.setOptions(options).then(function(state2) {
       if (!isDestroyed && options.onFirstUpdate) {
         options.onFirstUpdate(state2);
       }
@@ -27385,7 +27474,7 @@ function popperGenerator(generatorOptions) {
           var cleanupFn = effect4({
             state,
             name,
-            instance: instance8,
+            instance: instance9,
             options: options2
           });
           var noopFn = function noopFn2() {
@@ -27400,7 +27489,7 @@ function popperGenerator(generatorOptions) {
       });
       effectCleanupFns = [];
     }
-    return instance8;
+    return instance9;
   };
 }
 
@@ -27528,13 +27617,13 @@ var TextInputSuggest = class {
         {
           name: "sameWidth",
           enabled: true,
-          fn: ({ state, instance: instance8 }) => {
+          fn: ({ state, instance: instance9 }) => {
             const targetWidth = `${state.rects.reference.width}px`;
             if (state.styles.popper.width === targetWidth) {
               return;
             }
             state.styles.popper.width = targetWidth;
-            instance8.update();
+            instance9.update();
           },
           phase: "beforeWrite",
           requires: ["computeStyles"]
@@ -28359,11 +28448,666 @@ var RewriteSettings = class extends SvelteComponent {
 var RewriteSettings_default = RewriteSettings;
 
 // src/views/SettingsView/SettingView.ts
-var import_js_logger7 = __toESM(require_logger());
+var import_js_logger9 = __toESM(require_logger());
+
+// src/forestry/ForestryApi.ts
+var import_js_logger8 = __toESM(require_logger());
+var ForestryApi = class {
+  constructor(apiKey) {
+    const baseUrl = "https://api.forestry.md/app";
+    this.client = axios_default.create({
+      baseURL: baseUrl,
+      headers: {
+        Authorization: `Bearer ${apiKey}`
+      }
+    });
+  }
+  getPageInfo() {
+    return __async(this, null, function* () {
+      try {
+        const response = yield this.client.get(
+          "pages/info"
+        );
+        if (response.status !== 200) {
+          return null;
+        }
+        return response.data;
+      } catch (e) {
+        import_js_logger8.default.error(e);
+        return null;
+      }
+    });
+  }
+};
+
+// src/views/SettingsView/ForestrySettings.svelte
+var import_obsidian13 = require("obsidian");
+function create_else_block5(ctx) {
+  let await_block_anchor;
+  let promise;
+  let current;
+  let info = {
+    ctx,
+    current: null,
+    token: null,
+    hasCatch: true,
+    pending: create_pending_block,
+    then: create_then_block,
+    catch: create_catch_block,
+    value: 9,
+    blocks: [, , ,]
+  };
+  handle_promise(promise = /*getPageInfo*/
+  ctx[5](), info);
+  return {
+    c() {
+      await_block_anchor = empty();
+      info.block.c();
+    },
+    m(target, anchor) {
+      insert(target, await_block_anchor, anchor);
+      info.block.m(target, info.anchor = anchor);
+      info.mount = () => await_block_anchor.parentNode;
+      info.anchor = await_block_anchor;
+      current = true;
+    },
+    p(new_ctx, dirty) {
+      ctx = new_ctx;
+      update_await_block_branch(info, ctx, dirty);
+    },
+    i(local) {
+      if (current)
+        return;
+      transition_in(info.block);
+      current = true;
+    },
+    o(local) {
+      for (let i = 0; i < 3; i += 1) {
+        const block = info.blocks[i];
+        transition_out(block);
+      }
+      current = false;
+    },
+    d(detaching) {
+      if (detaching) {
+        detach(await_block_anchor);
+      }
+      info.block.d(detaching);
+      info.token = null;
+      info = null;
+    }
+  };
+}
+function create_if_block6(ctx) {
+  let div4;
+  let div2;
+  let t5;
+  let div3;
+  let input;
+  let t6;
+  let button;
+  let mounted;
+  let dispose;
+  return {
+    c() {
+      div4 = element("div");
+      div2 = element("div");
+      div2.innerHTML = `<div class="setting-item-name">Garden Key</div> <div class="setting-item-description">Enter your Garden Key from <a href="https://dashboard.forestry.md">Forestry.md</a> to connect your digital garden</div>`;
+      t5 = space();
+      div3 = element("div");
+      input = element("input");
+      t6 = space();
+      button = element("button");
+      button.textContent = "Connect";
+      attr(div2, "class", "setting-item-info");
+      attr(input, "type", "text");
+      attr(input, "placeholder", "Enter your Garden Key");
+      set_style(input, "margin-right", "8px");
+      set_style(input, "min-width", "250px");
+      attr(button, "class", "mod-cta");
+      attr(div3, "class", "setting-item-control");
+      attr(div4, "class", "setting-item");
+    },
+    m(target, anchor) {
+      insert(target, div4, anchor);
+      append(div4, div2);
+      append(div4, t5);
+      append(div4, div3);
+      append(div3, input);
+      set_input_value(
+        input,
+        /*apiKey*/
+        ctx[2]
+      );
+      append(div3, t6);
+      append(div3, button);
+      if (!mounted) {
+        dispose = [
+          listen(
+            input,
+            "input",
+            /*input_input_handler*/
+            ctx[8]
+          ),
+          listen(
+            button,
+            "click",
+            /*connect*/
+            ctx[3]
+          )
+        ];
+        mounted = true;
+      }
+    },
+    p(ctx2, dirty) {
+      if (dirty & /*apiKey*/
+      4 && input.value !== /*apiKey*/
+      ctx2[2]) {
+        set_input_value(
+          input,
+          /*apiKey*/
+          ctx2[2]
+        );
+      }
+    },
+    i: noop,
+    o: noop,
+    d(detaching) {
+      if (detaching) {
+        detach(div4);
+      }
+      mounted = false;
+      run_all(dispose);
+    }
+  };
+}
+function create_catch_block(ctx) {
+  let div4;
+  let div2;
+  let t3;
+  let div3;
+  let button;
+  let mounted;
+  let dispose;
+  return {
+    c() {
+      div4 = element("div");
+      div2 = element("div");
+      div2.innerHTML = `<div class="setting-item-name" style="color: var(--text-error);">Connection Error</div> <div class="setting-item-description">Something went wrong when connecting to Forestry.md</div>`;
+      t3 = space();
+      div3 = element("div");
+      button = element("button");
+      button.textContent = "Disconnect";
+      attr(div2, "class", "setting-item-info");
+      attr(div3, "class", "setting-item-control");
+      attr(div4, "class", "setting-item");
+    },
+    m(target, anchor) {
+      insert(target, div4, anchor);
+      append(div4, div2);
+      append(div4, t3);
+      append(div4, div3);
+      append(div3, button);
+      if (!mounted) {
+        dispose = listen(
+          button,
+          "click",
+          /*disconnect*/
+          ctx[4]
+        );
+        mounted = true;
+      }
+    },
+    p: noop,
+    i: noop,
+    o: noop,
+    d(detaching) {
+      if (detaching) {
+        detach(div4);
+      }
+      mounted = false;
+      dispose();
+    }
+  };
+}
+function create_then_block(ctx) {
+  let current_block_type_index;
+  let if_block;
+  let if_block_anchor;
+  let current;
+  const if_block_creators = [create_if_block_15, create_else_block_12];
+  const if_blocks = [];
+  function select_block_type_1(ctx2, dirty) {
+    if (
+      /*pageInfo*/
+      ctx2[9]
+    )
+      return 0;
+    return 1;
+  }
+  current_block_type_index = select_block_type_1(ctx, -1);
+  if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+  return {
+    c() {
+      if_block.c();
+      if_block_anchor = empty();
+    },
+    m(target, anchor) {
+      if_blocks[current_block_type_index].m(target, anchor);
+      insert(target, if_block_anchor, anchor);
+      current = true;
+    },
+    p(ctx2, dirty) {
+      if_block.p(ctx2, dirty);
+    },
+    i(local) {
+      if (current)
+        return;
+      transition_in(if_block);
+      current = true;
+    },
+    o(local) {
+      transition_out(if_block);
+      current = false;
+    },
+    d(detaching) {
+      if (detaching) {
+        detach(if_block_anchor);
+      }
+      if_blocks[current_block_type_index].d(detaching);
+    }
+  };
+}
+function create_else_block_12(ctx) {
+  let div4;
+  let div2;
+  let t3;
+  let div3;
+  let button;
+  let mounted;
+  let dispose;
+  return {
+    c() {
+      div4 = element("div");
+      div2 = element("div");
+      div2.innerHTML = `<div class="setting-item-name" style="color: var(--text-error);">Connection Error</div> <div class="setting-item-description">Something went wrong when connecting to
+								Forestry.md</div>`;
+      t3 = space();
+      div3 = element("div");
+      button = element("button");
+      button.textContent = "Disconnect";
+      attr(div2, "class", "setting-item-info");
+      attr(div3, "class", "setting-item-control");
+      attr(div4, "class", "setting-item");
+    },
+    m(target, anchor) {
+      insert(target, div4, anchor);
+      append(div4, div2);
+      append(div4, t3);
+      append(div4, div3);
+      append(div3, button);
+      if (!mounted) {
+        dispose = listen(
+          button,
+          "click",
+          /*disconnect*/
+          ctx[4]
+        );
+        mounted = true;
+      }
+    },
+    p: noop,
+    i: noop,
+    o: noop,
+    d(detaching) {
+      if (detaching) {
+        detach(div4);
+      }
+      mounted = false;
+      dispose();
+    }
+  };
+}
+function create_if_block_15(ctx) {
+  var _a2;
+  let div4;
+  let div2;
+  let div0;
+  let icon0;
+  let t0;
+  let t1_value = (
+    /*pageInfo*/
+    ((_a2 = ctx[9].value.pageName) != null ? _a2 : "Unknown") + ""
+  );
+  let t1;
+  let t2;
+  let div1;
+  let t4;
+  let div3;
+  let button;
+  let t6;
+  let div5;
+  let a;
+  let icon1;
+  let t7;
+  let current;
+  let mounted;
+  let dispose;
+  icon0 = new Icon_default({ props: { name: "check-circle" } });
+  icon1 = new Icon_default({ props: { name: "external-link" } });
+  return {
+    c() {
+      div4 = element("div");
+      div2 = element("div");
+      div0 = element("div");
+      create_component(icon0.$$.fragment);
+      t0 = text(" Connected to: ");
+      t1 = text(t1_value);
+      t2 = space();
+      div1 = element("div");
+      div1.textContent = "Your digital garden is connected to Forestry.md";
+      t4 = space();
+      div3 = element("div");
+      button = element("button");
+      button.textContent = "Disconnect";
+      t6 = space();
+      div5 = element("div");
+      a = element("a");
+      create_component(icon1.$$.fragment);
+      t7 = text(" Open Forestry.md Dashboard");
+      attr(div0, "class", "setting-item-name");
+      set_style(div0, "display", "flex");
+      set_style(div0, "align-items", "center");
+      set_style(div0, "gap", "8px");
+      attr(div1, "class", "setting-item-description");
+      attr(div2, "class", "setting-item-info");
+      attr(div3, "class", "setting-item-control");
+      attr(div4, "class", "setting-item");
+      attr(a, "href", "https://dashboard.forestry.md");
+      attr(a, "target", "_blank");
+      set_style(a, "display", "inline-flex");
+      set_style(a, "align-items", "center");
+      set_style(a, "gap", "4px");
+      set_style(div5, "margin-top", "12px");
+      set_style(div5, "margin-left", "0");
+    },
+    m(target, anchor) {
+      insert(target, div4, anchor);
+      append(div4, div2);
+      append(div2, div0);
+      mount_component(icon0, div0, null);
+      append(div0, t0);
+      append(div0, t1);
+      append(div2, t2);
+      append(div2, div1);
+      append(div4, t4);
+      append(div4, div3);
+      append(div3, button);
+      insert(target, t6, anchor);
+      insert(target, div5, anchor);
+      append(div5, a);
+      mount_component(icon1, a, null);
+      append(a, t7);
+      current = true;
+      if (!mounted) {
+        dispose = listen(
+          button,
+          "click",
+          /*disconnect*/
+          ctx[4]
+        );
+        mounted = true;
+      }
+    },
+    p: noop,
+    i(local) {
+      if (current)
+        return;
+      transition_in(icon0.$$.fragment, local);
+      transition_in(icon1.$$.fragment, local);
+      current = true;
+    },
+    o(local) {
+      transition_out(icon0.$$.fragment, local);
+      transition_out(icon1.$$.fragment, local);
+      current = false;
+    },
+    d(detaching) {
+      if (detaching) {
+        detach(div4);
+        detach(t6);
+        detach(div5);
+      }
+      destroy_component(icon0);
+      destroy_component(icon1);
+      mounted = false;
+      dispose();
+    }
+  };
+}
+function create_pending_block(ctx) {
+  let div2;
+  return {
+    c() {
+      div2 = element("div");
+      div2.innerHTML = `<div class="setting-item-info"><div class="setting-item-name">Loading Forestry.md settings...</div></div>`;
+      attr(div2, "class", "setting-item");
+    },
+    m(target, anchor) {
+      insert(target, div2, anchor);
+    },
+    p: noop,
+    i: noop,
+    o: noop,
+    d(detaching) {
+      if (detaching) {
+        detach(div2);
+      }
+    }
+  };
+}
+function create_key_block(ctx) {
+  let current_block_type_index;
+  let if_block;
+  let if_block_anchor;
+  let current;
+  const if_block_creators = [create_if_block6, create_else_block5];
+  const if_blocks = [];
+  function select_block_type(ctx2, dirty) {
+    if (!/*settings*/
+    ctx2[0].forestrySettings.apiKey)
+      return 0;
+    return 1;
+  }
+  current_block_type_index = select_block_type(ctx, -1);
+  if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+  return {
+    c() {
+      if_block.c();
+      if_block_anchor = empty();
+    },
+    m(target, anchor) {
+      if_blocks[current_block_type_index].m(target, anchor);
+      insert(target, if_block_anchor, anchor);
+      current = true;
+    },
+    p(ctx2, dirty) {
+      let previous_block_index = current_block_type_index;
+      current_block_type_index = select_block_type(ctx2, dirty);
+      if (current_block_type_index === previous_block_index) {
+        if_blocks[current_block_type_index].p(ctx2, dirty);
+      } else {
+        group_outros();
+        transition_out(if_blocks[previous_block_index], 1, 1, () => {
+          if_blocks[previous_block_index] = null;
+        });
+        check_outros();
+        if_block = if_blocks[current_block_type_index];
+        if (!if_block) {
+          if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx2);
+          if_block.c();
+        } else {
+          if_block.p(ctx2, dirty);
+        }
+        transition_in(if_block, 1);
+        if_block.m(if_block_anchor.parentNode, if_block_anchor);
+      }
+    },
+    i(local) {
+      if (current)
+        return;
+      transition_in(if_block);
+      current = true;
+    },
+    o(local) {
+      transition_out(if_block);
+      current = false;
+    },
+    d(detaching) {
+      if (detaching) {
+        detach(if_block_anchor);
+      }
+      if_blocks[current_block_type_index].d(detaching);
+    }
+  };
+}
+function create_fragment8(ctx) {
+  let div;
+  let h3;
+  let icon;
+  let t0;
+  let t1;
+  let previous_key = (
+    /*unique*/
+    ctx[1]
+  );
+  let current;
+  icon = new Icon_default({ props: { name: "trees" } });
+  let key_block = create_key_block(ctx);
+  return {
+    c() {
+      div = element("div");
+      h3 = element("h3");
+      create_component(icon.$$.fragment);
+      t0 = text("Forestry.md Settings");
+      t1 = space();
+      key_block.c();
+    },
+    m(target, anchor) {
+      insert(target, div, anchor);
+      append(div, h3);
+      mount_component(icon, h3, null);
+      append(h3, t0);
+      append(div, t1);
+      key_block.m(div, null);
+      current = true;
+    },
+    p(ctx2, [dirty]) {
+      if (dirty & /*unique*/
+      2 && safe_not_equal(previous_key, previous_key = /*unique*/
+      ctx2[1])) {
+        group_outros();
+        transition_out(key_block, 1, 1, noop);
+        check_outros();
+        key_block = create_key_block(ctx2);
+        key_block.c();
+        transition_in(key_block, 1);
+        key_block.m(div, null);
+      } else {
+        key_block.p(ctx2, dirty);
+      }
+    },
+    i(local) {
+      if (current)
+        return;
+      transition_in(icon.$$.fragment, local);
+      transition_in(key_block);
+      current = true;
+    },
+    o(local) {
+      transition_out(icon.$$.fragment, local);
+      transition_out(key_block);
+      current = false;
+    },
+    d(detaching) {
+      if (detaching) {
+        detach(div);
+      }
+      destroy_component(icon);
+      key_block.d(detaching);
+    }
+  };
+}
+function instance8($$self, $$props, $$invalidate) {
+  let unique = {};
+  let { settings } = $$props;
+  let { saveSettings } = $$props;
+  let { onConnect } = $$props;
+  let apiKey = settings.forestrySettings.apiKey;
+  const connect = () => __awaiter(void 0, void 0, void 0, function* () {
+    let pageInfo = yield getPageInfo();
+    if (!pageInfo) {
+      new import_obsidian13.Notice("Invalid Garden Key");
+      return;
+    }
+    $$invalidate(0, settings.forestrySettings.forestryPageName = pageInfo.value.pageName, settings);
+    $$invalidate(0, settings.forestrySettings.baseUrl = pageInfo.value.baseUrl, settings);
+    $$invalidate(0, settings.forestrySettings.apiKey = apiKey, settings);
+    yield saveSettings();
+    $$invalidate(1, unique = {});
+    onConnect();
+  });
+  const disconnect = () => __awaiter(void 0, void 0, void 0, function* () {
+    $$invalidate(0, settings.forestrySettings.apiKey = "", settings);
+    $$invalidate(0, settings.forestrySettings.forestryPageName = "", settings);
+    yield saveSettings();
+    $$invalidate(2, apiKey = "");
+  });
+  const getPageInfo = () => __awaiter(void 0, void 0, void 0, function* () {
+    let pageInfo = yield new ForestryApi(apiKey).getPageInfo();
+    return pageInfo;
+  });
+  function input_input_handler() {
+    apiKey = this.value;
+    $$invalidate(2, apiKey);
+  }
+  $$self.$$set = ($$props2) => {
+    if ("settings" in $$props2)
+      $$invalidate(0, settings = $$props2.settings);
+    if ("saveSettings" in $$props2)
+      $$invalidate(6, saveSettings = $$props2.saveSettings);
+    if ("onConnect" in $$props2)
+      $$invalidate(7, onConnect = $$props2.onConnect);
+  };
+  return [
+    settings,
+    unique,
+    apiKey,
+    connect,
+    disconnect,
+    getPageInfo,
+    saveSettings,
+    onConnect,
+    input_input_handler
+  ];
+}
+var ForestrySettings = class extends SvelteComponent {
+  constructor(options) {
+    super();
+    init(this, options, instance8, create_fragment8, safe_not_equal, {
+      settings: 0,
+      saveSettings: 6,
+      onConnect: 7
+    });
+  }
+};
+var ForestrySettings_default = ForestrySettings;
+
+// src/views/SettingsView/SettingView.ts
 var OBSIDIAN_THEME_URL = "https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/community-css-themes.json";
 var SettingView = class {
   constructor(app, settingsRootElement, settings, saveSettings) {
-    this.debouncedSaveAndUpdate = (0, import_obsidian13.debounce)(
+    this.debouncedSaveAndUpdate = (0, import_obsidian14.debounce)(
       this.saveSiteSettingsAndUpdateEnv,
       500,
       true
@@ -28376,10 +29120,16 @@ var SettingView = class {
   }
   getIcon(name) {
     var _a2;
-    return (_a2 = (0, import_obsidian13.getIcon)(name)) != null ? _a2 : document.createElement("span");
+    return (_a2 = (0, import_obsidian14.getIcon)(name)) != null ? _a2 : document.createElement("span");
+  }
+  reInitializeSettings() {
+    if (this.prModal) {
+      this.initialize(this.prModal);
+    }
   }
   initialize(prModal) {
     return __async(this, null, function* () {
+      this.prModal = prModal;
       this.settingsRootElement.empty();
       this.settingsRootElement.createEl("h1", {
         text: "Digital Garden Settings"
@@ -28394,10 +29144,36 @@ var SettingView = class {
         text: "here.",
         href: "https://dg-docs.ole.dev/getting-started/01-getting-started/"
       });
-      const githubSettings = this.settingsRootElement.createEl("div", {
-        cls: "connection-status"
+      new import_obsidian14.Setting(this.settingsRootElement).setName("Publish Platform").addDropdown((dd) => {
+        dd.addOption("SelfHosted" /* SelfHosted */, "GitHub/Self Hosted");
+        dd.addOption("ForestryMd" /* ForestryMd */, "Forestry.md");
+        if (this.settings.publishPlatform === "SelfHosted" /* SelfHosted */) {
+          dd.setValue("SelfHosted" /* SelfHosted */);
+        } else {
+          dd.setValue("ForestryMd" /* ForestryMd */);
+        }
+        dd.onChange((val) => __async(this, null, function* () {
+          switch (val) {
+            case "SelfHosted" /* SelfHosted */:
+              this.settings.publishPlatform = "SelfHosted" /* SelfHosted */;
+              break;
+            case "ForestryMd" /* ForestryMd */:
+              this.settings.publishPlatform = "ForestryMd" /* ForestryMd */;
+              break;
+          }
+          yield this.saveSettings();
+          this.initializePublishPlatformSettings(
+            publishPlatformSettings
+          );
+        }));
       });
-      new GithubSettings(this, githubSettings);
+      const publishPlatformSettings = this.settingsRootElement.createEl(
+        "div",
+        {
+          cls: "connection-status"
+        }
+      );
+      this.initializePublishPlatformSettings(publishPlatformSettings);
       this.settingsRootElement.createEl("h3", { text: "URL" }).prepend(this.getIcon("link"));
       this.initializeGitHubBaseURLSetting();
       this.initializeSlugifySetting();
@@ -28406,7 +29182,7 @@ var SettingView = class {
       this.settingsRootElement.createEl("h3", { text: "Appearance" }).prepend(this.getIcon("brush"));
       this.initializeThemesSettings();
       this.settingsRootElement.createEl("h3", { text: "Advanced" }).prepend(this.getIcon("cog"));
-      new import_obsidian13.Setting(this.settingsRootElement).setName("Path Rewrite Rules").setDesc(
+      new import_obsidian14.Setting(this.settingsRootElement).setName("Path Rewrite Rules").setDesc(
         "Define rules to rewrite note folder structure in the garden. See the modal for more information."
       ).addButton((cb) => {
         cb.setButtonText("Manage Rewrite Rules");
@@ -28418,9 +29194,26 @@ var SettingView = class {
       prModal.titleEl.createEl("h1", "Site template settings");
     });
   }
+  initializePublishPlatformSettings(target) {
+    target.empty();
+    if (this.settings.publishPlatform === "SelfHosted" /* SelfHosted */) {
+      new GithubSettings(this, target);
+    } else {
+      new ForestrySettings_default({
+        target,
+        props: {
+          settings: this.settings,
+          saveSettings: this.saveSettings,
+          onConnect: () => __async(this, null, function* () {
+            this.reInitializeSettings();
+          })
+        }
+      });
+    }
+  }
   initializeDefaultNoteSettings() {
     return __async(this, null, function* () {
-      const noteSettingsModal = new import_obsidian13.Modal(this.app);
+      const noteSettingsModal = new import_obsidian14.Modal(this.app);
       noteSettingsModal.titleEl.createEl("h1", {
         text: "Default Note Settings"
       });
@@ -28432,7 +29225,7 @@ var SettingView = class {
         text: "here.",
         href: "https://dg-docs.ole.dev/getting-started/03-note-settings/"
       });
-      new import_obsidian13.Setting(this.settingsRootElement).setName("Global Note Settings").setDesc(
+      new import_obsidian14.Setting(this.settingsRootElement).setName("Global Note Settings").setDesc(
         `Default settings for each published note. These can be overwritten per note via frontmatter.`
       ).addButton((cb) => {
         cb.setButtonText("Manage note settings");
@@ -28440,7 +29233,7 @@ var SettingView = class {
           noteSettingsModal.open();
         }));
       });
-      new import_obsidian13.Setting(noteSettingsModal.contentEl).setName("Show home link (dg-home-link)").setDesc(
+      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show home link (dg-home-link)").setDesc(
         "Determines whether to show a link back to the homepage or not."
       ).addToggle((t) => {
         t.setValue(this.settings.defaultNoteSettings.dgHomeLink);
@@ -28453,7 +29246,7 @@ var SettingView = class {
           );
         });
       });
-      new import_obsidian13.Setting(noteSettingsModal.contentEl).setName("Show local graph for notes (dg-show-local-graph)").setDesc(
+      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show local graph for notes (dg-show-local-graph)").setDesc(
         "When turned on, notes will show its local graph in a sidebar on desktop and at the bottom of the page on mobile."
       ).addToggle((t) => {
         t.setValue(this.settings.defaultNoteSettings.dgShowLocalGraph);
@@ -28466,7 +29259,7 @@ var SettingView = class {
           );
         });
       });
-      new import_obsidian13.Setting(noteSettingsModal.contentEl).setName("Show backlinks for notes (dg-show-backlinks)").setDesc(
+      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show backlinks for notes (dg-show-backlinks)").setDesc(
         "When turned on, notes will show backlinks in a sidebar on desktop and at the bottom of the page on mobile."
       ).addToggle((t) => {
         t.setValue(this.settings.defaultNoteSettings.dgShowBacklinks);
@@ -28479,7 +29272,7 @@ var SettingView = class {
           );
         });
       });
-      new import_obsidian13.Setting(noteSettingsModal.contentEl).setName("Show a table of content for notes (dg-show-toc)").setDesc(
+      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show a table of content for notes (dg-show-toc)").setDesc(
         "When turned on, notes will show all headers as a table of content in a sidebar on desktop. It will not be shown on mobile devices."
       ).addToggle((t) => {
         t.setValue(this.settings.defaultNoteSettings.dgShowToc);
@@ -28492,7 +29285,7 @@ var SettingView = class {
           );
         });
       });
-      new import_obsidian13.Setting(noteSettingsModal.contentEl).setName("Show inline title (dg-show-inline-title)").setDesc(
+      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show inline title (dg-show-inline-title)").setDesc(
         "When turned on, the title of the note will show on top of the page."
       ).addToggle((t) => {
         t.setValue(this.settings.defaultNoteSettings.dgShowInlineTitle);
@@ -28505,7 +29298,7 @@ var SettingView = class {
           );
         });
       });
-      new import_obsidian13.Setting(noteSettingsModal.contentEl).setName("Show filetree sidebar (dg-show-file-tree)").setDesc("When turned on, a filetree will be shown on your site.").addToggle((t) => {
+      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show filetree sidebar (dg-show-file-tree)").setDesc("When turned on, a filetree will be shown on your site.").addToggle((t) => {
         t.setValue(this.settings.defaultNoteSettings.dgShowFileTree);
         t.onChange((val) => {
           this.settings.defaultNoteSettings.dgShowFileTree = val;
@@ -28516,7 +29309,7 @@ var SettingView = class {
           );
         });
       });
-      new import_obsidian13.Setting(noteSettingsModal.contentEl).setName("Enable search (dg-enable-search)").setDesc(
+      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Enable search (dg-enable-search)").setDesc(
         "When turned on, users will be able to search through the content of your site."
       ).addToggle((t) => {
         t.setValue(this.settings.defaultNoteSettings.dgEnableSearch);
@@ -28529,7 +29322,7 @@ var SettingView = class {
           );
         });
       });
-      new import_obsidian13.Setting(noteSettingsModal.contentEl).setName("Enable link preview (dg-link-preview)").setDesc(
+      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Enable link preview (dg-link-preview)").setDesc(
         "When turned on, hovering over links to notes in your garden shows a scrollable preview."
       ).addToggle((t) => {
         t.setValue(this.settings.defaultNoteSettings.dgLinkPreview);
@@ -28542,7 +29335,7 @@ var SettingView = class {
           );
         });
       });
-      new import_obsidian13.Setting(noteSettingsModal.contentEl).setName("Show Tags (dg-show-tags)").setDesc(
+      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show Tags (dg-show-tags)").setDesc(
         "When turned on, tags in your frontmatter will be displayed on each note. If search is enabled, clicking on a tag will bring up a search for all notes containing that tag."
       ).addToggle((t) => {
         t.setValue(this.settings.defaultNoteSettings.dgShowTags);
@@ -28555,7 +29348,7 @@ var SettingView = class {
           );
         });
       });
-      new import_obsidian13.Setting(noteSettingsModal.contentEl).setName("Let all frontmatter through (dg-pass-frontmatter)").setDesc(
+      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Let all frontmatter through (dg-pass-frontmatter)").setDesc(
         "THIS WILL BREAK YOUR SITE IF YOU DON'T KNOW WHAT YOU ARE DOING! (But disabling will fix it). Determines whether to let all frontmatter data through to the site template. Be aware that this could break your site if you have data in a format not recognized by the template engine, 11ty."
       ).addToggle((t) => {
         t.setValue(this.settings.defaultNoteSettings.dgPassFrontmatter);
@@ -28572,7 +29365,7 @@ var SettingView = class {
   }
   initializeThemesSettings() {
     return __async(this, null, function* () {
-      const themeModal = new import_obsidian13.Modal(this.app);
+      const themeModal = new import_obsidian14.Modal(this.app);
       themeModal.containerEl.addClass("dg-settings");
       themeModal.titleEl.createEl("h1", { text: "Appearance Settings" });
       const handleSaveSettingsButton = (cb) => {
@@ -28582,12 +29375,12 @@ var SettingView = class {
           const octokit = new Octokit({
             auth: this.settings.githubToken
           });
-          new import_obsidian13.Notice("Applying settings to site...");
+          new import_obsidian14.Notice("Applying settings to site...");
           yield this.saveSettingsAndUpdateEnv();
           yield this.addFavicon(octokit);
         }));
       };
-      new import_obsidian13.Setting(this.settingsRootElement).setName("Appearance").setDesc("Manage themes, sitename and styling on your site").addButton((cb) => {
+      new import_obsidian14.Setting(this.settingsRootElement).setName("Appearance").setDesc("Manage themes, sitename and styling on your site").addButton((cb) => {
         cb.setButtonText("Manage appearance");
         cb.onClick(() => __async(this, null, function* () {
           themeModal.open();
@@ -28600,20 +29393,20 @@ var SettingView = class {
           this.app.plugins.plugins["obsidian-style-settings"]._loaded
         ) {
           themeModal.contentEl.createEl("h2", { text: "Style Settings Plugin" }).prepend(this.getIcon("paintbrush"));
-          new import_obsidian13.Setting(themeModal.contentEl).setName("Apply current style settings to site").setDesc(
+          new import_obsidian14.Setting(themeModal.contentEl).setName("Apply current style settings to site").setDesc(
             "Click the apply button to use the current style settings from the Style Settings Plugin on your site. (The plugin looks at the currently APPLIED settings. Meaning you need to have the theme you are using in the garden selected in Obsidian before applying)"
           ).addButton((btn) => {
             btn.setButtonText("Apply Style Settings");
             btn.setClass("mod-cta");
             btn.onClick((_ev) => __async(this, null, function* () {
               var _a2;
-              new import_obsidian13.Notice("Applying Style Settings...");
+              new import_obsidian14.Notice("Applying Style Settings...");
               const styleSettingsNode = document.querySelector(
                 "#css-settings-manager"
               );
               const bodyClasses = (_a2 = document.querySelector("body")) == null ? void 0 : _a2.className;
               if (!styleSettingsNode && !bodyClasses) {
-                new import_obsidian13.Notice("No Style Settings found");
+                new import_obsidian14.Notice("No Style Settings found");
                 return;
               }
               if (styleSettingsNode == null ? void 0 : styleSettingsNode.innerHTML) {
@@ -28623,7 +29416,7 @@ var SettingView = class {
                 this.settings.styleSettingsBodyClasses = `${bodyClasses}`;
               }
               if (!this.settings.styleSettingsCss && !this.settings.styleSettingsBodyClasses) {
-                new import_obsidian13.Notice("No Style Settings found");
+                new import_obsidian14.Notice("No Style Settings found");
                 return;
               }
               yield this.saveSiteSettingsAndUpdateEnv(
@@ -28631,7 +29424,7 @@ var SettingView = class {
                 this.settings,
                 this.saveSettings
               );
-              new import_obsidian13.Notice("Style Settings applied to site");
+              new import_obsidian14.Notice("Style Settings applied to site");
             }));
           }).addButton((btn) => {
             btn.setButtonText("Clear");
@@ -28643,7 +29436,7 @@ var SettingView = class {
                 this.settings,
                 this.saveSettings
               );
-              new import_obsidian13.Notice("Style Settings removed from site");
+              new import_obsidian14.Notice("Style Settings removed from site");
             }));
           });
         }
@@ -28652,7 +29445,7 @@ var SettingView = class {
       }
       themeModal.contentEl.createEl("h2", { text: "Theme Settings" }).prepend(this.getIcon("palette"));
       const themesListResponse = yield axios_default.get(OBSIDIAN_THEME_URL);
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Theme").addDropdown((dd) => {
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Theme").addDropdown((dd) => {
         dd.addOption('{"name": "default", "modes": ["dark"]}', "Default");
         const sortedThemes = themesListResponse.data.sort(
           (a, b) => a.name.localeCompare(b.name)
@@ -28671,7 +29464,7 @@ var SettingView = class {
           }));
         });
       });
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Base theme").addDropdown((dd) => {
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Base theme").addDropdown((dd) => {
         dd.addOption("dark", "Dark");
         dd.addOption("light", "Light");
         dd.setValue(this.settings.baseTheme);
@@ -28680,7 +29473,7 @@ var SettingView = class {
           yield this.saveSettings();
         }));
       });
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Sitename").setDesc(
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Sitename").setDesc(
         "The name of your site. This will be displayed as the site header."
       ).addText(
         (text2) => text2.setValue(this.settings.siteName).onChange((value) => __async(this, null, function* () {
@@ -28688,7 +29481,7 @@ var SettingView = class {
           yield this.saveSettings();
         }))
       );
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Main language").setDesc(
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Main language").setDesc(
         "Language code (ISO 639-1) for the main language of your site. This is used to set the correct language on your site to assist search engines and browsers."
       ).addText(
         (text2) => text2.setValue(this.settings.mainLanguage).onChange((value) => __async(this, null, function* () {
@@ -28696,7 +29489,7 @@ var SettingView = class {
           yield this.saveSettings();
         }))
       );
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Favicon").setDesc(
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Favicon").setDesc(
         "Path to an svg in your vault you wish to use as a favicon. Leave blank to use default. Must be square! (eg. 16x16)"
       ).addText((tc) => {
         tc.setPlaceholder("myfavicon.svg");
@@ -28707,7 +29500,7 @@ var SettingView = class {
         }));
         new SvgFileSuggest(this.app, tc.inputEl);
       });
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Use full resolution images").setDesc(
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Use full resolution images").setDesc(
         "By default, the images on your site are compressed to make your site load faster. If you instead want to use the full resolution images, enable this setting."
       ).addToggle((toggle) => {
         toggle.setValue(this.settings.useFullResolutionImages);
@@ -28716,9 +29509,9 @@ var SettingView = class {
           yield this.saveSettings();
         }));
       });
-      new import_obsidian13.Setting(themeModal.contentEl).addButton(handleSaveSettingsButton);
+      new import_obsidian14.Setting(themeModal.contentEl).addButton(handleSaveSettingsButton);
       themeModal.contentEl.createEl("h2", { text: "Timestamps Settings" }).prepend(this.getIcon("calendar-clock"));
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Timestamp format").setDesc(
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Timestamp format").setDesc(
         "The format string to render timestamp on the garden. Must be luxon compatible"
       ).addText(
         (text2) => text2.setValue(this.settings.timestampFormat).onChange((value) => __async(this, null, function* () {
@@ -28726,7 +29519,7 @@ var SettingView = class {
           yield this.saveSettings();
         }))
       );
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Show created timestamp").addToggle((t) => {
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Show created timestamp").addToggle((t) => {
         t.setValue(this.settings.showCreatedTimestamp).onChange(
           (value) => __async(this, null, function* () {
             this.settings.showCreatedTimestamp = value;
@@ -28734,7 +29527,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Created timestamp Frontmatter Key").setDesc(
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Created timestamp Frontmatter Key").setDesc(
         "Key to get the created timestamp from the frontmatter. Leave blank to get the value from file creation time. The value can be any value that luxon Datetime.fromISO can parse."
       ).addText(
         (text2) => text2.setValue(this.settings.createdTimestampKey).onChange((value) => __async(this, null, function* () {
@@ -28742,7 +29535,7 @@ var SettingView = class {
           yield this.saveSettings();
         }))
       );
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Show updated timestamp").addToggle((t) => {
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Show updated timestamp").addToggle((t) => {
         t.setValue(this.settings.showUpdatedTimestamp).onChange(
           (value) => __async(this, null, function* () {
             this.settings.showUpdatedTimestamp = value;
@@ -28750,7 +29543,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Updated timestamp Frontmatter Key").setDesc(
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Updated timestamp Frontmatter Key").setDesc(
         "Key to get the updated timestamp from the frontmatter. Leave blank to get the value from file update time. The value can be any value that luxon Datetime.fromISO can parse."
       ).addText(
         (text2) => text2.setValue(this.settings.updatedTimestampKey).onChange((value) => __async(this, null, function* () {
@@ -28758,9 +29551,9 @@ var SettingView = class {
           yield this.saveSettings();
         }))
       );
-      new import_obsidian13.Setting(themeModal.contentEl).addButton(handleSaveSettingsButton);
+      new import_obsidian14.Setting(themeModal.contentEl).addButton(handleSaveSettingsButton);
       themeModal.contentEl.createEl("h2", { text: "CSS settings" }).prepend(this.getIcon("code"));
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Body Classes Key").setDesc(
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Body Classes Key").setDesc(
         "Key for setting css-classes to the note body from the frontmatter."
       ).addText(
         (text2) => text2.setValue(this.settings.contentClassesKey).onChange((value) => __async(this, null, function* () {
@@ -28768,19 +29561,19 @@ var SettingView = class {
           yield this.saveSettings();
         }))
       );
-      new import_obsidian13.Setting(themeModal.contentEl).addButton(handleSaveSettingsButton);
+      new import_obsidian14.Setting(themeModal.contentEl).addButton(handleSaveSettingsButton);
       themeModal.contentEl.createEl("h2", { text: "Note icons Settings" }).prepend(this.getIcon("image"));
       themeModal.contentEl.createEl("div", { attr: { style: "margin-bottom: 10px;" } }).createEl("a", {
         text: "Documentation on note icons",
         href: "https://dg-docs.ole.dev/advanced/note-specific-settings/#note-icons"
       });
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Note icon Frontmatter Key").setDesc("Key to get the note icon value from the frontmatter").addText(
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Note icon Frontmatter Key").setDesc("Key to get the note icon value from the frontmatter").addText(
         (text2) => text2.setValue(this.settings.noteIconKey).onChange((value) => __async(this, null, function* () {
           this.settings.noteIconKey = value;
           yield this.saveSettings();
         }))
       );
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Default note icon Value").setDesc("The default value for note icon if not specified").addText((text2) => {
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Default note icon Value").setDesc("The default value for note icon if not specified").addText((text2) => {
         text2.setValue(this.settings.defaultNoteIcon).onChange(
           (value) => __async(this, null, function* () {
             this.settings.defaultNoteIcon = value;
@@ -28788,7 +29581,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Show note icon on Title").addToggle((t) => {
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Show note icon on Title").addToggle((t) => {
         t.setValue(this.settings.showNoteIconOnTitle).onChange(
           (value) => __async(this, null, function* () {
             this.settings.showNoteIconOnTitle = value;
@@ -28796,7 +29589,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Show note icon in FileTree").addToggle((t) => {
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Show note icon in FileTree").addToggle((t) => {
         t.setValue(this.settings.showNoteIconInFileTree).onChange(
           (value) => __async(this, null, function* () {
             this.settings.showNoteIconInFileTree = value;
@@ -28804,7 +29597,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Show note icon on Internal Links").addToggle((t) => {
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Show note icon on Internal Links").addToggle((t) => {
         t.setValue(this.settings.showNoteIconOnInternalLink).onChange(
           (value) => __async(this, null, function* () {
             this.settings.showNoteIconOnInternalLink = value;
@@ -28812,7 +29605,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian13.Setting(themeModal.contentEl).setName("Show note icon on Backlinks").addToggle((t) => {
+      new import_obsidian14.Setting(themeModal.contentEl).setName("Show note icon on Backlinks").addToggle((t) => {
         t.setValue(this.settings.showNoteIconOnBackLink).onChange(
           (value) => __async(this, null, function* () {
             this.settings.showNoteIconOnBackLink = value;
@@ -28820,7 +29613,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian13.Setting(themeModal.contentEl).addButton(handleSaveSettingsButton);
+      new import_obsidian14.Setting(themeModal.contentEl).addButton(handleSaveSettingsButton);
     });
   }
   saveSettingsAndUpdateEnv() {
@@ -28828,7 +29621,7 @@ var SettingView = class {
       const theme = JSON.parse(this.settings.theme);
       const baseTheme = this.settings.baseTheme;
       if (theme.modes.indexOf(baseTheme) < 0) {
-        new import_obsidian13.Notice(
+        new import_obsidian14.Notice(
           `The ${theme.name} theme doesn't support ${baseTheme} mode.`
         );
         return;
@@ -28838,12 +29631,12 @@ var SettingView = class {
         this.settings
       );
       yield gardenManager.updateEnv();
-      new import_obsidian13.Notice("Successfully applied settings");
+      new import_obsidian14.Notice("Successfully applied settings");
     });
   }
   saveSiteSettingsAndUpdateEnv(metadataCache, settings, saveSettings) {
     return __async(this, null, function* () {
-      new import_obsidian13.Notice("Updating settings...");
+      new import_obsidian14.Notice("Updating settings...");
       let updateFailed = false;
       try {
         const gardenManager = new DigitalGardenSiteManager(
@@ -28852,13 +29645,13 @@ var SettingView = class {
         );
         yield gardenManager.updateEnv();
       } catch (e) {
-        new import_obsidian13.Notice(
+        new import_obsidian14.Notice(
           "Failed to update settings. Make sure you have an internet connection."
         );
         updateFailed = true;
       }
       if (!updateFailed) {
-        new import_obsidian13.Notice("Settings successfully updated!");
+        new import_obsidian14.Notice("Settings successfully updated!");
         yield saveSettings();
       }
     });
@@ -28870,8 +29663,8 @@ var SettingView = class {
         const faviconFile = this.app.vault.getAbstractFileByPath(
           this.settings.faviconPath
         );
-        if (!(faviconFile instanceof import_obsidian13.TFile)) {
-          new import_obsidian13.Notice(`${this.settings.faviconPath} is not a valid file.`);
+        if (!(faviconFile instanceof import_obsidian14.TFile)) {
+          new import_obsidian14.Notice(`${this.settings.faviconPath} is not a valid file.`);
           return;
         }
         const faviconContent = yield this.app.vault.readBinary(faviconFile);
@@ -28902,7 +29695,7 @@ var SettingView = class {
         faviconsAreIdentical = // @ts-expect-error TODO: abstract octokit response
         currentFaviconOnSite.data.content === base64SettingsFaviconContent;
         if (faviconsAreIdentical) {
-          import_js_logger7.default.info("Favicons are identical, skipping update");
+          import_js_logger9.default.info("Favicons are identical, skipping update");
           return;
         }
       } catch (error) {
@@ -28922,21 +29715,35 @@ var SettingView = class {
     });
   }
   initializeGitHubBaseURLSetting() {
-    new import_obsidian13.Setting(this.settingsRootElement).setName("Base URL").setDesc(
+    const siteBaseUrl = new import_obsidian14.Setting(this.settingsRootElement).setName("Base URL").setDesc(
       `This is optional, but recommended. It is used for the "Copy Garden URL" command, generating a sitemap.xml for better SEO and an RSS feed located at /feed.xml. `
-    ).addText(
-      (text2) => text2.setPlaceholder("https://my-garden.vercel.app").setValue(this.settings.gardenBaseUrl).onChange((value) => __async(this, null, function* () {
-        this.settings.gardenBaseUrl = value;
-        this.debouncedSaveAndUpdate(
-          this.app.metadataCache,
-          this.settings,
-          this.saveSettings
-        );
-      }))
     );
+    if (this.settings.publishPlatform === "ForestryMd" /* ForestryMd */) {
+      siteBaseUrl.addText(
+        (text2) => text2.setPlaceholder("https://my-garden.forestry.md").setValue(this.settings.forestrySettings.baseUrl).onChange((value) => __async(this, null, function* () {
+          this.settings.forestrySettings.baseUrl = value;
+          this.debouncedSaveAndUpdate(
+            this.app.metadataCache,
+            this.settings,
+            this.saveSettings
+          );
+        }))
+      );
+    } else {
+      siteBaseUrl.addText(
+        (text2) => text2.setPlaceholder("https://my-garden.vercel.app").setValue(this.settings.gardenBaseUrl).onChange((value) => __async(this, null, function* () {
+          this.settings.gardenBaseUrl = value;
+          this.debouncedSaveAndUpdate(
+            this.app.metadataCache,
+            this.settings,
+            this.saveSettings
+          );
+        }))
+      );
+    }
   }
   initializeSlugifySetting() {
-    new import_obsidian13.Setting(this.settingsRootElement).setName("Slugify Note URL").setDesc(
+    new import_obsidian14.Setting(this.settingsRootElement).setName("Slugify Note URL").setDesc(
       'Transform the URL from "/My Folder/My Note/" to "/my-folder/my-note". If your note titles contains non-English characters, this should be disabled.'
     ).addToggle(
       (toggle) => toggle.setValue(this.settings.slugifyEnabled).onChange((value) => __async(this, null, function* () {
@@ -28951,7 +29758,7 @@ var SettingView = class {
       this.app.metadataCache,
       this.settings
     );
-    const rewriteRulesModal = new import_obsidian13.Modal(this.app);
+    const rewriteRulesModal = new import_obsidian14.Modal(this.app);
     rewriteRulesModal.open();
     const modalContent = new RewriteSettings_default({
       target: rewriteRulesModal.contentEl,
@@ -28966,10 +29773,10 @@ var SettingView = class {
     };
   }
   initializeCustomFilterSettings() {
-    const customFilterModal = new import_obsidian13.Modal(this.app);
+    const customFilterModal = new import_obsidian14.Modal(this.app);
     customFilterModal.titleEl.createEl("h1", { text: "Custom Filters" });
     customFilterModal.modalEl.style.width = "fit-content";
-    new import_obsidian13.Setting(this.settingsRootElement).setName("Custom Filters").setDesc(
+    new import_obsidian14.Setting(this.settingsRootElement).setName("Custom Filters").setDesc(
       "Define custom rules to replace parts of the note before publishing."
     ).addButton((cb) => {
       cb.setButtonText("Manage Custom Filters");
@@ -28999,7 +29806,7 @@ var SettingView = class {
       }
     }).innerHTML = `Example: filter [<code>:smile:</code>, <code>\u{1F600}</code>, <code>g</code>] will replace text with real emojis`;
     const customFilters = this.settings.customFilters;
-    new import_obsidian13.Setting(rewriteSettingsContainer).setName("Filters").addButton((button) => {
+    new import_obsidian14.Setting(rewriteSettingsContainer).setName("Filters").addButton((button) => {
       button.setButtonText("Add");
       button.setTooltip("Add a filter");
       button.setIcon("plus");
@@ -29024,16 +29831,16 @@ var SettingView = class {
   renderCreatePr(modal, handlePR, siteManager) {
     return __async(this, null, function* () {
       var _a2;
-      this.settingsRootElement.createEl("h3", { text: "Update site" }).prepend((_a2 = (0, import_obsidian13.getIcon)("sync")) != null ? _a2 : "");
-      import_js_logger7.default.time("checkForUpdate");
-      const updater = yield siteManager.templateUpdater.checkForUpdates();
-      import_js_logger7.default.timeEnd("checkForUpdate");
+      this.settingsRootElement.createEl("h3", { text: "Update site" }).prepend((_a2 = (0, import_obsidian14.getIcon)("sync")) != null ? _a2 : "");
+      import_js_logger9.default.time("checkForUpdate");
+      const updater = yield (yield siteManager.getTemplateUpdater()).checkForUpdates();
+      import_js_logger9.default.timeEnd("checkForUpdate");
       const updateAvailable = hasUpdates(updater);
-      new import_obsidian13.Setting(this.settingsRootElement).setName("Site Template").setDesc(
+      new import_obsidian14.Setting(this.settingsRootElement).setName("Site Template").setDesc(
         "Manage updates to the base template. You should try updating the template when you update the plugin to make sure your garden support all features."
       ).addButton((button) => __async(this, null, function* () {
         button.setButtonText(`Checking...`);
-        import_js_logger7.default.time("checkForUpdate");
+        import_js_logger9.default.time("checkForUpdate");
         if (updateAvailable) {
           button.setButtonText(
             `Update to ${updater.newestTemplateVersion}`
@@ -29047,7 +29854,7 @@ var SettingView = class {
         });
       }));
       modal.titleEl.createEl("h2", { text: "Update site" });
-      new import_obsidian13.Setting(modal.contentEl).setName("Update site to latest template").setDesc(
+      new import_obsidian14.Setting(modal.contentEl).setName("Update site to latest template").setDesc(
         `
 				This will create a pull request with the latest template changes, which you'll need to use all plugin features. 
 				It will not publish any changes before you approve them.
@@ -29103,8 +29910,8 @@ var SettingView = class {
 };
 
 // src/views/UpdateGardenRepositoryModal.ts
-var import_obsidian14 = require("obsidian");
-var UpdateGardenRepositoryModal = class extends import_obsidian14.Modal {
+var import_obsidian15 = require("obsidian");
+var UpdateGardenRepositoryModal = class extends import_obsidian15.Modal {
   constructor(app) {
     super(app);
     this.progressViewTop = this.contentEl.createDiv();
@@ -29154,8 +29961,8 @@ var UpdateGardenRepositoryModal = class extends import_obsidian14.Modal {
 };
 
 // src/views/DigitalGardenSettingTab.ts
-var import_js_logger8 = __toESM(require_logger());
-var DigitalGardenSettingTab = class extends import_obsidian15.PluginSettingTab {
+var import_js_logger10 = __toESM(require_logger());
+var DigitalGardenSettingTab = class extends import_obsidian16.PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
     this.plugin = plugin;
@@ -29195,9 +30002,9 @@ var DigitalGardenSettingTab = class extends import_obsidian15.PluginSettingTab {
           return;
         }
         try {
-          import_js_logger8.default.time("update");
+          import_js_logger10.default.time("update");
           const prUrl = yield updater.updateTemplate();
-          import_js_logger8.default.timeEnd("update");
+          import_js_logger10.default.timeEnd("update");
           if (prUrl) {
             this.plugin.settings.prHistory.push(prUrl);
             yield this.plugin.saveSettings();
@@ -29208,17 +30015,19 @@ var DigitalGardenSettingTab = class extends import_obsidian15.PluginSettingTab {
           prModal.renderError();
         }
       });
-      settingView.renderCreatePr(prModal, handlePR, siteManager);
-      settingView.renderPullRequestHistory(
-        prModal,
-        this.plugin.settings.prHistory.reverse().slice(0, 10)
-      );
+      if (this.plugin.settings.publishPlatform === "SelfHosted" /* SelfHosted */) {
+        settingView.renderCreatePr(prModal, handlePR, siteManager);
+        settingView.renderPullRequestHistory(
+          prModal,
+          this.plugin.settings.prHistory.reverse().slice(0, 10)
+        );
+      }
     });
   }
 };
 
 // main.ts
-var import_js_logger9 = __toESM(require_logger());
+var import_js_logger11 = __toESM(require_logger());
 var defaultTheme = {
   name: "Red Graphite",
   author: "SeanWcom",
@@ -29259,7 +30068,13 @@ var DEFAULT_SETTINGS = {
   styleSettingsBodyClasses: "",
   pathRewriteRules: "",
   customFilters: [],
+  publishPlatform: "SelfHosted" /* SelfHosted */,
   contentClassesKey: "dg-content-classes",
+  forestrySettings: {
+    forestryPageName: "",
+    apiKey: "",
+    baseUrl: ""
+  },
   defaultNoteSettings: {
     dgHomeLink: true,
     dgPassFrontmatter: false,
@@ -29274,26 +30089,26 @@ var DEFAULT_SETTINGS = {
   },
   logLevel: void 0
 };
-import_js_logger9.default.useDefaults({
-  defaultLevel: import_js_logger9.default.WARN,
+import_js_logger11.default.useDefaults({
+  defaultLevel: import_js_logger11.default.WARN,
   formatter: function(messages, _context) {
     messages.unshift((/* @__PURE__ */ new Date()).toUTCString());
     messages.unshift("DG: ");
   }
 });
-var DigitalGarden = class extends import_obsidian17.Plugin {
+var DigitalGarden = class extends import_obsidian18.Plugin {
   onload() {
     return __async(this, null, function* () {
       this.appVersion = this.manifest.version;
       console.log("Initializing DigitalGarden plugin v" + this.appVersion);
       yield this.loadSettings();
-      this.settings.logLevel && import_js_logger9.default.setLevel(this.settings.logLevel);
-      import_js_logger9.default.info(
-        "Digital garden log level set to " + import_js_logger9.default.getLevel().name
+      this.settings.logLevel && import_js_logger11.default.setLevel(this.settings.logLevel);
+      import_js_logger11.default.info(
+        "Digital garden log level set to " + import_js_logger11.default.getLevel().name
       );
       this.addSettingTab(new DigitalGardenSettingTab(this.app, this));
       yield this.addCommands();
-      (0, import_obsidian17.addIcon)("digital-garden-icon", seedling);
+      (0, import_obsidian18.addIcon)("digital-garden-icon", seedling);
       this.addRibbonIcon(
         "digital-garden-icon",
         "Digital Garden Publication Center",
@@ -29325,7 +30140,7 @@ var DigitalGarden = class extends import_obsidian17.Plugin {
         id: "quick-publish-and-share-note",
         name: "Quick Publish And Share Note",
         callback: () => __async(this, null, function* () {
-          new import_obsidian17.Notice("Adding publish flag to note and publishing it.");
+          new import_obsidian18.Notice("Adding publish flag to note and publishing it.");
           yield this.setPublishFlagValue(true);
           const activeFile = this.app.workspace.getActiveFile();
           const event = this.app.metadataCache.on(
@@ -29347,13 +30162,13 @@ var DigitalGarden = class extends import_obsidian17.Plugin {
       });
       this.addCommand({
         id: "publish-note",
-        name: "Publish Single Note",
+        name: "Publish Active Note",
         callback: () => __async(this, null, function* () {
           yield this.publishSingleNote();
         })
       });
-      if (this.settings["ENABLE_DEVELOPER_TOOLS"] && import_obsidian17.Platform.isDesktop) {
-        import_js_logger9.default.info("Developer tools enabled");
+      if (this.settings["ENABLE_DEVELOPER_TOOLS"] && import_obsidian18.Platform.isDesktop) {
+        import_js_logger11.default.info("Developer tools enabled");
         const publisher = new Publisher(
           this.app.vault,
           this.app.metadataCache,
@@ -29371,17 +30186,17 @@ var DigitalGarden = class extends import_obsidian17.Plugin {
             })
           });
         }).catch((e) => {
-          import_js_logger9.default.error("Unable to load generateGardenSnapshot", e);
+          import_js_logger11.default.error("Unable to load generateGardenSnapshot", e);
         });
       }
       this.addCommand({
         id: "publish-multiple-notes",
-        name: "Publish Multiple Notes",
+        name: "Publish All Notes Marked for Publish",
         // TODO: move to publisher?
         callback: () => __async(this, null, function* () {
           const statusBarItem = this.addStatusBarItem();
           try {
-            new import_obsidian17.Notice("Processing files to publish...");
+            new import_obsidian18.Notice("Processing files to publish...");
             const { vault, metadataCache } = this.app;
             const publisher = new Publisher(
               vault,
@@ -29405,7 +30220,7 @@ var DigitalGarden = class extends import_obsidian17.Plugin {
             const imagesToDelete = publishStatus.deletedImagePaths;
             const totalItems = filesToPublish.length + filesToDelete.length + imagesToDelete.length;
             if (totalItems === 0) {
-              new import_obsidian17.Notice("Garden is already fully synced!");
+              new import_obsidian18.Notice("Garden is already fully synced!");
               statusBarItem.remove();
               return;
             }
@@ -29413,7 +30228,7 @@ var DigitalGarden = class extends import_obsidian17.Plugin {
               statusBarItem,
               filesToPublish.length + filesToDelete.length + imagesToDelete.length
             );
-            new import_obsidian17.Notice(
+            new import_obsidian18.Notice(
               `Publishing ${filesToPublish.length} notes, deleting ${filesToDelete.length} notes and ${imagesToDelete.length} images. See the status bar in lower right corner for progress.`,
               8e3
             );
@@ -29428,23 +30243,23 @@ var DigitalGarden = class extends import_obsidian17.Plugin {
               statusBar.increment();
             }
             statusBar.finish(8e3);
-            new import_obsidian17.Notice(
+            new import_obsidian18.Notice(
               `Successfully published ${filesToPublish.length} notes to your garden.`
             );
             if (filesToDelete.length > 0) {
-              new import_obsidian17.Notice(
+              new import_obsidian18.Notice(
                 `Successfully deleted ${filesToDelete.length} notes from your garden.`
               );
             }
             if (imagesToDelete.length > 0) {
-              new import_obsidian17.Notice(
+              new import_obsidian18.Notice(
                 `Successfully deleted ${imagesToDelete.length} images from your garden.`
               );
             }
           } catch (e) {
             statusBarItem.remove();
             console.error(e);
-            new import_obsidian17.Notice(
+            new import_obsidian18.Notice(
               "Unable to publish multiple notes, something went wrong."
             );
           }
@@ -29485,12 +30300,19 @@ var DigitalGarden = class extends import_obsidian17.Plugin {
           this.togglePublishFlag();
         })
       });
+      this.addCommand({
+        id: "dg-set-as-home-page",
+        name: "Set as Garden Home Page",
+        callback: () => __async(this, null, function* () {
+          yield this.setAsHomePage();
+        })
+      });
     });
   }
   getActiveFile(workspace) {
     const activeFile = workspace.getActiveFile();
     if (!activeFile) {
-      new import_obsidian17.Notice(
+      new import_obsidian18.Notice(
         "No file is open/active. Please open a file and try again."
       );
       return null;
@@ -29511,10 +30333,10 @@ var DigitalGarden = class extends import_obsidian17.Plugin {
         );
         const fullUrl = siteManager.getNoteUrl(activeFile);
         yield navigator.clipboard.writeText(fullUrl);
-        new import_obsidian17.Notice(`Note URL copied to clipboard`);
+        new import_obsidian18.Notice(`Note URL copied to clipboard`);
       } catch (e) {
         console.log(e);
-        new import_obsidian17.Notice(
+        new import_obsidian18.Notice(
           "Unable to copy note URL to clipboard, something went wrong."
         );
       }
@@ -29530,12 +30352,12 @@ var DigitalGarden = class extends import_obsidian17.Plugin {
           return;
         }
         if (activeFile.extension !== "md") {
-          new import_obsidian17.Notice(
+          new import_obsidian18.Notice(
             "The current file is not a markdown file. Please open a markdown file and try again."
           );
           return;
         }
-        new import_obsidian17.Notice("Publishing note...");
+        new import_obsidian18.Notice("Publishing note...");
         const publisher = new Publisher(
           vault,
           metadataCache,
@@ -29551,12 +30373,12 @@ var DigitalGarden = class extends import_obsidian17.Plugin {
         }).compile();
         const publishSuccessful = yield publisher.publish(publishFile);
         if (publishSuccessful) {
-          new import_obsidian17.Notice(`Successfully published note to your garden.`);
+          new import_obsidian18.Notice(`Successfully published note to your garden.`);
         }
         return publishSuccessful;
       } catch (e) {
         console.error(e);
-        new import_obsidian17.Notice("Unable to publish note, something went wrong.");
+        new import_obsidian18.Notice("Unable to publish note, something went wrong.");
         return false;
       }
     });
@@ -29567,12 +30389,12 @@ var DigitalGarden = class extends import_obsidian17.Plugin {
       if (!activeFile) {
         return;
       }
-      const engine = new ObsidianFrontMatterEngine(
-        this.app.vault,
-        this.app.metadataCache,
-        activeFile
+      yield this.app.fileManager.processFrontMatter(
+        activeFile,
+        (frontmatter) => {
+          frontmatter["dg-publish" /* PUBLISH */] = value;
+        }
       );
-      engine.set("dg-publish" /* PUBLISH */, value).apply();
     });
   }
   togglePublishFlag() {
@@ -29581,41 +30403,160 @@ var DigitalGarden = class extends import_obsidian17.Plugin {
       if (!activeFile) {
         return;
       }
-      const engine = new ObsidianFrontMatterEngine(
-        this.app.vault,
-        this.app.metadataCache,
-        activeFile
+      yield this.app.fileManager.processFrontMatter(
+        activeFile,
+        (frontmatter) => {
+          frontmatter["dg-publish" /* PUBLISH */] = !frontmatter["dg-publish" /* PUBLISH */];
+        }
       );
-      engine.set(
-        "dg-publish" /* PUBLISH */,
-        !engine.get("dg-publish" /* PUBLISH */)
-      ).apply();
+    });
+  }
+  setAsHomePage() {
+    return __async(this, null, function* () {
+      var _a2, _b;
+      const activeFile = this.getActiveFile(this.app.workspace);
+      if (!activeFile) {
+        return;
+      }
+      const currentFileCache = this.app.metadataCache.getFileCache(activeFile);
+      if ((_a2 = currentFileCache == null ? void 0 : currentFileCache.frontmatter) == null ? void 0 : _a2["dg-home" /* HOME */]) {
+        new import_obsidian18.Notice("This note is already set as the garden home page.");
+        return;
+      }
+      const existingHomePages = [];
+      for (const file of this.app.vault.getMarkdownFiles()) {
+        const cache = this.app.metadataCache.getFileCache(file);
+        if ((_b = cache == null ? void 0 : cache.frontmatter) == null ? void 0 : _b["dg-home" /* HOME */]) {
+          existingHomePages.push(file);
+        }
+      }
+      if (existingHomePages.length === 0) {
+        yield this.app.fileManager.processFrontMatter(
+          activeFile,
+          (frontmatter) => {
+            frontmatter["dg-home" /* HOME */] = true;
+            frontmatter["dg-publish" /* PUBLISH */] = true;
+          }
+        );
+        new import_obsidian18.Notice(
+          `${activeFile.basename} is now your garden's home page and has been marked for publishing.`
+        );
+      } else {
+        new HomePageConfirmationModal(
+          this.app,
+          activeFile,
+          existingHomePages[0],
+          (shouldUpdate) => __async(this, null, function* () {
+            if (shouldUpdate) {
+              yield this.app.fileManager.processFrontMatter(
+                existingHomePages[0],
+                (frontmatter) => {
+                  delete frontmatter["dg-home" /* HOME */];
+                }
+              );
+              yield this.app.fileManager.processFrontMatter(
+                activeFile,
+                (frontmatter) => {
+                  frontmatter["dg-home" /* HOME */] = true;
+                  frontmatter["dg-publish" /* PUBLISH */] = true;
+                }
+              );
+              new import_obsidian18.Notice(
+                `${activeFile.basename} is now your garden's home page and has been marked for publishing.`
+              );
+            }
+          })
+        ).open();
+      }
     });
   }
   openPublishModal() {
-    if (!this.publishModal) {
-      const siteManager = new DigitalGardenSiteManager(
-        this.app.metadataCache,
-        this.settings
-      );
-      const publisher = new Publisher(
-        this.app.vault,
-        this.app.metadataCache,
-        this.settings
-      );
-      const publishStatusManager = new PublishStatusManager(
-        siteManager,
-        publisher
-      );
-      this.publishModal = new PublicationCenter2(
-        this.app,
-        publishStatusManager,
-        publisher,
-        siteManager,
-        this.settings
-      );
-    }
+    const siteManager = new DigitalGardenSiteManager(
+      this.app.metadataCache,
+      this.settings
+    );
+    const publisher = new Publisher(
+      this.app.vault,
+      this.app.metadataCache,
+      this.settings
+    );
+    const publishStatusManager = new PublishStatusManager(
+      siteManager,
+      publisher
+    );
+    this.publishModal = new PublicationCenter2(
+      this.app,
+      publishStatusManager,
+      publisher,
+      siteManager,
+      this.settings
+    );
     this.publishModal.open();
+  }
+};
+var HomePageConfirmationModal = class extends import_obsidian18.Modal {
+  constructor(app, newHomeFile, existingHomeFile, onConfirm) {
+    super(app);
+    this.newHomeFile = newHomeFile;
+    this.existingHomeFile = existingHomeFile;
+    this.onConfirm = onConfirm;
+  }
+  onOpen() {
+    const { contentEl } = this;
+    contentEl.createEl("h2", { text: "Replace Garden Home Page?" });
+    const messageDiv = contentEl.createDiv();
+    messageDiv.createEl("p", {
+      text: `${this.existingHomeFile.basename} is currently set as your garden home page.`
+    });
+    messageDiv.createEl("p", {
+      text: `This will remove the home page setting from ${this.existingHomeFile.basename} and set ${this.newHomeFile.basename} as the new home page.`
+    });
+    const warningDiv = contentEl.createDiv({
+      attr: {
+        style: "margin: 20px 0; padding: 12px; background: var(--background-secondary); border-radius: 4px;"
+      }
+    });
+    warningDiv.createEl("p", {
+      text: "\u26A0\uFE0F Important: Both notes should be published from the Publication Center to ensure your garden has a proper home page.",
+      attr: { style: "color: var(--text-warning); font-weight: bold;" }
+    });
+    const buttonContainer = contentEl.createDiv({
+      attr: {
+        style: "display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;"
+      }
+    });
+    const cancelButton = buttonContainer.createEl("button", {
+      text: "Cancel",
+      attr: {
+        style: "padding: 8px 16px; border-radius: 4px; cursor: pointer;"
+      }
+    });
+    cancelButton.onclick = () => {
+      this.onConfirm(false);
+      this.close();
+    };
+    const confirmButton = buttonContainer.createEl("button", {
+      text: "Replace Home Page",
+      attr: {
+        style: "padding: 8px 16px; border-radius: 4px; cursor: pointer; background: var(--interactive-accent); color: var(--text-on-accent);"
+      }
+    });
+    confirmButton.onclick = () => {
+      this.onConfirm(true);
+      this.close();
+    };
+    this.scope.register([], "Enter", () => {
+      this.onConfirm(true);
+      this.close();
+    });
+    this.scope.register([], "Escape", () => {
+      this.onConfirm(false);
+      this.close();
+    });
+  }
+  onClose() {
+    const { contentEl } = this;
+    contentEl.empty();
   }
 };
 //!()[image.svg]
