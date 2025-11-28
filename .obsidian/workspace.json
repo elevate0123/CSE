@@ -21,8 +21,31 @@
               "icon": "lucide-file",
               "title": "SB New Draft"
             }
+          },
+          {
+            "id": "dc187ada4dc52c95",
+            "type": "leaf",
+            "state": {
+              "type": "home-tab-view",
+              "state": {},
+              "icon": "search",
+              "title": "Home tab"
+            }
+          },
+          {
+            "id": "40017afa373297ae",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.10.6"
+              },
+              "icon": "lucide-book-up",
+              "title": "Release Notes 1.10.6"
+            }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -95,13 +118,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/SB New Draft.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of SB New Draft"
+              "title": "Outline"
             }
           },
           {
@@ -178,11 +200,11 @@
       "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "e88ba0f1f606a148",
+  "active": "40017afa373297ae",
   "lastOpenFiles": [
+    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/SB New Draft.md",
     "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/SB New Charter.md",
     "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/S Draft Book 1.md",
-    "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/SB New Draft.md",
     "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/S Draft Book 1 Advanced+Retrofit.md",
     "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/Blueprint 4 1.md",
     "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/Seerah Book FinComp.md",
