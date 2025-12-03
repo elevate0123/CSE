@@ -31,21 +31,9 @@
               "icon": "search",
               "title": "Home tab"
             }
-          },
-          {
-            "id": "40017afa373297ae",
-            "type": "leaf",
-            "state": {
-              "type": "release-notes",
-              "state": {
-                "currentVersion": "1.10.6"
-              },
-              "icon": "lucide-book-up",
-              "title": "Release Notes 1.10.6"
-            }
           }
         ],
-        "currentTab": 2
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -200,7 +188,7 @@
       "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "40017afa373297ae",
+  "active": "dc187ada4dc52c95",
   "lastOpenFiles": [
     "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/SB New Draft.md",
     "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/SB New Charter.md",
