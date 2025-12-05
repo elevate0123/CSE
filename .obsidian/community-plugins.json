@@ -6,7 +6,6 @@
   "home-tab",
   "remember-cursor-position",
   "obsidian-completr",
-  "obsidian-argdown-plugin",
   "obsidian-dictionary-plugin",
   "phrasesync",
   "diagram-zoom-drag",
@@ -24,5 +23,8 @@
   "mermaid-tools",
   "obsidian-pandoc",
   "obsidian-outliner",
-  "obsidian-graphviz"
+  "obsidian-graphviz",
+  "last-modified-timestamp-in-status-bar",
+  "cm-editor-syntax-highlight-obsidian",
+  "creases"
 ]
