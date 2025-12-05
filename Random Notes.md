@@ -1,4 +1,8 @@
 
+
+Habeeb Akande, _A Taste of Honey: Sexuality and Erotology in Islam_ (Rabaah Publishers, 2015)
+
+
 BOOK **Game Theory** by Drew Fudenberg and Jean Tirole
 
 
