@@ -23962,7 +23962,7 @@ var DigitalGardenSiteManager = class {
   }
   updateEnv() {
     return __async(this, null, function* () {
-      var _a2;
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _i;
       const theme = JSON.parse(this.settings.theme);
       const baseTheme = this.settings.baseTheme;
       const siteName = this.settings.siteName;
@@ -23971,7 +23971,7 @@ var DigitalGardenSiteManager = class {
       if (this.settings.gardenBaseUrl && !this.settings.gardenBaseUrl.startsWith("ghp_") && !this.settings.gardenBaseUrl.startsWith("github_pat") && this.settings.gardenBaseUrl.contains(".")) {
         gardenBaseUrl = this.settings.gardenBaseUrl;
       }
-      const envValues = {
+      const envValues = __spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues({
         SITE_NAME_HEADER: siteName,
         SITE_MAIN_LANGUAGE: mainLanguage,
         SITE_BASE_URL: gardenBaseUrl,
@@ -23986,7 +23986,23 @@ var DigitalGardenSiteManager = class {
         STYLE_SETTINGS_CSS: this.settings.styleSettingsCss,
         STYLE_SETTINGS_BODY_CLASSES: this.settings.styleSettingsBodyClasses,
         USE_FULL_RESOLUTION_IMAGES: this.settings.useFullResolutionImages
-      };
+      }, ((_a2 = this.settings.uiStrings) == null ? void 0 : _a2.backlinkHeader) && {
+        UI_BACKLINK_HEADER: this.settings.uiStrings.backlinkHeader
+      }), ((_b = this.settings.uiStrings) == null ? void 0 : _b.noBacklinksMessage) && {
+        UI_NO_BACKLINKS_MESSAGE: this.settings.uiStrings.noBacklinksMessage
+      }), ((_c = this.settings.uiStrings) == null ? void 0 : _c.searchButtonText) && {
+        UI_SEARCH_BUTTON_TEXT: this.settings.uiStrings.searchButtonText
+      }), ((_d = this.settings.uiStrings) == null ? void 0 : _d.searchPlaceholder) && {
+        UI_SEARCH_PLACEHOLDER: this.settings.uiStrings.searchPlaceholder
+      }), ((_e = this.settings.uiStrings) == null ? void 0 : _e.searchEnterHint) && {
+        UI_SEARCH_ENTER_HINT: this.settings.uiStrings.searchEnterHint
+      }), ((_f = this.settings.uiStrings) == null ? void 0 : _f.searchNavigateHint) && {
+        UI_SEARCH_NAVIGATE_HINT: this.settings.uiStrings.searchNavigateHint
+      }), ((_g = this.settings.uiStrings) == null ? void 0 : _g.searchCloseHint) && {
+        UI_SEARCH_CLOSE_HINT: this.settings.uiStrings.searchCloseHint
+      }), ((_h = this.settings.uiStrings) == null ? void 0 : _h.searchNoResults) && {
+        UI_SEARCH_NO_RESULTS: this.settings.uiStrings.searchNoResults
+      });
       if (theme.name !== "default") {
         envValues["THEME"] = theme.cssUrl;
         envValues["BASE_THEME"] = baseTheme;
@@ -23995,7 +24011,7 @@ var DigitalGardenSiteManager = class {
       const envSettings = Object.entries(keysToSet).map(([key, value]) => `${key}=${value}`).join("\n");
       const base64Settings = gBase64.encode(envSettings);
       const currentFile = yield (yield this.getUserGardenConnection()).getFile(".env");
-      const decodedCurrentFile = gBase64.decode((_a2 = currentFile == null ? void 0 : currentFile.content) != null ? _a2 : "");
+      const decodedCurrentFile = gBase64.decode((_i = currentFile == null ? void 0 : currentFile.content) != null ? _i : "");
       if (decodedCurrentFile === envSettings) {
         logger3.info("No changes to .env file");
         new import_obsidian8.Notice("Settings already up to date!");
@@ -29889,6 +29905,8 @@ var SettingView = class {
       this.initializeDefaultNoteSettings();
       this.settingsRootElement.createEl("h3", { text: "Appearance" }).prepend(this.getIcon("brush"));
       this.initializeThemesSettings();
+      this.settingsRootElement.createEl("h3", { text: "Localization" }).prepend(this.getIcon("languages"));
+      this.initializeUIStringsSettings();
       this.settingsRootElement.createEl("h3", { text: "Advanced" }).prepend(this.getIcon("cog"));
       new import_obsidian14.Setting(this.settingsRootElement).setName("Path Rewrite Rules").setDesc(
         "Define rules to rewrite note folder structure in the garden. See the modal for more information."
@@ -30113,6 +30131,230 @@ var SettingView = class {
         t.setValue(this.settings.defaultNoteSettings.dgPassFrontmatter);
         t.onChange((val) => {
           this.settings.defaultNoteSettings.dgPassFrontmatter = val;
+          markAsChanged();
+        });
+      });
+    });
+  }
+  initializeUIStringsSettings() {
+    return __async(this, null, function* () {
+      const uiStringsModal = new import_obsidian14.Modal(this.app);
+      uiStringsModal.containerEl.addClass("dg-settings");
+      let hasUnsavedChanges = false;
+      const textControls = {};
+      uiStringsModal.titleEl.createEl("h1", {
+        text: "UI Text Settings"
+      });
+      const descDiv = uiStringsModal.contentEl.createEl("div", {
+        attr: { style: "margin-bottom: 20px;" }
+      });
+      descDiv.createEl("span", {
+        text: "Customize text displayed on your garden. Leave empty to use defaults."
+      });
+      new import_obsidian14.Setting(this.settingsRootElement).setName("UI Text / Localization").setDesc(
+        "Customize labels and messages shown on your garden (Search, Backlinks, etc.)"
+      ).addButton((cb) => {
+        cb.setButtonText("Manage UI text");
+        cb.onClick(() => __async(this, null, function* () {
+          hasUnsavedChanges = false;
+          updateApplyButton();
+          uiStringsModal.open();
+          yield loadRemoteSettings();
+        }));
+      });
+      const markAsChanged = () => {
+        hasUnsavedChanges = true;
+        updateApplyButton();
+      };
+      const applyContainer = uiStringsModal.contentEl.createDiv({
+        cls: "dg-apply-settings-container"
+      });
+      const statusEl = applyContainer.createDiv({
+        cls: "dg-apply-settings-status"
+      });
+      const applyButton = applyContainer.createEl("button", {
+        text: "Apply changes to site",
+        cls: "mod-cta dg-apply-settings-button"
+      });
+      applyButton.addEventListener("click", () => __async(this, null, function* () {
+        if (!hasUnsavedChanges) return;
+        yield this.saveSiteSettingsAndUpdateEnv(
+          this.app.metadataCache,
+          this.settings,
+          this.saveSettings
+        );
+        hasUnsavedChanges = false;
+        updateApplyButton();
+      }));
+      const updateApplyButton = () => {
+        if (hasUnsavedChanges) {
+          statusEl.setText("You have unsaved changes");
+          statusEl.style.color = "var(--text-warning)";
+          applyContainer.classList.add("has-changes");
+          applyButton.disabled = false;
+        } else {
+          statusEl.setText("Change a setting to apply");
+          statusEl.style.color = "var(--text-muted)";
+          applyContainer.classList.remove("has-changes");
+          applyButton.disabled = true;
+        }
+      };
+      const uiStringsMap = [
+        {
+          envKey: "UI_BACKLINK_HEADER",
+          controlKey: "backlinkHeader",
+          settingsKey: "backlinkHeader"
+        },
+        {
+          envKey: "UI_NO_BACKLINKS_MESSAGE",
+          controlKey: "noBacklinksMessage",
+          settingsKey: "noBacklinksMessage"
+        },
+        {
+          envKey: "UI_SEARCH_BUTTON_TEXT",
+          controlKey: "searchButtonText",
+          settingsKey: "searchButtonText"
+        },
+        {
+          envKey: "UI_SEARCH_PLACEHOLDER",
+          controlKey: "searchPlaceholder",
+          settingsKey: "searchPlaceholder"
+        },
+        {
+          envKey: "UI_SEARCH_ENTER_HINT",
+          controlKey: "searchEnterHint",
+          settingsKey: "searchEnterHint"
+        },
+        {
+          envKey: "UI_SEARCH_NAVIGATE_HINT",
+          controlKey: "searchNavigateHint",
+          settingsKey: "searchNavigateHint"
+        },
+        {
+          envKey: "UI_SEARCH_CLOSE_HINT",
+          controlKey: "searchCloseHint",
+          settingsKey: "searchCloseHint"
+        },
+        {
+          envKey: "UI_SEARCH_NO_RESULTS",
+          controlKey: "searchNoResults",
+          settingsKey: "searchNoResults"
+        },
+        {
+          envKey: "UI_SEARCH_PREVIEW_PLACEHOLDER",
+          controlKey: "searchPreviewPlaceholder",
+          settingsKey: "searchPreviewPlaceholder"
+        }
+      ];
+      const loadRemoteSettings = () => __async(this, null, function* () {
+        statusEl.setText("Loading settings from site...");
+        applyContainer.classList.remove("has-changes");
+        try {
+          const gardenManager = new DigitalGardenSiteManager(
+            this.app.metadataCache,
+            this.settings
+          );
+          const connection = yield gardenManager.getUserGardenConnection();
+          const envFile = yield connection.getFile(".env");
+          if (envFile == null ? void 0 : envFile.content) {
+            const envContent = gBase64.decode(envFile.content);
+            const remoteSettings = this.parseEnvSettings(envContent);
+            for (const mapping of uiStringsMap) {
+              const control = textControls[mapping.controlKey];
+              if (mapping.envKey in remoteSettings && control) {
+                const value = remoteSettings[mapping.envKey];
+                control.setValue(value);
+                this.settings.uiStrings[mapping.settingsKey] = value;
+              }
+            }
+          }
+          hasUnsavedChanges = false;
+          updateApplyButton();
+        } catch (error) {
+          console.error("Failed to load remote UI strings:", error);
+          statusEl.setText("Could not load remote settings");
+          statusEl.style.color = "var(--text-error)";
+          setTimeout(() => {
+            statusEl.style.color = "";
+            hasUnsavedChanges = false;
+            updateApplyButton();
+          }, 3e3);
+        }
+      });
+      updateApplyButton();
+      uiStringsModal.contentEl.createEl("h3", { text: "Backlinks" }).prepend(this.getIcon("link"));
+      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Backlink header").setDesc('Default: "Pages mentioning this page"').addText((text2) => {
+        var _a2, _b;
+        textControls["backlinkHeader"] = text2;
+        text2.setPlaceholder("Pages mentioning this page").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.backlinkHeader) != null ? _b : "").onChange((val) => {
+          this.settings.uiStrings.backlinkHeader = val;
+          markAsChanged();
+        });
+      });
+      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("No backlinks message").setDesc('Default: "No other pages mentions this page"').addText((text2) => {
+        var _a2, _b;
+        textControls["noBacklinksMessage"] = text2;
+        text2.setPlaceholder("No other pages mentions this page").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.noBacklinksMessage) != null ? _b : "").onChange((val) => {
+          this.settings.uiStrings.noBacklinksMessage = val;
+          markAsChanged();
+        });
+      });
+      uiStringsModal.contentEl.createEl("h3", { text: "Search" }).prepend(this.getIcon("search"));
+      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Search button text").setDesc('Default: "Search"').addText((text2) => {
+        var _a2, _b;
+        textControls["searchButtonText"] = text2;
+        text2.setPlaceholder("Search").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.searchButtonText) != null ? _b : "").onChange((val) => {
+          this.settings.uiStrings.searchButtonText = val;
+          markAsChanged();
+        });
+      });
+      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Search placeholder").setDesc('Default: "Start typing..."').addText((text2) => {
+        var _a2, _b;
+        textControls["searchPlaceholder"] = text2;
+        text2.setPlaceholder("Start typing...").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.searchPlaceholder) != null ? _b : "").onChange((val) => {
+          this.settings.uiStrings.searchPlaceholder = val;
+          markAsChanged();
+        });
+      });
+      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Enter to select hint").setDesc('Default: "Enter to select"').addText((text2) => {
+        var _a2, _b;
+        textControls["searchEnterHint"] = text2;
+        text2.setPlaceholder("Enter to select").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.searchEnterHint) != null ? _b : "").onChange((val) => {
+          this.settings.uiStrings.searchEnterHint = val;
+          markAsChanged();
+        });
+      });
+      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Navigate hint").setDesc('Default: "to navigate"').addText((text2) => {
+        var _a2, _b;
+        textControls["searchNavigateHint"] = text2;
+        text2.setPlaceholder("to navigate").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.searchNavigateHint) != null ? _b : "").onChange((val) => {
+          this.settings.uiStrings.searchNavigateHint = val;
+          markAsChanged();
+        });
+      });
+      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Close hint").setDesc('Default: "ESC to close"').addText((text2) => {
+        var _a2, _b;
+        textControls["searchCloseHint"] = text2;
+        text2.setPlaceholder("ESC to close").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.searchCloseHint) != null ? _b : "").onChange((val) => {
+          this.settings.uiStrings.searchCloseHint = val;
+          markAsChanged();
+        });
+      });
+      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("No results message").setDesc('Default: "No results for"').addText((text2) => {
+        var _a2, _b;
+        textControls["searchNoResults"] = text2;
+        text2.setPlaceholder("No results for").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.searchNoResults) != null ? _b : "").onChange((val) => {
+          this.settings.uiStrings.searchNoResults = val;
+          markAsChanged();
+        });
+      });
+      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Preview placeholder text").setDesc('Default: "Select a result to preview"').addText((text2) => {
+        var _a2, _b;
+        textControls["searchPreviewPlaceholder"] = text2;
+        text2.setPlaceholder("Select a result to preview").setValue(
+          (_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.searchPreviewPlaceholder) != null ? _b : ""
+        ).onChange((val) => {
+          this.settings.uiStrings.searchPreviewPlaceholder = val;
           markAsChanged();
         });
       });
@@ -30845,6 +31087,7 @@ var SettingView = class {
           button.setButtonText(
             `Update to ${updater.newestTemplateVersion}`
           );
+          button.setCta();
         } else {
           button.setButtonText("Already up to date!");
           button.setDisabled(true);
@@ -30853,17 +31096,44 @@ var SettingView = class {
           modal.open();
         });
       }));
-      modal.titleEl.createEl("h2", { text: "Update site" });
-      new import_obsidian14.Setting(modal.contentEl).setName("Update site to latest template").setDesc(
-        `
-				This will create a pull request with the latest template changes, which you'll need to use all plugin features. 
-				It will not publish any changes before you approve them.
-			`
-      ).addButton(
-        (button) => button.setButtonText("Create PR").onClick(
-          () => handlePR(button, updater)
-        )
-      );
+      modal.titleEl.empty();
+      const titleContainer = modal.titleEl.createDiv({
+        cls: "dg-modal-title"
+      });
+      const syncIcon = (0, import_obsidian14.getIcon)("refresh-cw");
+      if (syncIcon) {
+        titleContainer.appendChild(syncIcon);
+      }
+      titleContainer.createSpan({ text: "Update Site Template" });
+      const updateSection = modal.contentEl.createDiv({
+        cls: "dg-update-section"
+      });
+      const infoContainer = updateSection.createDiv({
+        cls: "dg-update-info"
+      });
+      const infoIcon = (0, import_obsidian14.getIcon)("info");
+      if (infoIcon) {
+        infoContainer.appendChild(infoIcon);
+      }
+      infoContainer.createDiv({
+        cls: "dg-update-info-text",
+        text: "This will create a pull request with the latest template changes. Your site won't be updated until you approve the PR."
+      });
+      const buttonContainer = updateSection.createDiv({
+        cls: "dg-update-button-container"
+      });
+      const createPrButton = buttonContainer.createEl("button", {
+        text: "Create Pull Request",
+        cls: "mod-cta"
+      });
+      createPrButton.addEventListener("click", () => {
+        handlePR(
+          {
+            setDisabled: (d) => createPrButton.disabled = d
+          },
+          updater
+        );
+      });
       this.settingsRootElement.createEl("h3", { text: "Support" }).prepend(this.getIcon("heart"));
       this.settingsRootElement.createDiv({
         attr: {
@@ -30883,28 +31153,47 @@ var SettingView = class {
     if (previousPrUrls.length === 0) {
       return;
     }
-    const header = modal.contentEl.createEl("h2", {
-      text: "\u2795 Recent Pull Request History"
+    const historySection = modal.contentEl.createDiv({
+      cls: "dg-pr-history"
     });
-    const prsContainer = modal.contentEl.createEl("ul", {});
+    const header = historySection.createDiv({
+      cls: "dg-pr-history-header"
+    });
+    const chevronIcon = (0, import_obsidian14.getIcon)("chevron-right");
+    if (chevronIcon) {
+      header.appendChild(chevronIcon);
+    }
+    header.createSpan({ text: "Recent Pull Requests" });
+    const prsContainer = historySection.createDiv({
+      cls: "dg-pr-history-list"
+    });
     prsContainer.hide();
-    header.onClickEvent(() => {
+    header.addEventListener("click", () => {
+      const chevron = header.querySelector(".svg-icon");
       if (prsContainer.isShown()) {
         prsContainer.hide();
-        header.textContent = "\u2795  Recent Pull Request History";
+        chevron == null ? void 0 : chevron.removeClass("is-expanded");
       } else {
         prsContainer.show();
-        header.textContent = "\u2796 Recent Pull Request History";
+        chevron == null ? void 0 : chevron.addClass("is-expanded");
       }
     });
-    previousPrUrls.map((prUrl) => {
-      const li = prsContainer.createEl("li", {
-        attr: { style: "margin-bottom: 10px" }
+    previousPrUrls.forEach((prUrl) => {
+      var _a2;
+      const prItem = prsContainer.createDiv({
+        cls: "dg-pr-history-item"
       });
-      const prUrlElement = document.createElement("a");
-      prUrlElement.href = prUrl;
-      prUrlElement.textContent = prUrl;
-      li.appendChild(prUrlElement);
+      const gitPrIcon = (0, import_obsidian14.getIcon)("git-pull-request");
+      if (gitPrIcon) {
+        prItem.appendChild(gitPrIcon);
+      }
+      const prNumber = (_a2 = prUrl.match(/\/pull\/(\d+)/)) == null ? void 0 : _a2[1];
+      const displayText = prNumber ? `Pull Request #${prNumber}` : prUrl;
+      prItem.createEl("a", {
+        text: displayText,
+        href: prUrl,
+        cls: "dg-pr-history-link"
+      });
     });
   }
 };
@@ -30914,49 +31203,105 @@ var import_obsidian15 = require("obsidian");
 var UpdateGardenRepositoryModal = class extends import_obsidian15.Modal {
   constructor(app) {
     super(app);
-    this.progressViewTop = this.contentEl.createDiv();
+    this.modalEl.addClass("dg-update-modal");
+    this.progressViewTop = this.contentEl.createDiv({
+      cls: "dg-update-progress"
+    });
   }
   renderLoading() {
-    var _a2;
-    this.loading = this.progressViewTop.createDiv();
+    this.loading = this.progressViewTop.createDiv({
+      cls: "dg-update-loading"
+    });
     this.loading.show();
-    const text2 = "Creating PR. This should take about 30-60 seconds";
-    const loadingText = (_a2 = this.loading) == null ? void 0 : _a2.createEl("h5", { text: text2 });
+    const spinnerContainer = this.loading.createDiv({
+      cls: "dg-update-spinner"
+    });
+    const spinnerIcon = (0, import_obsidian15.getIcon)("loader-2");
+    if (spinnerIcon) {
+      spinnerContainer.appendChild(spinnerIcon);
+    }
+    const loadingText = this.loading.createEl("p", {
+      cls: "dg-update-loading-text",
+      text: "Creating pull request..."
+    });
+    this.loading.createEl("p", {
+      cls: "dg-update-loading-subtext",
+      text: "This usually takes 30-60 seconds"
+    });
+    let dots = 0;
     this.loadingInterval = setInterval(() => {
-      if (loadingText.innerText === `${text2}`) {
-        loadingText.innerText = `${text2}.`;
-      } else if (loadingText.innerText === `${text2}.`) {
-        loadingText.innerText = `${text2}..`;
-      } else if (loadingText.innerText === `${text2}..`) {
-        loadingText.innerText = `${text2}...`;
-      } else {
-        loadingText.innerText = `${text2}`;
-      }
+      dots = (dots + 1) % 4;
+      loadingText.textContent = "Creating pull request" + ".".repeat(dots);
     }, 400);
   }
   renderSuccess(prUrl) {
     var _a2;
     (_a2 = this.loading) == null ? void 0 : _a2.remove();
     clearInterval(this.loadingInterval);
-    const successmessage = prUrl ? { text: `\u{1F389} Done! Approve your PR to make the changes go live.` } : {
-      text: "You already have the latest template \u{1F389} No need to create a PR."
-    };
-    const linkText = { text: `${prUrl}`, href: prUrl };
-    this.progressViewTop.createEl("h2", successmessage);
-    if (prUrl) {
-      this.progressViewTop.createEl("a", linkText);
+    const successContainer = this.progressViewTop.createDiv({
+      cls: "dg-update-success"
+    });
+    const iconContainer = successContainer.createDiv({
+      cls: "dg-update-icon dg-update-icon-success"
+    });
+    const checkIcon = (0, import_obsidian15.getIcon)("check-circle");
+    if (checkIcon) {
+      iconContainer.appendChild(checkIcon);
     }
-    this.progressViewTop.createEl("br");
+    if (prUrl) {
+      successContainer.createEl("h3", {
+        text: "Pull request created!",
+        cls: "dg-update-title"
+      });
+      successContainer.createEl("p", {
+        text: "Approve the PR to make the changes go live.",
+        cls: "dg-update-message"
+      });
+      const linkContainer = successContainer.createDiv({
+        cls: "dg-update-link-container"
+      });
+      const link = linkContainer.createEl("a", {
+        text: "Open Pull Request",
+        href: prUrl,
+        cls: "dg-update-link"
+      });
+      const externalIcon = (0, import_obsidian15.getIcon)("external-link");
+      if (externalIcon) {
+        link.appendChild(externalIcon);
+      }
+    } else {
+      successContainer.createEl("h3", {
+        text: "Already up to date!",
+        cls: "dg-update-title"
+      });
+      successContainer.createEl("p", {
+        text: "Your site template is already on the latest version.",
+        cls: "dg-update-message"
+      });
+    }
   }
   renderError() {
     var _a2;
     (_a2 = this.loading) == null ? void 0 : _a2.remove();
     clearInterval(this.loadingInterval);
-    const errorMsg = {
-      text: "\u274C Something went wrong. Try deleting the branch in GitHub.",
-      attr: {}
-    };
-    this.progressViewTop.createEl("p", errorMsg);
+    const errorContainer = this.progressViewTop.createDiv({
+      cls: "dg-update-error"
+    });
+    const iconContainer = errorContainer.createDiv({
+      cls: "dg-update-icon dg-update-icon-error"
+    });
+    const alertIcon = (0, import_obsidian15.getIcon)("alert-circle");
+    if (alertIcon) {
+      iconContainer.appendChild(alertIcon);
+    }
+    errorContainer.createEl("h3", {
+      text: "Something went wrong",
+      cls: "dg-update-title"
+    });
+    errorContainer.createEl("p", {
+      text: 'Try deleting the "update-template" branch in your GitHub repository and try again.',
+      cls: "dg-update-message"
+    });
   }
 };
 
@@ -31086,6 +31431,17 @@ var DEFAULT_SETTINGS = {
     dgShowToc: false,
     dgLinkPreview: false,
     dgShowTags: false
+  },
+  uiStrings: {
+    backlinkHeader: "",
+    noBacklinksMessage: "",
+    searchButtonText: "",
+    searchPlaceholder: "",
+    searchEnterHint: "",
+    searchNavigateHint: "",
+    searchCloseHint: "",
+    searchNoResults: "",
+    searchPreviewPlaceholder: ""
   },
   logLevel: void 0
 };
