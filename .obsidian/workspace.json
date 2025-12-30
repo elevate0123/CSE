@@ -48,7 +48,7 @@
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -121,13 +121,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/M2/M2 Initial Complete D.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of M2 Initial Complete D"
+              "title": "Outline"
             }
           },
           {
@@ -204,8 +203,10 @@
       "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "06c79616e1bf345c",
+  "active": "11aa6a401a29a752",
   "lastOpenFiles": [
+    "00 Insaan-aur-Aalam/Maqala/M Aqil 2 Abdur Rehman Patel Misbahi.pdf",
+    "00 Insaan-aur-Aalam/Maqala/M Aqil 1 Azaad Misbahi.pdf",
     "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/M2/M2 Initial Complete D.md",
     "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/M2/M2 Draft.md",
     "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/SB New Draft.md",
@@ -232,7 +233,6 @@
     "00 Insaan-aur-Aalam/Maqala/Isteqamate Deen by Arshad Ali Jilani.pdf",
     "00 Insaan-aur-Aalam/Maqala/Isteqamate Deen By Arshad Ali Jilani.inp",
     "00 Insaan-aur-Aalam/Maqala/ISBN_Deed.png",
-    "00 Insaan-aur-Aalam/Maqala/Ashraf 02 maaqaalaa.pdf",
     "00 Insaan-aur-Aalam/Maqala/Almas_SIT_ID.jpg",
     "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 62 __ Surah Younus 44 to Surah Hood 5 __ Pir Saen Ghulam Rasol Qasmi.md",
     "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 61 __ Soorat Younus 1 to 43 __ Peer Saen Ghulam Rasool Qasmi.md",
@@ -244,7 +244,6 @@
     "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 46 #part 2 __ Al-Maidah 67 to 72 __ Peer Saen Ghulam Rasool Qasmi.md",
     "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 46 #part 1 __ Al-Maidah 55 to 66 __ Peer Saen Ghulam Rasool Qasmi.md",
     "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 45 #part 2 __ Al-Maidah 48 to 54 __ Peer Saen Ghulam Rasool Qasmi.md",
-    "00 Insaan-aur-Aalam/Qasmi Tafseer Notes/Dorah Tafseerul Quran #lecture 45 #part 1 __ Al-Maidah 43 to 47 __ Peer Saen Ghulam Rasool Qasmi.md",
     "UPSC/01 GS 1/GS 1 Syllabus.canvas",
     "06 Sociology/IGNOU MSO/Untitled.canvas",
     "00 Insaan-aur-Aalam/28 SITrust/Surah Aale Imraan SITrust.canvas",

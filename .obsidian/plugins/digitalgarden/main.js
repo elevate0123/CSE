@@ -28344,6 +28344,28 @@ var SvgFileSuggest = class extends TextInputSuggest {
     this.close();
   }
 };
+var ImageFileSuggest = class extends TextInputSuggest {
+  getSuggestions(inputStr) {
+    const abstractFiles = this.app.vault.getAllLoadedFiles();
+    const files = [];
+    const lowerCaseInputStr = inputStr.toLowerCase();
+    const imageExtensions = ["png", "jpg", "jpeg", "gif", "svg", "webp"];
+    abstractFiles.forEach((file) => {
+      if (file instanceof import_obsidian10.TFile && imageExtensions.includes(file.extension.toLowerCase()) && file.path.toLowerCase().contains(lowerCaseInputStr)) {
+        files.push(file);
+      }
+    });
+    return files;
+  }
+  renderSuggestion(file, el) {
+    el.setText(file.path);
+  }
+  selectSuggestion(file) {
+    this.inputEl.value = file.path;
+    this.inputEl.trigger("input");
+    this.close();
+  }
+};
 
 // src/views/SettingsView/addFilterInput.ts
 var import_obsidian11 = require("obsidian");
@@ -30505,6 +30527,7 @@ var SettingView = class {
           new import_obsidian14.Notice("Applying settings to site...");
           yield this.saveSettingsAndUpdateEnv();
           yield this.addFavicon(octokit);
+          yield this.addLogo(octokit);
         }));
       };
       new import_obsidian14.Setting(this.settingsRootElement).setName("Appearance").setDesc("Manage themes, sitename and styling on your site").addButton((cb) => {
@@ -30687,6 +30710,17 @@ var SettingView = class {
             yield this.saveSettings();
           })
         );
+      });
+      new import_obsidian14.Setting(themeSection).setName("Logo").setDesc(
+        "Path to an image in your vault to use as a logo instead of the sitename. Leave blank to show sitename text."
+      ).addText((tc) => {
+        tc.setPlaceholder("mylogo.png");
+        tc.setValue(this.settings.logoPath);
+        tc.onChange((val) => __async(this, null, function* () {
+          this.settings.logoPath = val;
+          yield this.saveSettings();
+        }));
+        new ImageFileSuggest(this.app, tc.inputEl);
       });
       new import_obsidian14.Setting(themeSection).setName("Main language").setDesc(
         "Language code (ISO 639-1) for the main language of your site. This is used to set the correct language on your site to assist search engines and browsers."
@@ -30952,6 +30986,89 @@ var SettingView = class {
           content: base64SettingsFaviconContent,
           // @ts-expect-error TODO: abstract octokit response
           sha: faviconExists ? currentFaviconOnSite.data.sha : null
+        });
+      }
+    });
+  }
+  addLogo(octokit) {
+    return __async(this, null, function* () {
+      var _a2;
+      const logoBasePath = "src/site/logo";
+      const logoExtensions = ["png", "jpg", "jpeg", "gif", "svg", "webp"];
+      for (const ext of logoExtensions) {
+        try {
+          const existingLogo = yield octokit.request(
+            "GET /repos/{owner}/{repo}/contents/{path}",
+            {
+              owner: this.settings.githubUserName,
+              repo: this.settings.githubRepo,
+              path: `${logoBasePath}.${ext}`
+            }
+          );
+          if (existingLogo.data) {
+            const currentPath = this.settings.logoPath;
+            const currentExt = currentPath ? (_a2 = currentPath.split(".").pop()) == null ? void 0 : _a2.toLowerCase() : null;
+            if (!currentPath || currentExt !== ext) {
+              yield octokit.request(
+                "DELETE /repos/{owner}/{repo}/contents/{path}",
+                {
+                  owner: this.settings.githubUserName,
+                  repo: this.settings.githubRepo,
+                  path: `${logoBasePath}.${ext}`,
+                  message: `Remove logo.${ext}`,
+                  // @ts-expect-error TODO: abstract octokit response
+                  sha: existingLogo.data.sha
+                }
+              );
+            }
+          }
+        } catch (e) {
+        }
+      }
+      if (!this.settings.logoPath) {
+        return;
+      }
+      const logoFile = this.app.vault.getAbstractFileByPath(
+        this.settings.logoPath
+      );
+      if (!(logoFile instanceof import_obsidian14.TFile)) {
+        new import_obsidian14.Notice(`${this.settings.logoPath} is not a valid file.`);
+        return;
+      }
+      const logoContent = yield this.app.vault.readBinary(logoFile);
+      const base64LogoContent = arrayBufferToBase64(logoContent);
+      const logoExtension = logoFile.extension.toLowerCase();
+      const logoPath = `${logoBasePath}.${logoExtension}`;
+      let logoExists = true;
+      let logosAreIdentical = false;
+      let currentLogoOnSite = null;
+      try {
+        currentLogoOnSite = yield octokit.request(
+          "GET /repos/{owner}/{repo}/contents/{path}",
+          {
+            owner: this.settings.githubUserName,
+            repo: this.settings.githubRepo,
+            path: logoPath
+          }
+        );
+        logosAreIdentical = // @ts-expect-error TODO: abstract octokit response
+        currentLogoOnSite.data.content === base64LogoContent;
+        if (logosAreIdentical) {
+          import_js_logger9.default.info("Logos are identical, skipping update");
+          return;
+        }
+      } catch (e) {
+        logoExists = false;
+      }
+      if (!logoExists || !logosAreIdentical) {
+        yield octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
+          owner: this.settings.githubUserName,
+          repo: this.settings.githubRepo,
+          path: logoPath,
+          message: `Update logo.${logoExtension}`,
+          content: base64LogoContent,
+          // @ts-expect-error TODO: abstract octokit response
+          sha: logoExists ? currentLogoOnSite.data.sha : null
         });
       }
     });
@@ -31391,6 +31508,7 @@ var DEFAULT_SETTINGS = {
   // Stringify to be backwards compatible with older versions
   theme: JSON.stringify(defaultTheme),
   faviconPath: "",
+  logoPath: "",
   useFullResolutionImages: false,
   noteSettingsIsInitialized: false,
   siteName: "Digital Garden",
