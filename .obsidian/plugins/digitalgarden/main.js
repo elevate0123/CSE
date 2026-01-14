@@ -10394,17 +10394,17 @@ var generateGardenSnapshot_exports = {};
 __export(generateGardenSnapshot_exports, {
   generateGardenSnapshot: () => generateGardenSnapshot
 });
-var import_obsidian17, import_promises, SNAPSHOT_PATH, generateGardenSnapshot;
+var import_obsidian18, import_promises, SNAPSHOT_PATH, generateGardenSnapshot;
 var init_generateGardenSnapshot = __esm({
   "src/test/snapshot/generateGardenSnapshot.ts"() {
     "use strict";
-    import_obsidian17 = require("obsidian");
+    import_obsidian18 = require("obsidian");
     import_promises = __toESM(require("fs/promises"));
     SNAPSHOT_PATH = "src/test/snapshot/snapshot.md";
     generateGardenSnapshot = (settings, publisher) => __async(null, null, function* () {
       const devPluginPath = settings.devPluginPath;
       if (!devPluginPath) {
-        new import_obsidian17.Notice("devPluginPath missing, run generateGardenSettings.mjs");
+        new import_obsidian18.Notice("devPluginPath missing, run generateGardenSettings.mjs");
         return;
       }
       const marked = yield publisher.getFilesMarkedForPublishing();
@@ -10426,11 +10426,11 @@ var init_generateGardenSnapshot = __esm({
       }
       fileString += "==========\n";
       const fullSnapshotPath = `${devPluginPath}/${SNAPSHOT_PATH}`;
-      if (import_obsidian17.Platform.isDesktop) {
+      if (import_obsidian18.Platform.isDesktop) {
         yield import_promises.default.writeFile(fullSnapshotPath, fileString);
       }
-      new import_obsidian17.Notice(`Snapshot written to ${fullSnapshotPath}`);
-      new import_obsidian17.Notice(`Check snapshot to make sure nothing has accidentally changed`);
+      new import_obsidian18.Notice(`Snapshot written to ${fullSnapshotPath}`);
+      new import_obsidian18.Notice(`Check snapshot to make sure nothing has accidentally changed`);
     });
   }
 });
@@ -10441,10 +10441,10 @@ __export(main_exports, {
   default: () => DigitalGarden
 });
 module.exports = __toCommonJS(main_exports);
-var import_obsidian18 = require("obsidian");
+var import_obsidian19 = require("obsidian");
 
 // src/publisher/Publisher.ts
-var import_obsidian4 = require("obsidian");
+var import_obsidian5 = require("obsidian");
 
 // node_modules/js-base64/base64.mjs
 var version = "3.7.5";
@@ -10623,11 +10623,13 @@ function generateUrlPath(filePath, slugifyPath = true) {
   if (!filePath) {
     return filePath;
   }
+  const isCanvas = filePath.endsWith(".canvas");
   const extensionLessPath = filePath.contains(".") ? filePath.substring(0, filePath.lastIndexOf(".")) : filePath;
   if (!slugifyPath) {
-    return extensionLessPath + "/";
+    return extensionLessPath + (isCanvas ? ".canvas/" : "/");
   }
-  return extensionLessPath.split("/").map((x) => (0, import_slugify.default)(x)).join("/") + "/";
+  const slugifiedPath = extensionLessPath.split("/").map((x) => (0, import_slugify.default)(x)).join("/");
+  return slugifiedPath + (isCanvas ? ".canvas/" : "/");
 }
 function generateBlobHash(content) {
   const byteLength = new TextEncoder().encode(content).byteLength;
@@ -10700,7 +10702,7 @@ function isPublishFrontmatterValid(frontMatter) {
 }
 
 // src/compiler/GardenPageCompiler.ts
-var import_obsidian3 = require("obsidian");
+var import_obsidian4 = require("obsidian");
 
 // src/ui/suggest/constants.ts
 var seedling = `<g style="pointer-events:all"><title style="pointer-events: none" opacity="0.33">Layer 1</title><g id="hair" style="pointer-events: none" opacity="0.33"></g><g id="skin" style="pointer-events: none" opacity="0.33"></g><g id="skin-shadow" style="pointer-events: none" opacity="0.33"></g><g id="line"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M47.71119,35.9247" id="svg_3"></path><polyline fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="49.813106536865234,93.05191133916378 49.813106536865234,69.57996462285519 40.03312683105469,26.548054680228233 " id="svg_4"></polyline><line x1="49.81311" x2="59.59309" y1="69.57996" y2="50.02" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" id="svg_5"></line><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M27.99666,14.21103C35.9517,16.94766 39.92393,26.36911 39.92393,26.36911S30.99696,31.3526 23.04075,28.61655S11.11348,16.45847 11.11348,16.45847S20.04456,11.4789 27.99666,14.21103z" id="svg_6"></path><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M76.46266698455811,45.61669603088379 C84.67706698455811,47.43146603088379 89.6945869845581,56.34024603088379 89.6945869845581,56.34024603088379 S81.3917769845581,62.30603603088379 73.17639698455811,60.492046030883785 S59.94447698455811,49.768496030883796 59.94447698455811,49.768496030883796 S68.2515869845581,43.80622603088379 76.46266698455811,45.61669603088379 z" id="svg_7"></path></g></g>`;
@@ -10987,6 +10989,9 @@ function delay(milliseconds) {
   });
 }
 
+// src/compiler/CanvasCompiler.ts
+var import_obsidian3 = require("obsidian");
+
 // src/compiler/FrontmatterCompiler.ts
 var FrontmatterCompiler = class {
   constructor(settings) {
@@ -11146,6 +11151,444 @@ ${frontMatterString}
       publishedFrontMatter.dgPassFrontmatter = dgPassFrontmatter;
     }
     return publishedFrontMatter;
+  }
+};
+
+// src/compiler/CanvasCompiler.ts
+var COLOR_PRESETS = {
+  "1": "#fb464c",
+  // red
+  "2": "#e9973f",
+  // orange
+  "3": "#e0de71",
+  // yellow
+  "4": "#44cf6e",
+  // green
+  "5": "#53dfdd",
+  // cyan
+  "6": "#a882ff"
+  // purple
+};
+function resolveColor(color) {
+  if (!color) return void 0;
+  if (color.startsWith("#")) return color;
+  return COLOR_PRESETS[color];
+}
+function colorToId(color) {
+  return color.replace(/[^a-zA-Z0-9]/g, "").substring(0, 20);
+}
+var CanvasCompiler = class {
+  constructor(vault, metadataCache, settings) {
+    this.compileMarkdown = ({
+      idAppendage = "",
+      includeFrontMatter = true,
+      assets = []
+    } = {}) => (file) => (fileText) => __async(this, null, function* () {
+      var _a2, _b, _c, _d;
+      if (!file.file.name.endsWith(".canvas")) {
+        throw new Error("File is not a canvas file");
+      }
+      const canvasData = JSON.parse(fileText);
+      const canvasId = file.file.name.split(" ").join("_").replace(".", "") + idAppendage;
+      const nodesHtml = yield this.buildNodesHtml(
+        canvasData.nodes || [],
+        file,
+        assets
+      );
+      const edgesSvg = this.buildEdgesSvg(
+        canvasData.edges || [],
+        canvasData.nodes || []
+      );
+      const canvasCode = this.renderCanvas(canvasId, nodesHtml, edgesSvg);
+      let compiledFrontmatter = "";
+      if (includeFrontMatter) {
+        const frontmatterCompiler = new FrontmatterCompiler(
+          this.settings
+        );
+        const contentClassesKey = this.settings.contentClassesKey || "contentClasses";
+        const existingClasses = (_b = (_a2 = canvasData.metadata) == null ? void 0 : _a2.frontmatter) == null ? void 0 : _b[contentClassesKey];
+        const canvasPageClass = existingClasses ? `${existingClasses} canvas-page` : "canvas-page";
+        const canvasFrontmatter = __spreadProps(__spreadValues({}, (_d = (_c = canvasData.metadata) == null ? void 0 : _c.frontmatter) != null ? _d : {}), {
+          [contentClassesKey]: canvasPageClass
+        });
+        compiledFrontmatter = frontmatterCompiler.compile(
+          file,
+          canvasFrontmatter
+        );
+      }
+      return `${compiledFrontmatter}${canvasCode}`;
+    });
+    this.vault = vault;
+    this.metadataCache = metadataCache;
+    this.settings = settings;
+  }
+  setTextNodeProcessor(processor) {
+    this.textNodeProcessor = processor;
+  }
+  buildNodesHtml(nodes, file, assets) {
+    return __async(this, null, function* () {
+      const nodeHtmls = yield Promise.all(
+        nodes.map((node) => this.buildNodeHtml(node, file, assets))
+      );
+      return nodeHtmls.join("\n");
+    });
+  }
+  buildNodeHtml(node, file, assets) {
+    return __async(this, null, function* () {
+      const color = resolveColor(node.color);
+      const colorStyle = color ? `--canvas-color: ${color};` : "";
+      const colorClass = color ? "has-color" : "";
+      const baseStyle = `transform: translate(${node.x}px, ${node.y}px); width: ${node.width}px; height: ${node.height}px; ${colorStyle}`;
+      switch (node.type) {
+        case "text":
+          return yield this.buildTextNode(
+            node,
+            baseStyle,
+            colorClass,
+            file
+          );
+        case "file":
+          return yield this.buildFileNode(
+            node,
+            baseStyle,
+            colorClass,
+            file,
+            assets
+          );
+        case "link":
+          return this.buildLinkNode(node, baseStyle, colorClass);
+        case "group":
+          return yield this.buildGroupNode(
+            node,
+            baseStyle,
+            colorClass,
+            file,
+            assets
+          );
+        default:
+          return "";
+      }
+    });
+  }
+  buildTextNode(node, baseStyle, colorClass, file) {
+    return __async(this, null, function* () {
+      var _a2;
+      let processedText = node.text;
+      if (this.textNodeProcessor) {
+        try {
+          processedText = yield this.textNodeProcessor.processTextNodeContent(
+            file,
+            node.text
+          );
+        } catch (e) {
+          console.error("Error processing canvas text node:", e);
+        }
+      }
+      const base64Markdown = Buffer.from(processedText).toString("base64");
+      const textAlign = (_a2 = node.styleAttributes) == null ? void 0 : _a2.textAlign;
+      const contentStyle = textAlign ? `text-align: ${textAlign};` : "";
+      return `<div class="canvas-node canvas-node-text ${colorClass}" data-node-id="${node.id}" style="${baseStyle}">
+	<div class="canvas-node-container">
+		<div class="canvas-node-content markdown-rendered"${contentStyle ? ` style="${contentStyle}"` : ""}>
+			<div class="canvas-node-text-content" data-markdown="${base64Markdown}"></div>
+		</div>
+	</div>
+</div>`;
+    });
+  }
+  buildFileNode(node, baseStyle, colorClass, file, assets) {
+    return __async(this, null, function* () {
+      const isImage = /\.(png|jpg|jpeg|gif|webp|svg)$/i.test(node.file);
+      if (isImage) {
+        const linkedFile = this.metadataCache.getFirstLinkpathDest(
+          (0, import_obsidian3.getLinkpath)(node.file),
+          file.getPath()
+        );
+        if (linkedFile) {
+          try {
+            const imageData = yield this.vault.readBinary(linkedFile);
+            const imageBase64 = arrayBufferToBase64(imageData);
+            const imgPath2 = `/img/user/${linkedFile.path}`;
+            assets.push({ path: imgPath2, content: imageBase64 });
+            const altText2 = node.file.split("/").pop() || node.file;
+            return `<div class="canvas-node canvas-node-file canvas-node-image ${colorClass}" data-node-id="${node.id}" style="${baseStyle}">
+	<div class="canvas-node-container">
+		<div class="canvas-node-content image-embed">
+			<img src="${encodeURI(imgPath2)}" alt="${this.escapeHtml(
+              altText2
+            )}" loading="lazy" />
+		</div>
+	</div>
+</div>`;
+          } catch (e) {
+            console.error("Error reading canvas image:", e);
+          }
+        }
+        const resolvedPath = (linkedFile == null ? void 0 : linkedFile.path) || node.file;
+        const imgPath = encodeURI(`/img/user/${resolvedPath}`);
+        const altText = node.file.split("/").pop() || node.file;
+        return `<div class="canvas-node canvas-node-file canvas-node-image ${colorClass}" data-node-id="${node.id}" style="${baseStyle}">
+	<div class="canvas-node-container">
+		<div class="canvas-node-content image-embed">
+			<img src="${imgPath}" alt="${this.escapeHtml(altText)}" loading="lazy" />
+		</div>
+	</div>
+</div>`;
+      }
+      const gardenUrl = this.resolveFileToGardenUrl(node.file, file);
+      const subpath = node.subpath || "";
+      const fullUrl = gardenUrl + subpath;
+      const label = node.file.replace(/\.md$/, "").split("/").pop() || "";
+      return `<div class="canvas-node canvas-node-file ${colorClass}" data-node-id="${node.id}" data-file-path="${this.escapeHtml(node.file)}" style="${baseStyle}">
+	<div class="canvas-node-label">${this.escapeHtml(label)}</div>
+	<div class="canvas-node-container">
+		<div class="canvas-node-content markdown-embed">
+			<iframe src="${fullUrl}" class="canvas-file-iframe" loading="lazy"></iframe>
+		</div>
+	</div>
+</div>`;
+    });
+  }
+  buildLinkNode(node, baseStyle, colorClass) {
+    const url = node.url;
+    const youtubeId = this.extractYouTubeId(url);
+    if (youtubeId) {
+      return `<div class="canvas-node canvas-node-link canvas-node-youtube ${colorClass}" data-node-id="${node.id}" style="${baseStyle}">
+	<div class="canvas-node-label">YouTube</div>
+	<div class="canvas-node-container">
+		<div class="canvas-node-content">
+			<iframe src="https://www.youtube.com/embed/${youtubeId}" class="canvas-youtube-iframe" loading="lazy" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		</div>
+	</div>
+</div>`;
+    }
+    let label = url;
+    try {
+      const urlObj = new URL(url);
+      label = urlObj.hostname;
+    } catch (e) {
+    }
+    return `<div class="canvas-node canvas-node-link ${colorClass}" data-node-id="${node.id}" style="${baseStyle}">
+	<div class="canvas-node-label">${this.escapeHtml(label)}</div>
+	<div class="canvas-node-container">
+		<div class="canvas-node-content">
+			<iframe src="${this.escapeHtml(
+      url
+    )}" class="canvas-link-iframe" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
+		</div>
+	</div>
+</div>`;
+  }
+  extractYouTubeId(url) {
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+      /youtube\.com\/watch\?.*v=([a-zA-Z0-9_-]{11})/
+    ];
+    for (const pattern of patterns) {
+      const match2 = url.match(pattern);
+      if (match2 && match2[1]) {
+        return match2[1];
+      }
+    }
+    return null;
+  }
+  buildGroupNode(node, baseStyle, colorClass, file, assets) {
+    return __async(this, null, function* () {
+      const label = node.label || "";
+      let backgroundStyle = "";
+      if (node.background) {
+        const linkedFile = this.metadataCache.getFirstLinkpathDest(
+          (0, import_obsidian3.getLinkpath)(node.background),
+          file.getPath()
+        );
+        if (linkedFile) {
+          try {
+            const imageData = yield this.vault.readBinary(linkedFile);
+            const imageBase64 = arrayBufferToBase64(imageData);
+            const bgPath = `/img/user/${linkedFile.path}`;
+            assets.push({ path: bgPath, content: imageBase64 });
+            const bgSize = node.backgroundStyle === "repeat" ? "auto" : node.backgroundStyle === "ratio" ? "contain" : "cover";
+            backgroundStyle = `background-image: url('${encodeURI(
+              bgPath
+            )}'); background-size: ${bgSize}; background-repeat: ${node.backgroundStyle === "repeat" ? "repeat" : "no-repeat"};`;
+          } catch (e) {
+            console.error("Error reading canvas group background:", e);
+          }
+        }
+        if (!backgroundStyle) {
+          const resolvedPath = (linkedFile == null ? void 0 : linkedFile.path) || node.background;
+          const bgPath = encodeURI(`/img/user/${resolvedPath}`);
+          const bgSize = node.backgroundStyle === "repeat" ? "auto" : node.backgroundStyle === "ratio" ? "contain" : "cover";
+          backgroundStyle = `background-image: url('${bgPath}'); background-size: ${bgSize}; background-repeat: ${node.backgroundStyle === "repeat" ? "repeat" : "no-repeat"};`;
+        }
+      }
+      return `<div class="canvas-node canvas-node-group ${colorClass}" data-node-id="${node.id}" style="${baseStyle} ${backgroundStyle}">
+	${label ? `<div class="canvas-node-label">${this.escapeHtml(label)}</div>` : ""}
+</div>`;
+    });
+  }
+  buildEdgesSvg(edges, nodes) {
+    const nodeMap = new Map(nodes.map((n2) => [n2.id, n2]));
+    const colors = /* @__PURE__ */ new Set();
+    edges.forEach((edge) => {
+      colors.add(resolveColor(edge.color) || "var(--text-muted)");
+    });
+    const markerDefs = Array.from(colors).map((color) => {
+      const colorId = colorToId(color);
+      return `<marker id="arrow-${colorId}" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth">
+			<path d="M0,0.5 L5,3 L0,5.5" fill="none" stroke="${color}" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+		</marker>
+		<marker id="arrow-${colorId}-start" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto-start-reverse" markerUnits="strokeWidth">
+			<path d="M6,0.5 L1,3 L6,5.5" fill="none" stroke="${color}" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+		</marker>`;
+    }).join("\n");
+    const labelBgFilter = `<filter x="-0.1" y="-0.1" width="1.2" height="1.3" id="edge-label-bg">
+			<feFlood flood-color="var(--background-primary)" flood-opacity="1" result="bg"/>
+			<feMerge>
+				<feMergeNode in="bg"/>
+				<feMergeNode in="SourceGraphic"/>
+			</feMerge>
+		</filter>`;
+    const edgeElements = edges.map((edge) => {
+      const fromNode = nodeMap.get(edge.fromNode);
+      const toNode = nodeMap.get(edge.toNode);
+      if (!fromNode || !toNode) return "";
+      const fromPoint = this.getEdgePoint(
+        fromNode,
+        edge.fromSide || "right"
+      );
+      const toPoint = this.getEdgePoint(
+        toNode,
+        edge.toSide || "left"
+      );
+      const color = resolveColor(edge.color) || "var(--text-muted)";
+      const colorId = colorToId(color);
+      const hasArrowFrom = edge.fromEnd === "arrow";
+      const hasArrowTo = edge.toEnd !== "none";
+      const fromSide = edge.fromSide || "right";
+      const toSide = edge.toSide || "left";
+      const { path, cp1, cp2 } = this.createBezierPath(
+        fromPoint,
+        toPoint,
+        fromSide,
+        toSide
+      );
+      const markerStart = hasArrowFrom ? `marker-start="url(#arrow-${colorId}-start)"` : "";
+      const markerEnd = hasArrowTo ? `marker-end="url(#arrow-${colorId})"` : "";
+      let edgeHtml = `<path d="${path}" fill="none" stroke="${color}" stroke-width="2" class="canvas-edge" data-edge-id="${edge.id}" ${markerStart} ${markerEnd} />`;
+      if (edge.label) {
+        const midX = (fromPoint.x + 3 * cp1.x + 3 * cp2.x + toPoint.x) / 8;
+        const midY = (fromPoint.y + 3 * cp1.y + 3 * cp2.y + toPoint.y) / 8;
+        edgeHtml += `<text x="${midX}" y="${midY}" class="canvas-edge-label" filter="url(#edge-label-bg)" fill="${color}">${this.escapeHtml(
+          edge.label
+        )}</text>`;
+      }
+      return edgeHtml;
+    }).join("\n");
+    return `<defs>${markerDefs}${labelBgFilter}</defs>${edgeElements}`;
+  }
+  getEdgePoint(node, side) {
+    const centerX = node.x + node.width / 2;
+    const centerY = node.y + node.height / 2;
+    switch (side) {
+      case "top":
+        return { x: centerX, y: node.y };
+      case "right":
+        return { x: node.x + node.width, y: centerY };
+      case "bottom":
+        return { x: centerX, y: node.y + node.height };
+      case "left":
+        return { x: node.x, y: centerY };
+    }
+  }
+  createBezierPath(from, to, fromSide, toSide) {
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const curvature = Math.max(distance * 0.4, 50);
+    let cp1x = from.x, cp1y = from.y, cp2x = to.x, cp2y = to.y;
+    switch (fromSide) {
+      case "right":
+        cp1x += curvature;
+        break;
+      case "left":
+        cp1x -= curvature;
+        break;
+      case "top":
+        cp1y -= curvature;
+        break;
+      case "bottom":
+        cp1y += curvature;
+        break;
+    }
+    switch (toSide) {
+      case "right":
+        cp2x += curvature;
+        break;
+      case "left":
+        cp2x -= curvature;
+        break;
+      case "top":
+        cp2y -= curvature;
+        break;
+      case "bottom":
+        cp2y += curvature;
+        break;
+    }
+    return {
+      path: `M ${from.x} ${from.y} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${to.x} ${to.y}`,
+      cp1: { x: cp1x, y: cp1y },
+      cp2: { x: cp2x, y: cp2y }
+    };
+  }
+  resolveFileToGardenUrl(filePath, sourceFile) {
+    var _a2, _b;
+    const rewriteRules = getRewriteRules(this.settings.pathRewriteRules);
+    const linkedFile = this.metadataCache.getFirstLinkpathDest(
+      (0, import_obsidian3.getLinkpath)(filePath),
+      sourceFile.getPath()
+    );
+    if (!linkedFile) {
+      const pathWithoutExt = filePath.replace(/\.md$/, "");
+      return `/${generateUrlPath(
+        pathWithoutExt,
+        this.settings.slugifyEnabled
+      )}/`;
+    }
+    const metadata = this.metadataCache.getCache(linkedFile.path);
+    const permalink = (_a2 = metadata == null ? void 0 : metadata.frontmatter) == null ? void 0 : _a2["dg-permalink"];
+    const isHome = (_b = metadata == null ? void 0 : metadata.frontmatter) == null ? void 0 : _b["dg-home"];
+    if (isHome) {
+      return "/";
+    }
+    if (permalink) {
+      return sanitizePermalink(permalink);
+    }
+    const gardenPath = getGardenPathForNote(linkedFile.path, rewriteRules);
+    return `/${generateUrlPath(gardenPath, this.settings.slugifyEnabled)}/`;
+  }
+  escapeHtml(text2) {
+    return text2.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+  renderCanvas(canvasId, nodesHtml, edgesSvg) {
+    return `
+<div id="${canvasId}" class="canvas-wrapper hide">
+	<svg class="canvas-background">
+		<defs>
+			<pattern id="canvas-grid-${canvasId}" width="25" height="25" patternUnits="userSpaceOnUse">
+				<circle r="1.5" cx="12.5" cy="12.5"></circle>
+			</pattern>
+		</defs>
+		<rect width="100%" height="100%" fill="url(#canvas-grid-${canvasId})"></rect>
+	</svg>
+	<div class="canvas">
+		<svg class="canvas-edges-container" style="position:absolute;width:1px;height:1px;overflow:visible;">
+			${edgesSvg}
+		</svg>
+		${nodesHtml}
+	</div>
+</div>
+`;
   }
 };
 
@@ -17089,10 +17532,12 @@ var PublishFile = class {
       );
     });
   }
-  // TODO: This doesn't work yet, but file should be able to tell it's type
   getType() {
-    if (this.file.name.endsWith(".excalidraw")) {
+    if (this.file.name.endsWith(".excalidraw.md")) {
       return "excalidraw";
+    }
+    if (this.file.extension === "canvas") {
+      return "canvas";
     }
     return "markdown";
   }
@@ -17120,6 +17565,25 @@ var PublishFile = class {
   getFrontmatter() {
     var _a2, _b;
     return (_b = (_a2 = this.metadataCache.getCache(this.file.path)) == null ? void 0 : _a2.frontmatter) != null ? _b : {};
+  }
+  /**
+   * For canvas files, frontmatter is stored in the JSON metadata field.
+   * This method reads it directly from the file content.
+   */
+  getCanvasFrontmatter() {
+    return __async(this, null, function* () {
+      var _a2, _b;
+      if (this.file.extension !== "canvas") {
+        return this.getFrontmatter();
+      }
+      try {
+        const content = yield this.vault.cachedRead(this.file);
+        const canvasData = JSON.parse(content);
+        return (_b = (_a2 = canvasData == null ? void 0 : canvasData.metadata) == null ? void 0 : _a2.frontmatter) != null ? _b : {};
+      } catch (e) {
+        return {};
+      }
+    });
   }
   /** Add other possible sorting logic here, eg if we add dg-sortWeight
    * We might also want to sort by meta.getPath for rewritten garden path
@@ -17202,7 +17666,7 @@ var GardenPageCompiler = class {
           import_js_logger2.default.error(
             `Invalid regex: ${filter2.pattern} ${filter2.flags}`
           );
-          new import_obsidian3.Notice(
+          new import_obsidian4.Notice(
             `Your custom filters contains an invalid regex: ${filter2.pattern}. Skipping it.`
           );
         }
@@ -17270,7 +17734,7 @@ var GardenPageCompiler = class {
               linkedFileName = headerSplit[0];
               headerPath = headerSplit.length > 1 ? `#${headerSplit[1]}` : "";
             }
-            const fullLinkedFilePath = (0, import_obsidian3.getLinkpath)(linkedFileName);
+            const fullLinkedFilePath = (0, import_obsidian4.getLinkpath)(linkedFileName);
             if (fullLinkedFilePath === "") {
               continue;
             }
@@ -17285,14 +17749,15 @@ var GardenPageCompiler = class {
               );
               continue;
             }
-            if (linkedFile.extension === "md") {
+            if (linkedFile.extension === "md" || linkedFile.extension === "canvas") {
               const extensionlessPath = linkedFile.path.substring(
                 0,
                 linkedFile.path.lastIndexOf(".")
               );
+              const linkPath = linkedFile.extension === "canvas" ? `${extensionlessPath}.canvas` : extensionlessPath;
               convertedText = convertedText.replace(
                 linkMatch,
-                `[[${extensionlessPath}${headerPath}\\|${linkDisplayName}]]`
+                `[[${linkPath}${headerPath}\\|${linkDisplayName}]]`
               );
             }
           } catch (e) {
@@ -17319,7 +17784,16 @@ var GardenPageCompiler = class {
             transclusionMatch.indexOf("[") + 2,
             transclusionMatch.indexOf("]")
           ).split("|");
-          const transclusionFilePath = (0, import_obsidian3.getLinkpath)(transclusionFileName);
+          const youtubeId = this.extractYouTubeId(transclusionFileName);
+          if (youtubeId) {
+            const youtubeEmbed = `<div class="youtube-embed"><iframe src="https://www.youtube.com/embed/${youtubeId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+            transcludedText = transcludedText.replace(
+              transclusionMatch,
+              youtubeEmbed
+            );
+            continue;
+          }
+          const transclusionFilePath = (0, import_obsidian4.getLinkpath)(transclusionFileName);
           if (transclusionFilePath === "") {
             continue;
           }
@@ -17463,7 +17937,7 @@ ${headerSection}
         for (const svg of transcludedSvgs) {
           try {
             const [imageName, size] = svg.substring(svg.indexOf("[") + 2, svg.indexOf("]")).split("|");
-            const imagePath = (0, import_obsidian3.getLinkpath)(imageName);
+            const imagePath = (0, import_obsidian4.getLinkpath)(imageName);
             if (imagePath === "") {
               continue;
             }
@@ -17524,7 +17998,7 @@ ${headerSection}
     this.extractImageLinks = (file) => __async(this, null, function* () {
       const text2 = yield file.cachedRead();
       const assets = [];
-      const transcludedImageRegex = /!\[\[(.*?)(\.(png|jpg|jpeg|gif|webp))\|(.*?)\]\]|!\[\[(.*?)(\.(png|jpg|jpeg|gif|webp))\]\]/g;
+      const transcludedImageRegex = /!\[\[(.*?)(\.(png|jpg|jpeg|gif|webp|pdf))\|(.*?)\]\]|!\[\[(.*?)(\.(png|jpg|jpeg|gif|webp|pdf))\]\]/g;
       const transcludedImageMatches = text2.match(transcludedImageRegex);
       if (transcludedImageMatches) {
         for (let i = 0; i < transcludedImageMatches.length; i++) {
@@ -17534,7 +18008,7 @@ ${headerSection}
               imageMatch.indexOf("[") + 2,
               imageMatch.indexOf("]")
             ).split("|");
-            const imagePath = (0, import_obsidian3.getLinkpath)(imageName);
+            const imagePath = (0, import_obsidian4.getLinkpath)(imageName);
             if (imagePath === "") {
               continue;
             }
@@ -17551,7 +18025,7 @@ ${headerSection}
           }
         }
       }
-      const imageRegex = /!\[(.*?)\]\((.*?)(\.(png|jpg|jpeg|gif|webp))\)/g;
+      const imageRegex = /!\[(.*?)\]\((.*?)(\.(png|jpg|jpeg|gif|webp|pdf))\)/g;
       const imageMatches = text2.match(imageRegex);
       if (imageMatches) {
         for (let i = 0; i < imageMatches.length; i++) {
@@ -17609,7 +18083,7 @@ ${headerSection}
             if (lastValueIsMetaData) {
               metaData = `${lastValue}`;
             }
-            const imagePath = (0, import_obsidian3.getLinkpath)(imageName);
+            const imagePath = (0, import_obsidian4.getLinkpath)(imageName);
             if (imagePath === "") {
               continue;
             }
@@ -17621,7 +18095,7 @@ ${headerSection}
               continue;
             }
             const image = yield this.vault.readBinary(linkedFile);
-            const imageBase64 = (0, import_obsidian3.arrayBufferToBase64)(image);
+            const imageBase64 = (0, import_obsidian4.arrayBufferToBase64)(image);
             const cmsImgPath = `/img/user/${linkedFile.path}`;
             let name = "";
             if (metaData && size) {
@@ -17643,6 +18117,24 @@ ${headerSection}
             );
           } catch (e) {
             continue;
+          }
+        }
+      }
+      const youtubeRegex = /!\[([^\]]*)\]\((https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)[^)]+)\)/g;
+      const youtubeMatches = text2.match(youtubeRegex);
+      if (youtubeMatches) {
+        for (let i = 0; i < youtubeMatches.length; i++) {
+          const youtubeMatch = youtubeMatches[i];
+          const urlStart = youtubeMatch.lastIndexOf("(") + 1;
+          const urlEnd = youtubeMatch.lastIndexOf(")");
+          const url = youtubeMatch.substring(urlStart, urlEnd);
+          const youtubeId = this.extractYouTubeId(url);
+          if (youtubeId) {
+            const youtubeEmbed = `<div class="youtube-embed"><iframe src="https://www.youtube.com/embed/${youtubeId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+            imageText = imageText.replace(
+              youtubeMatch,
+              youtubeEmbed
+            );
           }
         }
       }
@@ -17679,7 +18171,7 @@ ${headerSection}
               continue;
             }
             const image = yield this.vault.readBinary(linkedFile);
-            const imageBase64 = (0, import_obsidian3.arrayBufferToBase64)(image);
+            const imageBase64 = (0, import_obsidian4.arrayBufferToBase64)(image);
             const cmsImgPath = `/img/user/${linkedFile.path}`;
             const imageMarkdown = `![${imageName}](${encodeURI(
               cmsImgPath
@@ -17713,7 +18205,7 @@ ${headerSection}
               pdfMatch.indexOf("]")
             ).split("|");
             const altText = metadataParts.join("|") || pdfNameFromFile;
-            const pdfPath = (0, import_obsidian3.getLinkpath)(pdfNameFromFile);
+            const pdfPath = (0, import_obsidian4.getLinkpath)(pdfNameFromFile);
             if (pdfPath === "") {
               imageText = imageText.replace(
                 pdfMatch,
@@ -17739,7 +18231,7 @@ ${headerSection}
               continue;
             }
             if (linkedFile.stat.size > PDF_MAX_SIZE_BYTES) {
-              new import_obsidian3.Notice(
+              new import_obsidian4.Notice(
                 `PDF ${linkedFile.name} is larger than 20MB and will not be published as an embed. A link will be used.`
               );
               imageText = imageText.replace(
@@ -17753,7 +18245,7 @@ ${headerSection}
               continue;
             }
             const pdfBinary = yield this.vault.readBinary(linkedFile);
-            const pdfBase64 = (0, import_obsidian3.arrayBufferToBase64)(pdfBinary);
+            const pdfBase64 = (0, import_obsidian4.arrayBufferToBase64)(pdfBinary);
             const cmsPdfPath = `/img/user/${linkedFile.path}`;
             assets.push({ path: cmsPdfPath, content: pdfBase64 });
             imageText = imageText.replace(
@@ -17823,7 +18315,7 @@ ${headerSection}
               continue;
             }
             if (linkedFile.stat.size > PDF_MAX_SIZE_BYTES) {
-              new import_obsidian3.Notice(
+              new import_obsidian4.Notice(
                 `PDF ${linkedFile.name} is larger than 20MB and will not be published as an embed. A link will be used.`
               );
               imageText = imageText.replace(
@@ -17835,7 +18327,7 @@ ${headerSection}
               continue;
             }
             const pdfBinary = yield this.vault.readBinary(linkedFile);
-            const pdfBase64 = (0, import_obsidian3.arrayBufferToBase64)(pdfBinary);
+            const pdfBase64 = (0, import_obsidian4.arrayBufferToBase64)(pdfBinary);
             const cmsPdfPath = `/img/user/${linkedFile.path}`;
             assets.push({ path: cmsPdfPath, content: pdfBase64 });
             imageText = imageText.replace(
@@ -17867,7 +18359,33 @@ ${headerSection}
     this.metadataCache = metadataCache;
     this.getFilesMarkedForPublishing = getFilesMarkedForPublishing;
     this.excalidrawCompiler = new ExcalidrawCompiler(vault);
+    this.canvasCompiler = new CanvasCompiler(
+      vault,
+      metadataCache,
+      settings
+    );
+    this.canvasCompiler.setTextNodeProcessor(this);
     this.rewriteRules = getRewriteRules(this.settings.pathRewriteRules);
+  }
+  /**
+   * Process text content from canvas text nodes through the same pipeline as notes.
+   * This enables wiki-links, transclusions, dataview, etc. in canvas text nodes.
+   */
+  processTextNodeContent(file, text2) {
+    return __async(this, null, function* () {
+      const CANVAS_TEXT_COMPILE_STEPS = [
+        this.convertCustomFilters,
+        this.createBlockIDs,
+        this.createTranscludedText(0),
+        this.convertDataViews,
+        this.convertLinksToFullPath,
+        this.removeObsidianComments
+      ];
+      return yield this.runCompilerSteps(
+        file,
+        CANVAS_TEXT_COMPILE_STEPS
+      )(text2);
+    });
   }
   generateMarkdown(file) {
     return __async(this, null, function* () {
@@ -17877,6 +18395,14 @@ ${headerSection}
         return [
           yield this.excalidrawCompiler.compileMarkdown({
             includeExcaliDrawJs: true
+          })(file)(vaultFileText),
+          assets
+        ];
+      }
+      if (file.file.extension === "canvas") {
+        return [
+          yield this.canvasCompiler.compileMarkdown({
+            assets: assets.images
           })(file)(vaultFileText),
           assets
         ];
@@ -17911,6 +18437,19 @@ ${headerSection}
       );
     }
     return fixMarkdownHeaderSyntax(headerName);
+  }
+  extractYouTubeId(url) {
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+      /youtube\.com\/watch\?.*v=([a-zA-Z0-9_-]{11})/
+    ];
+    for (const pattern of patterns) {
+      const match2 = url.match(pattern);
+      if (match2 && match2[1]) {
+        return match2[1];
+      }
+    }
+    return null;
   }
 };
 
@@ -19151,14 +19690,85 @@ var Publisher = class {
     const frontMatter = (_a2 = this.metadataCache.getCache(file.path)) == null ? void 0 : _a2.frontmatter;
     return hasPublishFlag(frontMatter);
   }
+  /**
+   * Check if a canvas file should be published by reading its JSON metadata.
+   * Canvas files store frontmatter in the metadata.frontmatter field.
+   */
+  shouldPublishCanvas(file) {
+    return __async(this, null, function* () {
+      var _a2;
+      if (file.extension !== "canvas") {
+        return this.shouldPublish(file);
+      }
+      try {
+        const content = yield this.vault.cachedRead(file);
+        const canvasData = JSON.parse(content);
+        const frontMatter = (_a2 = canvasData == null ? void 0 : canvasData.metadata) == null ? void 0 : _a2.frontmatter;
+        return hasPublishFlag(frontMatter);
+      } catch (e) {
+        return false;
+      }
+    });
+  }
+  /**
+   * Extract asset paths (images and PDFs) from a canvas file.
+   * Canvas files can reference assets via file nodes and group backgrounds.
+   */
+  extractCanvasAssets(file) {
+    return __async(this, null, function* () {
+      var _a2, _b;
+      const images = [];
+      const imageExtensions = [
+        "png",
+        "jpg",
+        "jpeg",
+        "gif",
+        "webp",
+        "svg",
+        "bmp",
+        "pdf"
+      ];
+      try {
+        const content = yield this.vault.cachedRead(file);
+        const canvasData = JSON.parse(content);
+        if (!canvasData.nodes || !Array.isArray(canvasData.nodes)) {
+          return images;
+        }
+        for (const node of canvasData.nodes) {
+          if (node.type === "file" && node.file) {
+            const ext = (_a2 = node.file.split(".").pop()) == null ? void 0 : _a2.toLowerCase();
+            if (ext && imageExtensions.includes(ext)) {
+              images.push(node.file);
+            }
+          }
+          if (node.type === "group" && node.background) {
+            const ext = (_b = node.background.split(".").pop()) == null ? void 0 : _b.toLowerCase();
+            if (ext && imageExtensions.includes(ext)) {
+              images.push(node.background);
+            }
+          }
+        }
+      } catch (e) {
+        import_js_logger5.default.error(
+          `Failed to extract images from canvas ${file.path}`,
+          e
+        );
+      }
+      return images;
+    });
+  }
   getFilesMarkedForPublishing() {
     return __async(this, null, function* () {
-      const files = this.vault.getMarkdownFiles();
+      const markdownFiles = this.vault.getMarkdownFiles();
+      const allFiles = this.vault.getFiles();
+      const canvasFiles = allFiles.filter((f) => f.extension === "canvas");
+      const files = [...markdownFiles, ...canvasFiles];
       const notesToPublish = [];
       const imagesToPublish = /* @__PURE__ */ new Set();
       for (const file of files) {
         try {
-          if (this.shouldPublish(file)) {
+          const shouldPublish = file.extension === "canvas" ? yield this.shouldPublishCanvas(file) : this.shouldPublish(file);
+          if (shouldPublish) {
             const publishFile = new PublishFile({
               file,
               vault: this.vault,
@@ -19167,8 +19777,14 @@ var Publisher = class {
               settings: this.settings
             });
             notesToPublish.push(publishFile);
-            const images = yield publishFile.getImageLinks();
-            images.forEach((i) => imagesToPublish.add(i));
+            if (file.extension === "md") {
+              const images = yield publishFile.getImageLinks();
+              images.forEach((i) => imagesToPublish.add(i));
+            }
+            if (file.extension === "canvas") {
+              const assets = yield this.extractCanvasAssets(file);
+              assets.forEach((i) => imagesToPublish.add(i));
+            }
           }
         } catch (e) {
           import_js_logger5.default.error(e);
@@ -19314,26 +19930,26 @@ var Publisher = class {
   validateSettings() {
     if (this.settings.publishPlatform === "ForestryMd" /* ForestryMd */) {
       if (!this.settings.forestrySettings.apiKey) {
-        new import_obsidian4.Notice(
+        new import_obsidian5.Notice(
           "Config error: You need to define a Forestry.md Garden Key in the plugin settings"
         );
         throw {};
       }
     } else {
       if (!this.settings.githubRepo) {
-        new import_obsidian4.Notice(
+        new import_obsidian5.Notice(
           "Config error: You need to define a GitHub repo in the plugin settings"
         );
         throw {};
       }
       if (!this.settings.githubUserName) {
-        new import_obsidian4.Notice(
+        new import_obsidian5.Notice(
           "Config error: You need to define a GitHub Username in the plugin settings"
         );
         throw {};
       }
       if (!this.settings.githubToken) {
-        new import_obsidian4.Notice(
+        new import_obsidian5.Notice(
           "Config error: You need to define a GitHub Token in the plugin settings"
         );
         throw {};
@@ -19369,7 +19985,7 @@ var PublishStatusBar = class {
 };
 
 // src/views/PublicationCenter/PublicationCenter.ts
-var import_obsidian7 = require("obsidian");
+var import_obsidian8 = require("obsidian");
 
 // node_modules/svelte/src/runtime/internal/utils.js
 function noop() {
@@ -20302,14 +20918,14 @@ function __awaiter(thisArg, _arguments, P, generator) {
 }
 
 // src/views/PublicationCenter/PublicationCenter.svelte
-var import_obsidian6 = require("obsidian");
+var import_obsidian7 = require("obsidian");
 
 // src/ui/Icon.svelte
-var import_obsidian5 = require("obsidian");
+var import_obsidian6 = require("obsidian");
 function create_fragment(ctx) {
   var _a2;
   let html_tag;
-  let raw_value = ((_a2 = (0, import_obsidian5.getIcon)(
+  let raw_value = ((_a2 = (0, import_obsidian6.getIcon)(
     /*name*/
     ctx[0]
   )) == null ? void 0 : _a2.outerHTML) + "";
@@ -20327,7 +20943,7 @@ function create_fragment(ctx) {
     p(ctx2, [dirty]) {
       var _a3;
       if (dirty & /*name*/
-      1 && raw_value !== (raw_value = ((_a3 = (0, import_obsidian5.getIcon)(
+      1 && raw_value !== (raw_value = ((_a3 = (0, import_obsidian6.getIcon)(
         /*name*/
         ctx2[0]
       )) == null ? void 0 : _a3.outerHTML) + "")) html_tag.p(raw_value);
@@ -20380,16 +20996,18 @@ function create_if_block_5(ctx) {
   );
   let t3;
   let t4;
+  let show_if = (
+    /*enableShowDiff*/
+    ctx[2] && !/*tree*/
+    ctx[0].path.endsWith(".canvas")
+  );
   let current;
   let mounted;
   let dispose;
   icon = new Icon_default({ props: { name: "file" } });
   let if_block0 = !/*readOnly*/
   ctx[1] && create_if_block_7(ctx);
-  let if_block1 = (
-    /*enableShowDiff*/
-    ctx[2] && create_if_block_6(ctx)
-  );
+  let if_block1 = show_if && create_if_block_6(ctx);
   return {
     c() {
       span2 = element("span");
@@ -20445,14 +21063,15 @@ function create_if_block_5(ctx) {
       if ((!current || dirty & /*tree*/
       1) && t3_value !== (t3_value = /*tree*/
       ctx2[0].name + "")) set_data(t3, t3_value);
-      if (
-        /*enableShowDiff*/
-        ctx2[2]
-      ) {
+      if (dirty & /*enableShowDiff, tree*/
+      5) show_if = /*enableShowDiff*/
+      ctx2[2] && !/*tree*/
+      ctx2[0].path.endsWith(".canvas");
+      if (show_if) {
         if (if_block1) {
           if_block1.p(ctx2, dirty);
-          if (dirty & /*enableShowDiff*/
-          4) {
+          if (dirty & /*enableShowDiff, tree*/
+          5) {
             transition_in(if_block1, 1);
           }
         } else {
@@ -22755,13 +23374,13 @@ function instance4($$self, $$props, $$invalidate) {
   }
   onMount(getPublishStatus);
   const rotatingCog = () => {
-    let cog = (0, import_obsidian6.getIcon)("cog");
+    let cog = (0, import_obsidian7.getIcon)("cog");
     cog === null || cog === void 0 ? void 0 : cog.classList.add("dg-rotate");
     cog === null || cog === void 0 ? void 0 : cog.style.setProperty("margin-right", "3px");
     return cog;
   };
   const bigRotatingCog = () => {
-    let cog = (0, import_obsidian6.getIcon)("cog");
+    let cog = (0, import_obsidian7.getIcon)("cog");
     cog === null || cog === void 0 ? void 0 : cog.classList.add("dg-rotate");
     cog === null || cog === void 0 ? void 0 : cog.style.setProperty("margin-right", "3px");
     cog === null || cog === void 0 ? void 0 : cog.style.setProperty("width", "40px");
@@ -23521,13 +24140,13 @@ var PublicationCenter2 = class {
           metadataCache: this.publisher.metadataCache,
           settings: this.settings
         });
-        if (localFile instanceof import_obsidian7.TFile) {
+        if (localFile instanceof import_obsidian8.TFile) {
           const [localContent, _] = yield this.publisher.compiler.generateMarkdown(
             localPublishFile
           );
           const diff2 = diffLines(remoteContent, localContent);
           let diffView;
-          const diffModal = new import_obsidian7.Modal(this.modal.app);
+          const diffModal = new import_obsidian8.Modal(this.modal.app);
           diffModal.titleEl.createEl("span", { text: `${localFile.basename}` }).prepend(this.getIcon("file-diff"));
           diffModal.onOpen = () => {
             diffView = new DiffView_default({
@@ -23566,7 +24185,7 @@ var PublicationCenter2 = class {
       };
       this.modal.open();
     };
-    this.modal = new import_obsidian7.Modal(app);
+    this.modal = new import_obsidian8.Modal(app);
     this.settings = settings;
     this.publishStatusManager = publishStatusManager;
     this.publisher = publisher;
@@ -23608,7 +24227,7 @@ var PublicationCenter2 = class {
   }
   getIcon(name) {
     var _a2;
-    const icon = (_a2 = (0, import_obsidian7.getIcon)(name)) != null ? _a2 : document.createElement("span");
+    const icon = (_a2 = (0, import_obsidian8.getIcon)(name)) != null ? _a2 : document.createElement("span");
     if (icon instanceof SVGSVGElement) {
       icon.style.marginRight = "4px";
     }
@@ -23693,7 +24312,7 @@ var PublishStatusManager = class {
 };
 
 // src/repositoryConnection/DigitalGardenSiteManager.ts
-var import_obsidian8 = require("obsidian");
+var import_obsidian9 = require("obsidian");
 var import_js_logger7 = __toESM(require_logger());
 
 // src/repositoryConnection/TemplateManager.ts
@@ -23962,7 +24581,7 @@ var DigitalGardenSiteManager = class {
   }
   updateEnv() {
     return __async(this, null, function* () {
-      var _a2, _b, _c, _d, _e, _f, _g, _h, _i;
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
       const theme = JSON.parse(this.settings.theme);
       const baseTheme = this.settings.baseTheme;
       const siteName = this.settings.siteName;
@@ -23971,7 +24590,7 @@ var DigitalGardenSiteManager = class {
       if (this.settings.gardenBaseUrl && !this.settings.gardenBaseUrl.startsWith("ghp_") && !this.settings.gardenBaseUrl.startsWith("github_pat") && this.settings.gardenBaseUrl.contains(".")) {
         gardenBaseUrl = this.settings.gardenBaseUrl;
       }
-      const envValues = __spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues({
+      const envValues = __spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues({
         SITE_NAME_HEADER: siteName,
         SITE_MAIN_LANGUAGE: mainLanguage,
         SITE_BASE_URL: gardenBaseUrl,
@@ -24002,6 +24621,12 @@ var DigitalGardenSiteManager = class {
         UI_SEARCH_CLOSE_HINT: this.settings.uiStrings.searchCloseHint
       }), ((_h = this.settings.uiStrings) == null ? void 0 : _h.searchNoResults) && {
         UI_SEARCH_NO_RESULTS: this.settings.uiStrings.searchNoResults
+      }), ((_i = this.settings.uiStrings) == null ? void 0 : _i.canvasDragHint) && {
+        UI_CANVAS_DRAG_HINT: this.settings.uiStrings.canvasDragHint
+      }), ((_j = this.settings.uiStrings) == null ? void 0 : _j.canvasZoomHint) && {
+        UI_CANVAS_ZOOM_HINT: this.settings.uiStrings.canvasZoomHint
+      }), ((_k = this.settings.uiStrings) == null ? void 0 : _k.canvasResetHint) && {
+        UI_CANVAS_RESET_HINT: this.settings.uiStrings.canvasResetHint
       });
       if (theme.name !== "default") {
         envValues["THEME"] = theme.cssUrl;
@@ -24011,10 +24636,10 @@ var DigitalGardenSiteManager = class {
       const envSettings = Object.entries(keysToSet).map(([key, value]) => `${key}=${value}`).join("\n");
       const base64Settings = gBase64.encode(envSettings);
       const currentFile = yield (yield this.getUserGardenConnection()).getFile(".env");
-      const decodedCurrentFile = gBase64.decode((_i = currentFile == null ? void 0 : currentFile.content) != null ? _i : "");
+      const decodedCurrentFile = gBase64.decode((_l = currentFile == null ? void 0 : currentFile.content) != null ? _l : "");
       if (decodedCurrentFile === envSettings) {
         logger3.info("No changes to .env file");
-        new import_obsidian8.Notice("Settings already up to date!");
+        new import_obsidian9.Notice("Settings already up to date!");
         return;
       }
       yield (yield this.getUserGardenConnection()).updateFile({
@@ -24029,7 +24654,7 @@ var DigitalGardenSiteManager = class {
     var _a2;
     const savedBaseUrl = this.settings.publishPlatform === "SelfHosted" /* SelfHosted */ ? this.settings.gardenBaseUrl : this.settings.forestrySettings.baseUrl;
     if (!savedBaseUrl) {
-      new import_obsidian8.Notice("Please set the garden base url in the settings");
+      new import_obsidian9.Notice("Please set the garden base url in the settings");
       throw new Error("Garden base url not set");
     }
     const baseUrl = `https://${extractBaseUrl(savedBaseUrl)}`;
@@ -24093,7 +24718,7 @@ var DigitalGardenSiteManager = class {
 };
 
 // src/views/DigitalGardenSettingTab.ts
-var import_obsidian16 = require("obsidian");
+var import_obsidian17 = require("obsidian");
 
 // node_modules/axios/lib/helpers/bind.js
 function bind(fn2, thisArg) {
@@ -26719,10 +27344,10 @@ var {
 } = axios_default;
 
 // src/views/SettingsView/SettingView.ts
-var import_obsidian14 = require("obsidian");
+var import_obsidian15 = require("obsidian");
 
 // src/ui/suggest/file-suggest.ts
-var import_obsidian10 = require("obsidian");
+var import_obsidian11 = require("obsidian");
 
 // node_modules/@popperjs/core/lib/enums.js
 var top = "top";
@@ -28182,7 +28807,7 @@ var createPopper = /* @__PURE__ */ popperGenerator({
 });
 
 // src/ui/suggest/suggest.ts
-var import_obsidian9 = require("obsidian");
+var import_obsidian10 = require("obsidian");
 var Suggest = class {
   constructor(owner, containerEl, scope) {
     this.owner = owner;
@@ -28266,7 +28891,7 @@ var TextInputSuggest = class {
   constructor(app, inputEl) {
     this.app = app;
     this.inputEl = inputEl;
-    this.scope = new import_obsidian9.Scope();
+    this.scope = new import_obsidian10.Scope();
     this.suggestEl = createDiv("suggestion-container");
     const suggestion = this.suggestEl.createDiv("suggestion");
     this.suggest = new Suggest(this, suggestion, this.scope);
@@ -28329,7 +28954,7 @@ var SvgFileSuggest = class extends TextInputSuggest {
     const files = [];
     const lowerCaseInputStr = inputStr.toLowerCase();
     abstractFiles.forEach((file) => {
-      if (file instanceof import_obsidian10.TFile && file.extension === "svg" && file.path.toLowerCase().contains(lowerCaseInputStr)) {
+      if (file instanceof import_obsidian11.TFile && file.extension === "svg" && file.path.toLowerCase().contains(lowerCaseInputStr)) {
         files.push(file);
       }
     });
@@ -28351,7 +28976,7 @@ var ImageFileSuggest = class extends TextInputSuggest {
     const lowerCaseInputStr = inputStr.toLowerCase();
     const imageExtensions = ["png", "jpg", "jpeg", "gif", "svg", "webp"];
     abstractFiles.forEach((file) => {
-      if (file instanceof import_obsidian10.TFile && imageExtensions.includes(file.extension.toLowerCase()) && file.path.toLowerCase().contains(lowerCaseInputStr)) {
+      if (file instanceof import_obsidian11.TFile && imageExtensions.includes(file.extension.toLowerCase()) && file.path.toLowerCase().contains(lowerCaseInputStr)) {
         files.push(file);
       }
     });
@@ -28368,14 +28993,14 @@ var ImageFileSuggest = class extends TextInputSuggest {
 };
 
 // src/views/SettingsView/addFilterInput.ts
-var import_obsidian11 = require("obsidian");
+var import_obsidian12 = require("obsidian");
 function addFilterInput(filter2, el, idx, plugin) {
   const item = el.createEl("li", {
     attr: {
       style: "list-style-type: none; position: relative; margin: 5px 0; padding-right: 45px"
     }
   });
-  const patternField = new import_obsidian11.TextComponent(el);
+  const patternField = new import_obsidian12.TextComponent(el);
   patternField.setPlaceholder("regex pattern").setValue(filter2.pattern).onChange((value) => __async(null, null, function* () {
     if (!value) {
       return;
@@ -28386,7 +29011,7 @@ function addFilterInput(filter2, el, idx, plugin) {
   const patternEl = patternField.inputEl;
   patternEl.style.width = "250px";
   item.appendChild(patternEl);
-  const replaceField = new import_obsidian11.TextComponent(el);
+  const replaceField = new import_obsidian12.TextComponent(el);
   replaceField.setPlaceholder("replacement").setValue(filter2.replace).onChange((value) => __async(null, null, function* () {
     if (!value) {
       return;
@@ -28398,7 +29023,7 @@ function addFilterInput(filter2, el, idx, plugin) {
   replaceEl.style.width = "250px";
   replaceEl.style.marginLeft = "5px";
   item.appendChild(replaceEl);
-  const flagField = new import_obsidian11.TextComponent(el);
+  const flagField = new import_obsidian12.TextComponent(el);
   flagField.setPlaceholder("flags").setValue(filter2.flags).onChange((value) => __async(null, null, function* () {
     if (!value) {
       return;
@@ -28410,7 +29035,7 @@ function addFilterInput(filter2, el, idx, plugin) {
   flagEl.style.width = "50px";
   flagEl.style.marginLeft = "5px";
   item.appendChild(flagEl);
-  const removeButton = new import_obsidian11.ButtonComponent(el);
+  const removeButton = new import_obsidian12.ButtonComponent(el);
   removeButton.setIcon("minus");
   removeButton.setTooltip("Remove filter");
   removeButton.onClick(() => __async(null, null, function* () {
@@ -28429,7 +29054,7 @@ function addFilterInput(filter2, el, idx, plugin) {
 }
 
 // src/views/SettingsView/GithubSettings.ts
-var import_obsidian12 = require("obsidian");
+var import_obsidian13 = require("obsidian");
 var GithubSettings = class {
   constructor(settings, settingsRootElement) {
     this.connectionStatusMessage = "";
@@ -28479,7 +29104,7 @@ var GithubSettings = class {
       }
       this.updateConnectionStatusIndicator();
     });
-    this.debouncedUpdateConnectionStatus = (0, import_obsidian12.debounce)(
+    this.debouncedUpdateConnectionStatus = (0, import_obsidian13.debounce)(
       this.updateConnectionStatus,
       500,
       true
@@ -28502,7 +29127,7 @@ var GithubSettings = class {
         statusText = this.connectionStatusMessage || "Connection error";
         statusClass = "connection-status-error";
       }
-      const icon = (0, import_obsidian12.getIcon)(iconName);
+      const icon = (0, import_obsidian13.getIcon)(iconName);
       if (icon) {
         icon.addClass("connection-status-icon");
         this.connectionStatusElement.appendChild(icon);
@@ -28570,7 +29195,7 @@ var GithubSettings = class {
     this.connectionStatusMessage = message;
   }
   initializeGitHubRepoSetting() {
-    new import_obsidian12.Setting(this.settingsRootElement).setName("GitHub repo name").setDesc("The name of the GitHub repository").addText(
+    new import_obsidian13.Setting(this.settingsRootElement).setName("GitHub repo name").setDesc("The name of the GitHub repository").addText(
       (text2) => text2.setPlaceholder("mydigitalgarden").setValue(this.settings.settings.githubRepo).onChange((value) => __async(this, null, function* () {
         this.settings.settings.githubRepo = value;
         yield this.checkConnectionAndSaveSettings();
@@ -28578,7 +29203,7 @@ var GithubSettings = class {
     );
   }
   initializeGitHubUserNameSetting() {
-    new import_obsidian12.Setting(this.settingsRootElement).setName("GitHub Username").setDesc("Your GitHub Username").addText(
+    new import_obsidian13.Setting(this.settingsRootElement).setName("GitHub Username").setDesc("Your GitHub Username").addText(
       (text2) => text2.setPlaceholder("myusername").setValue(this.settings.settings.githubUserName).onChange((value) => __async(this, null, function* () {
         this.settings.settings.githubUserName = value;
         yield this.checkConnectionAndSaveSettings();
@@ -28594,7 +29219,7 @@ var GithubSettings = class {
         link.innerText = "here!";
       });
     });
-    new import_obsidian12.Setting(this.settingsRootElement).setName("GitHub token").setDesc(desc).addText(
+    new import_obsidian13.Setting(this.settingsRootElement).setName("GitHub token").setDesc(desc).addText(
       (text2) => text2.setPlaceholder("Secret Token").setValue(this.settings.settings.githubToken).onChange((value) => __async(this, null, function* () {
         this.settings.settings.githubToken = value;
         yield this.checkConnectionAndSaveSettings();
@@ -29237,7 +29862,7 @@ var ForestryApi = class {
 };
 
 // src/views/SettingsView/ForestrySettings.svelte
-var import_obsidian13 = require("obsidian");
+var import_obsidian14 = require("obsidian");
 function create_else_block5(ctx) {
   let await_block_anchor;
   let promise;
@@ -29796,7 +30421,7 @@ function instance8($$self, $$props, $$invalidate) {
   const connect = () => __awaiter(void 0, void 0, void 0, function* () {
     let pageInfo = yield getPageInfo();
     if (!pageInfo) {
-      new import_obsidian13.Notice("Invalid Garden Key");
+      new import_obsidian14.Notice("Invalid Garden Key");
       return;
     }
     $$invalidate(0, settings.forestrySettings.forestryPageName = pageInfo.value.pageName, settings);
@@ -29853,7 +30478,7 @@ var ForestrySettings_default = ForestrySettings;
 var OBSIDIAN_THEME_URL = "https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/community-css-themes.json";
 var SettingView = class {
   constructor(app, settingsRootElement, settings, saveSettings) {
-    this.debouncedSaveAndUpdate = (0, import_obsidian14.debounce)(
+    this.debouncedSaveAndUpdate = (0, import_obsidian15.debounce)(
       this.saveSiteSettingsAndUpdateEnv,
       500,
       true
@@ -29866,7 +30491,7 @@ var SettingView = class {
   }
   getIcon(name) {
     var _a2;
-    return (_a2 = (0, import_obsidian14.getIcon)(name)) != null ? _a2 : document.createElement("span");
+    return (_a2 = (0, import_obsidian15.getIcon)(name)) != null ? _a2 : document.createElement("span");
   }
   reInitializeSettings() {
     if (this.prModal) {
@@ -29890,7 +30515,7 @@ var SettingView = class {
         text: "here.",
         href: "https://dg-docs.ole.dev/getting-started/01-getting-started/"
       });
-      new import_obsidian14.Setting(this.settingsRootElement).setName("Publish Platform").addDropdown((dd) => {
+      new import_obsidian15.Setting(this.settingsRootElement).setName("Publish Platform").addDropdown((dd) => {
         dd.addOption("SelfHosted" /* SelfHosted */, "GitHub/Self Hosted");
         dd.addOption("ForestryMd" /* ForestryMd */, "Forestry.md");
         if (this.settings.publishPlatform === "SelfHosted" /* SelfHosted */) {
@@ -29930,7 +30555,7 @@ var SettingView = class {
       this.settingsRootElement.createEl("h3", { text: "Localization" }).prepend(this.getIcon("languages"));
       this.initializeUIStringsSettings();
       this.settingsRootElement.createEl("h3", { text: "Advanced" }).prepend(this.getIcon("cog"));
-      new import_obsidian14.Setting(this.settingsRootElement).setName("Path Rewrite Rules").setDesc(
+      new import_obsidian15.Setting(this.settingsRootElement).setName("Path Rewrite Rules").setDesc(
         "Define rules to rewrite note folder structure in the garden. See the modal for more information."
       ).addButton((cb) => {
         cb.setButtonText("Manage Rewrite Rules");
@@ -29961,7 +30586,7 @@ var SettingView = class {
   }
   initializeDefaultNoteSettings() {
     return __async(this, null, function* () {
-      const noteSettingsModal = new import_obsidian14.Modal(this.app);
+      const noteSettingsModal = new import_obsidian15.Modal(this.app);
       let hasUnsavedChanges = false;
       const toggles = {};
       noteSettingsModal.titleEl.createEl("h1", {
@@ -29975,7 +30600,7 @@ var SettingView = class {
         text: "here.",
         href: "https://dg-docs.ole.dev/getting-started/03-note-settings/"
       });
-      new import_obsidian14.Setting(this.settingsRootElement).setName("Global Note Settings").setDesc(
+      new import_obsidian15.Setting(this.settingsRootElement).setName("Global Note Settings").setDesc(
         `Default settings for each published note. These can be overwritten per note via frontmatter.`
       ).addButton((cb) => {
         cb.setButtonText("Manage note settings");
@@ -30058,7 +30683,7 @@ var SettingView = class {
         }
       });
       updateApplyButton();
-      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show home link (dg-home-link)").setDesc(
+      new import_obsidian15.Setting(noteSettingsModal.contentEl).setName("Show home link (dg-home-link)").setDesc(
         "Determines whether to show a link back to the homepage or not."
       ).addToggle((t) => {
         toggles["dgHomeLink"] = t;
@@ -30068,7 +30693,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show local graph for notes (dg-show-local-graph)").setDesc(
+      new import_obsidian15.Setting(noteSettingsModal.contentEl).setName("Show local graph for notes (dg-show-local-graph)").setDesc(
         "When turned on, notes will show its local graph in a sidebar on desktop and at the bottom of the page on mobile."
       ).addToggle((t) => {
         toggles["dgShowLocalGraph"] = t;
@@ -30078,7 +30703,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show backlinks for notes (dg-show-backlinks)").setDesc(
+      new import_obsidian15.Setting(noteSettingsModal.contentEl).setName("Show backlinks for notes (dg-show-backlinks)").setDesc(
         "When turned on, notes will show backlinks in a sidebar on desktop and at the bottom of the page on mobile."
       ).addToggle((t) => {
         toggles["dgShowBacklinks"] = t;
@@ -30088,7 +30713,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show a table of content for notes (dg-show-toc)").setDesc(
+      new import_obsidian15.Setting(noteSettingsModal.contentEl).setName("Show a table of content for notes (dg-show-toc)").setDesc(
         "When turned on, notes will show all headers as a table of content in a sidebar on desktop. It will not be shown on mobile devices."
       ).addToggle((t) => {
         toggles["dgShowToc"] = t;
@@ -30098,7 +30723,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show inline title (dg-show-inline-title)").setDesc(
+      new import_obsidian15.Setting(noteSettingsModal.contentEl).setName("Show inline title (dg-show-inline-title)").setDesc(
         "When turned on, the title of the note will show on top of the page."
       ).addToggle((t) => {
         toggles["dgShowInlineTitle"] = t;
@@ -30108,7 +30733,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show filetree sidebar (dg-show-file-tree)").setDesc("When turned on, a filetree will be shown on your site.").addToggle((t) => {
+      new import_obsidian15.Setting(noteSettingsModal.contentEl).setName("Show filetree sidebar (dg-show-file-tree)").setDesc("When turned on, a filetree will be shown on your site.").addToggle((t) => {
         toggles["dgShowFileTree"] = t;
         t.setValue(this.settings.defaultNoteSettings.dgShowFileTree);
         t.onChange((val) => {
@@ -30116,7 +30741,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Enable search (dg-enable-search)").setDesc(
+      new import_obsidian15.Setting(noteSettingsModal.contentEl).setName("Enable search (dg-enable-search)").setDesc(
         "When turned on, users will be able to search through the content of your site."
       ).addToggle((t) => {
         toggles["dgEnableSearch"] = t;
@@ -30126,7 +30751,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Enable link preview (dg-link-preview)").setDesc(
+      new import_obsidian15.Setting(noteSettingsModal.contentEl).setName("Enable link preview (dg-link-preview)").setDesc(
         "When turned on, hovering over links to notes in your garden shows a scrollable preview."
       ).addToggle((t) => {
         toggles["dgLinkPreview"] = t;
@@ -30136,7 +30761,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Show Tags (dg-show-tags)").setDesc(
+      new import_obsidian15.Setting(noteSettingsModal.contentEl).setName("Show Tags (dg-show-tags)").setDesc(
         "When turned on, tags in your frontmatter will be displayed on each note. If search is enabled, clicking on a tag will bring up a search for all notes containing that tag."
       ).addToggle((t) => {
         toggles["dgShowTags"] = t;
@@ -30146,7 +30771,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(noteSettingsModal.contentEl).setName("Let all frontmatter through (dg-pass-frontmatter)").setDesc(
+      new import_obsidian15.Setting(noteSettingsModal.contentEl).setName("Let all frontmatter through (dg-pass-frontmatter)").setDesc(
         "THIS WILL BREAK YOUR SITE IF YOU DON'T KNOW WHAT YOU ARE DOING! (But disabling will fix it). Determines whether to let all frontmatter data through to the site template. Be aware that this could break your site if you have data in a format not recognized by the template engine, 11ty."
       ).addToggle((t) => {
         toggles["dgPassFrontmatter"] = t;
@@ -30160,7 +30785,7 @@ var SettingView = class {
   }
   initializeUIStringsSettings() {
     return __async(this, null, function* () {
-      const uiStringsModal = new import_obsidian14.Modal(this.app);
+      const uiStringsModal = new import_obsidian15.Modal(this.app);
       uiStringsModal.containerEl.addClass("dg-settings");
       let hasUnsavedChanges = false;
       const textControls = {};
@@ -30173,7 +30798,7 @@ var SettingView = class {
       descDiv.createEl("span", {
         text: "Customize text displayed on your garden. Leave empty to use defaults."
       });
-      new import_obsidian14.Setting(this.settingsRootElement).setName("UI Text / Localization").setDesc(
+      new import_obsidian15.Setting(this.settingsRootElement).setName("UI Text / Localization").setDesc(
         "Customize labels and messages shown on your garden (Search, Backlinks, etc.)"
       ).addButton((cb) => {
         cb.setButtonText("Manage UI text");
@@ -30305,7 +30930,7 @@ var SettingView = class {
       });
       updateApplyButton();
       uiStringsModal.contentEl.createEl("h3", { text: "Backlinks" }).prepend(this.getIcon("link"));
-      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Backlink header").setDesc('Default: "Pages mentioning this page"').addText((text2) => {
+      new import_obsidian15.Setting(uiStringsModal.contentEl).setName("Backlink header").setDesc('Default: "Pages mentioning this page"').addText((text2) => {
         var _a2, _b;
         textControls["backlinkHeader"] = text2;
         text2.setPlaceholder("Pages mentioning this page").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.backlinkHeader) != null ? _b : "").onChange((val) => {
@@ -30313,7 +30938,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("No backlinks message").setDesc('Default: "No other pages mentions this page"').addText((text2) => {
+      new import_obsidian15.Setting(uiStringsModal.contentEl).setName("No backlinks message").setDesc('Default: "No other pages mentions this page"').addText((text2) => {
         var _a2, _b;
         textControls["noBacklinksMessage"] = text2;
         text2.setPlaceholder("No other pages mentions this page").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.noBacklinksMessage) != null ? _b : "").onChange((val) => {
@@ -30322,7 +30947,7 @@ var SettingView = class {
         });
       });
       uiStringsModal.contentEl.createEl("h3", { text: "Search" }).prepend(this.getIcon("search"));
-      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Search button text").setDesc('Default: "Search"').addText((text2) => {
+      new import_obsidian15.Setting(uiStringsModal.contentEl).setName("Search button text").setDesc('Default: "Search"').addText((text2) => {
         var _a2, _b;
         textControls["searchButtonText"] = text2;
         text2.setPlaceholder("Search").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.searchButtonText) != null ? _b : "").onChange((val) => {
@@ -30330,7 +30955,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Search placeholder").setDesc('Default: "Start typing..."').addText((text2) => {
+      new import_obsidian15.Setting(uiStringsModal.contentEl).setName("Search placeholder").setDesc('Default: "Start typing..."').addText((text2) => {
         var _a2, _b;
         textControls["searchPlaceholder"] = text2;
         text2.setPlaceholder("Start typing...").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.searchPlaceholder) != null ? _b : "").onChange((val) => {
@@ -30338,7 +30963,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Enter to select hint").setDesc('Default: "Enter to select"').addText((text2) => {
+      new import_obsidian15.Setting(uiStringsModal.contentEl).setName("Enter to select hint").setDesc('Default: "Enter to select"').addText((text2) => {
         var _a2, _b;
         textControls["searchEnterHint"] = text2;
         text2.setPlaceholder("Enter to select").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.searchEnterHint) != null ? _b : "").onChange((val) => {
@@ -30346,7 +30971,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Navigate hint").setDesc('Default: "to navigate"').addText((text2) => {
+      new import_obsidian15.Setting(uiStringsModal.contentEl).setName("Navigate hint").setDesc('Default: "to navigate"').addText((text2) => {
         var _a2, _b;
         textControls["searchNavigateHint"] = text2;
         text2.setPlaceholder("to navigate").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.searchNavigateHint) != null ? _b : "").onChange((val) => {
@@ -30354,7 +30979,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Close hint").setDesc('Default: "ESC to close"').addText((text2) => {
+      new import_obsidian15.Setting(uiStringsModal.contentEl).setName("Close hint").setDesc('Default: "ESC to close"').addText((text2) => {
         var _a2, _b;
         textControls["searchCloseHint"] = text2;
         text2.setPlaceholder("ESC to close").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.searchCloseHint) != null ? _b : "").onChange((val) => {
@@ -30362,7 +30987,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("No results message").setDesc('Default: "No results for"').addText((text2) => {
+      new import_obsidian15.Setting(uiStringsModal.contentEl).setName("No results message").setDesc('Default: "No results for"').addText((text2) => {
         var _a2, _b;
         textControls["searchNoResults"] = text2;
         text2.setPlaceholder("No results for").setValue((_b = (_a2 = this.settings.uiStrings) == null ? void 0 : _a2.searchNoResults) != null ? _b : "").onChange((val) => {
@@ -30370,7 +30995,7 @@ var SettingView = class {
           markAsChanged();
         });
       });
-      new import_obsidian14.Setting(uiStringsModal.contentEl).setName("Preview placeholder text").setDesc('Default: "Select a result to preview"').addText((text2) => {
+      new import_obsidian15.Setting(uiStringsModal.contentEl).setName("Preview placeholder text").setDesc('Default: "Select a result to preview"').addText((text2) => {
         var _a2, _b;
         textControls["searchPreviewPlaceholder"] = text2;
         text2.setPlaceholder("Select a result to preview").setValue(
@@ -30384,7 +31009,7 @@ var SettingView = class {
   }
   initializeThemesSettings() {
     return __async(this, null, function* () {
-      const themeModal = new import_obsidian14.Modal(this.app);
+      const themeModal = new import_obsidian15.Modal(this.app);
       themeModal.containerEl.addClass("dg-settings");
       themeModal.titleEl.createEl("h1", { text: "Appearance Settings" });
       const controls = {
@@ -30524,13 +31149,13 @@ var SettingView = class {
           const octokit = new Octokit({
             auth: this.settings.githubToken
           });
-          new import_obsidian14.Notice("Applying settings to site...");
+          new import_obsidian15.Notice("Applying settings to site...");
           yield this.saveSettingsAndUpdateEnv();
           yield this.addFavicon(octokit);
           yield this.addLogo(octokit);
         }));
       };
-      new import_obsidian14.Setting(this.settingsRootElement).setName("Appearance").setDesc("Manage themes, sitename and styling on your site").addButton((cb) => {
+      new import_obsidian15.Setting(this.settingsRootElement).setName("Appearance").setDesc("Manage themes, sitename and styling on your site").addButton((cb) => {
         cb.setButtonText("Manage appearance");
         cb.onClick(() => __async(this, null, function* () {
           themeModal.open();
@@ -30547,20 +31172,20 @@ var SettingView = class {
             cls: "dg-settings-section"
           });
           styleSettingsSection.createEl("h3", { text: "Style Settings Plugin" }).prepend(this.getIcon("paintbrush"));
-          new import_obsidian14.Setting(styleSettingsSection).setName("Apply current style settings to site").setDesc(
+          new import_obsidian15.Setting(styleSettingsSection).setName("Apply current style settings to site").setDesc(
             "Click the apply button to use the current style settings from the Style Settings Plugin on your site. (The plugin looks at the currently APPLIED settings. Meaning you need to have the theme you are using in the garden selected in Obsidian before applying)"
           ).addButton((btn) => {
             btn.setButtonText("Apply Style Settings");
             btn.setCta();
             btn.onClick((_ev) => __async(this, null, function* () {
               var _a2;
-              new import_obsidian14.Notice("Applying Style Settings...");
+              new import_obsidian15.Notice("Applying Style Settings...");
               const styleSettingsNode = document.querySelector(
                 "#css-settings-manager"
               );
               const bodyClasses = (_a2 = document.querySelector("body")) == null ? void 0 : _a2.className;
               if (!styleSettingsNode && !bodyClasses) {
-                new import_obsidian14.Notice("No Style Settings found");
+                new import_obsidian15.Notice("No Style Settings found");
                 return;
               }
               if (styleSettingsNode == null ? void 0 : styleSettingsNode.innerHTML) {
@@ -30570,7 +31195,7 @@ var SettingView = class {
                 this.settings.styleSettingsBodyClasses = `${bodyClasses}`;
               }
               if (!this.settings.styleSettingsCss && !this.settings.styleSettingsBodyClasses) {
-                new import_obsidian14.Notice("No Style Settings found");
+                new import_obsidian15.Notice("No Style Settings found");
                 return;
               }
               yield this.saveSiteSettingsAndUpdateEnv(
@@ -30578,7 +31203,7 @@ var SettingView = class {
                 this.settings,
                 this.saveSettings
               );
-              new import_obsidian14.Notice("Style Settings applied to site");
+              new import_obsidian15.Notice("Style Settings applied to site");
             }));
           }).addButton((btn) => {
             btn.setButtonText("Clear");
@@ -30590,7 +31215,7 @@ var SettingView = class {
                 this.settings,
                 this.saveSettings
               );
-              new import_obsidian14.Notice("Style Settings removed from site");
+              new import_obsidian15.Notice("Style Settings removed from site");
             }));
           });
         }
@@ -30690,7 +31315,7 @@ var SettingView = class {
         const target = e.target;
         renderThemes(target.value);
       });
-      new import_obsidian14.Setting(themeSection).setName("Base theme").addDropdown((dd) => {
+      new import_obsidian15.Setting(themeSection).setName("Base theme").addDropdown((dd) => {
         controls.baseTheme = dd;
         dd.addOption("dark", "Dark");
         dd.addOption("light", "Light");
@@ -30700,7 +31325,7 @@ var SettingView = class {
           yield this.saveSettings();
         }));
       });
-      new import_obsidian14.Setting(themeSection).setName("Sitename").setDesc(
+      new import_obsidian15.Setting(themeSection).setName("Sitename").setDesc(
         "The name of your site. This will be displayed as the site header."
       ).addText((text2) => {
         controls.siteName = text2;
@@ -30711,7 +31336,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian14.Setting(themeSection).setName("Logo").setDesc(
+      new import_obsidian15.Setting(themeSection).setName("Logo").setDesc(
         "Path to an image in your vault to use as a logo instead of the sitename. Leave blank to show sitename text."
       ).addText((tc) => {
         tc.setPlaceholder("mylogo.png");
@@ -30722,7 +31347,7 @@ var SettingView = class {
         }));
         new ImageFileSuggest(this.app, tc.inputEl);
       });
-      new import_obsidian14.Setting(themeSection).setName("Main language").setDesc(
+      new import_obsidian15.Setting(themeSection).setName("Main language").setDesc(
         "Language code (ISO 639-1) for the main language of your site. This is used to set the correct language on your site to assist search engines and browsers."
       ).addText((text2) => {
         controls.mainLanguage = text2;
@@ -30733,7 +31358,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian14.Setting(themeSection).setName("Favicon").setDesc(
+      new import_obsidian15.Setting(themeSection).setName("Favicon").setDesc(
         "Path to an svg in your vault you wish to use as a favicon. Leave blank to use default. Must be square! (eg. 16x16)"
       ).addText((tc) => {
         tc.setPlaceholder("myfavicon.svg");
@@ -30744,7 +31369,7 @@ var SettingView = class {
         }));
         new SvgFileSuggest(this.app, tc.inputEl);
       });
-      new import_obsidian14.Setting(themeSection).setName("Use full resolution images").setDesc(
+      new import_obsidian15.Setting(themeSection).setName("Use full resolution images").setDesc(
         "By default, the images on your site are compressed to make your site load faster. If you instead want to use the full resolution images, enable this setting."
       ).addToggle((toggle) => {
         controls.useFullResolutionImages = toggle;
@@ -30754,12 +31379,12 @@ var SettingView = class {
           yield this.saveSettings();
         }));
       });
-      new import_obsidian14.Setting(themeSection).setClass("dg-apply-button-container").addButton(handleSaveSettingsButton);
+      new import_obsidian15.Setting(themeSection).setClass("dg-apply-button-container").addButton(handleSaveSettingsButton);
       const timestampsSection = themeModal.contentEl.createDiv({
         cls: "dg-settings-section"
       });
       timestampsSection.createEl("h3", { text: "Timestamps Settings" }).prepend(this.getIcon("calendar-clock"));
-      new import_obsidian14.Setting(timestampsSection).setName("Timestamp format").setDesc(
+      new import_obsidian15.Setting(timestampsSection).setName("Timestamp format").setDesc(
         "The format string to render timestamp on the garden. Must be luxon compatible"
       ).addText((text2) => {
         controls.timestampFormat = text2;
@@ -30770,7 +31395,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian14.Setting(timestampsSection).setName("Show created timestamp").addToggle((t) => {
+      new import_obsidian15.Setting(timestampsSection).setName("Show created timestamp").addToggle((t) => {
         controls.showCreatedTimestamp = t;
         t.setValue(this.settings.showCreatedTimestamp).onChange(
           (value) => __async(this, null, function* () {
@@ -30779,7 +31404,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian14.Setting(timestampsSection).setName("Created timestamp Frontmatter Key").setDesc(
+      new import_obsidian15.Setting(timestampsSection).setName("Created timestamp Frontmatter Key").setDesc(
         "Key to get the created timestamp from the frontmatter. Leave blank to get the value from file creation time. The value can be any value that luxon Datetime.fromISO can parse."
       ).addText(
         (text2) => text2.setValue(this.settings.createdTimestampKey).onChange((value) => __async(this, null, function* () {
@@ -30787,7 +31412,7 @@ var SettingView = class {
           yield this.saveSettings();
         }))
       );
-      new import_obsidian14.Setting(timestampsSection).setName("Show updated timestamp").addToggle((t) => {
+      new import_obsidian15.Setting(timestampsSection).setName("Show updated timestamp").addToggle((t) => {
         controls.showUpdatedTimestamp = t;
         t.setValue(this.settings.showUpdatedTimestamp).onChange(
           (value) => __async(this, null, function* () {
@@ -30796,7 +31421,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian14.Setting(timestampsSection).setName("Updated timestamp Frontmatter Key").setDesc(
+      new import_obsidian15.Setting(timestampsSection).setName("Updated timestamp Frontmatter Key").setDesc(
         "Key to get the updated timestamp from the frontmatter. Leave blank to get the value from file update time. The value can be any value that luxon Datetime.fromISO can parse."
       ).addText(
         (text2) => text2.setValue(this.settings.updatedTimestampKey).onChange((value) => __async(this, null, function* () {
@@ -30804,12 +31429,12 @@ var SettingView = class {
           yield this.saveSettings();
         }))
       );
-      new import_obsidian14.Setting(timestampsSection).setClass("dg-apply-button-container").addButton(handleSaveSettingsButton);
+      new import_obsidian15.Setting(timestampsSection).setClass("dg-apply-button-container").addButton(handleSaveSettingsButton);
       const cssSection = themeModal.contentEl.createDiv({
         cls: "dg-settings-section"
       });
       cssSection.createEl("h3", { text: "CSS settings" }).prepend(this.getIcon("code"));
-      new import_obsidian14.Setting(cssSection).setName("Body Classes Key").setDesc(
+      new import_obsidian15.Setting(cssSection).setName("Body Classes Key").setDesc(
         "Key for setting css-classes to the note body from the frontmatter."
       ).addText(
         (text2) => text2.setValue(this.settings.contentClassesKey).onChange((value) => __async(this, null, function* () {
@@ -30817,7 +31442,7 @@ var SettingView = class {
           yield this.saveSettings();
         }))
       );
-      new import_obsidian14.Setting(cssSection).setClass("dg-apply-button-container").addButton(handleSaveSettingsButton);
+      new import_obsidian15.Setting(cssSection).setClass("dg-apply-button-container").addButton(handleSaveSettingsButton);
       const noteIconsSection = themeModal.contentEl.createDiv({
         cls: "dg-settings-section"
       });
@@ -30826,13 +31451,13 @@ var SettingView = class {
         text: "Documentation on note icons",
         href: "https://dg-docs.ole.dev/advanced/note-specific-settings/#note-icons"
       });
-      new import_obsidian14.Setting(noteIconsSection).setName("Note icon Frontmatter Key").setDesc("Key to get the note icon value from the frontmatter").addText(
+      new import_obsidian15.Setting(noteIconsSection).setName("Note icon Frontmatter Key").setDesc("Key to get the note icon value from the frontmatter").addText(
         (text2) => text2.setValue(this.settings.noteIconKey).onChange((value) => __async(this, null, function* () {
           this.settings.noteIconKey = value;
           yield this.saveSettings();
         }))
       );
-      new import_obsidian14.Setting(noteIconsSection).setName("Default note icon Value").setDesc("The default value for note icon if not specified").addText((text2) => {
+      new import_obsidian15.Setting(noteIconsSection).setName("Default note icon Value").setDesc("The default value for note icon if not specified").addText((text2) => {
         controls.defaultNoteIcon = text2;
         text2.setValue(this.settings.defaultNoteIcon).onChange(
           (value) => __async(this, null, function* () {
@@ -30841,7 +31466,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian14.Setting(noteIconsSection).setName("Show note icon on Title").addToggle((t) => {
+      new import_obsidian15.Setting(noteIconsSection).setName("Show note icon on Title").addToggle((t) => {
         controls.showNoteIconOnTitle = t;
         t.setValue(this.settings.showNoteIconOnTitle).onChange(
           (value) => __async(this, null, function* () {
@@ -30850,7 +31475,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian14.Setting(noteIconsSection).setName("Show note icon in FileTree").addToggle((t) => {
+      new import_obsidian15.Setting(noteIconsSection).setName("Show note icon in FileTree").addToggle((t) => {
         controls.showNoteIconInFileTree = t;
         t.setValue(this.settings.showNoteIconInFileTree).onChange(
           (value) => __async(this, null, function* () {
@@ -30859,7 +31484,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian14.Setting(noteIconsSection).setName("Show note icon on Internal Links").addToggle((t) => {
+      new import_obsidian15.Setting(noteIconsSection).setName("Show note icon on Internal Links").addToggle((t) => {
         controls.showNoteIconOnInternalLink = t;
         t.setValue(this.settings.showNoteIconOnInternalLink).onChange(
           (value) => __async(this, null, function* () {
@@ -30868,7 +31493,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian14.Setting(noteIconsSection).setName("Show note icon on Backlinks").addToggle((t) => {
+      new import_obsidian15.Setting(noteIconsSection).setName("Show note icon on Backlinks").addToggle((t) => {
         controls.showNoteIconOnBackLink = t;
         t.setValue(this.settings.showNoteIconOnBackLink).onChange(
           (value) => __async(this, null, function* () {
@@ -30877,7 +31502,7 @@ var SettingView = class {
           })
         );
       });
-      new import_obsidian14.Setting(noteIconsSection).setClass("dg-apply-button-container").addButton(handleSaveSettingsButton);
+      new import_obsidian15.Setting(noteIconsSection).setClass("dg-apply-button-container").addButton(handleSaveSettingsButton);
     });
   }
   saveSettingsAndUpdateEnv() {
@@ -30885,7 +31510,7 @@ var SettingView = class {
       const theme = JSON.parse(this.settings.theme);
       const baseTheme = this.settings.baseTheme;
       if (theme.modes.indexOf(baseTheme) < 0) {
-        new import_obsidian14.Notice(
+        new import_obsidian15.Notice(
           `The ${theme.name} theme doesn't support ${baseTheme} mode.`
         );
         return;
@@ -30895,12 +31520,12 @@ var SettingView = class {
         this.settings
       );
       yield gardenManager.updateEnv();
-      new import_obsidian14.Notice("Successfully applied settings");
+      new import_obsidian15.Notice("Successfully applied settings");
     });
   }
   saveSiteSettingsAndUpdateEnv(metadataCache, settings, saveSettings) {
     return __async(this, null, function* () {
-      new import_obsidian14.Notice("Updating settings...");
+      new import_obsidian15.Notice("Updating settings...");
       let updateFailed = false;
       try {
         const gardenManager = new DigitalGardenSiteManager(
@@ -30909,13 +31534,13 @@ var SettingView = class {
         );
         yield gardenManager.updateEnv();
       } catch (e) {
-        new import_obsidian14.Notice(
+        new import_obsidian15.Notice(
           "Failed to update settings. Make sure you have an internet connection."
         );
         updateFailed = true;
       }
       if (!updateFailed) {
-        new import_obsidian14.Notice("Settings successfully updated!");
+        new import_obsidian15.Notice("Settings successfully updated!");
         yield saveSettings();
       }
     });
@@ -30939,8 +31564,8 @@ var SettingView = class {
         const faviconFile = this.app.vault.getAbstractFileByPath(
           this.settings.faviconPath
         );
-        if (!(faviconFile instanceof import_obsidian14.TFile)) {
-          new import_obsidian14.Notice(`${this.settings.faviconPath} is not a valid file.`);
+        if (!(faviconFile instanceof import_obsidian15.TFile)) {
+          new import_obsidian15.Notice(`${this.settings.faviconPath} is not a valid file.`);
           return;
         }
         const faviconContent = yield this.app.vault.readBinary(faviconFile);
@@ -31031,8 +31656,8 @@ var SettingView = class {
       const logoFile = this.app.vault.getAbstractFileByPath(
         this.settings.logoPath
       );
-      if (!(logoFile instanceof import_obsidian14.TFile)) {
-        new import_obsidian14.Notice(`${this.settings.logoPath} is not a valid file.`);
+      if (!(logoFile instanceof import_obsidian15.TFile)) {
+        new import_obsidian15.Notice(`${this.settings.logoPath} is not a valid file.`);
         return;
       }
       const logoContent = yield this.app.vault.readBinary(logoFile);
@@ -31074,7 +31699,7 @@ var SettingView = class {
     });
   }
   initializeGitHubBaseURLSetting() {
-    const siteBaseUrl = new import_obsidian14.Setting(this.settingsRootElement).setName("Base URL").setDesc(
+    const siteBaseUrl = new import_obsidian15.Setting(this.settingsRootElement).setName("Base URL").setDesc(
       `This is optional, but recommended. It is used for the "Copy Garden URL" command, generating a sitemap.xml for better SEO and an RSS feed located at /feed.xml. `
     );
     if (this.settings.publishPlatform === "ForestryMd" /* ForestryMd */) {
@@ -31102,7 +31727,7 @@ var SettingView = class {
     }
   }
   initializeSlugifySetting() {
-    new import_obsidian14.Setting(this.settingsRootElement).setName("Slugify Note URL").setDesc(
+    new import_obsidian15.Setting(this.settingsRootElement).setName("Slugify Note URL").setDesc(
       'Transform the URL from "/My Folder/My Note/" to "/my-folder/my-note". If your note titles contains non-English characters, this should be disabled.'
     ).addToggle(
       (toggle) => toggle.setValue(this.settings.slugifyEnabled).onChange((value) => __async(this, null, function* () {
@@ -31117,7 +31742,7 @@ var SettingView = class {
       this.app.metadataCache,
       this.settings
     );
-    const rewriteRulesModal = new import_obsidian14.Modal(this.app);
+    const rewriteRulesModal = new import_obsidian15.Modal(this.app);
     rewriteRulesModal.open();
     const modalContent = new RewriteSettings_default({
       target: rewriteRulesModal.contentEl,
@@ -31132,10 +31757,10 @@ var SettingView = class {
     };
   }
   initializeCustomFilterSettings() {
-    const customFilterModal = new import_obsidian14.Modal(this.app);
+    const customFilterModal = new import_obsidian15.Modal(this.app);
     customFilterModal.titleEl.createEl("h1", { text: "Custom Filters" });
     customFilterModal.modalEl.style.width = "fit-content";
-    new import_obsidian14.Setting(this.settingsRootElement).setName("Custom Filters").setDesc(
+    new import_obsidian15.Setting(this.settingsRootElement).setName("Custom Filters").setDesc(
       "Define custom rules to replace parts of the note before publishing."
     ).addButton((cb) => {
       cb.setButtonText("Manage Custom Filters");
@@ -31165,7 +31790,7 @@ var SettingView = class {
       }
     }).innerHTML = `Example: filter [<code>:smile:</code>, <code>\u{1F600}</code>, <code>g</code>] will replace text with real emojis`;
     const customFilters = this.settings.customFilters;
-    new import_obsidian14.Setting(rewriteSettingsContainer).setName("Filters").addButton((button) => {
+    new import_obsidian15.Setting(rewriteSettingsContainer).setName("Filters").addButton((button) => {
       button.setButtonText("Add");
       button.setTooltip("Add a filter");
       button.setIcon("plus");
@@ -31190,12 +31815,12 @@ var SettingView = class {
   renderCreatePr(modal, handlePR, siteManager) {
     return __async(this, null, function* () {
       var _a2;
-      this.settingsRootElement.createEl("h3", { text: "Update site" }).prepend((_a2 = (0, import_obsidian14.getIcon)("sync")) != null ? _a2 : "");
+      this.settingsRootElement.createEl("h3", { text: "Update site" }).prepend((_a2 = (0, import_obsidian15.getIcon)("sync")) != null ? _a2 : "");
       import_js_logger9.default.time("checkForUpdate");
       const updater = yield (yield siteManager.getTemplateUpdater()).checkForUpdates();
       import_js_logger9.default.timeEnd("checkForUpdate");
       const updateAvailable = hasUpdates(updater);
-      new import_obsidian14.Setting(this.settingsRootElement).setName("Site Template").setDesc(
+      new import_obsidian15.Setting(this.settingsRootElement).setName("Site Template").setDesc(
         "Manage updates to the base template. You should try updating the template when you update the plugin to make sure your garden support all features."
       ).addButton((button) => __async(this, null, function* () {
         button.setButtonText(`Checking...`);
@@ -31217,7 +31842,7 @@ var SettingView = class {
       const titleContainer = modal.titleEl.createDiv({
         cls: "dg-modal-title"
       });
-      const syncIcon = (0, import_obsidian14.getIcon)("refresh-cw");
+      const syncIcon = (0, import_obsidian15.getIcon)("refresh-cw");
       if (syncIcon) {
         titleContainer.appendChild(syncIcon);
       }
@@ -31228,7 +31853,7 @@ var SettingView = class {
       const infoContainer = updateSection.createDiv({
         cls: "dg-update-info"
       });
-      const infoIcon = (0, import_obsidian14.getIcon)("info");
+      const infoIcon = (0, import_obsidian15.getIcon)("info");
       if (infoIcon) {
         infoContainer.appendChild(infoIcon);
       }
@@ -31276,7 +31901,7 @@ var SettingView = class {
     const header = historySection.createDiv({
       cls: "dg-pr-history-header"
     });
-    const chevronIcon = (0, import_obsidian14.getIcon)("chevron-right");
+    const chevronIcon = (0, import_obsidian15.getIcon)("chevron-right");
     if (chevronIcon) {
       header.appendChild(chevronIcon);
     }
@@ -31300,7 +31925,7 @@ var SettingView = class {
       const prItem = prsContainer.createDiv({
         cls: "dg-pr-history-item"
       });
-      const gitPrIcon = (0, import_obsidian14.getIcon)("git-pull-request");
+      const gitPrIcon = (0, import_obsidian15.getIcon)("git-pull-request");
       if (gitPrIcon) {
         prItem.appendChild(gitPrIcon);
       }
@@ -31316,8 +31941,8 @@ var SettingView = class {
 };
 
 // src/views/UpdateGardenRepositoryModal.ts
-var import_obsidian15 = require("obsidian");
-var UpdateGardenRepositoryModal = class extends import_obsidian15.Modal {
+var import_obsidian16 = require("obsidian");
+var UpdateGardenRepositoryModal = class extends import_obsidian16.Modal {
   constructor(app) {
     super(app);
     this.modalEl.addClass("dg-update-modal");
@@ -31333,7 +31958,7 @@ var UpdateGardenRepositoryModal = class extends import_obsidian15.Modal {
     const spinnerContainer = this.loading.createDiv({
       cls: "dg-update-spinner"
     });
-    const spinnerIcon = (0, import_obsidian15.getIcon)("loader-2");
+    const spinnerIcon = (0, import_obsidian16.getIcon)("loader-2");
     if (spinnerIcon) {
       spinnerContainer.appendChild(spinnerIcon);
     }
@@ -31361,7 +31986,7 @@ var UpdateGardenRepositoryModal = class extends import_obsidian15.Modal {
     const iconContainer = successContainer.createDiv({
       cls: "dg-update-icon dg-update-icon-success"
     });
-    const checkIcon = (0, import_obsidian15.getIcon)("check-circle");
+    const checkIcon = (0, import_obsidian16.getIcon)("check-circle");
     if (checkIcon) {
       iconContainer.appendChild(checkIcon);
     }
@@ -31382,7 +32007,7 @@ var UpdateGardenRepositoryModal = class extends import_obsidian15.Modal {
         href: prUrl,
         cls: "dg-update-link"
       });
-      const externalIcon = (0, import_obsidian15.getIcon)("external-link");
+      const externalIcon = (0, import_obsidian16.getIcon)("external-link");
       if (externalIcon) {
         link.appendChild(externalIcon);
       }
@@ -31407,7 +32032,7 @@ var UpdateGardenRepositoryModal = class extends import_obsidian15.Modal {
     const iconContainer = errorContainer.createDiv({
       cls: "dg-update-icon dg-update-icon-error"
     });
-    const alertIcon = (0, import_obsidian15.getIcon)("alert-circle");
+    const alertIcon = (0, import_obsidian16.getIcon)("alert-circle");
     if (alertIcon) {
       iconContainer.appendChild(alertIcon);
     }
@@ -31424,7 +32049,7 @@ var UpdateGardenRepositoryModal = class extends import_obsidian15.Modal {
 
 // src/views/DigitalGardenSettingTab.ts
 var import_js_logger10 = __toESM(require_logger());
-var DigitalGardenSettingTab = class extends import_obsidian16.PluginSettingTab {
+var DigitalGardenSettingTab = class extends import_obsidian17.PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
     this.plugin = plugin;
@@ -31570,7 +32195,7 @@ import_js_logger11.default.useDefaults({
     messages.unshift("DG: ");
   }
 });
-var DigitalGarden = class extends import_obsidian18.Plugin {
+var DigitalGarden = class extends import_obsidian19.Plugin {
   constructor() {
     super(...arguments);
     this.isPublishing = false;
@@ -31586,7 +32211,7 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
       );
       this.addSettingTab(new DigitalGardenSettingTab(this.app, this));
       yield this.addCommands();
-      (0, import_obsidian18.addIcon)("digital-garden-icon", seedling);
+      (0, import_obsidian19.addIcon)("digital-garden-icon", seedling);
       this.addRibbonIcon(
         "digital-garden-icon",
         "Digital Garden Publication Center",
@@ -31618,7 +32243,7 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
         id: "quick-publish-and-share-note",
         name: "Quick Publish And Share Note",
         callback: () => __async(this, null, function* () {
-          new import_obsidian18.Notice("Adding publish flag to note and publishing it.");
+          new import_obsidian19.Notice("Adding publish flag to note and publishing it.");
           yield this.setPublishFlagValue(true);
           const activeFile = this.app.workspace.getActiveFile();
           const event = this.app.metadataCache.on(
@@ -31645,7 +32270,7 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
           yield this.publishSingleNote();
         })
       });
-      if (this.settings["ENABLE_DEVELOPER_TOOLS"] && import_obsidian18.Platform.isDesktop) {
+      if (this.settings["ENABLE_DEVELOPER_TOOLS"] && import_obsidian19.Platform.isDesktop) {
         import_js_logger11.default.info("Developer tools enabled");
         const publisher = new Publisher(
           this.app.vault,
@@ -31673,7 +32298,7 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
         // TODO: move to publisher?
         callback: () => __async(this, null, function* () {
           if (this.isPublishing) {
-            new import_obsidian18.Notice(
+            new import_obsidian19.Notice(
               "A publish operation is already in progress. Please wait for it to complete."
             );
             return;
@@ -31681,7 +32306,7 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
           this.isPublishing = true;
           const statusBarItem = this.addStatusBarItem();
           try {
-            new import_obsidian18.Notice("Processing files to publish...");
+            new import_obsidian19.Notice("Processing files to publish...");
             const { vault, metadataCache } = this.app;
             const publisher = new Publisher(
               vault,
@@ -31705,7 +32330,7 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
             const imagesToDelete = publishStatus.deletedImagePaths;
             const totalItems = filesToPublish.length + filesToDelete.length + imagesToDelete.length;
             if (totalItems === 0) {
-              new import_obsidian18.Notice("Garden is already fully synced!");
+              new import_obsidian19.Notice("Garden is already fully synced!");
               statusBarItem.remove();
               this.isPublishing = false;
               return;
@@ -31714,7 +32339,7 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
               statusBarItem,
               filesToPublish.length + filesToDelete.length + imagesToDelete.length
             );
-            new import_obsidian18.Notice(
+            new import_obsidian19.Notice(
               `Publishing ${filesToPublish.length} notes, deleting ${filesToDelete.length} notes and ${imagesToDelete.length} images. See the status bar in lower right corner for progress.`,
               8e3
             );
@@ -31729,16 +32354,16 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
               statusBar.increment();
             }
             statusBar.finish(8e3);
-            new import_obsidian18.Notice(
+            new import_obsidian19.Notice(
               `Successfully published ${filesToPublish.length} notes to your garden.`
             );
             if (filesToDelete.length > 0) {
-              new import_obsidian18.Notice(
+              new import_obsidian19.Notice(
                 `Successfully deleted ${filesToDelete.length} notes from your garden.`
               );
             }
             if (imagesToDelete.length > 0) {
-              new import_obsidian18.Notice(
+              new import_obsidian19.Notice(
                 `Successfully deleted ${imagesToDelete.length} images from your garden.`
               );
             }
@@ -31747,7 +32372,7 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
             statusBarItem.remove();
             this.isPublishing = false;
             console.error(e);
-            new import_obsidian18.Notice(
+            new import_obsidian19.Notice(
               "Unable to publish multiple notes, something went wrong."
             );
           }
@@ -31800,7 +32425,7 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
   getActiveFile(workspace) {
     const activeFile = workspace.getActiveFile();
     if (!activeFile) {
-      new import_obsidian18.Notice(
+      new import_obsidian19.Notice(
         "No file is open/active. Please open a file and try again."
       );
       return null;
@@ -31821,10 +32446,10 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
         );
         const fullUrl = siteManager.getNoteUrl(activeFile);
         yield navigator.clipboard.writeText(fullUrl);
-        new import_obsidian18.Notice(`Note URL copied to clipboard`);
+        new import_obsidian19.Notice(`Note URL copied to clipboard`);
       } catch (e) {
         console.log(e);
-        new import_obsidian18.Notice(
+        new import_obsidian19.Notice(
           "Unable to copy note URL to clipboard, something went wrong."
         );
       }
@@ -31839,13 +32464,13 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
         if (!activeFile) {
           return;
         }
-        if (activeFile.extension !== "md") {
-          new import_obsidian18.Notice(
-            "The current file is not a markdown file. Please open a markdown file and try again."
+        if (activeFile.extension !== "md" && activeFile.extension !== "canvas") {
+          new import_obsidian19.Notice(
+            "The current file is not a markdown or canvas file. Please open a supported file and try again."
           );
           return;
         }
-        new import_obsidian18.Notice("Publishing note...");
+        new import_obsidian19.Notice("Publishing note...");
         const publisher = new Publisher(
           vault,
           metadataCache,
@@ -31861,12 +32486,12 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
         }).compile();
         const publishSuccessful = yield publisher.publish(publishFile);
         if (publishSuccessful) {
-          new import_obsidian18.Notice(`Successfully published note to your garden.`);
+          new import_obsidian19.Notice(`Successfully published note to your garden.`);
         }
         return publishSuccessful;
       } catch (e) {
         console.error(e);
-        new import_obsidian18.Notice("Unable to publish note, something went wrong.");
+        new import_obsidian19.Notice("Unable to publish note, something went wrong.");
         return false;
       }
     });
@@ -31908,7 +32533,7 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
       }
       const currentFileCache = this.app.metadataCache.getFileCache(activeFile);
       if ((_a2 = currentFileCache == null ? void 0 : currentFileCache.frontmatter) == null ? void 0 : _a2["dg-home" /* HOME */]) {
-        new import_obsidian18.Notice("This note is already set as the garden home page.");
+        new import_obsidian19.Notice("This note is already set as the garden home page.");
         return;
       }
       const existingHomePages = [];
@@ -31926,7 +32551,7 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
             frontmatter["dg-publish" /* PUBLISH */] = true;
           }
         );
-        new import_obsidian18.Notice(
+        new import_obsidian19.Notice(
           `${activeFile.basename} is now your garden's home page and has been marked for publishing.`
         );
       } else {
@@ -31949,7 +32574,7 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
                   frontmatter["dg-publish" /* PUBLISH */] = true;
                 }
               );
-              new import_obsidian18.Notice(
+              new import_obsidian19.Notice(
                 `${activeFile.basename} is now your garden's home page and has been marked for publishing.`
               );
             }
@@ -31982,7 +32607,7 @@ var DigitalGarden = class extends import_obsidian18.Plugin {
     this.publishModal.open();
   }
 };
-var HomePageConfirmationModal = class extends import_obsidian18.Modal {
+var HomePageConfirmationModal = class extends import_obsidian19.Modal {
   constructor(app, newHomeFile, existingHomeFile, onConfirm) {
     super(app);
     this.newHomeFile = newHomeFile;
@@ -32048,6 +32673,8 @@ var HomePageConfirmationModal = class extends import_obsidian18.Modal {
   }
 };
 //!()[image.svg]
+//![[image.png]] or ![[file.pdf]]
+//![](image.png) or ![](file.pdf)
 //![[image.png]]
 //![](image.png)
 /*! Bundled license information:

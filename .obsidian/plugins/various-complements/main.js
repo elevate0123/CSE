@@ -7383,7 +7383,7 @@ var AutoCompleteSuggest = class _AutoCompleteSuggest extends import_obsidian7.Ed
     const currentFrontMatter = this.settings.enableFrontMatterComplement ? this.appHelper.getCurrentFrontMatter() : void 0;
     showDebugLog(`Current front matter is ${currentFrontMatter}`);
     const cl = this.appHelper.getCurrentLine(editor);
-    if (equalsAsLiterals(this.previousCurrentLine, cl) && !this.runManually && !currentFrontMatter) {
+    if (equalsAsLiterals(this.previousCurrentLine, cl) && !this.runManually && !currentFrontMatter && !this.isOpen) {
       this.previousCurrentLine = cl;
       onReturnNull("Don't show suggestions because there are no changes");
       return null;
@@ -7431,7 +7431,7 @@ var AutoCompleteSuggest = class _AutoCompleteSuggest extends import_obsidian7.Ed
       return null;
     }
     const currentTokenSeparatedWhiteSpace = (_b = currentLineUntilCursor.split(" ").last()) != null ? _b : "";
-    if (currentTokenSeparatedWhiteSpace === this.pastCurrentTokenSeparatedWhiteSpace && !this.runManually) {
+    if (currentTokenSeparatedWhiteSpace === this.pastCurrentTokenSeparatedWhiteSpace && !this.runManually && !this.isOpen) {
       onReturnNull(
         `Don't show suggestions because currentTokenSeparatedWhiteSpace doesn't change`
       );
