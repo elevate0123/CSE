@@ -893,8 +893,8 @@ graph TD
     end
     
     subgraph Pluralism
-        C1[Shatters the "Sacred Canopy" (Berger)]
-        C2[Creates the "Heretical Imperative" (Choice)]
+        C1[Shatters the Sacred Canopy Berger]
+        C2[Creates the Heretical Imperative Choice]
     end
 
     B & C --Provokes a Reaction--> D{Counter-Thesis: Religious Revival};
@@ -909,7 +909,7 @@ graph TD
     subgraph Critique
         E1[Eurocentric]
         E2[Confuses Change with Decline]
-        E3[Ignores "Believing without Belonging"]
+        E3[Ignores Believing without Belonging]
     end
 ```
 
@@ -985,11 +985,6 @@ graph TD
 
 
 # TIER 2 
-
-Excellent. We will now proceed with the first and most important theme from Tier 2. This note will build the crucial bridge from grand theory to the actual practices and mechanisms of religious life.
-
-Here is the comprehensive note on Magic, Ritual, and Symbolism, following our "Note 2.0" model.
-
 ---
 
 ## **Theme 4: The Mechanisms of Belief - Magic, Ritual & Symbolism**
@@ -1064,8 +1059,8 @@ The study of magic, ritual, and symbolism provides the crucial link between abst
 ```mermaid
 graph TD
     subgraph A [The Foundational Debate]
-        A1[Evolutionary School (Frazer): Magic -> Religion -> Science]
-        A2[Functionalist School (Malinowski): Magic & Religion are distinct, co-existing functions]
+        A1[Evolutionary School Frazer: Magic -> Religion -> Science]
+        A2[Functionalist School Malinowski: Magic & Religion are distinct, co-existing functions]
     end
 
     subgraph B [The Functionalist Analysis]
@@ -1077,12 +1072,12 @@ graph TD
 
     subgraph C [The Interpretive Turn]
         C1[Clifford Geertz: Religion as a Cultural System of Symbols]
-        C2[Symbols as a Model 'of' Reality (Worldview)]
-        C3[Symbols as a Model 'for' Reality (Ethos)]
+        C2[Symbols as a Model 'of' Reality Worldview]
+        C3[Symbols as a Model 'for' Reality Ethos]
     end
 
     subgraph D [Synthesis]
-        D1[Ritual is where the Social Function (Durkheim) and Symbolic Meaning (Geertz) are fused]
+        D1[Ritual is where the Social Function Durkheim and Symbolic Meaning Geertz are fused]
     end
 
     A --> B;
@@ -1158,12 +1153,6 @@ graph TD
 
 ---
 ---
-
-
-Excellent. We will now proceed with the next crucial Tier 2 theme. Having covered the theoretical foundations and the mechanisms of belief, we now anchor our analysis firmly in the Indian context.
-
-This note addresses a high-frequency question on the historical sociology of India: the emergence of Buddhism.
-
 ---
 
 ## **Theme 5: The Socio-Historical Factors for the Emergence of Buddhism**
@@ -1236,9 +1225,9 @@ graph TD
     end
 
     subgraph B [The Crisis of the Old Order]
-        B1[Brahmanical values conflict with new mercantile class (Vaishyas)]
+        B1[Brahmanical values conflict with new mercantile class Vaishyas]
         B2[Kshatriya rulers seek alternative to Brahmin supremacy]
-        B3[Vedic rituals become too complex, expensive, and violent (animal sacrifice)]
+        B3[Vedic rituals become too complex, expensive, and violent animal sacrifice]
     end
 
     subgraph C [The Buddhist Solution]
@@ -1313,15 +1302,6 @@ graph TD
 
 ---
 ---
-
-
-
-Excellent. We will now proceed with the next Tier 2 theme. This note tackles another high-frequency topic that is central to the sociology of religion in India: **Religious Conversion**.
-
-This theme directly builds on our previous discussions of social hierarchy (Marx), the appeal of new religious ethics (Weber, Buddhism), and the dynamics of pluralism and identity.
-
-Here is the comprehensive note, following our "Note 2.0" model.
-
 ---
 
 ## **Theme 5: Analyse the Various Aspects of Conversion in Indian Society**
@@ -1389,15 +1369,15 @@ graph TD
     subgraph B [Conversion as Social Protest]
         B1[Ambedkarite Neo-Buddhism: A Political Act of Emancipation]
         B2[Dalit Conversions to Islam & Christianity]
-        B3[A Tool for Social Mobility (Access to Education/Networks)]
+        B3[A Tool for Social Mobility Access to Education/Networks]
     end
 
     subgraph C [The Political Conflict]
         C1[The Politics of Numbers & Demographic Anxiety]
         C2{The Debate over 'Forced' vs. 'Voluntary' Conversion}
-        C3[Proponents of Anti-Conversion Laws (Force, Fraud, Allurement)]
+        C3[Proponents of Anti-Conversion Laws Force, Fraud, Allurement]
         C4[Opponents: Violation of Religious Freedom]
-        C5[The "Ghar Wapsi" Counter-Movement]
+        C5[The Ghar Wapsi Counter-Movement]
     end
 
     subgraph D [Other Sociological Aspects]
@@ -1473,13 +1453,6 @@ graph TD
 
 ---
 ---
-
-
-
-Excellent. We will now proceed with the final Tier 2 theme. This note completes our "ethnographic and anthropological" cluster, providing the foundational concepts that the classical sociologists, particularly Durkheim, drew upon.
-
-This theme explores the core concepts used to analyze religion in small-scale or "primitive" societies, focusing on the classic debates around Totemism and Animism.
-
 ---
 
 ## **Theme 6: Religion in "Primitive" Societies - The Anthropological Lens**
@@ -1541,19 +1514,19 @@ The anthropological analysis of religion in small-scale societies provided the e
 ```mermaid
 graph TD
     subgraph A [The Central Question: What is the Origin/Essence of Religion?]
-        A1[Based on the study of "Primitive" Societies]
+        A1[Based on the study of Primitive Societies]
     end
 
     subgraph B [Theory 1: The Intellectualist School]
         B1[Thinker: E.B. Tylor]
-        B2[Concept: Animism (Belief in Spirits)]
+        B2[Concept: Animism Belief in Spirits]
         B3[Mechanism: Individual logical deduction to explain dreams/death]
-        B4[Result: Religion is a "Primitive Philosophy"]
+        B4[Result: Religion is a Primitive Philosophy]
     end
 
     subgraph C [Theory 2: The Sociological School]
         C1[Thinker: Émile Durkheim]
-        C2[Concept: Totemism (Worship of a Social Symbol)]
+        C2[Concept: Totemism Worship of a Social Symbol]
         C3[Mechanism: Collective Effervescence in group rituals]
         C4[Result: Religion is Society Worshipping Itself]
     end
@@ -1562,7 +1535,7 @@ graph TD
         D1[Thinker: Claude Lévi-Strauss]
         D2[Concept: Totemism as a System of Classification]
         D3[Mechanism: Universal human mind works through binary oppositions]
-        D4[Result: Religion is a form of Logic ("Good to Think")]
+        D4[Result: Religion is a form of Logic Good to Think]
     end
 
     A --> B;
@@ -1639,12 +1612,6 @@ graph TD
 
 
 # TIER 3
-
-
-Excellent. We will now proceed with the first and most important theme from Tier 3. This note covers the crucial "internal" or meaning-centered perspectives on religion, providing a vital alternative to the external, structural theories of Marx and Durkheim.
-
-This note will focus on the Phenomenological approach, particularly Peter Berger's work, and will integrate Clifford Geertz's interpretive approach, which we've touched upon but will now solidify as a core theory.
-
 ---
 
 ## **Theme 7: The Phenomenological & Interpretive Approaches**
