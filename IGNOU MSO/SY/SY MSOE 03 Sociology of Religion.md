@@ -657,15 +657,6 @@ graph TD
 ---
 ---
 
-
-Excellent. We will now proceed with the third pillar of the classical trinity, which is also a standalone Tier 1 theme: **Max Weber's thesis on the Protestant Ethic.**
-
-This note is crucial because it serves two purposes: it explains Weber's most famous work and it provides the core concepts of his entire approach to the sociology of religion (interpretivism, rationalization, ideal types).
-
-Here is the comprehensive note, following our "Note 2.0" model.
-
----
-
 ## **Theme 2: Max Weber's 'The Protestant Ethic and the Spirit of Capitalism'**
 
 **Syllabus Reference:**
@@ -735,7 +726,7 @@ graph TD
 
     subgraph B [The Religious Source: Calvinist Doctrines]
         B1[Predestination] --> B3;
-        B2[The Calling (Beruf)] --> B3;
+        B2[The Calling Beruf] --> B3;
         B3[Psychological Result: Salvation Anxiety & Inner Loneliness];
     end
 
@@ -745,12 +736,12 @@ graph TD
 
     subgraph D [The Outcome]
         D1["Elective Affinity with the 'Spirit of Capitalism'"] --> D2[Modern Rational Capitalism];
-        D2 --> D3[The "Iron Cage" of Rationality];
+        D2 --> D3[The Iron Cage of Rationality];
     end
 
     subgraph E [Critical Evaluation]
         E1[Historical Critiques]
-        E2[Comparative Method (India/China)]
+        E2[Comparative Method India/China]
         E3[Not an Idealist Argument]
     end
 
@@ -763,7 +754,6 @@ graph TD
 ---
 
 #### **Bulletproof Add-ons**
-
 <br>
 
 > [!book] **Conceptual Toolkit**
@@ -825,12 +815,6 @@ graph TD
 
 ---
 ---
----
-
-Excellent. We will now proceed with the third Tier 1 theme, which addresses the central debate about the fate of religion in the modern world. This theme is crucial as it connects classical theory to contemporary social realities, especially in the Indian context.
-
-Here is the comprehensive note on Secularization, Pluralism, and Fundamentalism, following our "Note 2.0" model.
-
 ---
 
 ## **Theme 3: Modernity's Challenge - Secularization, Pluralism & Fundamentalism**
