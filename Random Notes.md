@@ -1,6 +1,9 @@
 [Buy Handcrafted Leather Products Online from theblackcanvas.in – The Black Canvas](https://www.theblackcanvas.in/)
 Journal Covers
 
+[GitHub - thealphadollar/my_resume: My Resume, And It's Latex Code](https://github.com/thealphadollar/my_resume)
+
+
 
 Habeeb Akande, _A Taste of Honey: Sexuality and Erotology in Islam_ (Rabaah Publishers, 2015)
 

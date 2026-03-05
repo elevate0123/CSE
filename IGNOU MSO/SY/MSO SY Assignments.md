@@ -346,43 +346,32 @@ Peter Berger, a highly influential sociologist of religion, offers a dynamic and
 #### The Retraction of the Secularization Thesis
 
 In his early work, such as The Sacred Canopy (1967), Berger argued that modernization, with its emphasis on rationality and science, would erode the "sacred canopy"—the overarching religious worldview that gives meaning to society. However, observing the global resurgence of faith movements, from evangelical Christianity to political Islam, he later admitted this prediction was empirically false. He concluded that the world was not becoming more secular but was, in many places, "as furiously religious as it ever was."
-
-  
-
 - Desecularization: Berger coined the term "desecularization" to describe this unexpected resurgence of religion in the public and private spheres.
-    
 - Exceptions to the Rule: He did note two major exceptions to this global trend: Western Europe and an international, highly educated intellectual class, both of which remain significantly secularized.
-    
-
 #### Pluralism: The True Consequence of Modernity
 
 Berger's revised thesis posits that modernity does not necessarily destroy religion but instead enforces pluralism. In a globalized world, different religious and secular worldviews are forced to coexist, fundamentally changing the nature of faith.
 
-  
-
 - From Fate to Choice: In traditional societies, one's religion was a matter of fate, an unquestioned reality. In a pluralistic society, belief becomes a matter of individual choice. Individuals are confronted with a "market" of religious options, making their own faith less taken-for-granted and more reflective.
-    
 - Challenge to Authority: Pluralism erodes the authority of any single religious institution. When multiple truths are on offer, no single one can maintain a monopoly on reality. This creates a more fluid and individualised religious landscape.
-    
 
 ```mermaid
 flowchart LR
-    A[Modernity] --> B{Key Outcome};
-    subgraph Early Theory
-        B -- x SECULARIZATION <br> (Religious Decline);
-    end
-    subgraph Later Theory
-        B -- ✓ PLURALISM <br> (Coexistence of Beliefs);
-    end
-    C[Pluralism] --> D[Religion becomes <br> a matter of CHOICE];
-    D --> E[Resurgence & Transformation <br> of Religion];
+    A[Modernity] --> B{Key Outcome}
+
+    subgraph Early_Theory
+        B -->|Secularization<br/>Religious Decline| E1[Decline of Religion]
+    end
+
+    subgraph Later_Theory
+        B -->|Pluralism<br/>Coexistence of Beliefs| C[Pluralism]
+    end
+
+    C --> D[Religion becomes<br/>a matter of Choice]
+    D --> E[Resurgence & Transformation<br/>of Religion]
 ```
   
-
-
-
 #### Way Forward
-
 Peter Berger’s viewpoint suggests that the future of religion will not be its absence but its continued, dynamic presence in a pluralistic world. Religion is not fading away; it is adapting, diversifying, and often thriving. This perspective is highly relevant to contemporary India, a society characterised by deep religious pluralism. Berger’s framework helps explain the simultaneous rise of intense religious movements alongside a secular public discourse. The challenge for modern societies, as Berger saw it, is not how to manage religion's decline, but how to navigate the complex and often tense coexistence of multiple, deeply held belief systems.
 
 —
@@ -390,100 +379,45 @@ Peter Berger’s viewpoint suggests that the future of religion will not be its 
 # Q8. What is religious conversion? Explain its sociological interpretation.
 
 ### What is Religious Conversion? Explained with its Sociological Interpretation
-
 #### Introduction
-
 Religious conversion is the process of adopting a new religious identity, or a set of beliefs, that is different from one's previous affiliation. While often viewed as a deeply personal and spiritual journey, sociology interprets it as a profound social phenomenon. A sociological lens moves beyond individual faith to examine conversion as a shift in social identity, group allegiance, and worldview, often driven by structural factors like social stratification, cultural dislocation, and the influence of social networks.
-
 #### The Sociological Interpretation of Conversion
-
 Sociologists are less concerned with the theological truth of a conversion and more interested in the social contexts that precipitate it and the consequences that follow. They analyze the "push" and "pull" factors that lead individuals or groups to embrace a new faith. This interpretation can be understood through three primary frameworks.
-
-  
 
 - Conversion as a Path to Social Mobility: For marginalized and oppressed communities, conversion can be a powerful strategy to escape an entrenched, discriminatory social hierarchy. It is an act of protest and a quest for dignity and equality. The most prominent Indian example is Dr. B.R. Ambedkar's mass conversion to Buddhism in 1956, where he led hundreds of thousands of Dalits to leave Hinduism as a means of rejecting the injustices of the caste system.
     
 - Conversion as a Response to Social Dislocation: Rapid social change, urbanization, and migration can create a state of anomie, where old norms and values lose their hold. In such times of uncertainty, individuals may turn to new religious movements that offer a strong sense of community, clear moral guidelines, and a stable worldview. The growth of Pentecostal Christianity in urban slums across India can be partly attributed to the support networks it provides to migrants.
     
 - The Role of Social Networks: Contemporary sociology emphasizes that conversion is rarely a solitary act. It is often facilitated through pre-existing social ties. Individuals are more likely to adopt a new faith if their friends, family, or close community members are already adherents. Belief, in this sense, is transmitted through relationships of trust, making social networks a crucial vehicle for religious change.
-    
-
   
-
+```mermaid
 flowchart TD
 
-  
+    subgraph Drivers_Push_Pull_Factors
+        A[Social Oppression<br/>e.g., Caste System]
+        B[Social Dislocation<br/>e.g., Migration]
+        C[Social Networks<br/>e.g., Friends, Family]
+    end
 
-    subgraph Drivers (Push/Pull Factors)
+    subgraph The_Process
+        D{Religious Conversion}
+    end
 
-  
+    subgraph Outcomes
+        E[New Social Identity]
+        F[New Community & Allegiance]
+        G[New Worldview & Values]
+    end
 
-        A[Social Oppression <br> (e.g., Caste System)]
+    A --> D
+    B --> D
+    C --> D
 
-  
-
-        B[Social Dislocation <br> (e.g., Migration)]
-
-  
-
-        C[Social Networks <br> (e.g., Friends, Family)]
-
-  
-
-    end
-
-  
-
-  
-
-    subgraph The Process
-
-  
-
-        D{Religious Conversion}
-
-  
-
-    end
-
-  
-
-    subgraph Outcomes
-
-  
-
-        E[New Social Identity]
-
-  
-
-        F[New Community & Allegiance]
-
-  
-
-        G[New Worldview & Values]
-
-  
-
-    end
-
-  
-
-    A --> D
-
-  
-
-    B --> D
-
-  
-
-    C --> D
-
-  
-
-    D --> E & F & G
-
+    D --> E
+    D --> F
+    D --> G
+```
 #### Way Forward
-
 In conclusion, the sociological interpretation reveals that religious conversion is far more than a private change of heart; it is a social act embedded in power structures, community dynamics, and the human search for meaning. It is a process through which individuals and groups renegotiate their identity and their place in the world. In a pluralistic and politically charged society like India, understanding the social drivers of conversion is essential for navigating the complex and sensitive debates surrounding religious freedom, identity politics, and minority rights.
 
 —
