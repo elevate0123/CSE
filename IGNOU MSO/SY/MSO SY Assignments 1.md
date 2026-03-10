@@ -383,118 +383,72 @@ In conclusion, the sociological interpretation reveals that religious conversion
 # Q1. Critically examine the origin and historical development of urban sociology as a sub-discipline of sociology.
 
 ### The Origin and Historical Development of Urban Sociology
-
 #### Introduction
-
-Urban sociology emerged as a distinct sub-discipline of sociology in the late 19th and early 20th centuries, primarily as an intellectual response to the profound social transformations brought about by the Industrial Revolution. The unprecedented growth of cities created a host of social problems—overcrowding, poverty, crime, and alienation—that demanded systematic study. This answer critically examines the historical development of urban sociology through its key intellectual phases: the classical European foundations, the formalization by the Chicago School, and the critical turn of the New Urban Sociology.
-
+Urban sociology emerged as a distinct sub-discipline of sociology in the late 19th and early 20th centuries, primarily as an intellectual response to the profound social transformations brought about by the Industrial Revolution.
 #### Classical European Foundations
-
 The intellectual groundwork for urban sociology was laid by classical European thinkers who grappled with the nature of the emerging modern, industrial city. Though they did not identify as "urban sociologists," their analyses were foundational.
-
-  
-
 - Karl Marx and Friedrich Engels: They viewed the industrial city as a physical manifestation of capitalism, an arena for class conflict where the bourgeoisie and proletariat were concentrated. Engels’ work, The Condition of the Working Class in England, was a pioneering empirical study of urban squalor and exploitation.
-    
 - Max Weber: In The City, Weber provided a historical-comparative analysis, defining the city as a distinct social entity with political autonomy, a market, and a unique form of association. He contrasted the self-governing "occidental city" with the cities of Asia.
-    
 - Georg Simmel: In his influential essay The Metropolis and Mental Life, Simmel focused on the psychological impact of urban living. He argued that the intense stimuli of the city produced a "blasé attitude," a detached and rational orientation, as a necessary shield for the individual's inner life.
-    
-
 #### The Chicago School: The Formalization of the Discipline
-
 Urban sociology was formally institutionalized as an empirical field of study in the 1920s and 1930s by the Chicago School in the United States. Treating the city of Chicago as a "social laboratory," its scholars developed groundbreaking theories and methods.
-
-  
-
 - Human Ecology: Robert Park applied concepts from biology to the city, viewing it as an ecosystem where different social groups competed for resources and territory, leading to processes of invasion, succession, and segregation.
-    
 - Concentric Zone Model: Ernest Burgess proposed this influential model, suggesting that cities grow outward from a central business district in a series of concentric rings, each with distinct social characteristics.
-    
 - Urbanism as a Way of Life: Louis Wirth argued that the city's defining characteristics—large size, high population density, and social heterogeneity—produced a unique way of life characterized by anonymous, superficial, and instrumental social relationships.
-    
-
 #### The Critical Turn: The New Urban Sociology
-
 By the 1970s, the ecological determinism of the Chicago School faced significant criticism. A new generation of scholars, influenced by Marxist thought, argued that urban forms were shaped not by natural ecological processes but by the political and economic forces of global capitalism.
 
-  
-
 - Key Thinkers: Scholars like Henri Lefebvre, David Harvey, and Manuel Castells shifted the focus to issues of power, capital accumulation, and social conflict in shaping urban space.
-    
 - Central Argument: This "New Urban Sociology" contends that urban development is driven by the decisions of real estate developers, corporations, and government actors, often leading to inequality and social injustice.
-    
 
   
+```mermaid
 
 flowchart LR
 
   
 
-    A[Industrial Revolution <br> (Mass Urbanization)] --> B[Classical Foundations <br> (Marx, Weber, Simmel)];
+    A[Industrial Revolution <br> Mass Urbanization] --> B[Classical Foundations <br> Marx, Weber, Simmel];
 
   
 
-    B --> C[The Chicago School <br> (Park, Burgess, Wirth) <br> <b>Formalization</b>];
+    B --> C[The Chicago School <br> Park, Burgess, Wirth <br> <b>Formalization</b>];
 
   
 
-    C --> D[New Urban Sociology <br> (Harvey, Castells) <br> <b>The Critical Turn</b>];
+    C --> D[New Urban Sociology <br> Harvey, Castells <br> <b>The Critical Turn</b>];
+    
+```
 
 #### Way Forward
-
 The historical development of urban sociology reflects a journey from foundational observations of industrial cities to a systematic, empirical science, and finally to a critical perspective focused on global political and economic forces. While these Western-centric theories provide a crucial framework, their application to post-colonial contexts like India requires critical adaptation. Contemporary Indian urban sociology must grapple with unique challenges like the massive scale of the informal sector, caste-based segregation, and the politics of "smart cities," ensuring the discipline remains relevant in a rapidly urbanizing world.
 
-—
+---
 
 # Q2. Discuss the major theoretical perspectives in urban sociology.
 
 ### Major Theoretical Perspectives in Urban Sociology
-
 #### Introduction
-
-Urban sociology employs several theoretical perspectives to understand the complex dynamics of city life, from the spatial arrangement of social groups to the individual's experience of the urban environment. These frameworks provide distinct lenses for analysing how cities are formed, how they function, and how they impact society. The three major theoretical pillars that have shaped the discipline are the Human Ecology perspective of the Chicago School, the critical Political Economy perspective, and the Culturalist or Symbolic Interactionist perspective.
-
+Urban sociology employs several theoretical perspectives to understand the complex dynamics of city life, from the spatial arrangement of social groups to the individual's experience of the urban environment. These frameworks provide distinct lenses for analysing how cities are formed, how they function, and how they impact society.
 #### Human Ecology: The City as an Organism
-
 Pioneered by the Chicago School in the early 20th century, the Human Ecology perspective views the city as a natural ecosystem. Scholars like Robert Park and Ernest Burgess applied concepts from biology to explain the organization of urban space. They argued that different social groups, much like plant and animal species, compete for scarce resources (like desirable land), leading to a natural, ordered pattern of social distribution.
-
-  
-
 - Key Processes: This competition results in processes of invasion, succession, and segregation, as new groups move into urban areas and displace existing ones, leading to the formation of distinct neighbourhoods or "natural areas."
-    
 - The Concentric Zone Model: Ernest Burgess’s model is a classic example, proposing that cities grow in a series of five concentric rings, with the central business district at the core and affluent residential areas on the periphery. This model attempted to create a universal map of urban social organization.
-    
-
 #### The Political Economy Perspective: The City as a Growth Machine
-
 Emerging in the 1970s as a critique of Human Ecology, the Political Economy perspective, heavily influenced by Marxist thought, rejects the idea that cities are shaped by natural processes. Instead, thinkers like David Harvey and Manuel Castells argue that urban space is actively produced by the interplay of capital and power.
-
-  
-
 - Capital and Conflict: This view sees the city as an arena for class conflict, where decisions about land use are driven by the pursuit of profit by corporations, real estate developers, and financial institutions, often supported by the state.
-    
 - Uneven Development: The pursuit of profit leads to uneven development, creating zones of extreme wealth alongside areas of neglect and poverty. The development of gated communities and luxury high-rises in Indian cities like Mumbai, often at the cost of displacing slum dwellers, is a stark example of this process.
-    
-
 #### The Culturalist Perspective: The City as Lived Experience
-
 The Culturalist or Symbolic Interactionist perspective focuses on the micro-level, examining how individuals experience the city and create meaning in their everyday lives. Building on the foundational work of Georg Simmel, this view is concerned with urbanism as a unique way of life.
-
-  
-
 - Focus on Subcultures: It explores how the anonymity and diversity of the city allow for the formation of a wide array of subcultures (e.g., artistic communities, ethnic enclaves, youth groups), providing individuals with a sense of identity and belonging.
-    
 - Urban Identity: This perspective analyses how people navigate urban spaces, interpret symbols, and interact with strangers. The vibrant street life and distinct neighbourhood cultures (e.g., the paras of Kolkata) in many Indian cities exemplify how residents actively create a unique social fabric.
-    
 
-  
-
+```mermaid
 mindmap
 
   
 
-  root((Urban Perspectives))
+  root(Urban Perspectives)
 
   
 
@@ -555,53 +509,30 @@ mindmap
   
 
       Focus: Subcultures & Identity
-
+```
 #### Way Forward
-
-No single theoretical perspective can fully capture the complexity of urban life. While Human Ecology provides a valuable macro-level view of spatial organization, the Political Economy perspective critically exposes the power dynamics that shape our cities. The Culturalist approach, in turn, offers crucial insights into the human experience of urbanism. A comprehensive understanding of contemporary cities, particularly the multi-layered and rapidly changing urban landscapes of India, requires an integrated approach that draws upon the strengths of all three perspectives.
+No single theoretical perspective can fully capture the complexity of urban life. A comprehensive understanding of contemporary cities, particularly the multi-layered and rapidly changing urban landscapes of India, requires an integrated approach that draws upon the strengths of all three perspectives.
 
 —
 
 # Q4. Explain the technique of social area analysis in urban sociology.
 
 ### The Technique of Social Area Analysis in Urban Sociology
-
 #### Introduction
-
 Social Area Analysis (SAA) is a quantitative technique developed in the mid-20th century to identify and classify urban neighbourhoods based on their underlying social dimensions. Emerging as a sophisticated alternative to the overly simplistic ecological models of the Chicago School, SAA provided a more systematic and empirically grounded method for studying the social geography of cities. Developed by sociologists Eshref Shevky, Wendell Bell, and Marilyn Williams, the technique links broad societal changes to the residential differentiation of urban populations.
-
 #### The Theoretical Foundation
-
 The core premise of SAA is that the increasing "scale of society"—driven by industrialization and modernization—creates distinct patterns of social organization within a city. Shevky and Bell argued that this increasing scale manifests in three fundamental societal trends, which in turn structure the social landscape of the city.
-
-  
-
 - Changes in the Division of Labour: As society becomes more complex, so do its occupational structures. This leads to differentiation based on skills, education, and economic standing, creating a dimension of Social Rank or Economic Status.
-    
 - Changes in Family Structure: Urban-industrial life alters the traditional functions of the family. This leads to variations in lifestyle, family size, and female participation in the workforce, creating a dimension of Urbanization or Family Status.
-    
 - Changes in Population Composition: Increased migration and mobility lead to greater ethnic and racial diversity within cities. This results in the spatial sorting of different groups, creating a dimension of Segregation or Ethnic Status.
-    
-
 #### Methodology and Application
-
 In practice, SAA uses census tract data to measure these three underlying dimensions. For each census tract (a small, relatively stable urban neighbourhood), a set of variables is used to create a composite score for each of the three indices.
-
-  
-
 - Social Rank Index: This is typically measured using variables like the proportion of residents with higher education and the proportion employed in white-collar occupations. Areas with high scores are considered high-status neighbourhoods.
-    
 - Urbanization Index: This is measured using variables that reflect modern family life, such as low fertility rates, a high proportion of women in the workforce, and a low number of single-family dwellings.
-    
 - Segregation Index: This simply measures the proportion of the population in a census tract belonging to specific minority racial or ethnic groups.
-    
-
-  
 
 By scoring each neighbourhood on these three independent dimensions, researchers can create a detailed "social map" of the city, identifying areas with similar social characteristics and comparing the social structures of different cities.
-
-  
-
+```mermaid
 flowchart TD
 
   
@@ -610,34 +541,33 @@ flowchart TD
 
   
 
-    B --> C[<b>Social Rank</b> <br> (Economic Status)];
+    B --> C[<b>Social Rank</b> <br> Economic Status];
 
   
 
-    B --> D[<b>Urbanization</b> <br> (Family Status)];
+    B --> D[<b>Urbanization</b> <br> Family Status];
 
   
 
-    B --> E[<b>Segregation</b> <br> (Ethnic Status)];
+    B --> E[<b>Segregation</b> <br> Ethnic Status];
 
   
 
-    C --> F[Census Variables <br> (Occupation, Education)];
+    C --> F[Census Variables <br> Occupation, Education];
 
   
 
-    D --> G[Census Variables <br> (Fertility, Women in Workforce)];
+    D --> G[Census Variables <br> Fertility, Women in Workforce];
 
   
 
-    E --> H[Census Variables <br> (Ethnic Concentration)];
+    E --> H[Census Variables <br> Ethnic Concentration];
 
   
 
-    F & G & H --> I[Social Area Typology <br> (Classification of Neighbourhoods)];
-
+    F & G & H --> I[Social Area Typology <br> Classification of Neighbourhoods];
+```
 #### Way Forward
-
 Social Area Analysis marked a significant methodological advancement in urban sociology. It provided a multi-dimensional, empirically testable framework that moved beyond the simple spatial determinism of earlier models. While it has been criticized for being overly descriptive and was later refined by the more statistically complex method of factorial ecology, its foundational contribution remains immense. The technique's core insight—that urban social geography is a product of broader societal forces—continues to be a vital tool for understanding patterns of inequality, residential segregation, and social differentiation in cities across the world, including the complex urban landscapes of modern India.
 
 —
@@ -752,44 +682,25 @@ The key dimensions of India's urban informal sector paint a picture of a resilie
 —
 
 # Q8. Write a critical note on urban poverty in India.
-
-### A Critical Note on Urban Poverty in India
-
-#### Introduction
-
 Urban poverty in India is a complex and multi-dimensional phenomenon that extends far beyond a simple lack of income. It is a direct consequence of rapid, often unplanned, urbanization and is characterized by a severe deprivation of essential capabilities and access to services. A critical analysis reveals that urban poverty is not merely an overflow of rural poverty but a distinct structural issue rooted in the nature of India's urban economy and exclusionary urban planning.
-
 #### The Multi-Dimensional Nature of Deprivation
-
 Official poverty estimates, based on consumption expenditure (the Tendulkar or Rangarajan poverty lines), fail to capture the true nature of urban deprivation. Poverty in the city is a condition of precarious existence defined by a lack of access to basic amenities and social security, a concept Amartya Sen would term "capability deprivation."
 
-  
-
 - Inadequate Access to Basic Services: The urban poor are often clustered in slums and informal settlements (like Dharavi in Mumbai) that are underserved by municipal services. This results in a lack of access to safe drinking water, sanitation, primary healthcare, and quality education.
-    
 - Housing Insecurity: A defining feature of urban poverty is the lack of secure housing tenure. Residents of informal settlements live under the constant threat of eviction, as seen in numerous slum demolition drives for urban "beautification" or infrastructure projects.
-    
 - Social Exclusion: The poor are often spatially and socially excluded from the formal life of the city. They face discrimination and are denied a political voice in urban governance, reinforcing their marginalization.
-    
-
 #### The Informal Economy and Structural Vulnerability
-
-Urban poverty is intrinsically linked to the structure of the urban labour market, which is dominated by the informal sector. The vast majority of the urban poor are engaged in informal employment, which is characterized by its precarious and exploitative nature.
-
-  
+Urban poverty is intrinsically linked to the structure of the urban labour market, which is dominated by the informal sector. The vast majority of the urban poor are engaged in informal employment, which is characterized by its precarious and exploitative nature.  
 
 - Dependence on Precarious Livelihoods: The urban poor work as street vendors, construction labourers, waste pickers, or domestic help. As sociologist Jan Breman notes, they constitute "footloose labour," with no job security, low and irregular wages, and a complete absence of social safety nets.
-    
 - High Vulnerability: This dependence on the informal economy makes the urban poor extremely vulnerable to economic shocks, health crises, and personal emergencies. The mass exodus of migrant workers from cities during the COVID-19 lockdown starkly illustrated this structural vulnerability.
-    
-
   
-
+```mermaid
 mindmap
 
   
 
-  root((Dimensions of Urban Poverty))
+  root(Dimensions of Urban Poverty)
 
   
 
@@ -854,56 +765,31 @@ mindmap
   
 
       Social Exclusion
-
+```
 #### Way Forward
-
 A critical perspective on urban poverty reveals that it is a systemic problem, not an individual failing. Current policy responses, often focused on simplistic poverty line metrics or punitive actions like slum demolitions, are inadequate. An effective approach must be rights-based, recognizing the "right to the city" for all its inhabitants. This requires inclusive urban planning that focuses on providing secure housing tenure, delivering essential services to informal settlements, and creating policies that protect and empower workers in the informal economy.
 
 —
 
 # Q10. Describe the interface between media and governance in urban settings, using relevant examples.
-
-### The Interface Between Media and Governance in Urban Settings
-
-#### Introduction
-
 In modern urban settings, the interface between media and governance is a dynamic and powerful one. Media, in its various forms from traditional print to digital social media, acts not merely as a passive reporter of events but as an active participant in the process of urban governance. It functions as a watchdog, an agenda-setter, and a platform for public discourse, creating a complex relationship that can enhance accountability and citizen participation, but also be subject to manipulation.
-
 #### The Watchdog Role: Ensuring Accountability
-
 The most fundamental role of the media in urban governance is that of a watchdog. It scrutinizes the actions and policies of urban local bodies (ULBs) like municipal corporations, development authorities, and the police, bringing issues of mismanagement and corruption to public attention.
 
-  
-
 - Exposing Corruption: Investigative journalism often uncovers scams in urban projects, such as irregularities in the allocation of housing contracts or the misuse of public funds. The media's extensive coverage of the Commonwealth Games (CWG) scam in Delhi exposed deep-rooted corruption in urban infrastructure projects, leading to public outcry and official investigations.
-    
 - Monitoring Service Delivery: Media outlets regularly report on the failures of civic services, such as inadequate waste management, poor road conditions, or erratic water supply, compelling municipal authorities to respond.
-    
-
 #### The Agenda-Setting Function: Shaping Urban Priorities
-
-The media plays a crucial role in shaping the public and political agenda by deciding which issues receive prominence. By repeatedly highlighting a particular problem, the media can elevate it from a minor nuisance to a major policy priority.
-
-  
+The media plays a crucial role in shaping the public and political agenda by deciding which issues receive prominence. By repeatedly highlighting a particular problem, the media can elevate it from a minor nuisance to a major policy priority. 
 
 - Highlighting Civic and Environmental Issues: Sustained media campaigns have been instrumental in drawing attention to critical urban issues like the severe air pollution in Delhi or the foaming lakes of Bengaluru. This coverage forces a lethargic administration to acknowledge the problem and formulate action plans.
-    
 - Influencing Policy and Planning: By framing debates around urban development, such as the need for more public transport versus more flyovers, the media can influence urban planning decisions and budget allocations.
-    
-
 #### New Media: A Platform for Direct Citizen Engagement
-
-The rise of social media has radically transformed the media-governance interface, enabling a more direct and instantaneous form of interaction.
-
-  
+The rise of social media has radically transformed the media-governance interface, enabling a more direct and instantaneous form of interaction. 
 
 - Citizen Journalism: Ordinary citizens, armed with smartphones, can now act as journalists, reporting civic issues like a broken traffic light or an overflowing garbage bin in real-time.
-    
 - Direct Interface with Authorities: Platforms like Twitter (now X) have become grievance redressal mechanisms. Citizens can directly tag the relevant municipal corporation or police department in their posts, often receiving a swift response. The active use of social media by the Bengaluru and Mumbai police to manage traffic and respond to citizen complaints is a prime example of this direct interface.
-    
 
-  
-
+  ```mermaid
 mindmap
 
   
@@ -945,9 +831,8 @@ mindmap
   
 
       Direct Engagement (e.g., Twitter)
-
+```
 #### Way Forward
-
 The interface between media and urban governance is indispensable for a functioning urban democracy. It empowers citizens, promotes transparency, and holds power to account. However, this relationship is not without its flaws. Media can be biased by corporate or political interests, and it can resort to sensationalism. The future challenge lies in leveraging the democratic potential of new media while fostering a critical and responsible journalism that contributes to creating more inclusive, accountable, and responsive cities.
 
 —
@@ -1060,12 +945,12 @@ In essence, civil society is the bedrock upon which democratic development rests
 #### **Introduction**
 Identity-based regionalism in India refers to political mobilisation rooted in a shared sense of identity based on language, ethnicity, tribe, or culture, often confined to a specific geographical area. It emerges from a collective feeling of marginalisation and seeks political recognition and autonomy. This phenomenon, as analysed by scholars like Myron Weiner, presents a complex duality: while it can pose significant challenges to national integration, it has also played a crucial role in deepening India's democratic and federal character.
 #### **Drivers of Identity-Based Regionalism**
-The emergence of this form of regionalism is not an aberration but a response to specific socio-economic and political conditions. It is driven by the perception that a dominant national culture or a centralised state apparatus overlooks or suppresses distinct regional identities. This sentiment is often compounded by experiences of uneven development, where certain regions feel left behind economically.
+The emergence of this form of regionalism is a response to specific socio-economic and political conditions. It is driven by the perception that a dominant national culture or a centralised state apparatus overlooks or suppresses distinct regional identities. This sentiment is often compounded by experiences of uneven development, where certain regions feel left behind economically.
 *   **Linguistic and Cultural Assertion:** The most powerful driver has been the politics of language and culture. The post-independence demand for linguistic reorganisation of states was a classic example. The Dravidian movement in Tamil Nadu, for instance, was a powerful assertion of a distinct cultural identity against the perceived imposition of Hindi, solidifying regional consciousness.
 *   **Ethnic and Tribal Consciousness:** In Northeast India, regionalism is primarily driven by the unique ethnic identities of tribal communities. Movements for statehood, such as those that led to the creation of Nagaland and Mizoram, were born from a desire to protect distinct tribal customs, traditions, and ways of life from being subsumed by the mainstream.
 *   **Economic Neglect and Disparity:** Perceived economic injustice often fuels identity politics. The movement for the creation of Telangana, for example, was underpinned by arguments that the region's resources were being diverted to develop other parts of Andhra Pradesh, linking regional identity directly to the demand for developmental equity.
 #### **The Dual Impact on National Integration**
-The impact of identity-based regionalism on national integration is not monolithic; it simultaneously generates both centrifugal and centripetal forces, challenging and reinforcing the Indian nation-state.
+The impact of identity-based regionalism on national integration simultaneously generates both centrifugal and centripetal forces, challenging and reinforcing the Indian nation-state.
 *   **Negative Impact (Challenge to Integration):** In its extreme form, identity regionalism can manifest as secessionism, directly threatening the nation's territorial integrity. The Khalistan movement in Punjab in the 1980s is a stark example of how identity assertion can lead to violent conflict. It can also fuel inter-regional disputes over resources like river water and create a parochial "sons of the soil" politics that is hostile to migrants.
 *   **Positive Impact (Strengthening Integration):** Paradoxically, the political accommodation of regional identities has often strengthened national integration. By creating linguistic states and autonomous councils, the Indian state provided a democratic outlet for regional aspirations, preventing them from escalating into separatist movements. This process has made the federal structure more representative and has given diverse groups a stake in the national project, thereby fostering a model of "unity in diversity."
 ```mermaid
@@ -1079,12 +964,13 @@ graph TD
 In conclusion, identity-based regionalism is an intrinsic feature of India's diverse polity. It emerges from genuine feelings of cultural and economic marginalisation. While its potential to foster secessionist tendencies poses a clear threat, the Indian state's response of accommodating these identities through democratic means has largely reinforced national unity. The way forward lies not in suppressing these identities, but in addressing the underlying issues of disparity and ensuring that federal institutions are robust enough to manage these tensions constructively.
 
 ---
+---
 
 # Q8. Explain the concept of sustainable development and assess India’s policy responses to environmental challenges.
 #### **Introduction**
-Sustainable development is a paradigm that seeks to harmonise economic growth with environmental protection and social equity. The concept, famously defined by the 1987 Brundtland Commission Report as "development that meets the needs of the present without compromising the ability of future generations to meet their own needs," advocates for a balanced and integrated approach. This answer first explains this multidimensional concept and then critically assesses India's key policy responses to its pressing environmental challenges.
+Sustainable development is a paradigm that seeks to harmonise economic growth with environmental protection and social equity. The concept, famously defined by the 1987 Brundtland Commission Report as "development that meets the needs of the present without compromising the ability of future generations to meet their own needs," advocates for a balanced and integrated approach.
 #### **The Pillars of Sustainable Development**
-Sustainable development rests on three interdependent pillars, arguing that long-term prosperity is impossible without addressing all three concurrently. It moves beyond a narrow focus on GDP to a more holistic understanding of human well-being, emphasising the principle of inter-generational equity. This framework provides a comprehensive lens for evaluating policy and progress.
+Sustainable development rests on three interdependent pillars, arguing that long-term prosperity is impossible without addressing all three concurrently. It moves beyond a narrow focus on GDP to a more holistic understanding of human well-being, emphasising the principle of inter-generational equity.
 *   **Environmental Sustainability:** This pillar focuses on protecting the integrity of natural ecosystems. It involves conserving natural resources, reducing pollution and waste, combating climate change, and preserving biodiversity to ensure that the planet's life-support systems are maintained for future generations.
 *   **Social Sustainability:** This dimension is concerned with social equity and justice. It aims to ensure that all members of society have access to essential services like healthcare and education, enjoy human rights, and can participate in the decisions that affect their lives. It particularly focuses on empowering marginalised communities.
 *   **Economic Sustainability:** This refers to the ability of an economy to support a defined level of economic production indefinitely. It promotes efficient resource use, long-term profitability without damaging the environment, and the creation of resilient economies that provide decent livelihoods for all.
