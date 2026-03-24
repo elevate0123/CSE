@@ -789,7 +789,7 @@ The rise of social media has radically transformed the media-governance interfac
 - Citizen Journalism: Ordinary citizens, armed with smartphones, can now act as journalists, reporting civic issues like a broken traffic light or an overflowing garbage bin in real-time.
 - Direct Interface with Authorities: Platforms like Twitter (now X) have become grievance redressal mechanisms. Citizens can directly tag the relevant municipal corporation or police department in their posts, often receiving a swift response. The active use of social media by the Bengaluru and Mumbai police to manage traffic and respond to citizen complaints is a prime example of this direct interface.
 
-  ```mermaid
+```mermaid
 mindmap
 
   
