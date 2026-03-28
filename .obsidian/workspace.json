@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "fec6427356c12e41",
+        "id": "76e159565f02e832",
         "type": "tabs",
         "children": [
           {
-            "id": "a3920047a2fc25f7",
+            "id": "85d745a4f94eb799",
             "type": "leaf",
             "state": {
               "type": "home-tab-view",
@@ -174,7 +174,7 @@
       "terminal:Open terminal": false
     }
   },
-  "active": "a3920047a2fc25f7",
+  "active": "85d745a4f94eb799",
   "lastOpenFiles": [
     "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/Marriage Book/Marriage En Final 001.md",
     "00 Insaan-aur-Aalam/Project Books - Ilm & Noor/M2/M2 Draft.md",

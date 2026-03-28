@@ -19,6 +19,7 @@
         "\"$PWD\""
       ],
       "executable": "/System/Applications/Utilities/Terminal.app/Contents/macOS/Terminal",
+      "followTheme": true,
       "name": "",
       "platforms": {
         "darwin": true
@@ -38,6 +39,7 @@
     "darwinIntegratedDefault": {
       "args": [],
       "executable": "/bin/zsh",
+      "followTheme": true,
       "name": "",
       "platforms": {
         "darwin": true
@@ -57,6 +59,7 @@
       "useWin32Conhost": true
     },
     "developerConsole": {
+      "followTheme": true,
       "name": "",
       "restoreHistory": false,
       "rightClickAction": "copyPaste",
@@ -73,6 +76,7 @@
     "linuxExternalDefault": {
       "args": [],
       "executable": "xterm",
+      "followTheme": true,
       "name": "",
       "platforms": {
         "linux": true
@@ -92,6 +96,7 @@
     "linuxIntegratedDefault": {
       "args": [],
       "executable": "/bin/sh",
+      "followTheme": true,
       "name": "",
       "platforms": {
         "linux": true
@@ -113,6 +118,7 @@
     "win32ExternalDefault": {
       "args": [],
       "executable": "C:\\Windows\\System32\\cmd.exe",
+      "followTheme": true,
       "name": "",
       "platforms": {
         "win32": true
@@ -132,6 +138,7 @@
     "win32IntegratedDefault": {
       "args": [],
       "executable": "C:\\Windows\\System32\\cmd.exe",
+      "followTheme": true,
       "name": "",
       "platforms": {
         "win32": true

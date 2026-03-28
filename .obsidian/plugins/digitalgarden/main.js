@@ -1634,7 +1634,7 @@ var require_core = __commonJS({
             return new WordArray.init(words, hexStrLength / 2);
           }
         };
-        var Latin1 = C_enc.Latin1 = {
+        var Latin12 = C_enc.Latin1 = {
           /**
            * Converts a word array to a Latin1 string.
            *
@@ -1696,7 +1696,7 @@ var require_core = __commonJS({
            */
           stringify: function(wordArray) {
             try {
-              return decodeURIComponent(escape(Latin1.stringify(wordArray)));
+              return decodeURIComponent(escape(Latin12.stringify(wordArray)));
             } catch (e) {
               throw new Error("Malformed UTF-8 data");
             }
@@ -1715,7 +1715,7 @@ var require_core = __commonJS({
            *     var wordArray = CryptoJS.enc.Utf8.parse(utf8String);
            */
           parse: function(utf8Str) {
-            return Latin1.parse(unescape(encodeURIComponent(utf8Str)));
+            return Latin12.parse(unescape(encodeURIComponent(utf8Str)));
           }
         };
         var BufferedBlockAlgorithm = C_lib.BufferedBlockAlgorithm = Base.extend({
@@ -2002,6 +2002,430 @@ var require_sha1 = __commonJS({
       })();
       return CryptoJS.SHA1;
     });
+  }
+});
+
+// node_modules/crypto-js/enc-latin1.js
+var require_enc_latin1 = __commonJS({
+  "node_modules/crypto-js/enc-latin1.js"(exports, module2) {
+    (function(root, factory2) {
+      if (typeof exports === "object") {
+        module2.exports = exports = factory2(require_core());
+      } else if (typeof define === "function" && define.amd) {
+        define(["./core"], factory2);
+      } else {
+        factory2(root.CryptoJS);
+      }
+    })(exports, function(CryptoJS) {
+      return CryptoJS.enc.Latin1;
+    });
+  }
+});
+
+// node_modules/js-logger/src/logger.js
+var require_logger = __commonJS({
+  "node_modules/js-logger/src/logger.js"(exports, module2) {
+    (function(global2) {
+      "use strict";
+      var Logger12 = {};
+      Logger12.VERSION = "1.6.1";
+      var logHandler;
+      var contextualLoggersByNameMap = {};
+      var bind2 = function(scope, func) {
+        return function() {
+          return func.apply(scope, arguments);
+        };
+      };
+      var merge3 = function() {
+        var args = arguments, target = args[0], key, i;
+        for (i = 1; i < args.length; i++) {
+          for (key in args[i]) {
+            if (!(key in target) && args[i].hasOwnProperty(key)) {
+              target[key] = args[i][key];
+            }
+          }
+        }
+        return target;
+      };
+      var defineLogLevel = function(value, name) {
+        return { value, name };
+      };
+      Logger12.TRACE = defineLogLevel(1, "TRACE");
+      Logger12.DEBUG = defineLogLevel(2, "DEBUG");
+      Logger12.INFO = defineLogLevel(3, "INFO");
+      Logger12.TIME = defineLogLevel(4, "TIME");
+      Logger12.WARN = defineLogLevel(5, "WARN");
+      Logger12.ERROR = defineLogLevel(8, "ERROR");
+      Logger12.OFF = defineLogLevel(99, "OFF");
+      var ContextualLogger = function(defaultContext) {
+        this.context = defaultContext;
+        this.setLevel(defaultContext.filterLevel);
+        this.log = this.info;
+      };
+      ContextualLogger.prototype = {
+        // Changes the current logging level for the logging instance.
+        setLevel: function(newLevel) {
+          if (newLevel && "value" in newLevel) {
+            this.context.filterLevel = newLevel;
+          }
+        },
+        // Gets the current logging level for the logging instance
+        getLevel: function() {
+          return this.context.filterLevel;
+        },
+        // Is the logger configured to output messages at the supplied level?
+        enabledFor: function(lvl) {
+          var filterLevel = this.context.filterLevel;
+          return lvl.value >= filterLevel.value;
+        },
+        trace: function() {
+          this.invoke(Logger12.TRACE, arguments);
+        },
+        debug: function() {
+          this.invoke(Logger12.DEBUG, arguments);
+        },
+        info: function() {
+          this.invoke(Logger12.INFO, arguments);
+        },
+        warn: function() {
+          this.invoke(Logger12.WARN, arguments);
+        },
+        error: function() {
+          this.invoke(Logger12.ERROR, arguments);
+        },
+        time: function(label) {
+          if (typeof label === "string" && label.length > 0) {
+            this.invoke(Logger12.TIME, [label, "start"]);
+          }
+        },
+        timeEnd: function(label) {
+          if (typeof label === "string" && label.length > 0) {
+            this.invoke(Logger12.TIME, [label, "end"]);
+          }
+        },
+        // Invokes the logger callback if it's not being filtered.
+        invoke: function(level, msgArgs) {
+          if (logHandler && this.enabledFor(level)) {
+            logHandler(msgArgs, merge3({ level }, this.context));
+          }
+        }
+      };
+      var globalLogger = new ContextualLogger({ filterLevel: Logger12.OFF });
+      (function() {
+        var L = Logger12;
+        L.enabledFor = bind2(globalLogger, globalLogger.enabledFor);
+        L.trace = bind2(globalLogger, globalLogger.trace);
+        L.debug = bind2(globalLogger, globalLogger.debug);
+        L.time = bind2(globalLogger, globalLogger.time);
+        L.timeEnd = bind2(globalLogger, globalLogger.timeEnd);
+        L.info = bind2(globalLogger, globalLogger.info);
+        L.warn = bind2(globalLogger, globalLogger.warn);
+        L.error = bind2(globalLogger, globalLogger.error);
+        L.log = L.info;
+      })();
+      Logger12.setHandler = function(func) {
+        logHandler = func;
+      };
+      Logger12.setLevel = function(level) {
+        globalLogger.setLevel(level);
+        for (var key in contextualLoggersByNameMap) {
+          if (contextualLoggersByNameMap.hasOwnProperty(key)) {
+            contextualLoggersByNameMap[key].setLevel(level);
+          }
+        }
+      };
+      Logger12.getLevel = function() {
+        return globalLogger.getLevel();
+      };
+      Logger12.get = function(name) {
+        return contextualLoggersByNameMap[name] || (contextualLoggersByNameMap[name] = new ContextualLogger(merge3({ name }, globalLogger.context)));
+      };
+      Logger12.createDefaultHandler = function(options) {
+        options = options || {};
+        options.formatter = options.formatter || function defaultMessageFormatter(messages, context) {
+          if (context.name) {
+            messages.unshift("[" + context.name + "]");
+          }
+        };
+        var timerStartTimeByLabelMap = {};
+        var invokeConsoleMethod = function(hdlr, messages) {
+          Function.prototype.apply.call(hdlr, console, messages);
+        };
+        if (typeof console === "undefined") {
+          return function() {
+          };
+        }
+        return function(messages, context) {
+          messages = Array.prototype.slice.call(messages);
+          var hdlr = console.log;
+          var timerLabel;
+          if (context.level === Logger12.TIME) {
+            timerLabel = (context.name ? "[" + context.name + "] " : "") + messages[0];
+            if (messages[1] === "start") {
+              if (console.time) {
+                console.time(timerLabel);
+              } else {
+                timerStartTimeByLabelMap[timerLabel] = (/* @__PURE__ */ new Date()).getTime();
+              }
+            } else {
+              if (console.timeEnd) {
+                console.timeEnd(timerLabel);
+              } else {
+                invokeConsoleMethod(hdlr, [timerLabel + ": " + ((/* @__PURE__ */ new Date()).getTime() - timerStartTimeByLabelMap[timerLabel]) + "ms"]);
+              }
+            }
+          } else {
+            if (context.level === Logger12.WARN && console.warn) {
+              hdlr = console.warn;
+            } else if (context.level === Logger12.ERROR && console.error) {
+              hdlr = console.error;
+            } else if (context.level === Logger12.INFO && console.info) {
+              hdlr = console.info;
+            } else if (context.level === Logger12.DEBUG && console.debug) {
+              hdlr = console.debug;
+            } else if (context.level === Logger12.TRACE && console.trace) {
+              hdlr = console.trace;
+            }
+            options.formatter(messages, context);
+            invokeConsoleMethod(hdlr, messages);
+          }
+        };
+      };
+      Logger12.useDefaults = function(options) {
+        Logger12.setLevel(options && options.defaultLevel || Logger12.DEBUG);
+        Logger12.setHandler(Logger12.createDefaultHandler(options));
+      };
+      Logger12.setDefaults = Logger12.useDefaults;
+      if (typeof define === "function" && define.amd) {
+        define(Logger12);
+      } else if (typeof module2 !== "undefined" && module2.exports) {
+        module2.exports = Logger12;
+      } else {
+        Logger12._prevLogger = global2.Logger;
+        Logger12.noConflict = function() {
+          global2.Logger = Logger12._prevLogger;
+          return Logger12;
+        };
+        global2.Logger = Logger12;
+      }
+    })(exports);
+  }
+});
+
+// node_modules/before-after-hook/lib/register.js
+var require_register = __commonJS({
+  "node_modules/before-after-hook/lib/register.js"(exports, module2) {
+    module2.exports = register;
+    function register(state, name, method, options) {
+      if (typeof method !== "function") {
+        throw new Error("method for before hook must be a function");
+      }
+      if (!options) {
+        options = {};
+      }
+      if (Array.isArray(name)) {
+        return name.reverse().reduce(function(callback, name2) {
+          return register.bind(null, state, name2, callback, options);
+        }, method)();
+      }
+      return Promise.resolve().then(function() {
+        if (!state.registry[name]) {
+          return method(options);
+        }
+        return state.registry[name].reduce(function(method2, registered) {
+          return registered.hook.bind(null, method2, options);
+        }, method)();
+      });
+    }
+  }
+});
+
+// node_modules/before-after-hook/lib/add.js
+var require_add = __commonJS({
+  "node_modules/before-after-hook/lib/add.js"(exports, module2) {
+    module2.exports = addHook;
+    function addHook(state, kind, name, hook2) {
+      var orig = hook2;
+      if (!state.registry[name]) {
+        state.registry[name] = [];
+      }
+      if (kind === "before") {
+        hook2 = function(method, options) {
+          return Promise.resolve().then(orig.bind(null, options)).then(method.bind(null, options));
+        };
+      }
+      if (kind === "after") {
+        hook2 = function(method, options) {
+          var result;
+          return Promise.resolve().then(method.bind(null, options)).then(function(result_) {
+            result = result_;
+            return orig(result, options);
+          }).then(function() {
+            return result;
+          });
+        };
+      }
+      if (kind === "error") {
+        hook2 = function(method, options) {
+          return Promise.resolve().then(method.bind(null, options)).catch(function(error) {
+            return orig(error, options);
+          });
+        };
+      }
+      state.registry[name].push({
+        hook: hook2,
+        orig
+      });
+    }
+  }
+});
+
+// node_modules/before-after-hook/lib/remove.js
+var require_remove = __commonJS({
+  "node_modules/before-after-hook/lib/remove.js"(exports, module2) {
+    module2.exports = removeHook;
+    function removeHook(state, name, method) {
+      if (!state.registry[name]) {
+        return;
+      }
+      var index = state.registry[name].map(function(registered) {
+        return registered.orig;
+      }).indexOf(method);
+      if (index === -1) {
+        return;
+      }
+      state.registry[name].splice(index, 1);
+    }
+  }
+});
+
+// node_modules/before-after-hook/index.js
+var require_before_after_hook = __commonJS({
+  "node_modules/before-after-hook/index.js"(exports, module2) {
+    var register = require_register();
+    var addHook = require_add();
+    var removeHook = require_remove();
+    var bind2 = Function.bind;
+    var bindable = bind2.bind(bind2);
+    function bindApi(hook2, state, name) {
+      var removeHookRef = bindable(removeHook, null).apply(
+        null,
+        name ? [state, name] : [state]
+      );
+      hook2.api = { remove: removeHookRef };
+      hook2.remove = removeHookRef;
+      ["before", "error", "after", "wrap"].forEach(function(kind) {
+        var args = name ? [state, kind, name] : [state, kind];
+        hook2[kind] = hook2.api[kind] = bindable(addHook, null).apply(null, args);
+      });
+    }
+    function HookSingular() {
+      var singularHookName = "h";
+      var singularHookState = {
+        registry: {}
+      };
+      var singularHook = register.bind(null, singularHookState, singularHookName);
+      bindApi(singularHook, singularHookState, singularHookName);
+      return singularHook;
+    }
+    function HookCollection() {
+      var state = {
+        registry: {}
+      };
+      var hook2 = register.bind(null, state);
+      bindApi(hook2, state);
+      return hook2;
+    }
+    var collectionHookDeprecationMessageDisplayed = false;
+    function Hook() {
+      if (!collectionHookDeprecationMessageDisplayed) {
+        console.warn(
+          '[before-after-hook]: "Hook()" repurposing warning, use "Hook.Collection()". Read more: https://git.io/upgrade-before-after-hook-to-1.4'
+        );
+        collectionHookDeprecationMessageDisplayed = true;
+      }
+      return HookCollection();
+    }
+    Hook.Singular = HookSingular.bind();
+    Hook.Collection = HookCollection.bind();
+    module2.exports = Hook;
+    module2.exports.Hook = Hook;
+    module2.exports.Singular = Hook.Singular;
+    module2.exports.Collection = Hook.Collection;
+  }
+});
+
+// node_modules/wrappy/wrappy.js
+var require_wrappy = __commonJS({
+  "node_modules/wrappy/wrappy.js"(exports, module2) {
+    module2.exports = wrappy;
+    function wrappy(fn2, cb) {
+      if (fn2 && cb) return wrappy(fn2)(cb);
+      if (typeof fn2 !== "function")
+        throw new TypeError("need wrapper function");
+      Object.keys(fn2).forEach(function(k) {
+        wrapper[k] = fn2[k];
+      });
+      return wrapper;
+      function wrapper() {
+        var args = new Array(arguments.length);
+        for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i];
+        }
+        var ret = fn2.apply(this, args);
+        var cb2 = args[args.length - 1];
+        if (typeof ret === "function" && ret !== cb2) {
+          Object.keys(cb2).forEach(function(k) {
+            ret[k] = cb2[k];
+          });
+        }
+        return ret;
+      }
+    }
+  }
+});
+
+// node_modules/once/once.js
+var require_once = __commonJS({
+  "node_modules/once/once.js"(exports, module2) {
+    var wrappy = require_wrappy();
+    module2.exports = wrappy(once2);
+    module2.exports.strict = wrappy(onceStrict);
+    once2.proto = once2(function() {
+      Object.defineProperty(Function.prototype, "once", {
+        value: function() {
+          return once2(this);
+        },
+        configurable: true
+      });
+      Object.defineProperty(Function.prototype, "onceStrict", {
+        value: function() {
+          return onceStrict(this);
+        },
+        configurable: true
+      });
+    });
+    function once2(fn2) {
+      var f = function() {
+        if (f.called) return f.value;
+        f.called = true;
+        return f.value = fn2.apply(this, arguments);
+      };
+      f.called = false;
+      return f;
+    }
+    function onceStrict(fn2) {
+      var f = function() {
+        if (f.called)
+          throw new Error(f.onceError);
+        f.called = true;
+        return f.value = fn2.apply(this, arguments);
+      };
+      var name = fn2.name || "Function wrapped with `once`";
+      f.onceError = name + " shouldn't be called more than once";
+      f.called = false;
+      return f;
+    }
   }
 });
 
@@ -2458,196 +2882,6 @@ var require_lz_string = __commonJS({
         return LZString2;
       });
     }
-  }
-});
-
-// node_modules/js-logger/src/logger.js
-var require_logger = __commonJS({
-  "node_modules/js-logger/src/logger.js"(exports, module2) {
-    (function(global2) {
-      "use strict";
-      var Logger12 = {};
-      Logger12.VERSION = "1.6.1";
-      var logHandler;
-      var contextualLoggersByNameMap = {};
-      var bind2 = function(scope, func) {
-        return function() {
-          return func.apply(scope, arguments);
-        };
-      };
-      var merge3 = function() {
-        var args = arguments, target = args[0], key, i;
-        for (i = 1; i < args.length; i++) {
-          for (key in args[i]) {
-            if (!(key in target) && args[i].hasOwnProperty(key)) {
-              target[key] = args[i][key];
-            }
-          }
-        }
-        return target;
-      };
-      var defineLogLevel = function(value, name) {
-        return { value, name };
-      };
-      Logger12.TRACE = defineLogLevel(1, "TRACE");
-      Logger12.DEBUG = defineLogLevel(2, "DEBUG");
-      Logger12.INFO = defineLogLevel(3, "INFO");
-      Logger12.TIME = defineLogLevel(4, "TIME");
-      Logger12.WARN = defineLogLevel(5, "WARN");
-      Logger12.ERROR = defineLogLevel(8, "ERROR");
-      Logger12.OFF = defineLogLevel(99, "OFF");
-      var ContextualLogger = function(defaultContext) {
-        this.context = defaultContext;
-        this.setLevel(defaultContext.filterLevel);
-        this.log = this.info;
-      };
-      ContextualLogger.prototype = {
-        // Changes the current logging level for the logging instance.
-        setLevel: function(newLevel) {
-          if (newLevel && "value" in newLevel) {
-            this.context.filterLevel = newLevel;
-          }
-        },
-        // Gets the current logging level for the logging instance
-        getLevel: function() {
-          return this.context.filterLevel;
-        },
-        // Is the logger configured to output messages at the supplied level?
-        enabledFor: function(lvl) {
-          var filterLevel = this.context.filterLevel;
-          return lvl.value >= filterLevel.value;
-        },
-        trace: function() {
-          this.invoke(Logger12.TRACE, arguments);
-        },
-        debug: function() {
-          this.invoke(Logger12.DEBUG, arguments);
-        },
-        info: function() {
-          this.invoke(Logger12.INFO, arguments);
-        },
-        warn: function() {
-          this.invoke(Logger12.WARN, arguments);
-        },
-        error: function() {
-          this.invoke(Logger12.ERROR, arguments);
-        },
-        time: function(label) {
-          if (typeof label === "string" && label.length > 0) {
-            this.invoke(Logger12.TIME, [label, "start"]);
-          }
-        },
-        timeEnd: function(label) {
-          if (typeof label === "string" && label.length > 0) {
-            this.invoke(Logger12.TIME, [label, "end"]);
-          }
-        },
-        // Invokes the logger callback if it's not being filtered.
-        invoke: function(level, msgArgs) {
-          if (logHandler && this.enabledFor(level)) {
-            logHandler(msgArgs, merge3({ level }, this.context));
-          }
-        }
-      };
-      var globalLogger = new ContextualLogger({ filterLevel: Logger12.OFF });
-      (function() {
-        var L = Logger12;
-        L.enabledFor = bind2(globalLogger, globalLogger.enabledFor);
-        L.trace = bind2(globalLogger, globalLogger.trace);
-        L.debug = bind2(globalLogger, globalLogger.debug);
-        L.time = bind2(globalLogger, globalLogger.time);
-        L.timeEnd = bind2(globalLogger, globalLogger.timeEnd);
-        L.info = bind2(globalLogger, globalLogger.info);
-        L.warn = bind2(globalLogger, globalLogger.warn);
-        L.error = bind2(globalLogger, globalLogger.error);
-        L.log = L.info;
-      })();
-      Logger12.setHandler = function(func) {
-        logHandler = func;
-      };
-      Logger12.setLevel = function(level) {
-        globalLogger.setLevel(level);
-        for (var key in contextualLoggersByNameMap) {
-          if (contextualLoggersByNameMap.hasOwnProperty(key)) {
-            contextualLoggersByNameMap[key].setLevel(level);
-          }
-        }
-      };
-      Logger12.getLevel = function() {
-        return globalLogger.getLevel();
-      };
-      Logger12.get = function(name) {
-        return contextualLoggersByNameMap[name] || (contextualLoggersByNameMap[name] = new ContextualLogger(merge3({ name }, globalLogger.context)));
-      };
-      Logger12.createDefaultHandler = function(options) {
-        options = options || {};
-        options.formatter = options.formatter || function defaultMessageFormatter(messages, context) {
-          if (context.name) {
-            messages.unshift("[" + context.name + "]");
-          }
-        };
-        var timerStartTimeByLabelMap = {};
-        var invokeConsoleMethod = function(hdlr, messages) {
-          Function.prototype.apply.call(hdlr, console, messages);
-        };
-        if (typeof console === "undefined") {
-          return function() {
-          };
-        }
-        return function(messages, context) {
-          messages = Array.prototype.slice.call(messages);
-          var hdlr = console.log;
-          var timerLabel;
-          if (context.level === Logger12.TIME) {
-            timerLabel = (context.name ? "[" + context.name + "] " : "") + messages[0];
-            if (messages[1] === "start") {
-              if (console.time) {
-                console.time(timerLabel);
-              } else {
-                timerStartTimeByLabelMap[timerLabel] = (/* @__PURE__ */ new Date()).getTime();
-              }
-            } else {
-              if (console.timeEnd) {
-                console.timeEnd(timerLabel);
-              } else {
-                invokeConsoleMethod(hdlr, [timerLabel + ": " + ((/* @__PURE__ */ new Date()).getTime() - timerStartTimeByLabelMap[timerLabel]) + "ms"]);
-              }
-            }
-          } else {
-            if (context.level === Logger12.WARN && console.warn) {
-              hdlr = console.warn;
-            } else if (context.level === Logger12.ERROR && console.error) {
-              hdlr = console.error;
-            } else if (context.level === Logger12.INFO && console.info) {
-              hdlr = console.info;
-            } else if (context.level === Logger12.DEBUG && console.debug) {
-              hdlr = console.debug;
-            } else if (context.level === Logger12.TRACE && console.trace) {
-              hdlr = console.trace;
-            }
-            options.formatter(messages, context);
-            invokeConsoleMethod(hdlr, messages);
-          }
-        };
-      };
-      Logger12.useDefaults = function(options) {
-        Logger12.setLevel(options && options.defaultLevel || Logger12.DEBUG);
-        Logger12.setHandler(Logger12.createDefaultHandler(options));
-      };
-      Logger12.setDefaults = Logger12.useDefaults;
-      if (typeof define === "function" && define.amd) {
-        define(Logger12);
-      } else if (typeof module2 !== "undefined" && module2.exports) {
-        module2.exports = Logger12;
-      } else {
-        Logger12._prevLogger = global2.Logger;
-        Logger12.noConflict = function() {
-          global2.Logger = Logger12._prevLogger;
-          return Logger12;
-        };
-        global2.Logger = Logger12;
-      }
-    })(exports);
   }
 });
 
@@ -10172,223 +10406,6 @@ var require_lib = __commonJS({
   }
 });
 
-// node_modules/before-after-hook/lib/register.js
-var require_register = __commonJS({
-  "node_modules/before-after-hook/lib/register.js"(exports, module2) {
-    module2.exports = register;
-    function register(state, name, method, options) {
-      if (typeof method !== "function") {
-        throw new Error("method for before hook must be a function");
-      }
-      if (!options) {
-        options = {};
-      }
-      if (Array.isArray(name)) {
-        return name.reverse().reduce(function(callback, name2) {
-          return register.bind(null, state, name2, callback, options);
-        }, method)();
-      }
-      return Promise.resolve().then(function() {
-        if (!state.registry[name]) {
-          return method(options);
-        }
-        return state.registry[name].reduce(function(method2, registered) {
-          return registered.hook.bind(null, method2, options);
-        }, method)();
-      });
-    }
-  }
-});
-
-// node_modules/before-after-hook/lib/add.js
-var require_add = __commonJS({
-  "node_modules/before-after-hook/lib/add.js"(exports, module2) {
-    module2.exports = addHook;
-    function addHook(state, kind, name, hook2) {
-      var orig = hook2;
-      if (!state.registry[name]) {
-        state.registry[name] = [];
-      }
-      if (kind === "before") {
-        hook2 = function(method, options) {
-          return Promise.resolve().then(orig.bind(null, options)).then(method.bind(null, options));
-        };
-      }
-      if (kind === "after") {
-        hook2 = function(method, options) {
-          var result;
-          return Promise.resolve().then(method.bind(null, options)).then(function(result_) {
-            result = result_;
-            return orig(result, options);
-          }).then(function() {
-            return result;
-          });
-        };
-      }
-      if (kind === "error") {
-        hook2 = function(method, options) {
-          return Promise.resolve().then(method.bind(null, options)).catch(function(error) {
-            return orig(error, options);
-          });
-        };
-      }
-      state.registry[name].push({
-        hook: hook2,
-        orig
-      });
-    }
-  }
-});
-
-// node_modules/before-after-hook/lib/remove.js
-var require_remove = __commonJS({
-  "node_modules/before-after-hook/lib/remove.js"(exports, module2) {
-    module2.exports = removeHook;
-    function removeHook(state, name, method) {
-      if (!state.registry[name]) {
-        return;
-      }
-      var index = state.registry[name].map(function(registered) {
-        return registered.orig;
-      }).indexOf(method);
-      if (index === -1) {
-        return;
-      }
-      state.registry[name].splice(index, 1);
-    }
-  }
-});
-
-// node_modules/before-after-hook/index.js
-var require_before_after_hook = __commonJS({
-  "node_modules/before-after-hook/index.js"(exports, module2) {
-    var register = require_register();
-    var addHook = require_add();
-    var removeHook = require_remove();
-    var bind2 = Function.bind;
-    var bindable = bind2.bind(bind2);
-    function bindApi(hook2, state, name) {
-      var removeHookRef = bindable(removeHook, null).apply(
-        null,
-        name ? [state, name] : [state]
-      );
-      hook2.api = { remove: removeHookRef };
-      hook2.remove = removeHookRef;
-      ["before", "error", "after", "wrap"].forEach(function(kind) {
-        var args = name ? [state, kind, name] : [state, kind];
-        hook2[kind] = hook2.api[kind] = bindable(addHook, null).apply(null, args);
-      });
-    }
-    function HookSingular() {
-      var singularHookName = "h";
-      var singularHookState = {
-        registry: {}
-      };
-      var singularHook = register.bind(null, singularHookState, singularHookName);
-      bindApi(singularHook, singularHookState, singularHookName);
-      return singularHook;
-    }
-    function HookCollection() {
-      var state = {
-        registry: {}
-      };
-      var hook2 = register.bind(null, state);
-      bindApi(hook2, state);
-      return hook2;
-    }
-    var collectionHookDeprecationMessageDisplayed = false;
-    function Hook() {
-      if (!collectionHookDeprecationMessageDisplayed) {
-        console.warn(
-          '[before-after-hook]: "Hook()" repurposing warning, use "Hook.Collection()". Read more: https://git.io/upgrade-before-after-hook-to-1.4'
-        );
-        collectionHookDeprecationMessageDisplayed = true;
-      }
-      return HookCollection();
-    }
-    Hook.Singular = HookSingular.bind();
-    Hook.Collection = HookCollection.bind();
-    module2.exports = Hook;
-    module2.exports.Hook = Hook;
-    module2.exports.Singular = Hook.Singular;
-    module2.exports.Collection = Hook.Collection;
-  }
-});
-
-// node_modules/wrappy/wrappy.js
-var require_wrappy = __commonJS({
-  "node_modules/wrappy/wrappy.js"(exports, module2) {
-    module2.exports = wrappy;
-    function wrappy(fn2, cb) {
-      if (fn2 && cb) return wrappy(fn2)(cb);
-      if (typeof fn2 !== "function")
-        throw new TypeError("need wrapper function");
-      Object.keys(fn2).forEach(function(k) {
-        wrapper[k] = fn2[k];
-      });
-      return wrapper;
-      function wrapper() {
-        var args = new Array(arguments.length);
-        for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i];
-        }
-        var ret = fn2.apply(this, args);
-        var cb2 = args[args.length - 1];
-        if (typeof ret === "function" && ret !== cb2) {
-          Object.keys(cb2).forEach(function(k) {
-            ret[k] = cb2[k];
-          });
-        }
-        return ret;
-      }
-    }
-  }
-});
-
-// node_modules/once/once.js
-var require_once = __commonJS({
-  "node_modules/once/once.js"(exports, module2) {
-    var wrappy = require_wrappy();
-    module2.exports = wrappy(once2);
-    module2.exports.strict = wrappy(onceStrict);
-    once2.proto = once2(function() {
-      Object.defineProperty(Function.prototype, "once", {
-        value: function() {
-          return once2(this);
-        },
-        configurable: true
-      });
-      Object.defineProperty(Function.prototype, "onceStrict", {
-        value: function() {
-          return onceStrict(this);
-        },
-        configurable: true
-      });
-    });
-    function once2(fn2) {
-      var f = function() {
-        if (f.called) return f.value;
-        f.called = true;
-        return f.value = fn2.apply(this, arguments);
-      };
-      f.called = false;
-      return f;
-    }
-    function onceStrict(fn2) {
-      var f = function() {
-        if (f.called)
-          throw new Error(f.onceError);
-        f.called = true;
-        return f.value = fn2.apply(this, arguments);
-      };
-      var name = fn2.name || "Function wrapped with `once`";
-      f.onceError = name + " shouldn't be called more than once";
-      f.called = false;
-      return f;
-    }
-  }
-});
-
 // src/test/snapshot/generateGardenSnapshot.ts
 var generateGardenSnapshot_exports = {};
 __export(generateGardenSnapshot_exports, {
@@ -10444,7 +10461,7 @@ module.exports = __toCommonJS(main_exports);
 var import_obsidian19 = require("obsidian");
 
 // src/publisher/Publisher.ts
-var import_obsidian5 = require("obsidian");
+var import_obsidian6 = require("obsidian");
 
 // node_modules/js-base64/base64.mjs
 var version = "3.7.5";
@@ -10606,6 +10623,7 @@ var gBase64 = {
 // src/utils/utils.ts
 var import_slugify = __toESM(require_slugify());
 var import_sha1 = __toESM(require_sha1());
+var import_enc_latin1 = __toESM(require_enc_latin1());
 var REWRITE_RULE_DELIMITER = ":";
 function arrayBufferToBase64(buffer) {
   let binary = "";
@@ -10636,6 +10654,14 @@ function generateBlobHash(content) {
   const header = `blob ${byteLength}\0`;
   const gitBlob = header + content;
   return (0, import_sha1.default)(gitBlob).toString();
+}
+function generateBlobHashFromBase64(base64Content) {
+  const binary = gBase64.atob(base64Content);
+  const byteLength = binary.length;
+  const header = `blob ${byteLength}\0`;
+  const gitBlob = header + binary;
+  const wordArray = import_enc_latin1.default.parse(gitBlob);
+  return (0, import_sha1.default)(wordArray).toString();
 }
 function kebabize(str) {
   return str.split("").map((letter, idx) => {
@@ -10701,8 +10727,1685 @@ function isPublishFrontmatterValid(frontMatter) {
   return true;
 }
 
+// src/repositoryConnection/DigitalGardenSiteManager.ts
+var import_obsidian2 = require("obsidian");
+
+// src/repositoryConnection/RepositoryConnection.ts
+var import_js_logger = __toESM(require_logger());
+
+// src/forestry/LimitReachedError.ts
+var LimitReachedError = class extends Error {
+  constructor(errorType, responseData) {
+    var _a2;
+    const message = (_a2 = responseData.message) != null ? _a2 : "Usage limit reached";
+    super(message);
+    this.name = "LimitReachedError";
+    this.errorType = errorType;
+    this.buildsUsed = responseData.builds_used;
+    this.monthlyLimit = responseData.monthly_limit;
+    this.starterCreditsRemaining = responseData.starter_credits_remaining;
+  }
+};
+function throwIfLimitError(error) {
+  if (error && typeof error === "object" && "status" in error && error.status === 403) {
+    const responseData = extractResponseData(error);
+    if (!responseData) return;
+    const errorType = responseData.error;
+    if (errorType === "build_limit_reached" || errorType === "storage_limit_exceeded") {
+      throw new LimitReachedError(errorType, responseData);
+    }
+  }
+}
+function extractResponseData(error) {
+  const err = error;
+  if (err.response && typeof err.response === "object") {
+    const response = err.response;
+    if (response.data && typeof response.data === "object") {
+      return response.data;
+    }
+  }
+  if (err.response && typeof err.response === "object") {
+    const resp = err.response;
+    if (resp.data && typeof resp.data === "object") {
+      return resp.data;
+    }
+  }
+  return null;
+}
+
+// src/repositoryConnection/RepositoryConnection.ts
+var logger = import_js_logger.default.get("repository-connection");
+var IMAGE_PATH_BASE = "src/site/";
+var NOTE_PATH_BASE = "src/site/notes/";
+var RepositoryConnection = class {
+  constructor({ octoKit, userName, pageName }) {
+    this.pageName = pageName;
+    this.userName = userName;
+    this.octokit = octoKit;
+  }
+  getRepositoryName() {
+    return this.userName + "/" + this.pageName;
+  }
+  getBasePayload() {
+    return {
+      owner: this.userName,
+      repo: this.pageName
+    };
+  }
+  /** Get filetree with path and sha of each file from repository */
+  getContent(branch) {
+    return __async(this, null, function* () {
+      try {
+        const response = yield this.octokit.request(
+          `GET /repos/{owner}/{repo}/git/trees/{tree_sha}`,
+          __spreadProps(__spreadValues({}, this.getBasePayload()), {
+            tree_sha: branch,
+            recursive: "true",
+            // invalidate cache
+            headers: {
+              "If-None-Match": ""
+            }
+          })
+        );
+        if (response.status === 200) {
+          return response.data;
+        }
+      } catch (error) {
+        throw new Error(
+          `Could not get file ${""} from repository ${this.getRepositoryName()}`
+        );
+      }
+    });
+  }
+  getFile(path, branch) {
+    return __async(this, null, function* () {
+      logger.info(
+        `Getting file ${path} from repository ${this.getRepositoryName()}`
+      );
+      try {
+        const response = yield this.octokit.request(
+          "GET /repos/{owner}/{repo}/contents/{path}",
+          __spreadProps(__spreadValues({}, this.getBasePayload()), {
+            path,
+            ref: branch
+          })
+        );
+        if (response.status === 200 && !Array.isArray(response.data) && response.data.type === "file") {
+          return response.data;
+        }
+      } catch (error) {
+        throw new Error(
+          `Could not get file ${path} from repository ${this.getRepositoryName()}`
+        );
+      }
+    });
+  }
+  deleteFile(_0, _1) {
+    return __async(this, arguments, function* (path, { branch, sha }) {
+      try {
+        sha != null ? sha : sha = yield this.getFile(path, branch).then((file) => file == null ? void 0 : file.sha);
+        if (!sha) {
+          console.error(
+            `cannot find file ${path} on github, not removing`
+          );
+          return false;
+        }
+        const payload = __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          path,
+          message: `Delete content ${path}`,
+          sha,
+          branch
+        });
+        const result = yield this.octokit.request(
+          "DELETE /repos/{owner}/{repo}/contents/{path}",
+          payload
+        );
+        import_js_logger.default.info(
+          `Deleted file ${path} from repository ${this.getRepositoryName()}`
+        );
+        return result;
+      } catch (error) {
+        throwIfLimitError(error);
+        logger.error(error);
+        return false;
+      }
+    });
+  }
+  getLatestRelease() {
+    return __async(this, null, function* () {
+      try {
+        const release = yield this.octokit.request(
+          "GET /repos/{owner}/{repo}/releases/latest",
+          this.getBasePayload()
+        );
+        if (!release || !release.data) {
+          logger.error("Could not get latest release");
+        }
+        return release.data;
+      } catch (error) {
+        logger.error("Could not get latest release", error);
+      }
+    });
+  }
+  getLatestCommit() {
+    return __async(this, null, function* () {
+      try {
+        const latestCommit = yield this.octokit.request(
+          `GET /repos/{owner}/{repo}/commits/HEAD?cacheBust=${Date.now()}`,
+          this.getBasePayload()
+        );
+        if (!latestCommit || !latestCommit.data) {
+          logger.error("Could not get latest commit");
+        }
+        return latestCommit.data;
+      } catch (error) {
+        logger.error("Could not get latest commit", error);
+      }
+    });
+  }
+  updateFile(_0) {
+    return __async(this, arguments, function* ({ path, sha, content, branch, message }) {
+      const payload = __spreadProps(__spreadValues({}, this.getBasePayload()), {
+        path,
+        message: message != null ? message : `Update file ${path}`,
+        content,
+        sha,
+        branch
+      });
+      try {
+        return yield this.octokit.request(
+          "PUT /repos/{owner}/{repo}/contents/{path}",
+          payload
+        );
+      } catch (error) {
+        throwIfLimitError(error);
+        logger.error(error);
+      }
+    });
+  }
+  // NB: Do not use this, it does not work for some reason.
+  //TODO: Fix this. For now use deleteNote and deleteImage instead
+  deleteFiles(filePaths) {
+    return __async(this, null, function* () {
+      const latestCommit = yield this.getLatestCommit();
+      if (!latestCommit) {
+        logger.error("Could not get latest commit");
+        return;
+      }
+      const normalizePath = (path) => path.startsWith("/") ? path.slice(1) : path;
+      const filesToDelete = filePaths.map((path) => {
+        if (path.endsWith(".md")) {
+          return `${NOTE_PATH_BASE}${normalizePath(path)}`;
+        }
+        return `${IMAGE_PATH_BASE}${normalizePath(path)}`;
+      });
+      const repoDataPromise = this.octokit.request(
+        "GET /repos/{owner}/{repo}",
+        __spreadValues({}, this.getBasePayload())
+      );
+      const latestCommitSha = latestCommit.sha;
+      const baseTreeSha = latestCommit.commit.tree.sha;
+      const baseTree = yield this.octokit.request(
+        "GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          tree_sha: baseTreeSha
+        })
+      );
+      const newTreeEntries = baseTree.data.tree.filter(
+        (item) => !filesToDelete.includes(item.path)
+      ).map(
+        (item) => ({
+          path: item.path,
+          mode: item.mode,
+          type: item.type,
+          sha: item.sha
+        })
+      );
+      const newTree = yield this.octokit.request(
+        "POST /repos/{owner}/{repo}/git/trees",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          tree: newTreeEntries
+        })
+      );
+      const commitMessage = "Deleted multiple files";
+      const newCommit = yield this.octokit.request(
+        "POST /repos/{owner}/{repo}/git/commits",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          message: commitMessage,
+          tree: newTree.data.sha,
+          parents: [latestCommitSha]
+        })
+      );
+      const defaultBranch = (yield repoDataPromise).data.default_branch;
+      yield this.octokit.request(
+        "PATCH /repos/{owner}/{repo}/git/refs/{ref}",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          ref: `heads/${defaultBranch}`,
+          sha: newCommit.data.sha
+        })
+      );
+    });
+  }
+  updateFiles(_0) {
+    return __async(this, arguments, function* (files, remoteImageHashes = {}) {
+      const latestCommit = yield this.getLatestCommit();
+      if (!latestCommit) {
+        logger.error("Could not get latest commit");
+        return;
+      }
+      const repoDataPromise = this.octokit.request(
+        "GET /repos/{owner}/{repo}",
+        __spreadValues({}, this.getBasePayload())
+      );
+      const latestCommitSha = latestCommit.sha;
+      const baseTreeSha = latestCommit.commit.tree.sha;
+      const normalizePath = (path) => path.startsWith("/") ? path.slice(1) : path;
+      const treePromises = files.map((file) => __async(this, null, function* () {
+        const [text2, _] = file.compiledFile;
+        try {
+          const blob = yield this.octokit.request(
+            "POST /repos/{owner}/{repo}/git/blobs",
+            __spreadProps(__spreadValues({}, this.getBasePayload()), {
+              content: text2,
+              encoding: "utf-8"
+            })
+          );
+          return {
+            path: `${NOTE_PATH_BASE}${normalizePath(file.getPath())}`,
+            mode: "100644",
+            type: "blob",
+            sha: blob.data.sha
+          };
+        } catch (error) {
+          throwIfLimitError(error);
+          logger.error(error);
+        }
+      }));
+      const allImages = files.flatMap((x) => x.compiledFile[1].images);
+      const imagesToUpload = allImages.filter((asset) => {
+        const hashKey = asset.path.replace("/img/user/", "");
+        const remoteHash = remoteImageHashes[hashKey];
+        if (remoteHash && asset.localHash && remoteHash === asset.localHash) {
+          logger.debug(`Skipping unchanged image: ${asset.path}`);
+          return false;
+        }
+        return true;
+      });
+      const treeAssetPromises = imagesToUpload.map((asset) => __async(this, null, function* () {
+        try {
+          const blob = yield this.octokit.request(
+            "POST /repos/{owner}/{repo}/git/blobs",
+            __spreadProps(__spreadValues({}, this.getBasePayload()), {
+              content: asset.content,
+              encoding: "base64"
+            })
+          );
+          return {
+            path: `${IMAGE_PATH_BASE}${normalizePath(asset.path)}`,
+            mode: "100644",
+            type: "blob",
+            sha: blob.data.sha
+          };
+        } catch (error) {
+          throwIfLimitError(error);
+          logger.error(error);
+        }
+      }));
+      treePromises.push(...treeAssetPromises);
+      const treeList = yield Promise.all(treePromises);
+      const tree = treeList.filter((x) => x !== void 0);
+      const newTree = yield this.octokit.request(
+        "POST /repos/{owner}/{repo}/git/trees",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          base_tree: baseTreeSha,
+          tree
+        })
+      );
+      const commitMessage = "Published multiple files";
+      const newCommit = yield this.octokit.request(
+        "POST /repos/{owner}/{repo}/git/commits",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          message: commitMessage,
+          tree: newTree.data.sha,
+          parents: [latestCommitSha]
+        })
+      );
+      const defaultBranch = (yield repoDataPromise).data.default_branch;
+      yield this.octokit.request(
+        "PATCH /repos/{owner}/{repo}/git/refs/heads/{branch}",
+        __spreadProps(__spreadValues({}, this.getBasePayload()), {
+          branch: defaultBranch,
+          sha: newCommit.data.sha
+        })
+      );
+    });
+  }
+  getRepositoryInfo() {
+    return __async(this, null, function* () {
+      const repoInfo = yield this.octokit.request("GET /repos/{owner}/{repo}", __spreadValues({}, this.getBasePayload())).catch((error) => {
+        logger.error(error);
+        logger.warn(
+          `Could not get repository info for ${this.getRepositoryName()}`
+        );
+        return void 0;
+      });
+      return repoInfo == null ? void 0 : repoInfo.data;
+    });
+  }
+  createBranch(branchName, sha) {
+    return __async(this, null, function* () {
+      yield this.octokit.request("POST /repos/{owner}/{repo}/git/refs", __spreadProps(__spreadValues({}, this.getBasePayload()), {
+        ref: `refs/heads/${branchName}`,
+        sha
+      }));
+    });
+  }
+};
+
+// src/repositoryConnection/DigitalGardenSiteManager.ts
+var import_js_logger4 = __toESM(require_logger());
+
+// src/repositoryConnection/TemplateManager.ts
+var import_js_logger2 = __toESM(require_logger());
+var logger2 = import_js_logger2.default.get("digital-garden-site-manager");
+var TemplateUpdateChecker = class {
+  constructor({
+    baseGardenConnection,
+    userGardenConnection
+  }) {
+    this.baseGardenConnection = baseGardenConnection;
+    this.userGardenConnection = userGardenConnection;
+  }
+  getFileInfoFromContent(content, path) {
+    const file = content == null ? void 0 : content.tree.find((x) => x.path === path);
+    if (!file) {
+      return null;
+    }
+    return file;
+  }
+  getFilesToDelete(pluginInfo, userFileList) {
+    const filesToDelete = [];
+    for (const file of pluginInfo.filesToDelete) {
+      const currentFile = this.getFileInfoFromContent(userFileList, file);
+      if (currentFile) {
+        filesToDelete.push({ path: file, sha: currentFile.sha });
+      }
+    }
+    return filesToDelete;
+  }
+  getPathsToModify(pluginInfo, baseGardenFileList, userFileList) {
+    const filesToUpdate = [];
+    for (const file of pluginInfo.filesToModify) {
+      const currentFile = this.getFileInfoFromContent(userFileList, file);
+      const baseFile = this.getFileInfoFromContent(
+        baseGardenFileList,
+        file
+      );
+      if (!currentFile || (currentFile == null ? void 0 : currentFile.sha) !== (baseFile == null ? void 0 : baseFile.sha)) {
+        filesToUpdate.push({ path: file, sha: currentFile == null ? void 0 : currentFile.sha });
+      }
+    }
+    return filesToUpdate;
+  }
+  getFilesToAdd(pluginInfo, userFileList) {
+    const filesToAdd = [];
+    for (const file of pluginInfo.filesToAdd) {
+      const currentFile = this.getFileInfoFromContent(userFileList, file);
+      if (!currentFile) {
+        filesToAdd.push({ path: file });
+      }
+    }
+    return filesToAdd;
+  }
+  getTemplateVersion() {
+    return __async(this, null, function* () {
+      const latestRelease = yield this.baseGardenConnection.getLatestRelease();
+      if (!latestRelease) {
+        throw new Error(
+          "Unable to get latest release from oleeskid repository"
+        );
+      }
+      return latestRelease.tag_name;
+    });
+  }
+  checkForUpdates() {
+    return __async(this, null, function* () {
+      const [updateInfo, templateVersion] = yield Promise.all([
+        this.getFilesToUpdate(),
+        this.getTemplateVersion()
+      ]);
+      if (!templateVersion) {
+        throw new Error("Unable to get update info");
+      }
+      if (!updateInfo) {
+        this.newestTemplateVersion = templateVersion;
+        return this;
+      }
+      this.newestTemplateVersion = templateVersion;
+      return new TemplateUpdater({
+        baseGardenConnection: this.baseGardenConnection,
+        userGardenConnection: this.userGardenConnection,
+        filesToChange: updateInfo,
+        defaultBranch: this.defaultBranch,
+        newestTemplateVersion: templateVersion
+      });
+    });
+  }
+  getFilesToUpdate() {
+    return __async(this, null, function* () {
+      const { baseGardenFileList, pluginInfo } = yield this.getPluginInfo(
+        this.baseGardenConnection
+      );
+      if (!baseGardenFileList) {
+        throw new Error("Unable to get base garden file list");
+      }
+      const repoInfo = yield this.baseGardenConnection.getRepositoryInfo();
+      const defaultBranch = repoInfo == null ? void 0 : repoInfo.default_branch;
+      if (!defaultBranch) {
+        throw new Error("Unable to get default branch");
+      }
+      this.defaultBranch = defaultBranch;
+      const userFileList = yield this.userGardenConnection.getContent(defaultBranch);
+      if (!userFileList) {
+        throw new Error("Unable to get user file list");
+      }
+      const filesToDelete = this.getFilesToDelete(pluginInfo, userFileList);
+      const filesToUpdate = this.getPathsToModify(
+        pluginInfo,
+        baseGardenFileList,
+        userFileList
+      );
+      const filesToAdd = this.getFilesToAdd(pluginInfo, userFileList);
+      if (filesToDelete.length === 0 && filesToUpdate.length === 0 && filesToAdd.length === 0) {
+        return null;
+      }
+      return {
+        filesToDelete,
+        filesToUpdate,
+        filesToAdd
+      };
+    });
+  }
+  getPluginInfo(baseGardenConnection) {
+    return __async(this, null, function* () {
+      logger2.info("Getting plugin info");
+      const pluginInfoResponse = yield baseGardenConnection.getFile("plugin-info.json");
+      const baseGardenFileList = yield baseGardenConnection.getContent("main");
+      if (!pluginInfoResponse) {
+        throw new Error("Unable to get plugin info");
+      }
+      return {
+        pluginInfo: JSON.parse(gBase64.decode(pluginInfoResponse.content)),
+        baseGardenFileList
+      };
+    });
+  }
+};
+var TemplateUpdater = class {
+  constructor({
+    baseGardenConnection,
+    userGardenConnection,
+    filesToChange,
+    defaultBranch,
+    newestTemplateVersion
+  }) {
+    this.filesToChange = filesToChange;
+    this.defaultBranch = defaultBranch;
+    this.baseGardenConnection = baseGardenConnection;
+    this.userGardenConnection = userGardenConnection;
+    this.newestTemplateVersion = newestTemplateVersion;
+  }
+  updateTemplate() {
+    return __async(this, null, function* () {
+      var _a2;
+      const { filesToDelete, filesToUpdate, filesToAdd } = this.filesToChange;
+      const { branchName } = yield this.createNewBranch();
+      logger2.info("Deleting files");
+      yield this.deleteFiles(filesToDelete, branchName);
+      logger2.info("Updating files");
+      yield this.addOrUpdateFiles(
+        [...filesToUpdate, ...filesToAdd],
+        branchName
+      );
+      logger2.info("Adding files");
+      yield this.addOrUpdateFiles(filesToAdd, branchName);
+      try {
+        const pr = yield this.userGardenConnection.octokit.request(
+          "POST /repos/{owner}/{repo}/pulls",
+          __spreadProps(__spreadValues({}, this.userGardenConnection.getBasePayload()), {
+            title: `Update template to version ${this.newestTemplateVersion}`,
+            head: branchName,
+            base: this.defaultBranch,
+            body: `Update to latest template version.
+ [Release Notes](https://github.com/oleeskild/digitalgarden/releases/tag/${this.newestTemplateVersion})`
+          })
+        );
+        return (_a2 = pr == null ? void 0 : pr.data) == null ? void 0 : _a2.html_url;
+      } catch (e) {
+        return "";
+      }
+    });
+  }
+  createNewBranch() {
+    return __async(this, null, function* () {
+      const uuid = crypto.randomUUID();
+      const branchName = "update-template-to-v" + this.newestTemplateVersion + "-" + uuid;
+      const latestCommit = yield this.userGardenConnection.getLatestCommit();
+      if (!latestCommit) {
+        throw new Error("Unable to get latest commit");
+      }
+      yield this.userGardenConnection.createBranch(
+        branchName,
+        latestCommit.sha
+      );
+      return { branchName };
+    });
+  }
+  deleteFiles(filesToDelete, branch) {
+    return __async(this, null, function* () {
+      for (const file of filesToDelete) {
+        yield this.userGardenConnection.deleteFile(file.path, {
+          branch,
+          sha: file.sha
+        });
+      }
+    });
+  }
+  addOrUpdateFiles(filesToAdd, branch) {
+    return __async(this, null, function* () {
+      for (const file of filesToAdd) {
+        const baseTemplateFile = yield this.baseGardenConnection.getFile(
+          file.path
+        );
+        if (!baseTemplateFile) {
+          throw new Error(`Unable to get file ${file}`);
+        }
+        yield this.userGardenConnection.updateFile({
+          content: baseTemplateFile.content,
+          path: file.path,
+          branch,
+          sha: file.sha,
+          message: "Update files"
+        });
+      }
+    });
+  }
+};
+var hasUpdates = (updater) => updater.filesToChange !== void 0;
+
+// node_modules/universal-user-agent/dist-web/index.js
+function getUserAgent() {
+  if (typeof navigator === "object" && "userAgent" in navigator) {
+    return navigator.userAgent;
+  }
+  if (typeof process === "object" && "version" in process) {
+    return `Node.js/${process.version.substr(1)} (${process.platform}; ${process.arch})`;
+  }
+  return "<environment undetectable>";
+}
+
+// node_modules/@octokit/core/dist-web/index.js
+var import_before_after_hook = __toESM(require_before_after_hook());
+
+// node_modules/@octokit/endpoint/dist-web/index.js
+var VERSION2 = "9.0.6";
+var userAgent = `octokit-endpoint.js/${VERSION2} ${getUserAgent()}`;
+var DEFAULTS = {
+  method: "GET",
+  baseUrl: "https://api.github.com",
+  headers: {
+    accept: "application/vnd.github.v3+json",
+    "user-agent": userAgent
+  },
+  mediaType: {
+    format: ""
+  }
+};
+function lowercaseKeys(object) {
+  if (!object) {
+    return {};
+  }
+  return Object.keys(object).reduce((newObj, key) => {
+    newObj[key.toLowerCase()] = object[key];
+    return newObj;
+  }, {});
+}
+function isPlainObject(value) {
+  if (typeof value !== "object" || value === null)
+    return false;
+  if (Object.prototype.toString.call(value) !== "[object Object]")
+    return false;
+  const proto = Object.getPrototypeOf(value);
+  if (proto === null)
+    return true;
+  const Ctor = Object.prototype.hasOwnProperty.call(proto, "constructor") && proto.constructor;
+  return typeof Ctor === "function" && Ctor instanceof Ctor && Function.prototype.call(Ctor) === Function.prototype.call(value);
+}
+function mergeDeep(defaults2, options) {
+  const result = Object.assign({}, defaults2);
+  Object.keys(options).forEach((key) => {
+    if (isPlainObject(options[key])) {
+      if (!(key in defaults2))
+        Object.assign(result, { [key]: options[key] });
+      else
+        result[key] = mergeDeep(defaults2[key], options[key]);
+    } else {
+      Object.assign(result, { [key]: options[key] });
+    }
+  });
+  return result;
+}
+function removeUndefinedProperties(obj) {
+  for (const key in obj) {
+    if (obj[key] === void 0) {
+      delete obj[key];
+    }
+  }
+  return obj;
+}
+function merge(defaults2, route, options) {
+  var _a2;
+  if (typeof route === "string") {
+    let [method, url] = route.split(" ");
+    options = Object.assign(url ? { method, url } : { url: method }, options);
+  } else {
+    options = Object.assign({}, route);
+  }
+  options.headers = lowercaseKeys(options.headers);
+  removeUndefinedProperties(options);
+  removeUndefinedProperties(options.headers);
+  const mergedOptions = mergeDeep(defaults2 || {}, options);
+  if (options.url === "/graphql") {
+    if (defaults2 && ((_a2 = defaults2.mediaType.previews) == null ? void 0 : _a2.length)) {
+      mergedOptions.mediaType.previews = defaults2.mediaType.previews.filter(
+        (preview) => !mergedOptions.mediaType.previews.includes(preview)
+      ).concat(mergedOptions.mediaType.previews);
+    }
+    mergedOptions.mediaType.previews = (mergedOptions.mediaType.previews || []).map((preview) => preview.replace(/-preview/, ""));
+  }
+  return mergedOptions;
+}
+function addQueryParameters(url, parameters) {
+  const separator = /\?/.test(url) ? "&" : "?";
+  const names = Object.keys(parameters);
+  if (names.length === 0) {
+    return url;
+  }
+  return url + separator + names.map((name) => {
+    if (name === "q") {
+      return "q=" + parameters.q.split("+").map(encodeURIComponent).join("+");
+    }
+    return `${name}=${encodeURIComponent(parameters[name])}`;
+  }).join("&");
+}
+var urlVariableRegex = /\{[^{}}]+\}/g;
+function removeNonChars(variableName) {
+  return variableName.replace(new RegExp("(?:^\\W+)|(?:(?<!\\W)\\W+$)", "g"), "").split(/,/);
+}
+function extractUrlVariableNames(url) {
+  const matches = url.match(urlVariableRegex);
+  if (!matches) {
+    return [];
+  }
+  return matches.map(removeNonChars).reduce((a, b) => a.concat(b), []);
+}
+function omit(object, keysToOmit) {
+  const result = { __proto__: null };
+  for (const key of Object.keys(object)) {
+    if (keysToOmit.indexOf(key) === -1) {
+      result[key] = object[key];
+    }
+  }
+  return result;
+}
+function encodeReserved(str) {
+  return str.split(/(%[0-9A-Fa-f]{2})/g).map(function(part) {
+    if (!/%[0-9A-Fa-f]/.test(part)) {
+      part = encodeURI(part).replace(/%5B/g, "[").replace(/%5D/g, "]");
+    }
+    return part;
+  }).join("");
+}
+function encodeUnreserved(str) {
+  return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
+    return "%" + c.charCodeAt(0).toString(16).toUpperCase();
+  });
+}
+function encodeValue(operator, value, key) {
+  value = operator === "+" || operator === "#" ? encodeReserved(value) : encodeUnreserved(value);
+  if (key) {
+    return encodeUnreserved(key) + "=" + value;
+  } else {
+    return value;
+  }
+}
+function isDefined(value) {
+  return value !== void 0 && value !== null;
+}
+function isKeyOperator(operator) {
+  return operator === ";" || operator === "&" || operator === "?";
+}
+function getValues(context, operator, key, modifier) {
+  var value = context[key], result = [];
+  if (isDefined(value) && value !== "") {
+    if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+      value = value.toString();
+      if (modifier && modifier !== "*") {
+        value = value.substring(0, parseInt(modifier, 10));
+      }
+      result.push(
+        encodeValue(operator, value, isKeyOperator(operator) ? key : "")
+      );
+    } else {
+      if (modifier === "*") {
+        if (Array.isArray(value)) {
+          value.filter(isDefined).forEach(function(value2) {
+            result.push(
+              encodeValue(operator, value2, isKeyOperator(operator) ? key : "")
+            );
+          });
+        } else {
+          Object.keys(value).forEach(function(k) {
+            if (isDefined(value[k])) {
+              result.push(encodeValue(operator, value[k], k));
+            }
+          });
+        }
+      } else {
+        const tmp = [];
+        if (Array.isArray(value)) {
+          value.filter(isDefined).forEach(function(value2) {
+            tmp.push(encodeValue(operator, value2));
+          });
+        } else {
+          Object.keys(value).forEach(function(k) {
+            if (isDefined(value[k])) {
+              tmp.push(encodeUnreserved(k));
+              tmp.push(encodeValue(operator, value[k].toString()));
+            }
+          });
+        }
+        if (isKeyOperator(operator)) {
+          result.push(encodeUnreserved(key) + "=" + tmp.join(","));
+        } else if (tmp.length !== 0) {
+          result.push(tmp.join(","));
+        }
+      }
+    }
+  } else {
+    if (operator === ";") {
+      if (isDefined(value)) {
+        result.push(encodeUnreserved(key));
+      }
+    } else if (value === "" && (operator === "&" || operator === "?")) {
+      result.push(encodeUnreserved(key) + "=");
+    } else if (value === "") {
+      result.push("");
+    }
+  }
+  return result;
+}
+function parseUrl(template) {
+  return {
+    expand: expand.bind(null, template)
+  };
+}
+function expand(template, context) {
+  var operators = ["+", "#", ".", "/", ";", "?", "&"];
+  template = template.replace(
+    /\{([^\{\}]+)\}|([^\{\}]+)/g,
+    function(_, expression, literal) {
+      if (expression) {
+        let operator = "";
+        const values = [];
+        if (operators.indexOf(expression.charAt(0)) !== -1) {
+          operator = expression.charAt(0);
+          expression = expression.substr(1);
+        }
+        expression.split(/,/g).forEach(function(variable) {
+          var tmp = /([^:\*]*)(?::(\d+)|(\*))?/.exec(variable);
+          values.push(getValues(context, operator, tmp[1], tmp[2] || tmp[3]));
+        });
+        if (operator && operator !== "+") {
+          var separator = ",";
+          if (operator === "?") {
+            separator = "&";
+          } else if (operator !== "#") {
+            separator = operator;
+          }
+          return (values.length !== 0 ? operator : "") + values.join(separator);
+        } else {
+          return values.join(",");
+        }
+      } else {
+        return encodeReserved(literal);
+      }
+    }
+  );
+  if (template === "/") {
+    return template;
+  } else {
+    return template.replace(/\/$/, "");
+  }
+}
+function parse(options) {
+  var _a2;
+  let method = options.method.toUpperCase();
+  let url = (options.url || "/").replace(/:([a-z]\w+)/g, "{$1}");
+  let headers = Object.assign({}, options.headers);
+  let body;
+  let parameters = omit(options, [
+    "method",
+    "baseUrl",
+    "url",
+    "headers",
+    "request",
+    "mediaType"
+  ]);
+  const urlVariableNames = extractUrlVariableNames(url);
+  url = parseUrl(url).expand(parameters);
+  if (!/^http/.test(url)) {
+    url = options.baseUrl + url;
+  }
+  const omittedParameters = Object.keys(options).filter((option) => urlVariableNames.includes(option)).concat("baseUrl");
+  const remainingParameters = omit(parameters, omittedParameters);
+  const isBinaryRequest = /application\/octet-stream/i.test(headers.accept);
+  if (!isBinaryRequest) {
+    if (options.mediaType.format) {
+      headers.accept = headers.accept.split(/,/).map(
+        (format) => format.replace(
+          /application\/vnd(\.\w+)(\.v3)?(\.\w+)?(\+json)?$/,
+          `application/vnd$1$2.${options.mediaType.format}`
+        )
+      ).join(",");
+    }
+    if (url.endsWith("/graphql")) {
+      if ((_a2 = options.mediaType.previews) == null ? void 0 : _a2.length) {
+        const previewsFromAcceptHeader = headers.accept.match(new RegExp("(?<![\\w-])[\\w-]+(?=-preview)", "g")) || [];
+        headers.accept = previewsFromAcceptHeader.concat(options.mediaType.previews).map((preview) => {
+          const format = options.mediaType.format ? `.${options.mediaType.format}` : "+json";
+          return `application/vnd.github.${preview}-preview${format}`;
+        }).join(",");
+      }
+    }
+  }
+  if (["GET", "HEAD"].includes(method)) {
+    url = addQueryParameters(url, remainingParameters);
+  } else {
+    if ("data" in remainingParameters) {
+      body = remainingParameters.data;
+    } else {
+      if (Object.keys(remainingParameters).length) {
+        body = remainingParameters;
+      }
+    }
+  }
+  if (!headers["content-type"] && typeof body !== "undefined") {
+    headers["content-type"] = "application/json; charset=utf-8";
+  }
+  if (["PATCH", "PUT"].includes(method) && typeof body === "undefined") {
+    body = "";
+  }
+  return Object.assign(
+    { method, url, headers },
+    typeof body !== "undefined" ? { body } : null,
+    options.request ? { request: options.request } : null
+  );
+}
+function endpointWithDefaults(defaults2, route, options) {
+  return parse(merge(defaults2, route, options));
+}
+function withDefaults(oldDefaults, newDefaults) {
+  const DEFAULTS2 = merge(oldDefaults, newDefaults);
+  const endpoint2 = endpointWithDefaults.bind(null, DEFAULTS2);
+  return Object.assign(endpoint2, {
+    DEFAULTS: DEFAULTS2,
+    defaults: withDefaults.bind(null, DEFAULTS2),
+    merge: merge.bind(null, DEFAULTS2),
+    parse
+  });
+}
+var endpoint = withDefaults(null, DEFAULTS);
+
+// node_modules/deprecation/dist-web/index.js
+var Deprecation = class extends Error {
+  constructor(message) {
+    super(message);
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
+    this.name = "Deprecation";
+  }
+};
+
+// node_modules/@octokit/request-error/dist-web/index.js
+var import_once = __toESM(require_once());
+var logOnceCode = (0, import_once.default)((deprecation) => console.warn(deprecation));
+var logOnceHeaders = (0, import_once.default)((deprecation) => console.warn(deprecation));
+var RequestError = class extends Error {
+  constructor(message, statusCode, options) {
+    super(message);
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
+    this.name = "HttpError";
+    this.status = statusCode;
+    let headers;
+    if ("headers" in options && typeof options.headers !== "undefined") {
+      headers = options.headers;
+    }
+    if ("response" in options) {
+      this.response = options.response;
+      headers = options.response.headers;
+    }
+    const requestCopy = Object.assign({}, options.request);
+    if (options.request.headers.authorization) {
+      requestCopy.headers = Object.assign({}, options.request.headers, {
+        authorization: options.request.headers.authorization.replace(
+          new RegExp("(?<! ) .*$"),
+          " [REDACTED]"
+        )
+      });
+    }
+    requestCopy.url = requestCopy.url.replace(/\bclient_secret=\w+/g, "client_secret=[REDACTED]").replace(/\baccess_token=\w+/g, "access_token=[REDACTED]");
+    this.request = requestCopy;
+    Object.defineProperty(this, "code", {
+      get() {
+        logOnceCode(
+          new Deprecation(
+            "[@octokit/request-error] `error.code` is deprecated, use `error.status`."
+          )
+        );
+        return statusCode;
+      }
+    });
+    Object.defineProperty(this, "headers", {
+      get() {
+        logOnceHeaders(
+          new Deprecation(
+            "[@octokit/request-error] `error.headers` is deprecated, use `error.response.headers`."
+          )
+        );
+        return headers || {};
+      }
+    });
+  }
+};
+
+// node_modules/@octokit/request/dist-web/index.js
+var VERSION3 = "8.4.1";
+function isPlainObject2(value) {
+  if (typeof value !== "object" || value === null)
+    return false;
+  if (Object.prototype.toString.call(value) !== "[object Object]")
+    return false;
+  const proto = Object.getPrototypeOf(value);
+  if (proto === null)
+    return true;
+  const Ctor = Object.prototype.hasOwnProperty.call(proto, "constructor") && proto.constructor;
+  return typeof Ctor === "function" && Ctor instanceof Ctor && Function.prototype.call(Ctor) === Function.prototype.call(value);
+}
+function getBufferResponse(response) {
+  return response.arrayBuffer();
+}
+function fetchWrapper(requestOptions) {
+  var _a2, _b, _c, _d;
+  const log = requestOptions.request && requestOptions.request.log ? requestOptions.request.log : console;
+  const parseSuccessResponseBody = ((_a2 = requestOptions.request) == null ? void 0 : _a2.parseSuccessResponseBody) !== false;
+  if (isPlainObject2(requestOptions.body) || Array.isArray(requestOptions.body)) {
+    requestOptions.body = JSON.stringify(requestOptions.body);
+  }
+  let headers = {};
+  let status;
+  let url;
+  let { fetch: fetch2 } = globalThis;
+  if ((_b = requestOptions.request) == null ? void 0 : _b.fetch) {
+    fetch2 = requestOptions.request.fetch;
+  }
+  if (!fetch2) {
+    throw new Error(
+      "fetch is not set. Please pass a fetch implementation as new Octokit({ request: { fetch }}). Learn more at https://github.com/octokit/octokit.js/#fetch-missing"
+    );
+  }
+  return fetch2(requestOptions.url, __spreadValues({
+    method: requestOptions.method,
+    body: requestOptions.body,
+    redirect: (_c = requestOptions.request) == null ? void 0 : _c.redirect,
+    headers: requestOptions.headers,
+    signal: (_d = requestOptions.request) == null ? void 0 : _d.signal
+  }, requestOptions.body && { duplex: "half" })).then((response) => __async(null, null, function* () {
+    url = response.url;
+    status = response.status;
+    for (const keyAndValue of response.headers) {
+      headers[keyAndValue[0]] = keyAndValue[1];
+    }
+    if ("deprecation" in headers) {
+      const matches = headers.link && headers.link.match(/<([^<>]+)>; rel="deprecation"/);
+      const deprecationLink = matches && matches.pop();
+      log.warn(
+        `[@octokit/request] "${requestOptions.method} ${requestOptions.url}" is deprecated. It is scheduled to be removed on ${headers.sunset}${deprecationLink ? `. See ${deprecationLink}` : ""}`
+      );
+    }
+    if (status === 204 || status === 205) {
+      return;
+    }
+    if (requestOptions.method === "HEAD") {
+      if (status < 400) {
+        return;
+      }
+      throw new RequestError(response.statusText, status, {
+        response: {
+          url,
+          status,
+          headers,
+          data: void 0
+        },
+        request: requestOptions
+      });
+    }
+    if (status === 304) {
+      throw new RequestError("Not modified", status, {
+        response: {
+          url,
+          status,
+          headers,
+          data: yield getResponseData(response)
+        },
+        request: requestOptions
+      });
+    }
+    if (status >= 400) {
+      const data = yield getResponseData(response);
+      const error = new RequestError(toErrorMessage(data), status, {
+        response: {
+          url,
+          status,
+          headers,
+          data
+        },
+        request: requestOptions
+      });
+      throw error;
+    }
+    return parseSuccessResponseBody ? yield getResponseData(response) : response.body;
+  })).then((data) => {
+    return {
+      status,
+      url,
+      headers,
+      data
+    };
+  }).catch((error) => {
+    if (error instanceof RequestError)
+      throw error;
+    else if (error.name === "AbortError")
+      throw error;
+    let message = error.message;
+    if (error.name === "TypeError" && "cause" in error) {
+      if (error.cause instanceof Error) {
+        message = error.cause.message;
+      } else if (typeof error.cause === "string") {
+        message = error.cause;
+      }
+    }
+    throw new RequestError(message, 500, {
+      request: requestOptions
+    });
+  });
+}
+function getResponseData(response) {
+  return __async(this, null, function* () {
+    const contentType = response.headers.get("content-type");
+    if (/application\/json/.test(contentType)) {
+      return response.json().catch(() => response.text()).catch(() => "");
+    }
+    if (!contentType || /^text\/|charset=utf-8$/.test(contentType)) {
+      return response.text();
+    }
+    return getBufferResponse(response);
+  });
+}
+function toErrorMessage(data) {
+  if (typeof data === "string")
+    return data;
+  let suffix;
+  if ("documentation_url" in data) {
+    suffix = ` - ${data.documentation_url}`;
+  } else {
+    suffix = "";
+  }
+  if ("message" in data) {
+    if (Array.isArray(data.errors)) {
+      return `${data.message}: ${data.errors.map(JSON.stringify).join(", ")}${suffix}`;
+    }
+    return `${data.message}${suffix}`;
+  }
+  return `Unknown error: ${JSON.stringify(data)}`;
+}
+function withDefaults2(oldEndpoint, newDefaults) {
+  const endpoint2 = oldEndpoint.defaults(newDefaults);
+  const newApi = function(route, parameters) {
+    const endpointOptions = endpoint2.merge(route, parameters);
+    if (!endpointOptions.request || !endpointOptions.request.hook) {
+      return fetchWrapper(endpoint2.parse(endpointOptions));
+    }
+    const request2 = (route2, parameters2) => {
+      return fetchWrapper(
+        endpoint2.parse(endpoint2.merge(route2, parameters2))
+      );
+    };
+    Object.assign(request2, {
+      endpoint: endpoint2,
+      defaults: withDefaults2.bind(null, endpoint2)
+    });
+    return endpointOptions.request.hook(request2, endpointOptions);
+  };
+  return Object.assign(newApi, {
+    endpoint: endpoint2,
+    defaults: withDefaults2.bind(null, endpoint2)
+  });
+}
+var request = withDefaults2(endpoint, {
+  headers: {
+    "user-agent": `octokit-request.js/${VERSION3} ${getUserAgent()}`
+  }
+});
+
+// node_modules/@octokit/graphql/dist-web/index.js
+var VERSION4 = "7.0.1";
+function _buildMessageForResponseErrors(data) {
+  return `Request failed due to following response errors:
+` + data.errors.map((e) => ` - ${e.message}`).join("\n");
+}
+var GraphqlResponseError = class extends Error {
+  constructor(request2, headers, response) {
+    super(_buildMessageForResponseErrors(response));
+    this.request = request2;
+    this.headers = headers;
+    this.response = response;
+    this.name = "GraphqlResponseError";
+    this.errors = response.errors;
+    this.data = response.data;
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
+  }
+};
+var NON_VARIABLE_OPTIONS = [
+  "method",
+  "baseUrl",
+  "url",
+  "headers",
+  "request",
+  "query",
+  "mediaType"
+];
+var FORBIDDEN_VARIABLE_OPTIONS = ["query", "method", "url"];
+var GHES_V3_SUFFIX_REGEX = /\/api\/v3\/?$/;
+function graphql(request2, query, options) {
+  if (options) {
+    if (typeof query === "string" && "query" in options) {
+      return Promise.reject(
+        new Error(`[@octokit/graphql] "query" cannot be used as variable name`)
+      );
+    }
+    for (const key in options) {
+      if (!FORBIDDEN_VARIABLE_OPTIONS.includes(key))
+        continue;
+      return Promise.reject(
+        new Error(
+          `[@octokit/graphql] "${key}" cannot be used as variable name`
+        )
+      );
+    }
+  }
+  const parsedOptions = typeof query === "string" ? Object.assign({ query }, options) : query;
+  const requestOptions = Object.keys(
+    parsedOptions
+  ).reduce((result, key) => {
+    if (NON_VARIABLE_OPTIONS.includes(key)) {
+      result[key] = parsedOptions[key];
+      return result;
+    }
+    if (!result.variables) {
+      result.variables = {};
+    }
+    result.variables[key] = parsedOptions[key];
+    return result;
+  }, {});
+  const baseUrl = parsedOptions.baseUrl || request2.endpoint.DEFAULTS.baseUrl;
+  if (GHES_V3_SUFFIX_REGEX.test(baseUrl)) {
+    requestOptions.url = baseUrl.replace(GHES_V3_SUFFIX_REGEX, "/api/graphql");
+  }
+  return request2(requestOptions).then((response) => {
+    if (response.data.errors) {
+      const headers = {};
+      for (const key of Object.keys(response.headers)) {
+        headers[key] = response.headers[key];
+      }
+      throw new GraphqlResponseError(
+        requestOptions,
+        headers,
+        response.data
+      );
+    }
+    return response.data.data;
+  });
+}
+function withDefaults3(request2, newDefaults) {
+  const newRequest = request2.defaults(newDefaults);
+  const newApi = (query, options) => {
+    return graphql(newRequest, query, options);
+  };
+  return Object.assign(newApi, {
+    defaults: withDefaults3.bind(null, newRequest),
+    endpoint: newRequest.endpoint
+  });
+}
+var graphql2 = withDefaults3(request, {
+  headers: {
+    "user-agent": `octokit-graphql.js/${VERSION4} ${getUserAgent()}`
+  },
+  method: "POST",
+  url: "/graphql"
+});
+function withCustomRequest(customRequest) {
+  return withDefaults3(customRequest, {
+    method: "POST",
+    url: "/graphql"
+  });
+}
+
+// node_modules/@octokit/auth-token/dist-web/index.js
+var REGEX_IS_INSTALLATION_LEGACY = /^v1\./;
+var REGEX_IS_INSTALLATION = /^ghs_/;
+var REGEX_IS_USER_TO_SERVER = /^ghu_/;
+function auth(token) {
+  return __async(this, null, function* () {
+    const isApp = token.split(/\./).length === 3;
+    const isInstallation = REGEX_IS_INSTALLATION_LEGACY.test(token) || REGEX_IS_INSTALLATION.test(token);
+    const isUserToServer = REGEX_IS_USER_TO_SERVER.test(token);
+    const tokenType = isApp ? "app" : isInstallation ? "installation" : isUserToServer ? "user-to-server" : "oauth";
+    return {
+      type: "token",
+      token,
+      tokenType
+    };
+  });
+}
+function withAuthorizationPrefix(token) {
+  if (token.split(/\./).length === 3) {
+    return `bearer ${token}`;
+  }
+  return `token ${token}`;
+}
+function hook(token, request2, route, parameters) {
+  return __async(this, null, function* () {
+    const endpoint2 = request2.endpoint.merge(
+      route,
+      parameters
+    );
+    endpoint2.headers.authorization = withAuthorizationPrefix(token);
+    return request2(endpoint2);
+  });
+}
+var createTokenAuth = function createTokenAuth2(token) {
+  if (!token) {
+    throw new Error("[@octokit/auth-token] No token passed to createTokenAuth");
+  }
+  if (typeof token !== "string") {
+    throw new Error(
+      "[@octokit/auth-token] Token passed to createTokenAuth is not a string"
+    );
+  }
+  token = token.replace(/^(token|bearer) +/i, "");
+  return Object.assign(auth.bind(null, token), {
+    hook: hook.bind(null, token)
+  });
+};
+
+// node_modules/@octokit/core/dist-web/index.js
+var VERSION5 = "5.0.0";
+var _a;
+var Octokit = (_a = class {
+  static defaults(defaults2) {
+    const OctokitWithDefaults = class extends this {
+      constructor(...args) {
+        const options = args[0] || {};
+        if (typeof defaults2 === "function") {
+          super(defaults2(options));
+          return;
+        }
+        super(
+          Object.assign(
+            {},
+            defaults2,
+            options,
+            options.userAgent && defaults2.userAgent ? {
+              userAgent: `${options.userAgent} ${defaults2.userAgent}`
+            } : null
+          )
+        );
+      }
+    };
+    return OctokitWithDefaults;
+  }
+  /**
+   * Attach a plugin (or many) to your Octokit instance.
+   *
+   * @example
+   * const API = Octokit.plugin(plugin1, plugin2, plugin3, ...)
+   */
+  static plugin(...newPlugins) {
+    var _a2;
+    const currentPlugins = this.plugins;
+    const NewOctokit = (_a2 = class extends this {
+    }, _a2.plugins = currentPlugins.concat(
+      newPlugins.filter((plugin) => !currentPlugins.includes(plugin))
+    ), _a2);
+    return NewOctokit;
+  }
+  constructor(options = {}) {
+    const hook2 = new import_before_after_hook.Collection();
+    const requestDefaults = {
+      baseUrl: request.endpoint.DEFAULTS.baseUrl,
+      headers: {},
+      request: Object.assign({}, options.request, {
+        // @ts-ignore internal usage only, no need to type
+        hook: hook2.bind(null, "request")
+      }),
+      mediaType: {
+        previews: [],
+        format: ""
+      }
+    };
+    requestDefaults.headers["user-agent"] = [
+      options.userAgent,
+      `octokit-core.js/${VERSION5} ${getUserAgent()}`
+    ].filter(Boolean).join(" ");
+    if (options.baseUrl) {
+      requestDefaults.baseUrl = options.baseUrl;
+    }
+    if (options.previews) {
+      requestDefaults.mediaType.previews = options.previews;
+    }
+    if (options.timeZone) {
+      requestDefaults.headers["time-zone"] = options.timeZone;
+    }
+    this.request = request.defaults(requestDefaults);
+    this.graphql = withCustomRequest(this.request).defaults(requestDefaults);
+    this.log = Object.assign(
+      {
+        debug: () => {
+        },
+        info: () => {
+        },
+        warn: console.warn.bind(console),
+        error: console.error.bind(console)
+      },
+      options.log
+    );
+    this.hook = hook2;
+    if (!options.authStrategy) {
+      if (!options.auth) {
+        this.auth = () => __async(this, null, function* () {
+          return {
+            type: "unauthenticated"
+          };
+        });
+      } else {
+        const auth2 = createTokenAuth(options.auth);
+        hook2.wrap("request", auth2.hook);
+        this.auth = auth2;
+      }
+    } else {
+      const _a2 = options, { authStrategy } = _a2, otherOptions = __objRest(_a2, ["authStrategy"]);
+      const auth2 = authStrategy(
+        Object.assign(
+          {
+            request: this.request,
+            log: this.log,
+            // we pass the current octokit instance as well as its constructor options
+            // to allow for authentication strategies that return a new octokit instance
+            // that shares the same internal state as the current one. The original
+            // requirement for this was the "event-octokit" authentication strategy
+            // of https://github.com/probot/octokit-auth-probot.
+            octokit: this,
+            octokitOptions: otherOptions
+          },
+          options.auth
+        )
+      );
+      hook2.wrap("request", auth2.hook);
+      this.auth = auth2;
+    }
+    const classConstructor = this.constructor;
+    classConstructor.plugins.forEach((plugin) => {
+      Object.assign(this, plugin(this, options));
+    });
+  }
+}, _a.VERSION = VERSION5, _a.plugins = [], _a);
+
+// src/repositoryConnection/PublishPlatformConnectionFactory.ts
+var import_js_logger3 = __toESM(require_logger());
+var oktokitLogger = import_js_logger3.default.get("octokit");
+var PublishPlatformConnectionFactory = class {
+  static createBaseGardenConnection() {
+    return {
+      octoKit: new Octokit({ log: oktokitLogger }),
+      userName: "oleeskild",
+      pageName: "digitalgarden"
+    };
+  }
+  static createPublishPlatformConnection(settings) {
+    return __async(this, null, function* () {
+      if (settings.publishPlatform === "SelfHosted" /* SelfHosted */) {
+        return {
+          octoKit: new Octokit({
+            auth: settings.githubToken,
+            log: oktokitLogger
+          }),
+          userName: settings.githubUserName,
+          pageName: settings.githubRepo
+        };
+      } else if (settings.publishPlatform === "ForestryMd" /* ForestryMd */) {
+        const userName = "Forestry";
+        const token = settings.forestrySettings.apiKey;
+        const baseUrl = "https://api.forestry.md/app";
+        const octoKit = new Octokit({
+          baseUrl: `${baseUrl}/Garden`,
+          auth: token,
+          log: oktokitLogger
+        });
+        const pageName = settings.forestrySettings.forestryPageName;
+        return {
+          userName,
+          pageName,
+          octoKit
+        };
+      } else {
+        throw new Error("Publish platform not supported");
+      }
+    });
+  }
+};
+
+// src/repositoryConnection/DigitalGardenSiteManager.ts
+var logger3 = import_js_logger4.default.get("digital-garden-site-manager");
+var DigitalGardenSiteManager = class {
+  constructor(metadataCache, settings) {
+    this.settings = settings;
+    this.metadataCache = metadataCache;
+    this.rewriteRules = getRewriteRules(settings.pathRewriteRules);
+    this.baseGardenConnection = new RepositoryConnection(
+      PublishPlatformConnectionFactory.createBaseGardenConnection()
+    );
+    this.userGardenConnection = null;
+    this.templateUpdater = null;
+  }
+  getTemplateUpdater() {
+    return __async(this, null, function* () {
+      if (!this.templateUpdater) {
+        this.templateUpdater = new TemplateUpdateChecker({
+          baseGardenConnection: this.baseGardenConnection,
+          userGardenConnection: yield this.getUserGardenConnection()
+        });
+      }
+      return this.templateUpdater;
+    });
+  }
+  getUserGardenConnection() {
+    return __async(this, null, function* () {
+      if (!this.userGardenConnection) {
+        this.userGardenConnection = new RepositoryConnection(
+          yield PublishPlatformConnectionFactory.createPublishPlatformConnection(
+            this.settings
+          )
+        );
+      }
+      return this.userGardenConnection;
+    });
+  }
+  updateEnv() {
+    return __async(this, null, function* () {
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
+      const theme = JSON.parse(this.settings.theme);
+      const baseTheme = this.settings.baseTheme;
+      const siteName = this.settings.siteName;
+      const mainLanguage = this.settings.mainLanguage;
+      let gardenBaseUrl = "";
+      if (this.settings.gardenBaseUrl && !this.settings.gardenBaseUrl.startsWith("ghp_") && !this.settings.gardenBaseUrl.startsWith("github_pat") && this.settings.gardenBaseUrl.contains(".")) {
+        gardenBaseUrl = this.settings.gardenBaseUrl;
+      }
+      const envValues = __spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues({
+        SITE_NAME_HEADER: siteName,
+        SITE_MAIN_LANGUAGE: mainLanguage,
+        SITE_BASE_URL: gardenBaseUrl,
+        SHOW_CREATED_TIMESTAMP: this.settings.showCreatedTimestamp,
+        TIMESTAMP_FORMAT: this.settings.timestampFormat,
+        SHOW_UPDATED_TIMESTAMP: this.settings.showUpdatedTimestamp,
+        NOTE_ICON_DEFAULT: this.settings.defaultNoteIcon,
+        NOTE_ICON_TITLE: this.settings.showNoteIconOnTitle,
+        NOTE_ICON_FILETREE: this.settings.showNoteIconInFileTree,
+        NOTE_ICON_INTERNAL_LINKS: this.settings.showNoteIconOnInternalLink,
+        NOTE_ICON_BACK_LINKS: this.settings.showNoteIconOnBackLink,
+        STYLE_SETTINGS_CSS: this.settings.styleSettingsCss,
+        STYLE_SETTINGS_BODY_CLASSES: this.settings.styleSettingsBodyClasses,
+        USE_FULL_RESOLUTION_IMAGES: this.settings.useFullResolutionImages
+      }, ((_a2 = this.settings.uiStrings) == null ? void 0 : _a2.backlinkHeader) && {
+        UI_BACKLINK_HEADER: this.settings.uiStrings.backlinkHeader
+      }), ((_b = this.settings.uiStrings) == null ? void 0 : _b.noBacklinksMessage) && {
+        UI_NO_BACKLINKS_MESSAGE: this.settings.uiStrings.noBacklinksMessage
+      }), ((_c = this.settings.uiStrings) == null ? void 0 : _c.searchButtonText) && {
+        UI_SEARCH_BUTTON_TEXT: this.settings.uiStrings.searchButtonText
+      }), ((_d = this.settings.uiStrings) == null ? void 0 : _d.searchPlaceholder) && {
+        UI_SEARCH_PLACEHOLDER: this.settings.uiStrings.searchPlaceholder
+      }), ((_e = this.settings.uiStrings) == null ? void 0 : _e.searchEnterHint) && {
+        UI_SEARCH_ENTER_HINT: this.settings.uiStrings.searchEnterHint
+      }), ((_f = this.settings.uiStrings) == null ? void 0 : _f.searchNavigateHint) && {
+        UI_SEARCH_NAVIGATE_HINT: this.settings.uiStrings.searchNavigateHint
+      }), ((_g = this.settings.uiStrings) == null ? void 0 : _g.searchCloseHint) && {
+        UI_SEARCH_CLOSE_HINT: this.settings.uiStrings.searchCloseHint
+      }), ((_h = this.settings.uiStrings) == null ? void 0 : _h.searchNoResults) && {
+        UI_SEARCH_NO_RESULTS: this.settings.uiStrings.searchNoResults
+      }), ((_i = this.settings.uiStrings) == null ? void 0 : _i.canvasDragHint) && {
+        UI_CANVAS_DRAG_HINT: this.settings.uiStrings.canvasDragHint
+      }), ((_j = this.settings.uiStrings) == null ? void 0 : _j.canvasZoomHint) && {
+        UI_CANVAS_ZOOM_HINT: this.settings.uiStrings.canvasZoomHint
+      }), ((_k = this.settings.uiStrings) == null ? void 0 : _k.canvasResetHint) && {
+        UI_CANVAS_RESET_HINT: this.settings.uiStrings.canvasResetHint
+      });
+      if (theme.name !== "default") {
+        envValues["THEME"] = theme.cssUrl;
+        envValues["BASE_THEME"] = baseTheme;
+      }
+      const keysToSet = __spreadValues(__spreadValues({}, envValues), this.settings.defaultNoteSettings);
+      const envSettings = Object.entries(keysToSet).map(([key, value]) => `${key}=${value}`).join("\n");
+      const base64Settings = gBase64.encode(envSettings);
+      const currentFile = yield (yield this.getUserGardenConnection()).getFile(".env");
+      const decodedCurrentFile = gBase64.decode((_l = currentFile == null ? void 0 : currentFile.content) != null ? _l : "");
+      if (decodedCurrentFile === envSettings) {
+        logger3.info("No changes to .env file");
+        new import_obsidian2.Notice("Settings already up to date!");
+        return;
+      }
+      yield (yield this.getUserGardenConnection()).updateFile({
+        path: ".env",
+        content: base64Settings,
+        message: "Update settings",
+        sha: currentFile == null ? void 0 : currentFile.sha
+      });
+    });
+  }
+  getNoteUrl(file) {
+    var _a2;
+    const savedBaseUrl = this.settings.publishPlatform === "SelfHosted" /* SelfHosted */ ? this.settings.gardenBaseUrl : this.settings.forestrySettings.baseUrl;
+    if (!savedBaseUrl) {
+      new import_obsidian2.Notice("Please set the garden base url in the settings");
+      throw new Error("Garden base url not set");
+    }
+    const baseUrl = `https://${extractBaseUrl(savedBaseUrl)}`;
+    const noteUrlPath = generateUrlPath(
+      getGardenPathForNote(file.path, this.rewriteRules),
+      this.settings.slugifyEnabled
+    );
+    let urlPath = `/${noteUrlPath}`;
+    const frontMatter = (_a2 = this.metadataCache.getCache(file.path)) == null ? void 0 : _a2.frontmatter;
+    if (frontMatter && frontMatter["dg-home"] === true) {
+      urlPath = "/";
+    } else if (frontMatter == null ? void 0 : frontMatter.permalink) {
+      urlPath = `/${frontMatter.permalink}`;
+    } else if (frontMatter == null ? void 0 : frontMatter["dg-permalink"]) {
+      urlPath = `/${frontMatter["dg-permalink"]}`;
+    }
+    return `${baseUrl}${urlPath}`;
+  }
+  getNoteContent(path) {
+    return __async(this, null, function* () {
+      if (path.startsWith("/")) {
+        path = path.substring(1);
+      }
+      const response = yield (yield this.getUserGardenConnection()).getFile(NOTE_PATH_BASE2 + path);
+      if (!response) {
+        return "";
+      }
+      const content = gBase64.decode(response.content);
+      return content;
+    });
+  }
+  getNoteHashes(contentTree) {
+    return __async(this, null, function* () {
+      const files = contentTree.tree;
+      const notes = files.filter(
+        (x) => typeof x.path === "string" && x.path.startsWith(NOTE_PATH_BASE2) && x.type === "blob" && x.path !== `${NOTE_PATH_BASE2}notes.json`
+      );
+      const hashes = {};
+      for (const note of notes) {
+        const vaultPath = note.path.replace(NOTE_PATH_BASE2, "");
+        hashes[vaultPath] = note.sha;
+      }
+      return hashes;
+    });
+  }
+  getImageHashes(contentTree) {
+    return __async(this, null, function* () {
+      var _a2;
+      const files = (_a2 = contentTree.tree) != null ? _a2 : [];
+      const images = files.filter(
+        (x) => typeof x.path === "string" && x.path.startsWith(IMAGE_PATH_BASE2) && x.type === "blob"
+      );
+      const hashes = {};
+      for (const img of images) {
+        const vaultPath = img.path.replace(IMAGE_PATH_BASE2, "");
+        hashes[vaultPath] = img.sha;
+      }
+      return hashes;
+    });
+  }
+};
+
 // src/compiler/GardenPageCompiler.ts
-var import_obsidian4 = require("obsidian");
+var import_obsidian5 = require("obsidian");
 
 // src/ui/suggest/constants.ts
 var seedling = `<g style="pointer-events:all"><title style="pointer-events: none" opacity="0.33">Layer 1</title><g id="hair" style="pointer-events: none" opacity="0.33"></g><g id="skin" style="pointer-events: none" opacity="0.33"></g><g id="skin-shadow" style="pointer-events: none" opacity="0.33"></g><g id="line"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M47.71119,35.9247" id="svg_3"></path><polyline fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="49.813106536865234,93.05191133916378 49.813106536865234,69.57996462285519 40.03312683105469,26.548054680228233 " id="svg_4"></polyline><line x1="49.81311" x2="59.59309" y1="69.57996" y2="50.02" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" id="svg_5"></line><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M27.99666,14.21103C35.9517,16.94766 39.92393,26.36911 39.92393,26.36911S30.99696,31.3526 23.04075,28.61655S11.11348,16.45847 11.11348,16.45847S20.04456,11.4789 27.99666,14.21103z" id="svg_6"></path><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M76.46266698455811,45.61669603088379 C84.67706698455811,47.43146603088379 89.6945869845581,56.34024603088379 89.6945869845581,56.34024603088379 S81.3917769845581,62.30603603088379 73.17639698455811,60.492046030883785 S59.94447698455811,49.768496030883796 59.94447698455811,49.768496030883796 S68.2515869845581,43.80622603088379 76.46266698455811,45.61669603088379 z" id="svg_7"></path></g></g>`;
@@ -10780,12 +12483,12 @@ var PDF_REGEX = /!\[(.*?)\]\((.*?)(\.pdf)\)/g;
 var TRANSCLUDED_PDF_REGEX = /!\[\[(.*?)(\.pdf)\|(.*?)\]\]|!\[\[(.*?)(\.pdf)\]\]/g;
 
 // src/compiler/GardenPageCompiler.ts
-var import_js_logger2 = __toESM(require_logger());
+var import_js_logger6 = __toESM(require_logger());
 
 // src/compiler/DataviewCompiler.ts
-var import_obsidian2 = require("obsidian");
+var import_obsidian3 = require("obsidian");
 var import_obsidian_dataview = __toESM(require_lib());
-var import_js_logger = __toESM(require_logger());
+var import_js_logger5 = __toESM(require_logger());
 var DataviewCompiler = class {
   constructor() {
     this.compile = (file) => (text2) => __async(this, null, function* () {
@@ -10835,7 +12538,7 @@ var DataviewCompiler = class {
           );
         } catch (e) {
           console.log(e);
-          new import_obsidian2.Notice(
+          new import_obsidian3.Notice(
             "Unable to render dataview query. Please update the dataview plugin to the latest version."
           );
           return queryBlock[0];
@@ -10846,7 +12549,7 @@ var DataviewCompiler = class {
           const block = queryBlock[0];
           const query = queryBlock[1];
           const div = createEl("div");
-          const component = new import_obsidian2.Component();
+          const component = new import_obsidian3.Component();
           component.load();
           yield dvApi.executeJs(query, div, component, file.getPath());
           let counter = 0;
@@ -10857,7 +12560,7 @@ var DataviewCompiler = class {
           replacedText = replacedText.replace(block, (_a2 = div.innerHTML) != null ? _a2 : "");
         } catch (e) {
           console.log(e);
-          new import_obsidian2.Notice(
+          new import_obsidian3.Notice(
             "Unable to render dataviewjs query. Please update the dataview plugin to the latest version."
           );
           return queryBlock[0];
@@ -10878,7 +12581,7 @@ var DataviewCompiler = class {
           }
         } catch (e) {
           console.log(e);
-          new import_obsidian2.Notice(
+          new import_obsidian3.Notice(
             "Unable to render inline dataview query. Please update the dataview plugin to the latest version."
           );
           return inlineQuery[0];
@@ -10901,8 +12604,8 @@ var DataviewCompiler = class {
             result != null ? result : "Unable to render query"
           );
         } catch (e) {
-          import_js_logger.default.error(e);
-          new import_obsidian2.Notice(
+          import_js_logger5.default.error(e);
+          new import_obsidian3.Notice(
             "Unable to render inline dataviewjs query. Please update the dataview plugin to the latest version."
           );
           return inlineJsQuery[0];
@@ -10956,7 +12659,7 @@ function tryDVEvaluate(query, file, dvApi) {
     });
     result = (_b = dataviewResult == null ? void 0 : dataviewResult.toString()) != null ? _b : "";
   } catch (e) {
-    import_js_logger.default.warn("dvapi.tryEvaluate did not yield any result", e);
+    import_js_logger5.default.warn("dvapi.tryEvaluate did not yield any result", e);
   }
   return result;
 }
@@ -10965,14 +12668,14 @@ function tryEval(query) {
   try {
     result = (0, eval)("const dv = DataviewAPI;" + query);
   } catch (e) {
-    import_js_logger.default.warn("eval did not yield any result", e);
+    import_js_logger5.default.warn("eval did not yield any result", e);
   }
   return result;
 }
 function tryExecuteJs(query, file, dvApi) {
   return __async(this, null, function* () {
     const div = createEl("div");
-    const component = new import_obsidian2.Component();
+    const component = new import_obsidian3.Component();
     component.load();
     yield dvApi.executeJs(query, div, component, file.getPath());
     let counter = 0;
@@ -10990,7 +12693,7 @@ function delay(milliseconds) {
 }
 
 // src/compiler/CanvasCompiler.ts
-var import_obsidian3 = require("obsidian");
+var import_obsidian4 = require("obsidian");
 
 // src/compiler/FrontmatterCompiler.ts
 var FrontmatterCompiler = class {
@@ -11245,7 +12948,8 @@ var CanvasCompiler = class {
             node,
             baseStyle,
             colorClass,
-            file
+            file,
+            assets
           );
         case "file":
           return yield this.buildFileNode(
@@ -11270,7 +12974,7 @@ var CanvasCompiler = class {
       }
     });
   }
-  buildTextNode(node, baseStyle, colorClass, file) {
+  buildTextNode(node, baseStyle, colorClass, file, assets) {
     return __async(this, null, function* () {
       var _a2;
       let processedText = node.text;
@@ -11278,7 +12982,8 @@ var CanvasCompiler = class {
         try {
           processedText = yield this.textNodeProcessor.processTextNodeContent(
             file,
-            node.text
+            node.text,
+            assets
           );
         } catch (e) {
           console.error("Error processing canvas text node:", e);
@@ -11298,10 +13003,49 @@ var CanvasCompiler = class {
   }
   buildFileNode(node, baseStyle, colorClass, file, assets) {
     return __async(this, null, function* () {
+      const isPdf = /\.pdf$/i.test(node.file);
+      if (isPdf) {
+        const linkedFile = this.metadataCache.getFirstLinkpathDest(
+          (0, import_obsidian4.getLinkpath)(node.file),
+          file.getPath()
+        );
+        if (linkedFile) {
+          try {
+            const pdfData = yield this.vault.readBinary(linkedFile);
+            const pdfBase64 = arrayBufferToBase64(pdfData);
+            const pdfPath2 = `/img/user/${linkedFile.path}`;
+            assets.push({
+              path: pdfPath2,
+              content: pdfBase64,
+              localHash: generateBlobHashFromBase64(pdfBase64)
+            });
+            return `<div class="canvas-node canvas-node-file canvas-node-pdf ${colorClass}" data-node-id="${node.id}" style="${baseStyle}">
+	<div class="canvas-node-container">
+		<div class="canvas-node-content">
+			<iframe src="${encodeURI(
+              pdfPath2
+            )}" class="canvas-pdf-iframe" loading="lazy" style="width:100%;height:100%;border:none;"></iframe>
+		</div>
+	</div>
+</div>`;
+          } catch (e) {
+            console.error("Error reading canvas PDF:", e);
+          }
+        }
+        const resolvedPath = (linkedFile == null ? void 0 : linkedFile.path) || node.file;
+        const pdfPath = encodeURI(`/img/user/${resolvedPath}`);
+        return `<div class="canvas-node canvas-node-file canvas-node-pdf ${colorClass}" data-node-id="${node.id}" style="${baseStyle}">
+	<div class="canvas-node-container">
+		<div class="canvas-node-content">
+			<iframe src="${pdfPath}" class="canvas-pdf-iframe" loading="lazy" style="width:100%;height:100%;border:none;"></iframe>
+		</div>
+	</div>
+</div>`;
+      }
       const isImage = /\.(png|jpg|jpeg|gif|webp|svg)$/i.test(node.file);
       if (isImage) {
         const linkedFile = this.metadataCache.getFirstLinkpathDest(
-          (0, import_obsidian3.getLinkpath)(node.file),
+          (0, import_obsidian4.getLinkpath)(node.file),
           file.getPath()
         );
         if (linkedFile) {
@@ -11309,7 +13053,11 @@ var CanvasCompiler = class {
             const imageData = yield this.vault.readBinary(linkedFile);
             const imageBase64 = arrayBufferToBase64(imageData);
             const imgPath2 = `/img/user/${linkedFile.path}`;
-            assets.push({ path: imgPath2, content: imageBase64 });
+            assets.push({
+              path: imgPath2,
+              content: imageBase64,
+              localHash: generateBlobHashFromBase64(imageBase64)
+            });
             const altText2 = node.file.split("/").pop() || node.file;
             return `<div class="canvas-node canvas-node-file canvas-node-image ${colorClass}" data-node-id="${node.id}" style="${baseStyle}">
 	<div class="canvas-node-container">
@@ -11398,7 +13146,7 @@ var CanvasCompiler = class {
       let backgroundStyle = "";
       if (node.background) {
         const linkedFile = this.metadataCache.getFirstLinkpathDest(
-          (0, import_obsidian3.getLinkpath)(node.background),
+          (0, import_obsidian4.getLinkpath)(node.background),
           file.getPath()
         );
         if (linkedFile) {
@@ -11406,7 +13154,11 @@ var CanvasCompiler = class {
             const imageData = yield this.vault.readBinary(linkedFile);
             const imageBase64 = arrayBufferToBase64(imageData);
             const bgPath = `/img/user/${linkedFile.path}`;
-            assets.push({ path: bgPath, content: imageBase64 });
+            assets.push({
+              path: bgPath,
+              content: imageBase64,
+              localHash: generateBlobHashFromBase64(imageBase64)
+            });
             const bgSize = node.backgroundStyle === "repeat" ? "auto" : node.backgroundStyle === "ratio" ? "contain" : "cover";
             backgroundStyle = `background-image: url('${encodeURI(
               bgPath
@@ -11545,7 +13297,7 @@ var CanvasCompiler = class {
     var _a2, _b;
     const rewriteRules = getRewriteRules(this.settings.pathRewriteRules);
     const linkedFile = this.metadataCache.getFirstLinkpathDest(
-      (0, import_obsidian3.getLinkpath)(filePath),
+      (0, import_obsidian4.getLinkpath)(filePath),
       sourceFile.getPath()
     );
     if (!linkedFile) {
@@ -13333,7 +15085,7 @@ function combineExtractors(...extractors) {
     [{}, null, 1]
   ).slice(0, 2);
 }
-function parse(s2, ...patterns) {
+function parse2(s2, ...patterns) {
   if (s2 == null) {
     return [null, null];
   }
@@ -13512,7 +15264,7 @@ var extractISOTimeAndOffset = combineExtractors(
   extractIANAZone
 );
 function parseISODate(s2) {
-  return parse(
+  return parse2(
     s2,
     [isoYmdWithTimeExtensionRegex, extractISOYmdTimeAndOffset],
     [isoWeekWithTimeExtensionRegex, extractISOWeekTimeAndOffset],
@@ -13521,10 +15273,10 @@ function parseISODate(s2) {
   );
 }
 function parseRFC2822Date(s2) {
-  return parse(preprocessRFC2822(s2), [rfc2822, extractRFC2822]);
+  return parse2(preprocessRFC2822(s2), [rfc2822, extractRFC2822]);
 }
 function parseHTTPDate(s2) {
-  return parse(
+  return parse2(
     s2,
     [rfc1123, extractRFC1123Or850],
     [rfc850, extractRFC1123Or850],
@@ -13532,11 +15284,11 @@ function parseHTTPDate(s2) {
   );
 }
 function parseISODuration(s2) {
-  return parse(s2, [isoDuration, extractISODuration]);
+  return parse2(s2, [isoDuration, extractISODuration]);
 }
 var extractISOTimeOnly = combineExtractors(extractISOTime);
 function parseISOTimeOnly(s2) {
-  return parse(s2, [isoTimeOnly, extractISOTimeOnly]);
+  return parse2(s2, [isoTimeOnly, extractISOTimeOnly]);
 }
 var sqlYmdWithTimeExtensionRegex = combineRegexes(sqlYmdRegex, sqlTimeExtensionRegex);
 var sqlTimeCombinedRegex = combineRegexes(sqlTimeRegex);
@@ -13546,7 +15298,7 @@ var extractISOTimeOffsetAndIANAZone = combineExtractors(
   extractIANAZone
 );
 function parseSQL(s2) {
-  return parse(
+  return parse2(
     s2,
     [sqlYmdWithTimeExtensionRegex, extractISOYmdTimeAndOffset],
     [sqlTimeCombinedRegex, extractISOTimeOffsetAndIANAZone]
@@ -17646,6 +19398,22 @@ var PDF_IFRAME_HEIGHT = "900px";
 var PDF_IFRAME_STYLE = "border:1px solid #ccc;";
 var GardenPageCompiler = class {
   constructor(vault, settings, metadataCache, getFilesMarkedForPublishing) {
+    this.resolveLinkedFile = (linkPath, sourcePath) => {
+      var _a2;
+      if (linkPath === "") {
+        return null;
+      }
+      return (_a2 = this.metadataCache.getFirstLinkpathDest(linkPath, sourcePath)) != null ? _a2 : null;
+    };
+    this.extractWikilinkTarget = (wikilink) => {
+      const start2 = wikilink.indexOf("[[") + 2;
+      const end2 = wikilink.indexOf("]]");
+      if (start2 < 2 || end2 < 0) {
+        return "";
+      }
+      const [name] = wikilink.substring(start2, end2).split("|");
+      return (0, import_obsidian5.getLinkpath)(name);
+    };
     this.runCompilerSteps = (file, compilerSteps) => (text2) => __async(null, null, function* () {
       return yield compilerSteps.reduce(
         (previousStep, compilerStep) => __async(null, null, function* () {
@@ -17663,10 +19431,10 @@ var GardenPageCompiler = class {
             filter2.replace
           );
         } catch (e) {
-          import_js_logger2.default.error(
+          import_js_logger6.default.error(
             `Invalid regex: ${filter2.pattern} ${filter2.flags}`
           );
-          new import_obsidian4.Notice(
+          new import_obsidian5.Notice(
             `Your custom filters contains an invalid regex: ${filter2.pattern}. Skipping it.`
           );
         }
@@ -17734,7 +19502,19 @@ var GardenPageCompiler = class {
               linkedFileName = headerSplit[0];
               headerPath = headerSplit.length > 1 ? `#${headerSplit[1]}` : "";
             }
-            const fullLinkedFilePath = (0, import_obsidian4.getLinkpath)(linkedFileName);
+            if (linkedFileName === "" && headerPath !== "") {
+              const currentFilePath = file.getPath();
+              const currentExtensionlessPath = currentFilePath.substring(
+                0,
+                currentFilePath.lastIndexOf(".")
+              );
+              convertedText = convertedText.replace(
+                linkMatch,
+                `[[${currentExtensionlessPath}${headerPath}\\|${linkDisplayName}]]`
+              );
+              continue;
+            }
+            const fullLinkedFilePath = (0, import_obsidian5.getLinkpath)(linkedFileName);
             if (fullLinkedFilePath === "") {
               continue;
             }
@@ -17793,7 +19573,7 @@ var GardenPageCompiler = class {
             );
             continue;
           }
-          const transclusionFilePath = (0, import_obsidian4.getLinkpath)(transclusionFileName);
+          const transclusionFilePath = (0, import_obsidian5.getLinkpath)(transclusionFileName);
           if (transclusionFilePath === "") {
             continue;
           }
@@ -17937,7 +19717,7 @@ ${headerSection}
         for (const svg of transcludedSvgs) {
           try {
             const [imageName, size] = svg.substring(svg.indexOf("[") + 2, svg.indexOf("]")).split("|");
-            const imagePath = (0, import_obsidian4.getLinkpath)(imageName);
+            const imagePath = (0, import_obsidian5.getLinkpath)(imageName);
             if (imagePath === "") {
               continue;
             }
@@ -17996,6 +19776,7 @@ ${headerSection}
       return text2;
     });
     this.extractImageLinks = (file) => __async(this, null, function* () {
+      var _a2;
       const text2 = yield file.cachedRead();
       const assets = [];
       const transcludedImageRegex = /!\[\[(.*?)(\.(png|jpg|jpeg|gif|webp|pdf))\|(.*?)\]\]|!\[\[(.*?)(\.(png|jpg|jpeg|gif|webp|pdf))\]\]/g;
@@ -18008,11 +19789,8 @@ ${headerSection}
               imageMatch.indexOf("[") + 2,
               imageMatch.indexOf("]")
             ).split("|");
-            const imagePath = (0, import_obsidian4.getLinkpath)(imageName);
-            if (imagePath === "") {
-              continue;
-            }
-            const linkedFile = this.metadataCache.getFirstLinkpathDest(
+            const imagePath = (0, import_obsidian5.getLinkpath)(imageName);
+            const linkedFile = this.resolveLinkedFile(
               imagePath,
               file.getPath()
             );
@@ -18038,10 +19816,7 @@ ${headerSection}
               continue;
             }
             const decodedImagePath = decodeURI(imagePath);
-            if (decodedImagePath === "") {
-              continue;
-            }
-            const linkedFile = this.metadataCache.getFirstLinkpathDest(
+            const linkedFile = this.resolveLinkedFile(
               decodedImagePath,
               file.getPath()
             );
@@ -18054,9 +19829,31 @@ ${headerSection}
           }
         }
       }
+      const linkedImageRegex = /\[\[(.*?)(\.(png|jpg|jpeg|gif|webp|svg|pdf))(.*?)\]\]/g;
+      const linkedImageMatches = text2.matchAll(linkedImageRegex);
+      for (const match2 of linkedImageMatches) {
+        try {
+          const matchIndex = (_a2 = match2.index) != null ? _a2 : -1;
+          if (matchIndex > 0 && text2[matchIndex - 1] === "!") {
+            continue;
+          }
+          const imagePath = this.extractWikilinkTarget(match2[0]);
+          const linkedFile = this.resolveLinkedFile(
+            imagePath,
+            file.getPath()
+          );
+          if (!linkedFile) {
+            continue;
+          }
+          assets.push(linkedFile.path);
+        } catch (e) {
+          continue;
+        }
+      }
       return assets;
     });
     this.convertEmbeddedAssets = (file) => (text2) => __async(this, null, function* () {
+      var _a2;
       const filePath = file.getPath();
       const assets = [];
       let imageText = text2;
@@ -18083,11 +19880,8 @@ ${headerSection}
             if (lastValueIsMetaData) {
               metaData = `${lastValue}`;
             }
-            const imagePath = (0, import_obsidian4.getLinkpath)(imageName);
-            if (imagePath === "") {
-              continue;
-            }
-            const linkedFile = this.metadataCache.getFirstLinkpathDest(
+            const imagePath = (0, import_obsidian5.getLinkpath)(imageName);
+            const linkedFile = this.resolveLinkedFile(
               imagePath,
               filePath
             );
@@ -18095,7 +19889,7 @@ ${headerSection}
               continue;
             }
             const image = yield this.vault.readBinary(linkedFile);
-            const imageBase64 = (0, import_obsidian4.arrayBufferToBase64)(image);
+            const imageBase64 = (0, import_obsidian5.arrayBufferToBase64)(image);
             const cmsImgPath = `/img/user/${linkedFile.path}`;
             let name = "";
             if (metaData && size) {
@@ -18110,7 +19904,11 @@ ${headerSection}
             const imageMarkdown = `![${name}](${encodeURI(
               cmsImgPath
             )})`;
-            assets.push({ path: cmsImgPath, content: imageBase64 });
+            assets.push({
+              path: cmsImgPath,
+              content: imageBase64,
+              localHash: generateBlobHashFromBase64(imageBase64)
+            });
             imageText = imageText.replace(
               imageMatch,
               imageMarkdown
@@ -18160,10 +19958,7 @@ ${headerSection}
               continue;
             }
             const decodedImagePath = decodeURI(imagePath);
-            if (decodedImagePath === "") {
-              continue;
-            }
-            const linkedFile = this.metadataCache.getFirstLinkpathDest(
+            const linkedFile = this.resolveLinkedFile(
               decodedImagePath,
               filePath
             );
@@ -18171,20 +19966,67 @@ ${headerSection}
               continue;
             }
             const image = yield this.vault.readBinary(linkedFile);
-            const imageBase64 = (0, import_obsidian4.arrayBufferToBase64)(image);
+            const imageBase64 = (0, import_obsidian5.arrayBufferToBase64)(image);
             const cmsImgPath = `/img/user/${linkedFile.path}`;
             const imageMarkdown = `![${imageName}](${encodeURI(
               cmsImgPath
             )})`;
-            assets.push({ path: cmsImgPath, content: imageBase64 });
+            assets.push({
+              path: cmsImgPath,
+              content: imageBase64,
+              localHash: generateBlobHashFromBase64(imageBase64)
+            });
             imageText = imageText.replace(
               imageMatch,
               imageMarkdown
             );
           } catch (e) {
-            import_js_logger2.default.warn("Error processing image link:", e);
+            import_js_logger6.default.warn("Error processing image link:", e);
             continue;
           }
+        }
+      }
+      const linkedImageRegex = /\[\[(.*?)(\.(png|jpg|jpeg|gif|webp|svg|pdf))(.*?)\]\]/g;
+      const linkedImageMatches = text2.matchAll(linkedImageRegex);
+      for (const match2 of linkedImageMatches) {
+        try {
+          const matchIndex = (_a2 = match2.index) != null ? _a2 : -1;
+          if (matchIndex > 0 && text2[matchIndex - 1] === "!") {
+            continue;
+          }
+          const rawMatch = match2[0];
+          const textInsideBrackets = rawMatch.substring(
+            rawMatch.indexOf("[[") + 2,
+            rawMatch.lastIndexOf("]]")
+          );
+          const pipeIndex = textInsideBrackets.indexOf("|");
+          let linkedFileName = pipeIndex === -1 ? textInsideBrackets : textInsideBrackets.substring(0, pipeIndex);
+          const linkDisplayName = pipeIndex === -1 ? linkedFileName : textInsideBrackets.substring(pipeIndex + 1);
+          if (linkedFileName.endsWith("\\")) {
+            linkedFileName = linkedFileName.substring(
+              0,
+              linkedFileName.length - 1
+            );
+          }
+          const fullLinkedFilePath = (0, import_obsidian5.getLinkpath)(linkedFileName);
+          if (fullLinkedFilePath === "") {
+            continue;
+          }
+          const linkedFile = this.resolveLinkedFile(
+            fullLinkedFilePath,
+            filePath
+          );
+          if (!linkedFile) {
+            continue;
+          }
+          const cmsImgPath = `/img/user/${linkedFile.path}`;
+          const imageMarkdown = `[${linkDisplayName}](${encodeURI(
+            cmsImgPath
+          )})`;
+          imageText = imageText.replace(rawMatch, imageMarkdown);
+        } catch (e) {
+          import_js_logger6.default.warn("Error processing linked image:", e);
+          continue;
         }
       }
       const generatePdfIframe = (src, title) => {
@@ -18205,7 +20047,7 @@ ${headerSection}
               pdfMatch.indexOf("]")
             ).split("|");
             const altText = metadataParts.join("|") || pdfNameFromFile;
-            const pdfPath = (0, import_obsidian4.getLinkpath)(pdfNameFromFile);
+            const pdfPath = (0, import_obsidian5.getLinkpath)(pdfNameFromFile);
             if (pdfPath === "") {
               imageText = imageText.replace(
                 pdfMatch,
@@ -18231,7 +20073,7 @@ ${headerSection}
               continue;
             }
             if (linkedFile.stat.size > PDF_MAX_SIZE_BYTES) {
-              new import_obsidian4.Notice(
+              new import_obsidian5.Notice(
                 `PDF ${linkedFile.name} is larger than 20MB and will not be published as an embed. A link will be used.`
               );
               imageText = imageText.replace(
@@ -18245,15 +20087,19 @@ ${headerSection}
               continue;
             }
             const pdfBinary = yield this.vault.readBinary(linkedFile);
-            const pdfBase64 = (0, import_obsidian4.arrayBufferToBase64)(pdfBinary);
+            const pdfBase64 = (0, import_obsidian5.arrayBufferToBase64)(pdfBinary);
             const cmsPdfPath = `/img/user/${linkedFile.path}`;
-            assets.push({ path: cmsPdfPath, content: pdfBase64 });
+            assets.push({
+              path: cmsPdfPath,
+              content: pdfBase64,
+              localHash: generateBlobHashFromBase64(pdfBase64)
+            });
             imageText = imageText.replace(
               pdfMatch,
               generatePdfIframe(cmsPdfPath, altText)
             );
           } catch (e) {
-            import_js_logger2.default.warn(
+            import_js_logger6.default.warn(
               "Error processing transcluded PDF link:",
               e
             );
@@ -18315,7 +20161,7 @@ ${headerSection}
               continue;
             }
             if (linkedFile.stat.size > PDF_MAX_SIZE_BYTES) {
-              new import_obsidian4.Notice(
+              new import_obsidian5.Notice(
                 `PDF ${linkedFile.name} is larger than 20MB and will not be published as an embed. A link will be used.`
               );
               imageText = imageText.replace(
@@ -18327,9 +20173,13 @@ ${headerSection}
               continue;
             }
             const pdfBinary = yield this.vault.readBinary(linkedFile);
-            const pdfBase64 = (0, import_obsidian4.arrayBufferToBase64)(pdfBinary);
+            const pdfBase64 = (0, import_obsidian5.arrayBufferToBase64)(pdfBinary);
             const cmsPdfPath = `/img/user/${linkedFile.path}`;
-            assets.push({ path: cmsPdfPath, content: pdfBase64 });
+            assets.push({
+              path: cmsPdfPath,
+              content: pdfBase64,
+              localHash: generateBlobHashFromBase64(pdfBase64)
+            });
             imageText = imageText.replace(
               pdfMatch,
               generatePdfIframe(
@@ -18338,7 +20188,7 @@ ${headerSection}
               )
             );
           } catch (e) {
-            import_js_logger2.default.warn("Error processing PDF link:", e);
+            import_js_logger6.default.warn("Error processing PDF link:", e);
             const nameStart = pdfMatch.indexOf("[") + 1;
             const nameEnd = pdfMatch.indexOf("]");
             const pdfName = pdfMatch.substring(nameStart, nameEnd);
@@ -18371,7 +20221,7 @@ ${headerSection}
    * Process text content from canvas text nodes through the same pipeline as notes.
    * This enables wiki-links, transclusions, dataview, etc. in canvas text nodes.
    */
-  processTextNodeContent(file, text2) {
+  processTextNodeContent(file, text2, assets) {
     return __async(this, null, function* () {
       const CANVAS_TEXT_COMPILE_STEPS = [
         this.convertCustomFilters,
@@ -18379,12 +20229,18 @@ ${headerSection}
         this.createTranscludedText(0),
         this.convertDataViews,
         this.convertLinksToFullPath,
-        this.removeObsidianComments
+        this.removeObsidianComments,
+        this.createSvgEmbeds
       ];
-      return yield this.runCompilerSteps(
+      const compiledText = yield this.runCompilerSteps(
         file,
         CANVAS_TEXT_COMPILE_STEPS
       )(text2);
+      const [processedText, collectedAssets] = yield this.convertEmbeddedAssets(file)(compiledText);
+      if (assets) {
+        assets.push(...collectedAssets);
+      }
+      return processedText;
     });
   }
   generateMarkdown(file) {
@@ -18454,1222 +20310,7 @@ ${headerSection}
 };
 
 // src/publisher/Publisher.ts
-var import_js_logger5 = __toESM(require_logger());
-
-// src/repositoryConnection/RepositoryConnection.ts
-var import_js_logger3 = __toESM(require_logger());
-var logger = import_js_logger3.default.get("repository-connection");
-var IMAGE_PATH_BASE = "src/site/";
-var NOTE_PATH_BASE = "src/site/notes/";
-var RepositoryConnection = class {
-  constructor({ octoKit, userName, pageName }) {
-    this.pageName = pageName;
-    this.userName = userName;
-    this.octokit = octoKit;
-  }
-  getRepositoryName() {
-    return this.userName + "/" + this.pageName;
-  }
-  getBasePayload() {
-    return {
-      owner: this.userName,
-      repo: this.pageName
-    };
-  }
-  /** Get filetree with path and sha of each file from repository */
-  getContent(branch) {
-    return __async(this, null, function* () {
-      try {
-        const response = yield this.octokit.request(
-          `GET /repos/{owner}/{repo}/git/trees/{tree_sha}`,
-          __spreadProps(__spreadValues({}, this.getBasePayload()), {
-            tree_sha: branch,
-            recursive: "true",
-            // invalidate cache
-            headers: {
-              "If-None-Match": ""
-            }
-          })
-        );
-        if (response.status === 200) {
-          return response.data;
-        }
-      } catch (error) {
-        throw new Error(
-          `Could not get file ${""} from repository ${this.getRepositoryName()}`
-        );
-      }
-    });
-  }
-  getFile(path, branch) {
-    return __async(this, null, function* () {
-      logger.info(
-        `Getting file ${path} from repository ${this.getRepositoryName()}`
-      );
-      try {
-        const response = yield this.octokit.request(
-          "GET /repos/{owner}/{repo}/contents/{path}",
-          __spreadProps(__spreadValues({}, this.getBasePayload()), {
-            path,
-            ref: branch
-          })
-        );
-        if (response.status === 200 && !Array.isArray(response.data) && response.data.type === "file") {
-          return response.data;
-        }
-      } catch (error) {
-        throw new Error(
-          `Could not get file ${path} from repository ${this.getRepositoryName()}`
-        );
-      }
-    });
-  }
-  deleteFile(_0, _1) {
-    return __async(this, arguments, function* (path, { branch, sha }) {
-      try {
-        sha != null ? sha : sha = yield this.getFile(path, branch).then((file) => file == null ? void 0 : file.sha);
-        if (!sha) {
-          console.error(
-            `cannot find file ${path} on github, not removing`
-          );
-          return false;
-        }
-        const payload = __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          path,
-          message: `Delete content ${path}`,
-          sha,
-          branch
-        });
-        const result = yield this.octokit.request(
-          "DELETE /repos/{owner}/{repo}/contents/{path}",
-          payload
-        );
-        import_js_logger3.default.info(
-          `Deleted file ${path} from repository ${this.getRepositoryName()}`
-        );
-        return result;
-      } catch (error) {
-        logger.error(error);
-        return false;
-      }
-    });
-  }
-  getLatestRelease() {
-    return __async(this, null, function* () {
-      try {
-        const release = yield this.octokit.request(
-          "GET /repos/{owner}/{repo}/releases/latest",
-          this.getBasePayload()
-        );
-        if (!release || !release.data) {
-          logger.error("Could not get latest release");
-        }
-        return release.data;
-      } catch (error) {
-        logger.error("Could not get latest release", error);
-      }
-    });
-  }
-  getLatestCommit() {
-    return __async(this, null, function* () {
-      try {
-        const latestCommit = yield this.octokit.request(
-          `GET /repos/{owner}/{repo}/commits/HEAD?cacheBust=${Date.now()}`,
-          this.getBasePayload()
-        );
-        if (!latestCommit || !latestCommit.data) {
-          logger.error("Could not get latest commit");
-        }
-        return latestCommit.data;
-      } catch (error) {
-        logger.error("Could not get latest commit", error);
-      }
-    });
-  }
-  updateFile(_0) {
-    return __async(this, arguments, function* ({ path, sha, content, branch, message }) {
-      const payload = __spreadProps(__spreadValues({}, this.getBasePayload()), {
-        path,
-        message: message != null ? message : `Update file ${path}`,
-        content,
-        sha,
-        branch
-      });
-      try {
-        return yield this.octokit.request(
-          "PUT /repos/{owner}/{repo}/contents/{path}",
-          payload
-        );
-      } catch (error) {
-        logger.error(error);
-      }
-    });
-  }
-  // NB: Do not use this, it does not work for some reason.
-  //TODO: Fix this. For now use deleteNote and deleteImage instead
-  deleteFiles(filePaths) {
-    return __async(this, null, function* () {
-      const latestCommit = yield this.getLatestCommit();
-      if (!latestCommit) {
-        logger.error("Could not get latest commit");
-        return;
-      }
-      const normalizePath = (path) => path.startsWith("/") ? path.slice(1) : path;
-      const filesToDelete = filePaths.map((path) => {
-        if (path.endsWith(".md")) {
-          return `${NOTE_PATH_BASE}${normalizePath(path)}`;
-        }
-        return `${IMAGE_PATH_BASE}${normalizePath(path)}`;
-      });
-      const repoDataPromise = this.octokit.request(
-        "GET /repos/{owner}/{repo}",
-        __spreadValues({}, this.getBasePayload())
-      );
-      const latestCommitSha = latestCommit.sha;
-      const baseTreeSha = latestCommit.commit.tree.sha;
-      const baseTree = yield this.octokit.request(
-        "GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          tree_sha: baseTreeSha
-        })
-      );
-      const newTreeEntries = baseTree.data.tree.filter(
-        (item) => !filesToDelete.includes(item.path)
-      ).map(
-        (item) => ({
-          path: item.path,
-          mode: item.mode,
-          type: item.type,
-          sha: item.sha
-        })
-      );
-      const newTree = yield this.octokit.request(
-        "POST /repos/{owner}/{repo}/git/trees",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          tree: newTreeEntries
-        })
-      );
-      const commitMessage = "Deleted multiple files";
-      const newCommit = yield this.octokit.request(
-        "POST /repos/{owner}/{repo}/git/commits",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          message: commitMessage,
-          tree: newTree.data.sha,
-          parents: [latestCommitSha]
-        })
-      );
-      const defaultBranch = (yield repoDataPromise).data.default_branch;
-      yield this.octokit.request(
-        "PATCH /repos/{owner}/{repo}/git/refs/{ref}",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          ref: `heads/${defaultBranch}`,
-          sha: newCommit.data.sha
-        })
-      );
-    });
-  }
-  updateFiles(files) {
-    return __async(this, null, function* () {
-      const latestCommit = yield this.getLatestCommit();
-      if (!latestCommit) {
-        logger.error("Could not get latest commit");
-        return;
-      }
-      const repoDataPromise = this.octokit.request(
-        "GET /repos/{owner}/{repo}",
-        __spreadValues({}, this.getBasePayload())
-      );
-      const latestCommitSha = latestCommit.sha;
-      const baseTreeSha = latestCommit.commit.tree.sha;
-      const normalizePath = (path) => path.startsWith("/") ? path.slice(1) : path;
-      const treePromises = files.map((file) => __async(this, null, function* () {
-        const [text2, _] = file.compiledFile;
-        try {
-          const blob = yield this.octokit.request(
-            "POST /repos/{owner}/{repo}/git/blobs",
-            __spreadProps(__spreadValues({}, this.getBasePayload()), {
-              content: text2,
-              encoding: "utf-8"
-            })
-          );
-          return {
-            path: `${NOTE_PATH_BASE}${normalizePath(file.getPath())}`,
-            mode: "100644",
-            type: "blob",
-            sha: blob.data.sha
-          };
-        } catch (error) {
-          logger.error(error);
-        }
-      }));
-      const treeAssetPromises = files.flatMap((x) => x.compiledFile[1].images).map((asset) => __async(this, null, function* () {
-        try {
-          const blob = yield this.octokit.request(
-            "POST /repos/{owner}/{repo}/git/blobs",
-            __spreadProps(__spreadValues({}, this.getBasePayload()), {
-              content: asset.content,
-              encoding: "base64"
-            })
-          );
-          return {
-            path: `${IMAGE_PATH_BASE}${normalizePath(asset.path)}`,
-            mode: "100644",
-            type: "blob",
-            sha: blob.data.sha
-          };
-        } catch (error) {
-          logger.error(error);
-        }
-      }));
-      treePromises.push(...treeAssetPromises);
-      const treeList = yield Promise.all(treePromises);
-      const tree = treeList.filter((x) => x !== void 0);
-      const newTree = yield this.octokit.request(
-        "POST /repos/{owner}/{repo}/git/trees",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          base_tree: baseTreeSha,
-          tree
-        })
-      );
-      const commitMessage = "Published multiple files";
-      const newCommit = yield this.octokit.request(
-        "POST /repos/{owner}/{repo}/git/commits",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          message: commitMessage,
-          tree: newTree.data.sha,
-          parents: [latestCommitSha]
-        })
-      );
-      const defaultBranch = (yield repoDataPromise).data.default_branch;
-      yield this.octokit.request(
-        "PATCH /repos/{owner}/{repo}/git/refs/heads/{branch}",
-        __spreadProps(__spreadValues({}, this.getBasePayload()), {
-          branch: defaultBranch,
-          sha: newCommit.data.sha
-        })
-      );
-    });
-  }
-  getRepositoryInfo() {
-    return __async(this, null, function* () {
-      const repoInfo = yield this.octokit.request("GET /repos/{owner}/{repo}", __spreadValues({}, this.getBasePayload())).catch((error) => {
-        logger.error(error);
-        logger.warn(
-          `Could not get repository info for ${this.getRepositoryName()}`
-        );
-        return void 0;
-      });
-      return repoInfo == null ? void 0 : repoInfo.data;
-    });
-  }
-  createBranch(branchName, sha) {
-    return __async(this, null, function* () {
-      yield this.octokit.request("POST /repos/{owner}/{repo}/git/refs", __spreadProps(__spreadValues({}, this.getBasePayload()), {
-        ref: `refs/heads/${branchName}`,
-        sha
-      }));
-    });
-  }
-};
-
-// node_modules/universal-user-agent/dist-web/index.js
-function getUserAgent() {
-  if (typeof navigator === "object" && "userAgent" in navigator) {
-    return navigator.userAgent;
-  }
-  if (typeof process === "object" && "version" in process) {
-    return `Node.js/${process.version.substr(1)} (${process.platform}; ${process.arch})`;
-  }
-  return "<environment undetectable>";
-}
-
-// node_modules/@octokit/core/dist-web/index.js
-var import_before_after_hook = __toESM(require_before_after_hook());
-
-// node_modules/@octokit/endpoint/dist-web/index.js
-var VERSION2 = "9.0.6";
-var userAgent = `octokit-endpoint.js/${VERSION2} ${getUserAgent()}`;
-var DEFAULTS = {
-  method: "GET",
-  baseUrl: "https://api.github.com",
-  headers: {
-    accept: "application/vnd.github.v3+json",
-    "user-agent": userAgent
-  },
-  mediaType: {
-    format: ""
-  }
-};
-function lowercaseKeys(object) {
-  if (!object) {
-    return {};
-  }
-  return Object.keys(object).reduce((newObj, key) => {
-    newObj[key.toLowerCase()] = object[key];
-    return newObj;
-  }, {});
-}
-function isPlainObject(value) {
-  if (typeof value !== "object" || value === null)
-    return false;
-  if (Object.prototype.toString.call(value) !== "[object Object]")
-    return false;
-  const proto = Object.getPrototypeOf(value);
-  if (proto === null)
-    return true;
-  const Ctor = Object.prototype.hasOwnProperty.call(proto, "constructor") && proto.constructor;
-  return typeof Ctor === "function" && Ctor instanceof Ctor && Function.prototype.call(Ctor) === Function.prototype.call(value);
-}
-function mergeDeep(defaults2, options) {
-  const result = Object.assign({}, defaults2);
-  Object.keys(options).forEach((key) => {
-    if (isPlainObject(options[key])) {
-      if (!(key in defaults2))
-        Object.assign(result, { [key]: options[key] });
-      else
-        result[key] = mergeDeep(defaults2[key], options[key]);
-    } else {
-      Object.assign(result, { [key]: options[key] });
-    }
-  });
-  return result;
-}
-function removeUndefinedProperties(obj) {
-  for (const key in obj) {
-    if (obj[key] === void 0) {
-      delete obj[key];
-    }
-  }
-  return obj;
-}
-function merge(defaults2, route, options) {
-  var _a2;
-  if (typeof route === "string") {
-    let [method, url] = route.split(" ");
-    options = Object.assign(url ? { method, url } : { url: method }, options);
-  } else {
-    options = Object.assign({}, route);
-  }
-  options.headers = lowercaseKeys(options.headers);
-  removeUndefinedProperties(options);
-  removeUndefinedProperties(options.headers);
-  const mergedOptions = mergeDeep(defaults2 || {}, options);
-  if (options.url === "/graphql") {
-    if (defaults2 && ((_a2 = defaults2.mediaType.previews) == null ? void 0 : _a2.length)) {
-      mergedOptions.mediaType.previews = defaults2.mediaType.previews.filter(
-        (preview) => !mergedOptions.mediaType.previews.includes(preview)
-      ).concat(mergedOptions.mediaType.previews);
-    }
-    mergedOptions.mediaType.previews = (mergedOptions.mediaType.previews || []).map((preview) => preview.replace(/-preview/, ""));
-  }
-  return mergedOptions;
-}
-function addQueryParameters(url, parameters) {
-  const separator = /\?/.test(url) ? "&" : "?";
-  const names = Object.keys(parameters);
-  if (names.length === 0) {
-    return url;
-  }
-  return url + separator + names.map((name) => {
-    if (name === "q") {
-      return "q=" + parameters.q.split("+").map(encodeURIComponent).join("+");
-    }
-    return `${name}=${encodeURIComponent(parameters[name])}`;
-  }).join("&");
-}
-var urlVariableRegex = /\{[^{}}]+\}/g;
-function removeNonChars(variableName) {
-  return variableName.replace(new RegExp("(?:^\\W+)|(?:(?<!\\W)\\W+$)", "g"), "").split(/,/);
-}
-function extractUrlVariableNames(url) {
-  const matches = url.match(urlVariableRegex);
-  if (!matches) {
-    return [];
-  }
-  return matches.map(removeNonChars).reduce((a, b) => a.concat(b), []);
-}
-function omit(object, keysToOmit) {
-  const result = { __proto__: null };
-  for (const key of Object.keys(object)) {
-    if (keysToOmit.indexOf(key) === -1) {
-      result[key] = object[key];
-    }
-  }
-  return result;
-}
-function encodeReserved(str) {
-  return str.split(/(%[0-9A-Fa-f]{2})/g).map(function(part) {
-    if (!/%[0-9A-Fa-f]/.test(part)) {
-      part = encodeURI(part).replace(/%5B/g, "[").replace(/%5D/g, "]");
-    }
-    return part;
-  }).join("");
-}
-function encodeUnreserved(str) {
-  return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
-    return "%" + c.charCodeAt(0).toString(16).toUpperCase();
-  });
-}
-function encodeValue(operator, value, key) {
-  value = operator === "+" || operator === "#" ? encodeReserved(value) : encodeUnreserved(value);
-  if (key) {
-    return encodeUnreserved(key) + "=" + value;
-  } else {
-    return value;
-  }
-}
-function isDefined(value) {
-  return value !== void 0 && value !== null;
-}
-function isKeyOperator(operator) {
-  return operator === ";" || operator === "&" || operator === "?";
-}
-function getValues(context, operator, key, modifier) {
-  var value = context[key], result = [];
-  if (isDefined(value) && value !== "") {
-    if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
-      value = value.toString();
-      if (modifier && modifier !== "*") {
-        value = value.substring(0, parseInt(modifier, 10));
-      }
-      result.push(
-        encodeValue(operator, value, isKeyOperator(operator) ? key : "")
-      );
-    } else {
-      if (modifier === "*") {
-        if (Array.isArray(value)) {
-          value.filter(isDefined).forEach(function(value2) {
-            result.push(
-              encodeValue(operator, value2, isKeyOperator(operator) ? key : "")
-            );
-          });
-        } else {
-          Object.keys(value).forEach(function(k) {
-            if (isDefined(value[k])) {
-              result.push(encodeValue(operator, value[k], k));
-            }
-          });
-        }
-      } else {
-        const tmp = [];
-        if (Array.isArray(value)) {
-          value.filter(isDefined).forEach(function(value2) {
-            tmp.push(encodeValue(operator, value2));
-          });
-        } else {
-          Object.keys(value).forEach(function(k) {
-            if (isDefined(value[k])) {
-              tmp.push(encodeUnreserved(k));
-              tmp.push(encodeValue(operator, value[k].toString()));
-            }
-          });
-        }
-        if (isKeyOperator(operator)) {
-          result.push(encodeUnreserved(key) + "=" + tmp.join(","));
-        } else if (tmp.length !== 0) {
-          result.push(tmp.join(","));
-        }
-      }
-    }
-  } else {
-    if (operator === ";") {
-      if (isDefined(value)) {
-        result.push(encodeUnreserved(key));
-      }
-    } else if (value === "" && (operator === "&" || operator === "?")) {
-      result.push(encodeUnreserved(key) + "=");
-    } else if (value === "") {
-      result.push("");
-    }
-  }
-  return result;
-}
-function parseUrl(template) {
-  return {
-    expand: expand.bind(null, template)
-  };
-}
-function expand(template, context) {
-  var operators = ["+", "#", ".", "/", ";", "?", "&"];
-  template = template.replace(
-    /\{([^\{\}]+)\}|([^\{\}]+)/g,
-    function(_, expression, literal) {
-      if (expression) {
-        let operator = "";
-        const values = [];
-        if (operators.indexOf(expression.charAt(0)) !== -1) {
-          operator = expression.charAt(0);
-          expression = expression.substr(1);
-        }
-        expression.split(/,/g).forEach(function(variable) {
-          var tmp = /([^:\*]*)(?::(\d+)|(\*))?/.exec(variable);
-          values.push(getValues(context, operator, tmp[1], tmp[2] || tmp[3]));
-        });
-        if (operator && operator !== "+") {
-          var separator = ",";
-          if (operator === "?") {
-            separator = "&";
-          } else if (operator !== "#") {
-            separator = operator;
-          }
-          return (values.length !== 0 ? operator : "") + values.join(separator);
-        } else {
-          return values.join(",");
-        }
-      } else {
-        return encodeReserved(literal);
-      }
-    }
-  );
-  if (template === "/") {
-    return template;
-  } else {
-    return template.replace(/\/$/, "");
-  }
-}
-function parse2(options) {
-  var _a2;
-  let method = options.method.toUpperCase();
-  let url = (options.url || "/").replace(/:([a-z]\w+)/g, "{$1}");
-  let headers = Object.assign({}, options.headers);
-  let body;
-  let parameters = omit(options, [
-    "method",
-    "baseUrl",
-    "url",
-    "headers",
-    "request",
-    "mediaType"
-  ]);
-  const urlVariableNames = extractUrlVariableNames(url);
-  url = parseUrl(url).expand(parameters);
-  if (!/^http/.test(url)) {
-    url = options.baseUrl + url;
-  }
-  const omittedParameters = Object.keys(options).filter((option) => urlVariableNames.includes(option)).concat("baseUrl");
-  const remainingParameters = omit(parameters, omittedParameters);
-  const isBinaryRequest = /application\/octet-stream/i.test(headers.accept);
-  if (!isBinaryRequest) {
-    if (options.mediaType.format) {
-      headers.accept = headers.accept.split(/,/).map(
-        (format) => format.replace(
-          /application\/vnd(\.\w+)(\.v3)?(\.\w+)?(\+json)?$/,
-          `application/vnd$1$2.${options.mediaType.format}`
-        )
-      ).join(",");
-    }
-    if (url.endsWith("/graphql")) {
-      if ((_a2 = options.mediaType.previews) == null ? void 0 : _a2.length) {
-        const previewsFromAcceptHeader = headers.accept.match(new RegExp("(?<![\\w-])[\\w-]+(?=-preview)", "g")) || [];
-        headers.accept = previewsFromAcceptHeader.concat(options.mediaType.previews).map((preview) => {
-          const format = options.mediaType.format ? `.${options.mediaType.format}` : "+json";
-          return `application/vnd.github.${preview}-preview${format}`;
-        }).join(",");
-      }
-    }
-  }
-  if (["GET", "HEAD"].includes(method)) {
-    url = addQueryParameters(url, remainingParameters);
-  } else {
-    if ("data" in remainingParameters) {
-      body = remainingParameters.data;
-    } else {
-      if (Object.keys(remainingParameters).length) {
-        body = remainingParameters;
-      }
-    }
-  }
-  if (!headers["content-type"] && typeof body !== "undefined") {
-    headers["content-type"] = "application/json; charset=utf-8";
-  }
-  if (["PATCH", "PUT"].includes(method) && typeof body === "undefined") {
-    body = "";
-  }
-  return Object.assign(
-    { method, url, headers },
-    typeof body !== "undefined" ? { body } : null,
-    options.request ? { request: options.request } : null
-  );
-}
-function endpointWithDefaults(defaults2, route, options) {
-  return parse2(merge(defaults2, route, options));
-}
-function withDefaults(oldDefaults, newDefaults) {
-  const DEFAULTS2 = merge(oldDefaults, newDefaults);
-  const endpoint2 = endpointWithDefaults.bind(null, DEFAULTS2);
-  return Object.assign(endpoint2, {
-    DEFAULTS: DEFAULTS2,
-    defaults: withDefaults.bind(null, DEFAULTS2),
-    merge: merge.bind(null, DEFAULTS2),
-    parse: parse2
-  });
-}
-var endpoint = withDefaults(null, DEFAULTS);
-
-// node_modules/deprecation/dist-web/index.js
-var Deprecation = class extends Error {
-  constructor(message) {
-    super(message);
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, this.constructor);
-    }
-    this.name = "Deprecation";
-  }
-};
-
-// node_modules/@octokit/request-error/dist-web/index.js
-var import_once = __toESM(require_once());
-var logOnceCode = (0, import_once.default)((deprecation) => console.warn(deprecation));
-var logOnceHeaders = (0, import_once.default)((deprecation) => console.warn(deprecation));
-var RequestError = class extends Error {
-  constructor(message, statusCode, options) {
-    super(message);
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, this.constructor);
-    }
-    this.name = "HttpError";
-    this.status = statusCode;
-    let headers;
-    if ("headers" in options && typeof options.headers !== "undefined") {
-      headers = options.headers;
-    }
-    if ("response" in options) {
-      this.response = options.response;
-      headers = options.response.headers;
-    }
-    const requestCopy = Object.assign({}, options.request);
-    if (options.request.headers.authorization) {
-      requestCopy.headers = Object.assign({}, options.request.headers, {
-        authorization: options.request.headers.authorization.replace(
-          new RegExp("(?<! ) .*$"),
-          " [REDACTED]"
-        )
-      });
-    }
-    requestCopy.url = requestCopy.url.replace(/\bclient_secret=\w+/g, "client_secret=[REDACTED]").replace(/\baccess_token=\w+/g, "access_token=[REDACTED]");
-    this.request = requestCopy;
-    Object.defineProperty(this, "code", {
-      get() {
-        logOnceCode(
-          new Deprecation(
-            "[@octokit/request-error] `error.code` is deprecated, use `error.status`."
-          )
-        );
-        return statusCode;
-      }
-    });
-    Object.defineProperty(this, "headers", {
-      get() {
-        logOnceHeaders(
-          new Deprecation(
-            "[@octokit/request-error] `error.headers` is deprecated, use `error.response.headers`."
-          )
-        );
-        return headers || {};
-      }
-    });
-  }
-};
-
-// node_modules/@octokit/request/dist-web/index.js
-var VERSION3 = "8.4.1";
-function isPlainObject2(value) {
-  if (typeof value !== "object" || value === null)
-    return false;
-  if (Object.prototype.toString.call(value) !== "[object Object]")
-    return false;
-  const proto = Object.getPrototypeOf(value);
-  if (proto === null)
-    return true;
-  const Ctor = Object.prototype.hasOwnProperty.call(proto, "constructor") && proto.constructor;
-  return typeof Ctor === "function" && Ctor instanceof Ctor && Function.prototype.call(Ctor) === Function.prototype.call(value);
-}
-function getBufferResponse(response) {
-  return response.arrayBuffer();
-}
-function fetchWrapper(requestOptions) {
-  var _a2, _b, _c, _d;
-  const log = requestOptions.request && requestOptions.request.log ? requestOptions.request.log : console;
-  const parseSuccessResponseBody = ((_a2 = requestOptions.request) == null ? void 0 : _a2.parseSuccessResponseBody) !== false;
-  if (isPlainObject2(requestOptions.body) || Array.isArray(requestOptions.body)) {
-    requestOptions.body = JSON.stringify(requestOptions.body);
-  }
-  let headers = {};
-  let status;
-  let url;
-  let { fetch: fetch2 } = globalThis;
-  if ((_b = requestOptions.request) == null ? void 0 : _b.fetch) {
-    fetch2 = requestOptions.request.fetch;
-  }
-  if (!fetch2) {
-    throw new Error(
-      "fetch is not set. Please pass a fetch implementation as new Octokit({ request: { fetch }}). Learn more at https://github.com/octokit/octokit.js/#fetch-missing"
-    );
-  }
-  return fetch2(requestOptions.url, __spreadValues({
-    method: requestOptions.method,
-    body: requestOptions.body,
-    redirect: (_c = requestOptions.request) == null ? void 0 : _c.redirect,
-    headers: requestOptions.headers,
-    signal: (_d = requestOptions.request) == null ? void 0 : _d.signal
-  }, requestOptions.body && { duplex: "half" })).then((response) => __async(null, null, function* () {
-    url = response.url;
-    status = response.status;
-    for (const keyAndValue of response.headers) {
-      headers[keyAndValue[0]] = keyAndValue[1];
-    }
-    if ("deprecation" in headers) {
-      const matches = headers.link && headers.link.match(/<([^<>]+)>; rel="deprecation"/);
-      const deprecationLink = matches && matches.pop();
-      log.warn(
-        `[@octokit/request] "${requestOptions.method} ${requestOptions.url}" is deprecated. It is scheduled to be removed on ${headers.sunset}${deprecationLink ? `. See ${deprecationLink}` : ""}`
-      );
-    }
-    if (status === 204 || status === 205) {
-      return;
-    }
-    if (requestOptions.method === "HEAD") {
-      if (status < 400) {
-        return;
-      }
-      throw new RequestError(response.statusText, status, {
-        response: {
-          url,
-          status,
-          headers,
-          data: void 0
-        },
-        request: requestOptions
-      });
-    }
-    if (status === 304) {
-      throw new RequestError("Not modified", status, {
-        response: {
-          url,
-          status,
-          headers,
-          data: yield getResponseData(response)
-        },
-        request: requestOptions
-      });
-    }
-    if (status >= 400) {
-      const data = yield getResponseData(response);
-      const error = new RequestError(toErrorMessage(data), status, {
-        response: {
-          url,
-          status,
-          headers,
-          data
-        },
-        request: requestOptions
-      });
-      throw error;
-    }
-    return parseSuccessResponseBody ? yield getResponseData(response) : response.body;
-  })).then((data) => {
-    return {
-      status,
-      url,
-      headers,
-      data
-    };
-  }).catch((error) => {
-    if (error instanceof RequestError)
-      throw error;
-    else if (error.name === "AbortError")
-      throw error;
-    let message = error.message;
-    if (error.name === "TypeError" && "cause" in error) {
-      if (error.cause instanceof Error) {
-        message = error.cause.message;
-      } else if (typeof error.cause === "string") {
-        message = error.cause;
-      }
-    }
-    throw new RequestError(message, 500, {
-      request: requestOptions
-    });
-  });
-}
-function getResponseData(response) {
-  return __async(this, null, function* () {
-    const contentType = response.headers.get("content-type");
-    if (/application\/json/.test(contentType)) {
-      return response.json().catch(() => response.text()).catch(() => "");
-    }
-    if (!contentType || /^text\/|charset=utf-8$/.test(contentType)) {
-      return response.text();
-    }
-    return getBufferResponse(response);
-  });
-}
-function toErrorMessage(data) {
-  if (typeof data === "string")
-    return data;
-  let suffix;
-  if ("documentation_url" in data) {
-    suffix = ` - ${data.documentation_url}`;
-  } else {
-    suffix = "";
-  }
-  if ("message" in data) {
-    if (Array.isArray(data.errors)) {
-      return `${data.message}: ${data.errors.map(JSON.stringify).join(", ")}${suffix}`;
-    }
-    return `${data.message}${suffix}`;
-  }
-  return `Unknown error: ${JSON.stringify(data)}`;
-}
-function withDefaults2(oldEndpoint, newDefaults) {
-  const endpoint2 = oldEndpoint.defaults(newDefaults);
-  const newApi = function(route, parameters) {
-    const endpointOptions = endpoint2.merge(route, parameters);
-    if (!endpointOptions.request || !endpointOptions.request.hook) {
-      return fetchWrapper(endpoint2.parse(endpointOptions));
-    }
-    const request2 = (route2, parameters2) => {
-      return fetchWrapper(
-        endpoint2.parse(endpoint2.merge(route2, parameters2))
-      );
-    };
-    Object.assign(request2, {
-      endpoint: endpoint2,
-      defaults: withDefaults2.bind(null, endpoint2)
-    });
-    return endpointOptions.request.hook(request2, endpointOptions);
-  };
-  return Object.assign(newApi, {
-    endpoint: endpoint2,
-    defaults: withDefaults2.bind(null, endpoint2)
-  });
-}
-var request = withDefaults2(endpoint, {
-  headers: {
-    "user-agent": `octokit-request.js/${VERSION3} ${getUserAgent()}`
-  }
-});
-
-// node_modules/@octokit/graphql/dist-web/index.js
-var VERSION4 = "7.0.1";
-function _buildMessageForResponseErrors(data) {
-  return `Request failed due to following response errors:
-` + data.errors.map((e) => ` - ${e.message}`).join("\n");
-}
-var GraphqlResponseError = class extends Error {
-  constructor(request2, headers, response) {
-    super(_buildMessageForResponseErrors(response));
-    this.request = request2;
-    this.headers = headers;
-    this.response = response;
-    this.name = "GraphqlResponseError";
-    this.errors = response.errors;
-    this.data = response.data;
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, this.constructor);
-    }
-  }
-};
-var NON_VARIABLE_OPTIONS = [
-  "method",
-  "baseUrl",
-  "url",
-  "headers",
-  "request",
-  "query",
-  "mediaType"
-];
-var FORBIDDEN_VARIABLE_OPTIONS = ["query", "method", "url"];
-var GHES_V3_SUFFIX_REGEX = /\/api\/v3\/?$/;
-function graphql(request2, query, options) {
-  if (options) {
-    if (typeof query === "string" && "query" in options) {
-      return Promise.reject(
-        new Error(`[@octokit/graphql] "query" cannot be used as variable name`)
-      );
-    }
-    for (const key in options) {
-      if (!FORBIDDEN_VARIABLE_OPTIONS.includes(key))
-        continue;
-      return Promise.reject(
-        new Error(
-          `[@octokit/graphql] "${key}" cannot be used as variable name`
-        )
-      );
-    }
-  }
-  const parsedOptions = typeof query === "string" ? Object.assign({ query }, options) : query;
-  const requestOptions = Object.keys(
-    parsedOptions
-  ).reduce((result, key) => {
-    if (NON_VARIABLE_OPTIONS.includes(key)) {
-      result[key] = parsedOptions[key];
-      return result;
-    }
-    if (!result.variables) {
-      result.variables = {};
-    }
-    result.variables[key] = parsedOptions[key];
-    return result;
-  }, {});
-  const baseUrl = parsedOptions.baseUrl || request2.endpoint.DEFAULTS.baseUrl;
-  if (GHES_V3_SUFFIX_REGEX.test(baseUrl)) {
-    requestOptions.url = baseUrl.replace(GHES_V3_SUFFIX_REGEX, "/api/graphql");
-  }
-  return request2(requestOptions).then((response) => {
-    if (response.data.errors) {
-      const headers = {};
-      for (const key of Object.keys(response.headers)) {
-        headers[key] = response.headers[key];
-      }
-      throw new GraphqlResponseError(
-        requestOptions,
-        headers,
-        response.data
-      );
-    }
-    return response.data.data;
-  });
-}
-function withDefaults3(request2, newDefaults) {
-  const newRequest = request2.defaults(newDefaults);
-  const newApi = (query, options) => {
-    return graphql(newRequest, query, options);
-  };
-  return Object.assign(newApi, {
-    defaults: withDefaults3.bind(null, newRequest),
-    endpoint: newRequest.endpoint
-  });
-}
-var graphql2 = withDefaults3(request, {
-  headers: {
-    "user-agent": `octokit-graphql.js/${VERSION4} ${getUserAgent()}`
-  },
-  method: "POST",
-  url: "/graphql"
-});
-function withCustomRequest(customRequest) {
-  return withDefaults3(customRequest, {
-    method: "POST",
-    url: "/graphql"
-  });
-}
-
-// node_modules/@octokit/auth-token/dist-web/index.js
-var REGEX_IS_INSTALLATION_LEGACY = /^v1\./;
-var REGEX_IS_INSTALLATION = /^ghs_/;
-var REGEX_IS_USER_TO_SERVER = /^ghu_/;
-function auth(token) {
-  return __async(this, null, function* () {
-    const isApp = token.split(/\./).length === 3;
-    const isInstallation = REGEX_IS_INSTALLATION_LEGACY.test(token) || REGEX_IS_INSTALLATION.test(token);
-    const isUserToServer = REGEX_IS_USER_TO_SERVER.test(token);
-    const tokenType = isApp ? "app" : isInstallation ? "installation" : isUserToServer ? "user-to-server" : "oauth";
-    return {
-      type: "token",
-      token,
-      tokenType
-    };
-  });
-}
-function withAuthorizationPrefix(token) {
-  if (token.split(/\./).length === 3) {
-    return `bearer ${token}`;
-  }
-  return `token ${token}`;
-}
-function hook(token, request2, route, parameters) {
-  return __async(this, null, function* () {
-    const endpoint2 = request2.endpoint.merge(
-      route,
-      parameters
-    );
-    endpoint2.headers.authorization = withAuthorizationPrefix(token);
-    return request2(endpoint2);
-  });
-}
-var createTokenAuth = function createTokenAuth2(token) {
-  if (!token) {
-    throw new Error("[@octokit/auth-token] No token passed to createTokenAuth");
-  }
-  if (typeof token !== "string") {
-    throw new Error(
-      "[@octokit/auth-token] Token passed to createTokenAuth is not a string"
-    );
-  }
-  token = token.replace(/^(token|bearer) +/i, "");
-  return Object.assign(auth.bind(null, token), {
-    hook: hook.bind(null, token)
-  });
-};
-
-// node_modules/@octokit/core/dist-web/index.js
-var VERSION5 = "5.0.0";
-var _a;
-var Octokit = (_a = class {
-  static defaults(defaults2) {
-    const OctokitWithDefaults = class extends this {
-      constructor(...args) {
-        const options = args[0] || {};
-        if (typeof defaults2 === "function") {
-          super(defaults2(options));
-          return;
-        }
-        super(
-          Object.assign(
-            {},
-            defaults2,
-            options,
-            options.userAgent && defaults2.userAgent ? {
-              userAgent: `${options.userAgent} ${defaults2.userAgent}`
-            } : null
-          )
-        );
-      }
-    };
-    return OctokitWithDefaults;
-  }
-  /**
-   * Attach a plugin (or many) to your Octokit instance.
-   *
-   * @example
-   * const API = Octokit.plugin(plugin1, plugin2, plugin3, ...)
-   */
-  static plugin(...newPlugins) {
-    var _a2;
-    const currentPlugins = this.plugins;
-    const NewOctokit = (_a2 = class extends this {
-    }, _a2.plugins = currentPlugins.concat(
-      newPlugins.filter((plugin) => !currentPlugins.includes(plugin))
-    ), _a2);
-    return NewOctokit;
-  }
-  constructor(options = {}) {
-    const hook2 = new import_before_after_hook.Collection();
-    const requestDefaults = {
-      baseUrl: request.endpoint.DEFAULTS.baseUrl,
-      headers: {},
-      request: Object.assign({}, options.request, {
-        // @ts-ignore internal usage only, no need to type
-        hook: hook2.bind(null, "request")
-      }),
-      mediaType: {
-        previews: [],
-        format: ""
-      }
-    };
-    requestDefaults.headers["user-agent"] = [
-      options.userAgent,
-      `octokit-core.js/${VERSION5} ${getUserAgent()}`
-    ].filter(Boolean).join(" ");
-    if (options.baseUrl) {
-      requestDefaults.baseUrl = options.baseUrl;
-    }
-    if (options.previews) {
-      requestDefaults.mediaType.previews = options.previews;
-    }
-    if (options.timeZone) {
-      requestDefaults.headers["time-zone"] = options.timeZone;
-    }
-    this.request = request.defaults(requestDefaults);
-    this.graphql = withCustomRequest(this.request).defaults(requestDefaults);
-    this.log = Object.assign(
-      {
-        debug: () => {
-        },
-        info: () => {
-        },
-        warn: console.warn.bind(console),
-        error: console.error.bind(console)
-      },
-      options.log
-    );
-    this.hook = hook2;
-    if (!options.authStrategy) {
-      if (!options.auth) {
-        this.auth = () => __async(this, null, function* () {
-          return {
-            type: "unauthenticated"
-          };
-        });
-      } else {
-        const auth2 = createTokenAuth(options.auth);
-        hook2.wrap("request", auth2.hook);
-        this.auth = auth2;
-      }
-    } else {
-      const _a2 = options, { authStrategy } = _a2, otherOptions = __objRest(_a2, ["authStrategy"]);
-      const auth2 = authStrategy(
-        Object.assign(
-          {
-            request: this.request,
-            log: this.log,
-            // we pass the current octokit instance as well as its constructor options
-            // to allow for authentication strategies that return a new octokit instance
-            // that shares the same internal state as the current one. The original
-            // requirement for this was the "event-octokit" authentication strategy
-            // of https://github.com/probot/octokit-auth-probot.
-            octokit: this,
-            octokitOptions: otherOptions
-          },
-          options.auth
-        )
-      );
-      hook2.wrap("request", auth2.hook);
-      this.auth = auth2;
-    }
-    const classConstructor = this.constructor;
-    classConstructor.plugins.forEach((plugin) => {
-      Object.assign(this, plugin(this, options));
-    });
-  }
-}, _a.VERSION = VERSION5, _a.plugins = [], _a);
-
-// src/repositoryConnection/PublishPlatformConnectionFactory.ts
-var import_js_logger4 = __toESM(require_logger());
-var oktokitLogger = import_js_logger4.default.get("octokit");
-var PublishPlatformConnectionFactory = class {
-  static createBaseGardenConnection() {
-    return {
-      octoKit: new Octokit({ log: oktokitLogger }),
-      userName: "oleeskild",
-      pageName: "digitalgarden"
-    };
-  }
-  static createPublishPlatformConnection(settings) {
-    return __async(this, null, function* () {
-      if (settings.publishPlatform === "SelfHosted" /* SelfHosted */) {
-        return {
-          octoKit: new Octokit({
-            auth: settings.githubToken,
-            log: oktokitLogger
-          }),
-          userName: settings.githubUserName,
-          pageName: settings.githubRepo
-        };
-      } else if (settings.publishPlatform === "ForestryMd" /* ForestryMd */) {
-        const userName = "Forestry";
-        const token = settings.forestrySettings.apiKey;
-        const baseUrl = "https://api.forestry.md/app";
-        const octoKit = new Octokit({
-          baseUrl: `${baseUrl}/Garden`,
-          auth: token,
-          log: oktokitLogger
-        });
-        const pageName = settings.forestrySettings.forestryPageName;
-        return {
-          userName,
-          pageName,
-          octoKit
-        };
-      } else {
-        throw new Error("Publish platform not supported");
-      }
-    });
-  }
-};
-
-// src/publisher/Publisher.ts
+var import_js_logger7 = __toESM(require_logger());
 var IMAGE_PATH_BASE2 = "src/site/img/user/";
 var NOTE_PATH_BASE2 = "src/site/notes/";
 var Publisher = class {
@@ -19749,7 +20390,7 @@ var Publisher = class {
           }
         }
       } catch (e) {
-        import_js_logger5.default.error(
+        import_js_logger7.default.error(
           `Failed to extract images from canvas ${file.path}`,
           e
         );
@@ -19787,7 +20428,7 @@ var Publisher = class {
             }
           }
         } catch (e) {
-          import_js_logger5.default.error(e);
+          import_js_logger7.default.error(e);
         }
       }
       return {
@@ -19830,10 +20471,14 @@ var Publisher = class {
       }
       try {
         const [text2, assets] = file.compiledFile;
+        const remoteImageHashes = yield this.getRemoteImageHashes();
         yield this.uploadText(file.getPath(), text2, file == null ? void 0 : file.remoteHash);
-        yield this.uploadAssets(assets);
+        yield this.uploadAssets(assets, remoteImageHashes);
         return true;
       } catch (error) {
+        if (error instanceof LimitReachedError) {
+          throw error;
+        }
         console.error(error);
         return false;
       }
@@ -19872,12 +20517,37 @@ var Publisher = class {
             this.settings
           )
         );
-        yield userGardenConnection.updateFiles(filesToPublish);
+        const remoteImageHashes = yield this.getRemoteImageHashes();
+        yield userGardenConnection.updateFiles(
+          filesToPublish,
+          remoteImageHashes
+        );
         return true;
       } catch (error) {
+        if (error instanceof LimitReachedError) {
+          throw error;
+        }
         console.error(error);
         return false;
       }
+    });
+  }
+  getRemoteImageHashes() {
+    return __async(this, null, function* () {
+      const userGardenConnection = new RepositoryConnection(
+        yield PublishPlatformConnectionFactory.createPublishPlatformConnection(
+          this.settings
+        )
+      );
+      const contentTree = yield userGardenConnection.getContent("HEAD").catch(() => void 0);
+      if (!contentTree) {
+        return {};
+      }
+      const siteManager = new DigitalGardenSiteManager(
+        this.metadataCache,
+        this.settings
+      );
+      return siteManager.getImageHashes(contentTree);
     });
   }
   uploadToGithub(path, content, remoteFileHash) {
@@ -19891,7 +20561,7 @@ var Publisher = class {
       );
       if (!remoteFileHash) {
         const file = yield userGardenConnection.getFile(path).catch(() => {
-          import_js_logger5.default.info(`File ${path} does not exist, adding`);
+          import_js_logger7.default.info(`File ${path} does not exist, adding`);
         });
         remoteFileHash = file == null ? void 0 : file.sha;
         if (!remoteFileHash) {
@@ -19919,37 +20589,42 @@ var Publisher = class {
       yield this.uploadToGithub(path, content, sha);
     });
   }
-  uploadAssets(assets) {
-    return __async(this, null, function* () {
-      for (let idx = 0; idx < assets.images.length; idx++) {
-        const image = assets.images[idx];
-        yield this.uploadImage(image.path, image.content, image.remoteHash);
+  uploadAssets(_0) {
+    return __async(this, arguments, function* (assets, remoteImageHashes = {}) {
+      for (const image of assets.images) {
+        const hashKey = image.path.replace("/img/user/", "");
+        const remoteHash = remoteImageHashes[hashKey];
+        if (remoteHash && image.localHash && remoteHash === image.localHash) {
+          import_js_logger7.default.debug(`Skipping unchanged image: ${image.path}`);
+          continue;
+        }
+        yield this.uploadImage(image.path, image.content, remoteHash);
       }
     });
   }
   validateSettings() {
     if (this.settings.publishPlatform === "ForestryMd" /* ForestryMd */) {
       if (!this.settings.forestrySettings.apiKey) {
-        new import_obsidian5.Notice(
+        new import_obsidian6.Notice(
           "Config error: You need to define a Forestry.md Garden Key in the plugin settings"
         );
         throw {};
       }
     } else {
       if (!this.settings.githubRepo) {
-        new import_obsidian5.Notice(
+        new import_obsidian6.Notice(
           "Config error: You need to define a GitHub repo in the plugin settings"
         );
         throw {};
       }
       if (!this.settings.githubUserName) {
-        new import_obsidian5.Notice(
+        new import_obsidian6.Notice(
           "Config error: You need to define a GitHub Username in the plugin settings"
         );
         throw {};
       }
       if (!this.settings.githubToken) {
-        new import_obsidian5.Notice(
+        new import_obsidian6.Notice(
           "Config error: You need to define a GitHub Token in the plugin settings"
         );
         throw {};
@@ -19985,7 +20660,7 @@ var PublishStatusBar = class {
 };
 
 // src/views/PublicationCenter/PublicationCenter.ts
-var import_obsidian8 = require("obsidian");
+var import_obsidian9 = require("obsidian");
 
 // node_modules/svelte/src/runtime/internal/utils.js
 function noop() {
@@ -20918,14 +21593,14 @@ function __awaiter(thisArg, _arguments, P, generator) {
 }
 
 // src/views/PublicationCenter/PublicationCenter.svelte
-var import_obsidian7 = require("obsidian");
+var import_obsidian8 = require("obsidian");
 
 // src/ui/Icon.svelte
-var import_obsidian6 = require("obsidian");
+var import_obsidian7 = require("obsidian");
 function create_fragment(ctx) {
   var _a2;
   let html_tag;
-  let raw_value = ((_a2 = (0, import_obsidian6.getIcon)(
+  let raw_value = ((_a2 = (0, import_obsidian7.getIcon)(
     /*name*/
     ctx[0]
   )) == null ? void 0 : _a2.outerHTML) + "";
@@ -20943,7 +21618,7 @@ function create_fragment(ctx) {
     p(ctx2, [dirty]) {
       var _a3;
       if (dirty & /*name*/
-      1 && raw_value !== (raw_value = ((_a3 = (0, import_obsidian6.getIcon)(
+      1 && raw_value !== (raw_value = ((_a3 = (0, import_obsidian7.getIcon)(
         /*name*/
         ctx2[0]
       )) == null ? void 0 : _a3.outerHTML) + "")) html_tag.p(raw_value);
@@ -23374,13 +24049,13 @@ function instance4($$self, $$props, $$invalidate) {
   }
   onMount(getPublishStatus);
   const rotatingCog = () => {
-    let cog = (0, import_obsidian7.getIcon)("cog");
+    let cog = (0, import_obsidian8.getIcon)("cog");
     cog === null || cog === void 0 ? void 0 : cog.classList.add("dg-rotate");
     cog === null || cog === void 0 ? void 0 : cog.style.setProperty("margin-right", "3px");
     return cog;
   };
   const bigRotatingCog = () => {
-    let cog = (0, import_obsidian7.getIcon)("cog");
+    let cog = (0, import_obsidian8.getIcon)("cog");
     cog === null || cog === void 0 ? void 0 : cog.classList.add("dg-rotate");
     cog === null || cog === void 0 ? void 0 : cog.style.setProperty("margin-right", "3px");
     cog === null || cog === void 0 ? void 0 : cog.style.setProperty("width", "40px");
@@ -24140,13 +24815,13 @@ var PublicationCenter2 = class {
           metadataCache: this.publisher.metadataCache,
           settings: this.settings
         });
-        if (localFile instanceof import_obsidian8.TFile) {
+        if (localFile instanceof import_obsidian9.TFile) {
           const [localContent, _] = yield this.publisher.compiler.generateMarkdown(
             localPublishFile
           );
           const diff2 = diffLines(remoteContent, localContent);
           let diffView;
-          const diffModal = new import_obsidian8.Modal(this.modal.app);
+          const diffModal = new import_obsidian9.Modal(this.modal.app);
           diffModal.titleEl.createEl("span", { text: `${localFile.basename}` }).prepend(this.getIcon("file-diff"));
           diffModal.onOpen = () => {
             diffView = new DiffView_default({
@@ -24185,7 +24860,7 @@ var PublicationCenter2 = class {
       };
       this.modal.open();
     };
-    this.modal = new import_obsidian8.Modal(app);
+    this.modal = new import_obsidian9.Modal(app);
     this.settings = settings;
     this.publishStatusManager = publishStatusManager;
     this.publisher = publisher;
@@ -24227,7 +24902,7 @@ var PublicationCenter2 = class {
   }
   getIcon(name) {
     var _a2;
-    const icon = (_a2 = (0, import_obsidian8.getIcon)(name)) != null ? _a2 : document.createElement("span");
+    const icon = (_a2 = (0, import_obsidian9.getIcon)(name)) != null ? _a2 : document.createElement("span");
     if (icon instanceof SVGSVGElement) {
       icon.style.marginRight = "4px";
     }
@@ -24307,412 +24982,6 @@ var PublishStatusManager = class {
         deletedNotePaths,
         deletedImagePaths
       };
-    });
-  }
-};
-
-// src/repositoryConnection/DigitalGardenSiteManager.ts
-var import_obsidian9 = require("obsidian");
-var import_js_logger7 = __toESM(require_logger());
-
-// src/repositoryConnection/TemplateManager.ts
-var import_js_logger6 = __toESM(require_logger());
-var logger2 = import_js_logger6.default.get("digital-garden-site-manager");
-var TemplateUpdateChecker = class {
-  constructor({
-    baseGardenConnection,
-    userGardenConnection
-  }) {
-    this.baseGardenConnection = baseGardenConnection;
-    this.userGardenConnection = userGardenConnection;
-  }
-  getFileInfoFromContent(content, path) {
-    const file = content == null ? void 0 : content.tree.find((x) => x.path === path);
-    if (!file) {
-      return null;
-    }
-    return file;
-  }
-  getFilesToDelete(pluginInfo, userFileList) {
-    const filesToDelete = [];
-    for (const file of pluginInfo.filesToDelete) {
-      const currentFile = this.getFileInfoFromContent(userFileList, file);
-      if (currentFile) {
-        filesToDelete.push({ path: file, sha: currentFile.sha });
-      }
-    }
-    return filesToDelete;
-  }
-  getPathsToModify(pluginInfo, baseGardenFileList, userFileList) {
-    const filesToUpdate = [];
-    for (const file of pluginInfo.filesToModify) {
-      const currentFile = this.getFileInfoFromContent(userFileList, file);
-      const baseFile = this.getFileInfoFromContent(
-        baseGardenFileList,
-        file
-      );
-      if (!currentFile || (currentFile == null ? void 0 : currentFile.sha) !== (baseFile == null ? void 0 : baseFile.sha)) {
-        filesToUpdate.push({ path: file, sha: currentFile == null ? void 0 : currentFile.sha });
-      }
-    }
-    return filesToUpdate;
-  }
-  getFilesToAdd(pluginInfo, userFileList) {
-    const filesToAdd = [];
-    for (const file of pluginInfo.filesToAdd) {
-      const currentFile = this.getFileInfoFromContent(userFileList, file);
-      if (!currentFile) {
-        filesToAdd.push({ path: file });
-      }
-    }
-    return filesToAdd;
-  }
-  getTemplateVersion() {
-    return __async(this, null, function* () {
-      const latestRelease = yield this.baseGardenConnection.getLatestRelease();
-      if (!latestRelease) {
-        throw new Error(
-          "Unable to get latest release from oleeskid repository"
-        );
-      }
-      return latestRelease.tag_name;
-    });
-  }
-  checkForUpdates() {
-    return __async(this, null, function* () {
-      const [updateInfo, templateVersion] = yield Promise.all([
-        this.getFilesToUpdate(),
-        this.getTemplateVersion()
-      ]);
-      if (!templateVersion) {
-        throw new Error("Unable to get update info");
-      }
-      if (!updateInfo) {
-        this.newestTemplateVersion = templateVersion;
-        return this;
-      }
-      this.newestTemplateVersion = templateVersion;
-      return new TemplateUpdater({
-        baseGardenConnection: this.baseGardenConnection,
-        userGardenConnection: this.userGardenConnection,
-        filesToChange: updateInfo,
-        defaultBranch: this.defaultBranch,
-        newestTemplateVersion: templateVersion
-      });
-    });
-  }
-  getFilesToUpdate() {
-    return __async(this, null, function* () {
-      const { baseGardenFileList, pluginInfo } = yield this.getPluginInfo(
-        this.baseGardenConnection
-      );
-      if (!baseGardenFileList) {
-        throw new Error("Unable to get base garden file list");
-      }
-      const repoInfo = yield this.baseGardenConnection.getRepositoryInfo();
-      const defaultBranch = repoInfo == null ? void 0 : repoInfo.default_branch;
-      if (!defaultBranch) {
-        throw new Error("Unable to get default branch");
-      }
-      this.defaultBranch = defaultBranch;
-      const userFileList = yield this.userGardenConnection.getContent(defaultBranch);
-      if (!userFileList) {
-        throw new Error("Unable to get user file list");
-      }
-      const filesToDelete = this.getFilesToDelete(pluginInfo, userFileList);
-      const filesToUpdate = this.getPathsToModify(
-        pluginInfo,
-        baseGardenFileList,
-        userFileList
-      );
-      const filesToAdd = this.getFilesToAdd(pluginInfo, userFileList);
-      if (filesToDelete.length === 0 && filesToUpdate.length === 0 && filesToAdd.length === 0) {
-        return null;
-      }
-      return {
-        filesToDelete,
-        filesToUpdate,
-        filesToAdd
-      };
-    });
-  }
-  getPluginInfo(baseGardenConnection) {
-    return __async(this, null, function* () {
-      logger2.info("Getting plugin info");
-      const pluginInfoResponse = yield baseGardenConnection.getFile("plugin-info.json");
-      const baseGardenFileList = yield baseGardenConnection.getContent("main");
-      if (!pluginInfoResponse) {
-        throw new Error("Unable to get plugin info");
-      }
-      return {
-        pluginInfo: JSON.parse(gBase64.decode(pluginInfoResponse.content)),
-        baseGardenFileList
-      };
-    });
-  }
-};
-var TemplateUpdater = class {
-  constructor({
-    baseGardenConnection,
-    userGardenConnection,
-    filesToChange,
-    defaultBranch,
-    newestTemplateVersion
-  }) {
-    this.filesToChange = filesToChange;
-    this.defaultBranch = defaultBranch;
-    this.baseGardenConnection = baseGardenConnection;
-    this.userGardenConnection = userGardenConnection;
-    this.newestTemplateVersion = newestTemplateVersion;
-  }
-  updateTemplate() {
-    return __async(this, null, function* () {
-      var _a2;
-      const { filesToDelete, filesToUpdate, filesToAdd } = this.filesToChange;
-      const { branchName } = yield this.createNewBranch();
-      logger2.info("Deleting files");
-      yield this.deleteFiles(filesToDelete, branchName);
-      logger2.info("Updating files");
-      yield this.addOrUpdateFiles(
-        [...filesToUpdate, ...filesToAdd],
-        branchName
-      );
-      logger2.info("Adding files");
-      yield this.addOrUpdateFiles(filesToAdd, branchName);
-      try {
-        const pr = yield this.userGardenConnection.octokit.request(
-          "POST /repos/{owner}/{repo}/pulls",
-          __spreadProps(__spreadValues({}, this.userGardenConnection.getBasePayload()), {
-            title: `Update template to version ${this.newestTemplateVersion}`,
-            head: branchName,
-            base: this.defaultBranch,
-            body: `Update to latest template version.
- [Release Notes](https://github.com/oleeskild/digitalgarden/releases/tag/${this.newestTemplateVersion})`
-          })
-        );
-        return (_a2 = pr == null ? void 0 : pr.data) == null ? void 0 : _a2.html_url;
-      } catch (e) {
-        return "";
-      }
-    });
-  }
-  createNewBranch() {
-    return __async(this, null, function* () {
-      const uuid = crypto.randomUUID();
-      const branchName = "update-template-to-v" + this.newestTemplateVersion + "-" + uuid;
-      const latestCommit = yield this.userGardenConnection.getLatestCommit();
-      if (!latestCommit) {
-        throw new Error("Unable to get latest commit");
-      }
-      yield this.userGardenConnection.createBranch(
-        branchName,
-        latestCommit.sha
-      );
-      return { branchName };
-    });
-  }
-  deleteFiles(filesToDelete, branch) {
-    return __async(this, null, function* () {
-      for (const file of filesToDelete) {
-        yield this.userGardenConnection.deleteFile(file.path, {
-          branch,
-          sha: file.sha
-        });
-      }
-    });
-  }
-  addOrUpdateFiles(filesToAdd, branch) {
-    return __async(this, null, function* () {
-      for (const file of filesToAdd) {
-        const baseTemplateFile = yield this.baseGardenConnection.getFile(
-          file.path
-        );
-        if (!baseTemplateFile) {
-          throw new Error(`Unable to get file ${file}`);
-        }
-        yield this.userGardenConnection.updateFile({
-          content: baseTemplateFile.content,
-          path: file.path,
-          branch,
-          sha: file.sha,
-          message: "Update files"
-        });
-      }
-    });
-  }
-};
-var hasUpdates = (updater) => updater.filesToChange !== void 0;
-
-// src/repositoryConnection/DigitalGardenSiteManager.ts
-var logger3 = import_js_logger7.default.get("digital-garden-site-manager");
-var DigitalGardenSiteManager = class {
-  constructor(metadataCache, settings) {
-    this.settings = settings;
-    this.metadataCache = metadataCache;
-    this.rewriteRules = getRewriteRules(settings.pathRewriteRules);
-    this.baseGardenConnection = new RepositoryConnection(
-      PublishPlatformConnectionFactory.createBaseGardenConnection()
-    );
-    this.userGardenConnection = null;
-    this.templateUpdater = null;
-  }
-  getTemplateUpdater() {
-    return __async(this, null, function* () {
-      if (!this.templateUpdater) {
-        this.templateUpdater = new TemplateUpdateChecker({
-          baseGardenConnection: this.baseGardenConnection,
-          userGardenConnection: yield this.getUserGardenConnection()
-        });
-      }
-      return this.templateUpdater;
-    });
-  }
-  getUserGardenConnection() {
-    return __async(this, null, function* () {
-      if (!this.userGardenConnection) {
-        this.userGardenConnection = new RepositoryConnection(
-          yield PublishPlatformConnectionFactory.createPublishPlatformConnection(
-            this.settings
-          )
-        );
-      }
-      return this.userGardenConnection;
-    });
-  }
-  updateEnv() {
-    return __async(this, null, function* () {
-      var _a2, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
-      const theme = JSON.parse(this.settings.theme);
-      const baseTheme = this.settings.baseTheme;
-      const siteName = this.settings.siteName;
-      const mainLanguage = this.settings.mainLanguage;
-      let gardenBaseUrl = "";
-      if (this.settings.gardenBaseUrl && !this.settings.gardenBaseUrl.startsWith("ghp_") && !this.settings.gardenBaseUrl.startsWith("github_pat") && this.settings.gardenBaseUrl.contains(".")) {
-        gardenBaseUrl = this.settings.gardenBaseUrl;
-      }
-      const envValues = __spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues({
-        SITE_NAME_HEADER: siteName,
-        SITE_MAIN_LANGUAGE: mainLanguage,
-        SITE_BASE_URL: gardenBaseUrl,
-        SHOW_CREATED_TIMESTAMP: this.settings.showCreatedTimestamp,
-        TIMESTAMP_FORMAT: this.settings.timestampFormat,
-        SHOW_UPDATED_TIMESTAMP: this.settings.showUpdatedTimestamp,
-        NOTE_ICON_DEFAULT: this.settings.defaultNoteIcon,
-        NOTE_ICON_TITLE: this.settings.showNoteIconOnTitle,
-        NOTE_ICON_FILETREE: this.settings.showNoteIconInFileTree,
-        NOTE_ICON_INTERNAL_LINKS: this.settings.showNoteIconOnInternalLink,
-        NOTE_ICON_BACK_LINKS: this.settings.showNoteIconOnBackLink,
-        STYLE_SETTINGS_CSS: this.settings.styleSettingsCss,
-        STYLE_SETTINGS_BODY_CLASSES: this.settings.styleSettingsBodyClasses,
-        USE_FULL_RESOLUTION_IMAGES: this.settings.useFullResolutionImages
-      }, ((_a2 = this.settings.uiStrings) == null ? void 0 : _a2.backlinkHeader) && {
-        UI_BACKLINK_HEADER: this.settings.uiStrings.backlinkHeader
-      }), ((_b = this.settings.uiStrings) == null ? void 0 : _b.noBacklinksMessage) && {
-        UI_NO_BACKLINKS_MESSAGE: this.settings.uiStrings.noBacklinksMessage
-      }), ((_c = this.settings.uiStrings) == null ? void 0 : _c.searchButtonText) && {
-        UI_SEARCH_BUTTON_TEXT: this.settings.uiStrings.searchButtonText
-      }), ((_d = this.settings.uiStrings) == null ? void 0 : _d.searchPlaceholder) && {
-        UI_SEARCH_PLACEHOLDER: this.settings.uiStrings.searchPlaceholder
-      }), ((_e = this.settings.uiStrings) == null ? void 0 : _e.searchEnterHint) && {
-        UI_SEARCH_ENTER_HINT: this.settings.uiStrings.searchEnterHint
-      }), ((_f = this.settings.uiStrings) == null ? void 0 : _f.searchNavigateHint) && {
-        UI_SEARCH_NAVIGATE_HINT: this.settings.uiStrings.searchNavigateHint
-      }), ((_g = this.settings.uiStrings) == null ? void 0 : _g.searchCloseHint) && {
-        UI_SEARCH_CLOSE_HINT: this.settings.uiStrings.searchCloseHint
-      }), ((_h = this.settings.uiStrings) == null ? void 0 : _h.searchNoResults) && {
-        UI_SEARCH_NO_RESULTS: this.settings.uiStrings.searchNoResults
-      }), ((_i = this.settings.uiStrings) == null ? void 0 : _i.canvasDragHint) && {
-        UI_CANVAS_DRAG_HINT: this.settings.uiStrings.canvasDragHint
-      }), ((_j = this.settings.uiStrings) == null ? void 0 : _j.canvasZoomHint) && {
-        UI_CANVAS_ZOOM_HINT: this.settings.uiStrings.canvasZoomHint
-      }), ((_k = this.settings.uiStrings) == null ? void 0 : _k.canvasResetHint) && {
-        UI_CANVAS_RESET_HINT: this.settings.uiStrings.canvasResetHint
-      });
-      if (theme.name !== "default") {
-        envValues["THEME"] = theme.cssUrl;
-        envValues["BASE_THEME"] = baseTheme;
-      }
-      const keysToSet = __spreadValues(__spreadValues({}, envValues), this.settings.defaultNoteSettings);
-      const envSettings = Object.entries(keysToSet).map(([key, value]) => `${key}=${value}`).join("\n");
-      const base64Settings = gBase64.encode(envSettings);
-      const currentFile = yield (yield this.getUserGardenConnection()).getFile(".env");
-      const decodedCurrentFile = gBase64.decode((_l = currentFile == null ? void 0 : currentFile.content) != null ? _l : "");
-      if (decodedCurrentFile === envSettings) {
-        logger3.info("No changes to .env file");
-        new import_obsidian9.Notice("Settings already up to date!");
-        return;
-      }
-      yield (yield this.getUserGardenConnection()).updateFile({
-        path: ".env",
-        content: base64Settings,
-        message: "Update settings",
-        sha: currentFile == null ? void 0 : currentFile.sha
-      });
-    });
-  }
-  getNoteUrl(file) {
-    var _a2;
-    const savedBaseUrl = this.settings.publishPlatform === "SelfHosted" /* SelfHosted */ ? this.settings.gardenBaseUrl : this.settings.forestrySettings.baseUrl;
-    if (!savedBaseUrl) {
-      new import_obsidian9.Notice("Please set the garden base url in the settings");
-      throw new Error("Garden base url not set");
-    }
-    const baseUrl = `https://${extractBaseUrl(savedBaseUrl)}`;
-    const noteUrlPath = generateUrlPath(
-      getGardenPathForNote(file.path, this.rewriteRules),
-      this.settings.slugifyEnabled
-    );
-    let urlPath = `/${noteUrlPath}`;
-    const frontMatter = (_a2 = this.metadataCache.getCache(file.path)) == null ? void 0 : _a2.frontmatter;
-    if (frontMatter && frontMatter["dg-home"] === true) {
-      urlPath = "/";
-    } else if (frontMatter == null ? void 0 : frontMatter.permalink) {
-      urlPath = `/${frontMatter.permalink}`;
-    } else if (frontMatter == null ? void 0 : frontMatter["dg-permalink"]) {
-      urlPath = `/${frontMatter["dg-permalink"]}`;
-    }
-    return `${baseUrl}${urlPath}`;
-  }
-  getNoteContent(path) {
-    return __async(this, null, function* () {
-      if (path.startsWith("/")) {
-        path = path.substring(1);
-      }
-      const response = yield (yield this.getUserGardenConnection()).getFile(NOTE_PATH_BASE2 + path);
-      if (!response) {
-        return "";
-      }
-      const content = gBase64.decode(response.content);
-      return content;
-    });
-  }
-  getNoteHashes(contentTree) {
-    return __async(this, null, function* () {
-      const files = contentTree.tree;
-      const notes = files.filter(
-        (x) => typeof x.path === "string" && x.path.startsWith(NOTE_PATH_BASE2) && x.type === "blob" && x.path !== `${NOTE_PATH_BASE2}notes.json`
-      );
-      const hashes = {};
-      for (const note of notes) {
-        const vaultPath = note.path.replace(NOTE_PATH_BASE2, "");
-        hashes[vaultPath] = note.sha;
-      }
-      return hashes;
-    });
-  }
-  getImageHashes(contentTree) {
-    return __async(this, null, function* () {
-      var _a2;
-      const files = (_a2 = contentTree.tree) != null ? _a2 : [];
-      const images = files.filter(
-        (x) => typeof x.path === "string" && x.path.startsWith(IMAGE_PATH_BASE2) && x.type === "blob"
-      );
-      const hashes = {};
-      for (const img of images) {
-        const vaultPath = img.path.replace(IMAGE_PATH_BASE2, "");
-        hashes[vaultPath] = img.sha;
-      }
-      return hashes;
     });
   }
 };
@@ -29859,6 +30128,22 @@ var ForestryApi = class {
       }
     });
   }
+  getUserLimits() {
+    return __async(this, null, function* () {
+      try {
+        const response = yield this.client.get(
+          "user/limits"
+        );
+        if (response.status !== 200) {
+          return null;
+        }
+        return response.data;
+      } catch (e) {
+        import_js_logger8.default.error(e);
+        return null;
+      }
+    });
+  }
 };
 
 // src/views/SettingsView/ForestrySettings.svelte
@@ -29875,11 +30160,11 @@ function create_else_block5(ctx) {
     pending: create_pending_block,
     then: create_then_block,
     catch: create_catch_block,
-    value: 9,
+    value: 12,
     blocks: [, , ,]
   };
   handle_promise(promise = /*getPageInfo*/
-  ctx[5](), info);
+  ctx[7](), info);
   return {
     c() {
       await_block_anchor = empty();
@@ -29967,13 +30252,13 @@ function create_if_block6(ctx) {
             input,
             "input",
             /*input_input_handler*/
-            ctx[8]
+            ctx[10]
           ),
           listen(
             button,
             "click",
             /*connect*/
-            ctx[3]
+            ctx[5]
           )
         ];
         mounted = true;
@@ -30033,7 +30318,7 @@ function create_catch_block(ctx) {
           button,
           "click",
           /*disconnect*/
-          ctx[4]
+          ctx[6]
         );
         mounted = true;
       }
@@ -30060,7 +30345,7 @@ function create_then_block(ctx) {
   function select_block_type_1(ctx2, dirty) {
     if (
       /*pageInfo*/
-      ctx2[9]
+      ctx2[12]
     ) return 0;
     return 1;
   }
@@ -30129,7 +30414,7 @@ function create_else_block_12(ctx) {
           button,
           "click",
           /*disconnect*/
-          ctx[4]
+          ctx[6]
         );
         mounted = true;
       }
@@ -30155,7 +30440,7 @@ function create_if_block_15(ctx) {
   let t0;
   let t1_value = (
     /*pageInfo*/
-    ((_a2 = ctx[9].value.pageName) != null ? _a2 : "Unknown") + ""
+    ((_a2 = ctx[12].value.pageName) != null ? _a2 : "Unknown") + ""
   );
   let t1;
   let t2;
@@ -30168,11 +30453,25 @@ function create_if_block_15(ctx) {
   let a;
   let icon1;
   let t7;
+  let t8;
+  let if_block_anchor;
   let current;
   let mounted;
   let dispose;
   icon0 = new Icon_default({ props: { name: "check-circle" } });
   icon1 = new Icon_default({ props: { name: "external-link" } });
+  function select_block_type_2(ctx2, dirty) {
+    if (
+      /*limitsLoading*/
+      ctx2[4]
+    ) return create_if_block_25;
+    if (
+      /*limits*/
+      ctx2[3]
+    ) return create_if_block_33;
+  }
+  let current_block_type = select_block_type_2(ctx, -1);
+  let if_block = current_block_type && current_block_type(ctx);
   return {
     c() {
       div4 = element("div");
@@ -30193,6 +30492,9 @@ function create_if_block_15(ctx) {
       a = element("a");
       create_component(icon1.$$.fragment);
       t7 = text(" Open Forestry.md Dashboard");
+      t8 = space();
+      if (if_block) if_block.c();
+      if_block_anchor = empty();
       attr(div0, "class", "setting-item-name");
       set_style(div0, "display", "flex");
       set_style(div0, "align-items", "center");
@@ -30226,18 +30528,32 @@ function create_if_block_15(ctx) {
       append(div5, a);
       mount_component(icon1, a, null);
       append(a, t7);
+      insert(target, t8, anchor);
+      if (if_block) if_block.m(target, anchor);
+      insert(target, if_block_anchor, anchor);
       current = true;
       if (!mounted) {
         dispose = listen(
           button,
           "click",
           /*disconnect*/
-          ctx[4]
+          ctx[6]
         );
         mounted = true;
       }
     },
-    p: noop,
+    p(ctx2, dirty) {
+      if (current_block_type === (current_block_type = select_block_type_2(ctx2, dirty)) && if_block) {
+        if_block.p(ctx2, dirty);
+      } else {
+        if (if_block) if_block.d(1);
+        if_block = current_block_type && current_block_type(ctx2);
+        if (if_block) {
+          if_block.c();
+          if_block.m(if_block_anchor.parentNode, if_block_anchor);
+        }
+      }
+    },
     i(local) {
       if (current) return;
       transition_in(icon0.$$.fragment, local);
@@ -30254,11 +30570,359 @@ function create_if_block_15(ctx) {
         detach(div4);
         detach(t6);
         detach(div5);
+        detach(t8);
+        detach(if_block_anchor);
       }
       destroy_component(icon0);
       destroy_component(icon1);
+      if (if_block) {
+        if_block.d(detaching);
+      }
       mounted = false;
       dispose();
+    }
+  };
+}
+function create_if_block_33(ctx) {
+  let div5;
+  let div0;
+  let t0;
+  let t1_value = (
+    /*limits*/
+    ctx[3].plan + ""
+  );
+  let t1;
+  let t2;
+  let t3;
+  let div4;
+  let div1;
+  let span0;
+  let t5;
+  let span1;
+  let t6_value = (
+    /*limits*/
+    ctx[3].builds.monthlyLimit - /*limits*/
+    ctx[3].builds.monthlyRemaining + ""
+  );
+  let t6;
+  let t7;
+  let t8_value = (
+    /*limits*/
+    ctx[3].builds.monthlyLimit + ""
+  );
+  let t8;
+  let t9;
+  let t10;
+  let div2;
+  let span2;
+  let t12;
+  let span3;
+  let t13_value = (
+    /*limits*/
+    ctx[3].storage.usedFormatted + ""
+  );
+  let t13;
+  let t14;
+  let t15_value = (
+    /*limits*/
+    ctx[3].storage.limitFormatted + ""
+  );
+  let t15;
+  let t16;
+  let div3;
+  let span4;
+  let t18;
+  let span5;
+  let t19_value = (
+    /*limits*/
+    ctx[3].sites.current + ""
+  );
+  let t19;
+  let t20;
+  let t21_value = (
+    /*limits*/
+    ctx[3].sites.limit + ""
+  );
+  let t21;
+  let t22;
+  let if_block0 = (
+    /*limits*/
+    ctx[3].builds.starterCreditsRemaining > 0 && create_if_block_53(ctx)
+  );
+  let if_block1 = (
+    /*limits*/
+    (ctx[3].builds.monthlyRemaining === 0 || /*limits*/
+    ctx[3].storage.usedBytes >= /*limits*/
+    ctx[3].storage.limitBytes) && create_if_block_43(ctx)
+  );
+  return {
+    c() {
+      div5 = element("div");
+      div0 = element("div");
+      t0 = text("Usage \u2014 ");
+      t1 = text(t1_value);
+      t2 = text(" plan");
+      t3 = space();
+      div4 = element("div");
+      div1 = element("div");
+      span0 = element("span");
+      span0.textContent = "Builds this month";
+      t5 = space();
+      span1 = element("span");
+      t6 = text(t6_value);
+      t7 = text(" / ");
+      t8 = text(t8_value);
+      t9 = space();
+      if (if_block0) if_block0.c();
+      t10 = space();
+      div2 = element("div");
+      span2 = element("span");
+      span2.textContent = "Storage";
+      t12 = space();
+      span3 = element("span");
+      t13 = text(t13_value);
+      t14 = text(" / ");
+      t15 = text(t15_value);
+      t16 = space();
+      div3 = element("div");
+      span4 = element("span");
+      span4.textContent = "Sites";
+      t18 = space();
+      span5 = element("span");
+      t19 = text(t19_value);
+      t20 = text(" / ");
+      t21 = text(t21_value);
+      t22 = space();
+      if (if_block1) if_block1.c();
+      set_style(div0, "font-weight", "600");
+      set_style(div0, "margin-bottom", "8px");
+      set_style(
+        span1,
+        "color",
+        /*limits*/
+        ctx[3].builds.monthlyRemaining === 0 ? "var(--text-error)" : "var(--text-normal)"
+      );
+      set_style(div1, "display", "flex");
+      set_style(div1, "justify-content", "space-between");
+      set_style(
+        span3,
+        "color",
+        /*limits*/
+        ctx[3].storage.usedBytes >= /*limits*/
+        ctx[3].storage.limitBytes ? "var(--text-error)" : "var(--text-normal)"
+      );
+      set_style(div2, "display", "flex");
+      set_style(div2, "justify-content", "space-between");
+      set_style(div3, "display", "flex");
+      set_style(div3, "justify-content", "space-between");
+      set_style(div4, "display", "flex");
+      set_style(div4, "flex-direction", "column");
+      set_style(div4, "gap", "6px");
+      set_style(div4, "font-size", "0.9em");
+      set_style(div4, "color", "var(--text-muted)");
+      set_style(div5, "margin-top", "16px");
+      set_style(div5, "padding", "12px");
+      set_style(div5, "background", "var(--background-secondary)");
+      set_style(div5, "border-radius", "8px");
+    },
+    m(target, anchor) {
+      insert(target, div5, anchor);
+      append(div5, div0);
+      append(div0, t0);
+      append(div0, t1);
+      append(div0, t2);
+      append(div5, t3);
+      append(div5, div4);
+      append(div4, div1);
+      append(div1, span0);
+      append(div1, t5);
+      append(div1, span1);
+      append(span1, t6);
+      append(span1, t7);
+      append(span1, t8);
+      append(div4, t9);
+      if (if_block0) if_block0.m(div4, null);
+      append(div4, t10);
+      append(div4, div2);
+      append(div2, span2);
+      append(div2, t12);
+      append(div2, span3);
+      append(span3, t13);
+      append(span3, t14);
+      append(span3, t15);
+      append(div4, t16);
+      append(div4, div3);
+      append(div3, span4);
+      append(div3, t18);
+      append(div3, span5);
+      append(span5, t19);
+      append(span5, t20);
+      append(span5, t21);
+      append(div5, t22);
+      if (if_block1) if_block1.m(div5, null);
+    },
+    p(ctx2, dirty) {
+      if (dirty & /*limits*/
+      8 && t1_value !== (t1_value = /*limits*/
+      ctx2[3].plan + "")) set_data(t1, t1_value);
+      if (dirty & /*limits*/
+      8 && t6_value !== (t6_value = /*limits*/
+      ctx2[3].builds.monthlyLimit - /*limits*/
+      ctx2[3].builds.monthlyRemaining + "")) set_data(t6, t6_value);
+      if (dirty & /*limits*/
+      8 && t8_value !== (t8_value = /*limits*/
+      ctx2[3].builds.monthlyLimit + "")) set_data(t8, t8_value);
+      if (dirty & /*limits*/
+      8) {
+        set_style(
+          span1,
+          "color",
+          /*limits*/
+          ctx2[3].builds.monthlyRemaining === 0 ? "var(--text-error)" : "var(--text-normal)"
+        );
+      }
+      if (
+        /*limits*/
+        ctx2[3].builds.starterCreditsRemaining > 0
+      ) {
+        if (if_block0) {
+          if_block0.p(ctx2, dirty);
+        } else {
+          if_block0 = create_if_block_53(ctx2);
+          if_block0.c();
+          if_block0.m(div4, t10);
+        }
+      } else if (if_block0) {
+        if_block0.d(1);
+        if_block0 = null;
+      }
+      if (dirty & /*limits*/
+      8 && t13_value !== (t13_value = /*limits*/
+      ctx2[3].storage.usedFormatted + "")) set_data(t13, t13_value);
+      if (dirty & /*limits*/
+      8 && t15_value !== (t15_value = /*limits*/
+      ctx2[3].storage.limitFormatted + "")) set_data(t15, t15_value);
+      if (dirty & /*limits*/
+      8) {
+        set_style(
+          span3,
+          "color",
+          /*limits*/
+          ctx2[3].storage.usedBytes >= /*limits*/
+          ctx2[3].storage.limitBytes ? "var(--text-error)" : "var(--text-normal)"
+        );
+      }
+      if (dirty & /*limits*/
+      8 && t19_value !== (t19_value = /*limits*/
+      ctx2[3].sites.current + "")) set_data(t19, t19_value);
+      if (dirty & /*limits*/
+      8 && t21_value !== (t21_value = /*limits*/
+      ctx2[3].sites.limit + "")) set_data(t21, t21_value);
+      if (
+        /*limits*/
+        ctx2[3].builds.monthlyRemaining === 0 || /*limits*/
+        ctx2[3].storage.usedBytes >= /*limits*/
+        ctx2[3].storage.limitBytes
+      ) {
+        if (if_block1) {
+        } else {
+          if_block1 = create_if_block_43(ctx2);
+          if_block1.c();
+          if_block1.m(div5, null);
+        }
+      } else if (if_block1) {
+        if_block1.d(1);
+        if_block1 = null;
+      }
+    },
+    d(detaching) {
+      if (detaching) {
+        detach(div5);
+      }
+      if (if_block0) if_block0.d();
+      if (if_block1) if_block1.d();
+    }
+  };
+}
+function create_if_block_25(ctx) {
+  let div2;
+  return {
+    c() {
+      div2 = element("div");
+      div2.innerHTML = `<div class="setting-item-info"><div class="setting-item-name">Loading usage info...</div></div>`;
+      attr(div2, "class", "setting-item");
+      set_style(div2, "margin-top", "12px");
+    },
+    m(target, anchor) {
+      insert(target, div2, anchor);
+    },
+    p: noop,
+    d(detaching) {
+      if (detaching) {
+        detach(div2);
+      }
+    }
+  };
+}
+function create_if_block_53(ctx) {
+  let div;
+  let span0;
+  let t1;
+  let span1;
+  let t2_value = (
+    /*limits*/
+    ctx[3].builds.starterCreditsRemaining + ""
+  );
+  let t2;
+  return {
+    c() {
+      div = element("div");
+      span0 = element("span");
+      span0.textContent = "Starter credits remaining";
+      t1 = space();
+      span1 = element("span");
+      t2 = text(t2_value);
+      set_style(div, "display", "flex");
+      set_style(div, "justify-content", "space-between");
+    },
+    m(target, anchor) {
+      insert(target, div, anchor);
+      append(div, span0);
+      append(div, t1);
+      append(div, span1);
+      append(span1, t2);
+    },
+    p(ctx2, dirty) {
+      if (dirty & /*limits*/
+      8 && t2_value !== (t2_value = /*limits*/
+      ctx2[3].builds.starterCreditsRemaining + "")) set_data(t2, t2_value);
+    },
+    d(detaching) {
+      if (detaching) {
+        detach(div);
+      }
+    }
+  };
+}
+function create_if_block_43(ctx) {
+  let div;
+  return {
+    c() {
+      div = element("div");
+      div.innerHTML = `You&#39;ve reached your usage limit. <a href="https://dashboard.forestry.md/settings" target="_blank">Upgrade your plan</a> to continue publishing.`;
+      set_style(div, "margin-top", "8px");
+      set_style(div, "padding", "8px");
+      set_style(div, "background", "var(--background-modifier-error)");
+      set_style(div, "border-radius", "4px");
+      set_style(div, "font-size", "0.85em");
+    },
+    m(target, anchor) {
+      insert(target, div, anchor);
+    },
+    d(detaching) {
+      if (detaching) {
+        detach(div);
+      }
     }
   };
 }
@@ -30418,6 +31082,8 @@ function instance8($$self, $$props, $$invalidate) {
   let { saveSettings } = $$props;
   let { onConnect } = $$props;
   let apiKey = settings.forestrySettings.apiKey;
+  let limits = null;
+  let limitsLoading = false;
   const connect = () => __awaiter(void 0, void 0, void 0, function* () {
     let pageInfo = yield getPageInfo();
     if (!pageInfo) {
@@ -30436,10 +31102,21 @@ function instance8($$self, $$props, $$invalidate) {
     $$invalidate(0, settings.forestrySettings.forestryPageName = "", settings);
     yield saveSettings();
     $$invalidate(2, apiKey = "");
+    $$invalidate(3, limits = null);
   });
   const getPageInfo = () => __awaiter(void 0, void 0, void 0, function* () {
     let pageInfo = yield new ForestryApi(apiKey).getPageInfo();
     return pageInfo;
+  });
+  const fetchLimits = () => __awaiter(void 0, void 0, void 0, function* () {
+    if (!settings.forestrySettings.apiKey) return;
+    $$invalidate(4, limitsLoading = true);
+    try {
+      $$invalidate(3, limits = yield new ForestryApi(settings.forestrySettings.apiKey).getUserLimits());
+    } catch (_a2) {
+      $$invalidate(3, limits = null);
+    }
+    $$invalidate(4, limitsLoading = false);
   });
   function input_input_handler() {
     apiKey = this.value;
@@ -30447,13 +31124,23 @@ function instance8($$self, $$props, $$invalidate) {
   }
   $$self.$$set = ($$props2) => {
     if ("settings" in $$props2) $$invalidate(0, settings = $$props2.settings);
-    if ("saveSettings" in $$props2) $$invalidate(6, saveSettings = $$props2.saveSettings);
-    if ("onConnect" in $$props2) $$invalidate(7, onConnect = $$props2.onConnect);
+    if ("saveSettings" in $$props2) $$invalidate(8, saveSettings = $$props2.saveSettings);
+    if ("onConnect" in $$props2) $$invalidate(9, onConnect = $$props2.onConnect);
+  };
+  $$self.$$.update = () => {
+    if ($$self.$$.dirty & /*settings*/
+    1) {
+      $: if (settings.forestrySettings.apiKey) {
+        fetchLimits();
+      }
+    }
   };
   return [
     settings,
     unique,
     apiKey,
+    limits,
+    limitsLoading,
     connect,
     disconnect,
     getPageInfo,
@@ -30467,8 +31154,8 @@ var ForestrySettings = class extends SvelteComponent {
     super();
     init(this, options, instance8, create_fragment8, safe_not_equal, {
       settings: 0,
-      saveSettings: 6,
-      onConnect: 7
+      saveSettings: 8,
+      onConnect: 9
     });
   }
 };
@@ -30541,7 +31228,7 @@ var SettingView = class {
       const publishPlatformSettings = this.settingsRootElement.createEl(
         "div",
         {
-          cls: "connection-status"
+          cls: "publish-platform-settings"
         }
       );
       this.initializePublishPlatformSettings(publishPlatformSettings);
@@ -30564,6 +31251,15 @@ var SettingView = class {
         });
       });
       this.initializeCustomFilterSettings();
+      new import_obsidian15.Setting(this.settingsRootElement).setName("Enable debug logging").setDesc(
+        "Show detailed logs in the developer console. Useful for troubleshooting."
+      ).addToggle((toggle) => {
+        toggle.setValue(this.settings.logLevel === import_js_logger9.default.DEBUG).onChange((value) => __async(this, null, function* () {
+          this.settings.logLevel = value ? import_js_logger9.default.DEBUG : void 0;
+          import_js_logger9.default.setLevel(value ? import_js_logger9.default.DEBUG : import_js_logger9.default.WARN);
+          yield this.saveSettings();
+        }));
+      });
       prModal.titleEl.createEl("h1", "Site template settings");
     });
   }
@@ -31146,13 +31842,31 @@ var SettingView = class {
         cb.setButtonText("Apply settings to site");
         cb.setCta();
         cb.onClick((_ev) => __async(this, null, function* () {
-          const octokit = new Octokit({
-            auth: this.settings.githubToken
-          });
           new import_obsidian15.Notice("Applying settings to site...");
           yield this.saveSettingsAndUpdateEnv();
-          yield this.addFavicon(octokit);
-          yield this.addLogo(octokit);
+          const connection = yield PublishPlatformConnectionFactory.createPublishPlatformConnection(
+            this.settings
+          );
+          const octokit = connection.octoKit;
+          const owner = connection.userName;
+          const repo = connection.pageName;
+          try {
+            yield this.addFavicon(octokit, owner, repo);
+          } catch (error) {
+            import_js_logger9.default.error("Failed to update favicon", error);
+            new import_obsidian15.Notice(
+              "Failed to update favicon. Check the developer console for details."
+            );
+          }
+          try {
+            yield this.addLogo(octokit, owner, repo);
+          } catch (error) {
+            import_js_logger9.default.error("Failed to update logo", error);
+            new import_obsidian15.Notice(
+              "Failed to update logo. Check the developer console for details."
+            );
+          }
+          new import_obsidian15.Notice("Settings applied to site!");
         }));
       };
       new import_obsidian15.Setting(this.settingsRootElement).setName("Appearance").setDesc("Manage themes, sitename and styling on your site").addButton((cb) => {
@@ -31557,7 +32271,7 @@ var SettingView = class {
     }
     return settings;
   }
-  addFavicon(octokit) {
+  addFavicon(octokit, owner, repo) {
     return __async(this, null, function* () {
       let base64SettingsFaviconContent = "";
       if (this.settings.faviconPath) {
@@ -31571,11 +32285,12 @@ var SettingView = class {
         const faviconContent = yield this.app.vault.readBinary(faviconFile);
         base64SettingsFaviconContent = arrayBufferToBase64(faviconContent);
       } else {
-        const defaultFavicon = yield octokit.request(
+        const baseConnection = PublishPlatformConnectionFactory.createBaseGardenConnection();
+        const defaultFavicon = yield baseConnection.octoKit.request(
           "GET /repos/{owner}/{repo}/contents/{path}",
           {
-            owner: "oleeskild",
-            repo: "digitalgarden",
+            owner: baseConnection.userName,
+            repo: baseConnection.pageName,
             path: "src/site/favicon.svg"
           }
         );
@@ -31588,13 +32303,13 @@ var SettingView = class {
         currentFaviconOnSite = yield octokit.request(
           "GET /repos/{owner}/{repo}/contents/{path}",
           {
-            owner: this.settings.githubUserName,
-            repo: this.settings.githubRepo,
+            owner,
+            repo,
             path: "src/site/favicon.svg"
           }
         );
         faviconsAreIdentical = // @ts-expect-error TODO: abstract octokit response
-        currentFaviconOnSite.data.content === base64SettingsFaviconContent;
+        currentFaviconOnSite.data.content.replace(/\n/g, "") === base64SettingsFaviconContent;
         if (faviconsAreIdentical) {
           import_js_logger9.default.info("Favicons are identical, skipping update");
           return;
@@ -31604,8 +32319,8 @@ var SettingView = class {
       }
       if (!faviconExists || !faviconsAreIdentical) {
         yield octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
-          owner: this.settings.githubUserName,
-          repo: this.settings.githubRepo,
+          owner,
+          repo,
           path: "src/site/favicon.svg",
           message: `Update favicon.svg`,
           content: base64SettingsFaviconContent,
@@ -31615,9 +32330,12 @@ var SettingView = class {
       }
     });
   }
-  addLogo(octokit) {
+  addLogo(octokit, owner, repo) {
     return __async(this, null, function* () {
       var _a2;
+      import_js_logger9.default.info(
+        `addLogo called, logoPath setting: "${this.settings.logoPath}", owner: "${owner}", repo: "${repo}"`
+      );
       const logoBasePath = "src/site/logo";
       const logoExtensions = ["png", "jpg", "jpeg", "gif", "svg", "webp"];
       for (const ext of logoExtensions) {
@@ -31625,8 +32343,8 @@ var SettingView = class {
           const existingLogo = yield octokit.request(
             "GET /repos/{owner}/{repo}/contents/{path}",
             {
-              owner: this.settings.githubUserName,
-              repo: this.settings.githubRepo,
+              owner,
+              repo,
               path: `${logoBasePath}.${ext}`
             }
           );
@@ -31637,8 +32355,8 @@ var SettingView = class {
               yield octokit.request(
                 "DELETE /repos/{owner}/{repo}/contents/{path}",
                 {
-                  owner: this.settings.githubUserName,
-                  repo: this.settings.githubRepo,
+                  owner,
+                  repo,
                   path: `${logoBasePath}.${ext}`,
                   message: `Remove logo.${ext}`,
                   // @ts-expect-error TODO: abstract octokit response
@@ -31664,6 +32382,9 @@ var SettingView = class {
       const base64LogoContent = arrayBufferToBase64(logoContent);
       const logoExtension = logoFile.extension.toLowerCase();
       const logoPath = `${logoBasePath}.${logoExtension}`;
+      import_js_logger9.default.info(
+        `Uploading logo from ${this.settings.logoPath} to ${logoPath}`
+      );
       let logoExists = true;
       let logosAreIdentical = false;
       let currentLogoOnSite = null;
@@ -31671,13 +32392,13 @@ var SettingView = class {
         currentLogoOnSite = yield octokit.request(
           "GET /repos/{owner}/{repo}/contents/{path}",
           {
-            owner: this.settings.githubUserName,
-            repo: this.settings.githubRepo,
+            owner,
+            repo,
             path: logoPath
           }
         );
         logosAreIdentical = // @ts-expect-error TODO: abstract octokit response
-        currentLogoOnSite.data.content === base64LogoContent;
+        currentLogoOnSite.data.content.replace(/\n/g, "") === base64LogoContent;
         if (logosAreIdentical) {
           import_js_logger9.default.info("Logos are identical, skipping update");
           return;
@@ -31686,15 +32407,24 @@ var SettingView = class {
         logoExists = false;
       }
       if (!logoExists || !logosAreIdentical) {
-        yield octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
-          owner: this.settings.githubUserName,
-          repo: this.settings.githubRepo,
-          path: logoPath,
-          message: `Update logo.${logoExtension}`,
-          content: base64LogoContent,
-          // @ts-expect-error TODO: abstract octokit response
-          sha: logoExists ? currentLogoOnSite.data.sha : null
-        });
+        try {
+          const requestPayload = __spreadValues({
+            owner,
+            repo,
+            path: logoPath,
+            message: `Update logo.${logoExtension}`,
+            content: base64LogoContent
+          }, logoExists ? { sha: currentLogoOnSite.data.sha } : {});
+          yield octokit.request(
+            "PUT /repos/{owner}/{repo}/contents/{path}",
+            requestPayload
+          );
+        } catch (error) {
+          import_js_logger9.default.error("Failed to upload logo", error);
+          new import_obsidian15.Notice(
+            "Failed to upload logo. Check the developer console for details."
+          );
+        }
       }
     });
   }
@@ -32371,6 +33101,10 @@ var DigitalGarden = class extends import_obsidian19.Plugin {
           } catch (e) {
             statusBarItem.remove();
             this.isPublishing = false;
+            if (e instanceof LimitReachedError) {
+              this.showLimitNotice(e);
+              return;
+            }
             console.error(e);
             new import_obsidian19.Notice(
               "Unable to publish multiple notes, something went wrong."
@@ -32487,9 +33221,15 @@ var DigitalGarden = class extends import_obsidian19.Plugin {
         const publishSuccessful = yield publisher.publish(publishFile);
         if (publishSuccessful) {
           new import_obsidian19.Notice(`Successfully published note to your garden.`);
+        } else {
+          new import_obsidian19.Notice("Unable to publish note, something went wrong.");
         }
         return publishSuccessful;
       } catch (e) {
+        if (e instanceof LimitReachedError) {
+          this.showLimitNotice(e);
+          return false;
+        }
         console.error(e);
         new import_obsidian19.Notice("Unable to publish note, something went wrong.");
         return false;
@@ -32582,6 +33322,22 @@ var DigitalGarden = class extends import_obsidian19.Plugin {
         ).open();
       }
     });
+  }
+  showLimitNotice(error) {
+    var _a2, _b;
+    if (error.errorType === "build_limit_reached") {
+      const used = (_a2 = error.buildsUsed) != null ? _a2 : 0;
+      const limit = (_b = error.monthlyLimit) != null ? _b : 0;
+      new import_obsidian19.Notice(
+        `Publishing blocked: You've used all ${used}/${limit} builds this month. Upgrade to Pro for 1000 builds/month at dashboard.forestry.md/settings`,
+        1e4
+      );
+    } else {
+      new import_obsidian19.Notice(
+        `Publishing blocked: Storage limit exceeded. Free up space or upgrade at dashboard.forestry.md/settings`,
+        1e4
+      );
+    }
   }
   openPublishModal() {
     const siteManager = new DigitalGardenSiteManager(
