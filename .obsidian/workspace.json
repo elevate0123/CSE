@@ -11,10 +11,15 @@
             "id": "85d745a4f94eb799",
             "type": "leaf",
             "state": {
-              "type": "home-tab-view",
-              "state": {},
-              "icon": "search",
-              "title": "Home tab"
+              "type": "markdown",
+              "state": {
+                "file": "00 Insaan-aur-Aalam/My Learnings/Aqaid Course GRQ.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": false
+              },
+              "icon": "lucide-file",
+              "title": "Aqaid Course GRQ"
             }
           }
         ]
@@ -90,12 +95,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "00 Insaan-aur-Aalam/My Learnings/Aqaid Course GRQ.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of Aqaid Course GRQ"
             }
           },
           {

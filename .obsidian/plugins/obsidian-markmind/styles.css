@@ -1072,6 +1072,17 @@ th {
     white-space: break-spaces;
 }
 
+.cm-node-text .contains-task-list li.task-list-item,
+.mm-node-edit .contains-task-list li.task-list-item {
+    display: flex;
+    align-items: center;
+}
+
+.cm-node-text .contains-task-list li.task-list-item>.task-list-item-checkbox,
+.mm-node-edit .contains-task-list li.task-list-item>.task-list-item-checkbox {
+    margin-inline-start: calc(var(--checkbox-size) * -1.2)
+}
+
 /* .cm-node-text mjx-math,
 .mm-node-edit mjx-math {
     max-width: 100%;
@@ -1376,6 +1387,29 @@ th {
 }
 
 .mm-node-edit audio {
+    min-width: 300px
+}
+
+
+.cm-node-text>p,
+.cm-node-text>h1,
+.cm-node-text>h2,
+.cm-node-text>h3,
+.cm-node-text>h4,
+.cm-node-text>h5,
+.cm-node-text>h6,
+.cm-node-text>ol,
+.cm-node-text>ul {
+    padding: 0;
+    margin: 0;
+}
+
+.cm-node-text>ol,
+.cm-node-text>ul {
+    padding-left: 20px;
+}
+
+.cm-node-text audio {
     min-width: 300px
 }
 
@@ -3742,4 +3776,42 @@ span.mm-sline .line {
 
 .mm-node-embed {
     display: none !important;
+}
+
+
+.cm-mindmap-mobile {
+    position: fixed;
+    z-index: 1000;
+    height: 32px;
+    left: 10px;
+    bottom: 40px;
+    right: 10px;
+}
+
+.cm-mindmap-mobile div {
+    width: 40px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right:4px;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #333;
+    box-sizing: 0 0 10px #222;
+    float: right;
+}
+
+.cm-mindmap-mobile div svg {
+    fill: #666;
+}
+
+
+.theme-light .cm-mindmap-mobile div {
+    background-color: #fff;
+    box-sizing: 0 0 10px #ccc;
+}
+
+.theme-light .cm-mindmap-mobile div svg {
+    fill: #333;
 }
