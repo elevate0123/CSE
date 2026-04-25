@@ -59,6 +59,15 @@ var deepCopy = (source, arrays = true) => {
   }
   return source;
 };
+var pickKeys = (source, keys) => {
+  const result = {};
+  for (const key of keys) {
+    if (key in source) {
+      result[key] = source[key];
+    }
+  }
+  return result;
+};
 function* range(limit, start = 0) {
   for (let index = start; index < limit; index += 1)
     yield index;
@@ -74,6 +83,7 @@ var arrayFill = (array, limit, func) => {
   return array;
 };
 var sanitizeCssClasses = (classes) => classes.filter((cls) => cls.length > 0).map((cls) => cls.replace(/[^a-z0-9_-]+/ig, "-"));
+var formatWhitespace = (text, nbsp = false) => text.trim().replace(/\s+/g, nbsp ? "\xA0" : " ");
 
 // src/data/gloss.ts
 var getDefaultGlossOptions = () => ({
@@ -168,7 +178,15 @@ function* iterateLines(input) {
     }
   }
 }
-function tokenizeLine(lineNo, line) {
+var pushRawToken = (buffer, tokens, quoted) => {
+  if (buffer.length > 0) {
+    const type = quoted ? "quoted" : "simple";
+    const value = buffer.join("");
+    buffer.length = 0;
+    tokens.push({ type, value });
+  }
+};
+var tokenizeLine = (lineNo, line) => {
   let isEscape = false;
   let isQuoted = false;
   const buffer = [];
@@ -179,7 +197,6 @@ function tokenizeLine(lineNo, line) {
       switch (char) {
         case "[":
         case "]":
-        case "^":
           buffer.push(char);
           break;
         default:
@@ -195,11 +212,7 @@ function tokenizeLine(lineNo, line) {
           isEscape = true;
           break;
         case "]":
-          tokens.push({
-            type: "quoted",
-            value: buffer.join("")
-          });
-          buffer.length = 0;
+          pushRawToken(buffer, tokens, true);
           isQuoted = false;
           break;
         default:
@@ -219,13 +232,7 @@ function tokenizeLine(lineNo, line) {
         case "\v":
         case "\f":
         case "\xA0":
-          if (buffer.length > 0) {
-            tokens.push({
-              type: "simple",
-              value: buffer.join("")
-            });
-          }
-          buffer.length = 0;
+          pushRawToken(buffer, tokens, false);
           isQuoted = char === "[";
           break;
         default:
@@ -237,15 +244,10 @@ function tokenizeLine(lineNo, line) {
   if (isQuoted) {
     throw `found a \u201C[\u201D without a matching \u201C]\u201D (line ${lineNo})`;
   }
-  if (buffer.length > 0) {
-    tokens.push({
-      type: "simple",
-      value: buffer.join("")
-    });
-  }
+  pushRawToken(buffer, tokens, false);
   return tokens;
-}
-function tryGetCommand(lineNo, token) {
+};
+var tryGetCommand = (lineNo, token) => {
   if ((token == null ? void 0 : token.type) !== "simple")
     return null;
   if (!token.value.startsWith("\\"))
@@ -253,7 +255,7 @@ function tryGetCommand(lineNo, token) {
   const star = token.value.endsWith("*");
   const name = star ? token.value.slice(1, -1) : token.value.slice(1);
   return { lineNo, name, star, params: [] };
-}
+};
 var tokenize = (input) => {
   const commands = [];
   let errors = null;
@@ -395,11 +397,17 @@ var GlossParser = class {
 
 // src/data/settings.ts
 var getDefaultAlignMarkers = () => ["-", "=", "~"];
+var getDefaultFancyRenderFlags = () => ({
+  cliticMarks: false,
+  infixBrackets: false,
+  nullElement: false
+});
 var getDefaultPluginSettings = () => ({
   alignMode: "none",
   alignCenter: false,
   alignLevel: 0,
   alignCustom: getDefaultAlignMarkers(),
+  fancyRender: getDefaultFancyRenderFlags(),
   gloss: getDefaultGlossOptions()
 });
 
@@ -418,7 +426,6 @@ var getLevelMetadata = (level) => {
       return ["level-x", "levelX"];
   }
 };
-var formatWhitespace = (text, nbsp = false) => text.replace(/\s+/g, nbsp ? "\xA0" : " ");
 var renderBlock = (target, options) => {
   var _a, _b, _c;
   if (options.text.length < 1 && !options.always)
@@ -431,8 +438,9 @@ var renderBlock = (target, options) => {
 
 // src/render/main.ts
 var GlossRenderer = class {
-  constructor(settings) {
+  constructor(settings, markup) {
     this.settings = settings;
+    this.markup = markup;
   }
   renderErrors(target, errors) {
     target.empty();
@@ -485,13 +493,17 @@ var GlossRenderer = class {
         }
         for (const [levelNo, level] of levels.entries()) {
           const [levelKind, styleKey] = getLevelMetadata(levelNo);
-          const glaSpaces = altSpaces && levelNo === 0;
+          const glaSpaces = altSpaces && data.nlevel && levelNo === 0;
           renderBlock(element, {
             kind: levelKind,
             cls: styles[styleKey],
             text: level,
             always: true,
-            format: (text) => this.formatText(text, { useMarkup, glaSpaces, useNbsp: true })
+            format: (text) => this.formatText(text, {
+              glaSpaces,
+              useMarkup,
+              useFancy: true
+            })
           });
         }
       }
@@ -528,10 +540,31 @@ var GlossRenderer = class {
     if (format.glaSpaces) {
       text = text.replace(/[_]+/, " ");
     }
-    if (format.useMarkup) {
-      throw "not implemented yet";
+    if (format.useFancy) {
+      const {
+        cliticMarks,
+        infixBrackets,
+        nullElement
+      } = this.settings.get("fancyRender");
+      text = text.replace(/[=<>]|![0]/g, (text2) => {
+        switch (true) {
+          case (cliticMarks && text2 === "="):
+            return "\uA78A";
+          case (infixBrackets && text2 === "<"):
+            return "\u27E8";
+          case (infixBrackets && text2 === ">"):
+            return "\u27E9";
+          case (nullElement && text2 === "!0"):
+            return "\u2205";
+          default:
+            return text2;
+        }
+      });
     }
-    return formatWhitespace(text, format.useNbsp);
+    if (format.useMarkup) {
+      return this.markup.render(text);
+    }
+    return formatWhitespace(text);
   }
 };
 
@@ -554,20 +587,26 @@ var PluginSettingsTab = class extends import_obsidian.PluginSettingTab {
   display() {
     this.containerEl.empty();
     this.addAlignModeSettings();
+    this.addFancyRenderSettings();
     this.addSwitchSettings();
     this.addStyleSettings();
   }
   addAlignModeSettings() {
-    const { alignMode, alignCenter, alignLevel, alignCustom } = this.settings.get();
+    const {
+      alignMode,
+      alignCenter,
+      alignLevel,
+      alignCustom
+    } = this.settings.get();
     new import_obsidian.Setting(this.containerEl).setName("Align gloss elements").setDesc(makeDesc((desc) => {
       desc.appendText("Horizontal alignment of gloss elements that have certain marker characters on either side.");
       desc.createEl("br");
       desc.appendText("The default markers are: ");
-      desc.createEl("code", { text: "-" });
+      desc.createEl("mark", { text: "-" });
       desc.appendText(" (hyphen), ");
-      desc.createEl("code", { text: "=" });
+      desc.createEl("mark", { text: "=" });
       desc.appendText(" (equals sign), ");
-      desc.createEl("code", { text: "~" });
+      desc.createEl("mark", { text: "~" });
       desc.appendText(" (tilde).");
     })).addDropdown((component) => {
       component.addOptions({
@@ -606,6 +645,68 @@ var PluginSettingsTab = class extends import_obsidian.PluginSettingTab {
       component.setValue(alignCustom.join(" ")).onChange(async (value) => {
         await this.settings.update({
           alignCustom: value.split(/\s+/)
+        });
+      });
+    });
+  }
+  addFancyRenderSettings() {
+    const {
+      cliticMarks,
+      infixBrackets,
+      nullElement
+    } = this.settings.get("fancyRender");
+    new import_obsidian.Setting(this.containerEl).setName("Replace clitic marks").setDesc(makeDesc((desc) => {
+      desc.appendText("Replace regular ");
+      desc.createEl("mark", { text: "=" });
+      desc.appendText(" (equals sign) clitic marks with ");
+      desc.createEl("mark", { text: "\uA78A" });
+      desc.appendText(" (");
+      desc.createEl("span", { text: "U+A78A", title: "MODIFIER LETTER SHORT EQUALS SIGN" });
+      desc.appendText(") in rendered gloss elements. ");
+      desc.createEl("br");
+      desc.appendText("This matches the width of the hyphen more closely in some fonts like Charis SIL.");
+    })).addToggle((component) => {
+      component.setValue(cliticMarks).onChange(async (value) => {
+        await this.settings.update({
+          fancyRender: {
+            cliticMarks: value
+          }
+        });
+      });
+    });
+    new import_obsidian.Setting(this.containerEl).setName("Replace infix brackets").setDesc(makeDesc((desc) => {
+      desc.appendText("Replace regular ");
+      desc.createEl("mark", { text: "< >" });
+      desc.appendText(" (less/greater than) infix brackets with ");
+      desc.createEl("mark", { text: "\u27E8 \u27E9" });
+      desc.appendText(" (");
+      desc.createEl("span", { text: "U+27E8", title: "MATHEMATICAL LEFT ANGLE BRACKET" });
+      desc.appendText("/");
+      desc.createEl("span", { text: "U+27E9", title: "MATHEMATICAL RIGHT ANGLE BRACKET" });
+      desc.appendText(") in rendered gloss elements.");
+    })).addToggle((component) => {
+      component.setValue(infixBrackets).onChange(async (value) => {
+        await this.settings.update({
+          fancyRender: {
+            infixBrackets: value
+          }
+        });
+      });
+    });
+    new import_obsidian.Setting(this.containerEl).setName("Use null element shortcut").setDesc(makeDesc((desc) => {
+      desc.appendText("Replace the string ");
+      desc.createEl("mark", { text: "!0" });
+      desc.appendText(" (null element) with ");
+      desc.createEl("mark", { text: "\u2205" });
+      desc.appendText(" (");
+      desc.createEl("span", { text: "U+2205", title: "EMPTY SET" });
+      desc.appendText(") in rendered gloss elements. ");
+    })).addToggle((component) => {
+      component.setValue(nullElement).onChange(async (value) => {
+        await this.settings.update({
+          fancyRender: {
+            nullElement: value
+          }
         });
       });
     });
@@ -696,10 +797,27 @@ var PluginSettingsWrapper = class {
     await this.save();
   }
   get(key) {
-    return key != null ? this.settings[key] : this.settings;
+    if (key === void 0)
+      return this.settings;
+    if (Array.isArray(key))
+      return pickKeys(this.settings, key);
+    return this.settings[key];
   }
   set(key, value) {
     this.settings[key] = value;
+  }
+};
+
+// src/markup/main.ts
+var MarkupRenderer = class {
+  constructor(settings) {
+    this.settings = settings;
+  }
+  render(text) {
+    const parsed = formatWhitespace(text);
+    const fragment = new DocumentFragment();
+    fragment.appendText(text);
+    return fragment;
   }
 };
 
@@ -708,8 +826,9 @@ var LingGlossPlugin = class extends import_obsidian2.Plugin {
   constructor() {
     super(...arguments);
     this.settings = new PluginSettingsWrapper(this);
+    this.markup = new MarkupRenderer(this.settings);
     this.parser = new GlossParser(this.settings);
-    this.renderer = new GlossRenderer(this.settings);
+    this.renderer = new GlossRenderer(this.settings, this.markup);
   }
   async onload() {
     await this.settings.load();

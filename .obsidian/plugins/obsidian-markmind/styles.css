@@ -3794,7 +3794,7 @@ span.mm-sline .line {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right:4px;
+    margin-right: 4px;
     cursor: pointer;
     border-radius: 5px;
     background-color: #333;
@@ -3814,4 +3814,13 @@ span.mm-sline .line {
 
 .theme-light .cm-mindmap-mobile div svg {
     fill: #333;
+}
+
+
+.mm-node-size .mm-node-edit {
+    max-width: none !important;
+}
+
+.mm-node-size .mm-node-icon {
+    display: flex;
 }

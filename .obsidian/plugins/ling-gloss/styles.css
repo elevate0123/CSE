@@ -5,6 +5,16 @@
     max-width: 250px;
 }
 
+.setting-item-info mark,
+.setting-item-info code {
+    color: var(--color-orange);
+    background-color: unset;
+}
+
+.setting-item-info span[title] {
+    text-decoration: underline dotted;
+}
+
 /* Error message appearance */
 
 .ling-gloss-error {
@@ -29,6 +39,7 @@
 
 .ling-gloss-number {
     padding-inline-end: 1em;
+    white-space: nowrap;
 }
 
 .ling-gloss-body {
@@ -43,6 +54,10 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1em 1em;
+}
+
+.ling-gloss-element {
+    white-space: nowrap;
 }
 
 .ling-gloss-postamble {
