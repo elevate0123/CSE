@@ -522,7 +522,7 @@ Therefore, the form and content of religion in any society are a reflection of i
 
 **2. Religion as the "Opium of the People"**
 This is Marx's most famous metaphor for religion, and it has a crucial dual meaning:
-
+/word
 1.  **Religion as a Painkiller:** It acts as an opiate that dulls the pain of oppression. For the exploited proletariat, it makes an intolerable existence bearable by offering solace, comfort, and the promise of supernatural intervention or reward in an afterlife (e.g., "the meek shall inherit the earth").
 2.  **Religion as an Intoxicant:** It creates a state of illusion or **false consciousness**. It prevents the oppressed from recognizing the true, material source of their suffering (i.e., capitalist exploitation) and diverts their energy away from revolutionary struggle towards otherworldly salvation.
 
