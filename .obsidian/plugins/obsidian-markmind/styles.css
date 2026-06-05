@@ -669,7 +669,7 @@ span.mm-sline .line {
     outline: 0
 }
 
-.theme-dark textarea {
+.theme-dark .mm-note textarea {
     color: #666
 }
 
@@ -3774,6 +3774,16 @@ span.mm-sline .line {
     align-items: center;
 }
 
+.mm-ppt-page .mm-ppt-resize {
+    position: absolute;
+    right: 6px;
+    display: block;
+
+    bottom: 0px;
+    background: transparent;
+    cursor: pointer;
+}
+
 .mm-node-embed {
     display: none !important;
 }
@@ -3784,7 +3794,7 @@ span.mm-sline .line {
     z-index: 1000;
     height: 32px;
     left: 10px;
-    bottom: 40px;
+    bottom: 100px;
     right: 10px;
 }
 
@@ -3823,4 +3833,13 @@ span.mm-sline .line {
 
 .mm-node-size .mm-node-icon {
     display: flex;
+}
+
+.mm-assist-close {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
 }

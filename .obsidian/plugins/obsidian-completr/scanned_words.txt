@@ -12108,6 +12108,10 @@ Hijacked
 Huquq
 Haw
 Heirs
+HarperOne
+Holland
+Hourani
+Haidt
 Kitaab
 Kitaabe
 Kitab
@@ -15510,6 +15514,9 @@ KEYSTONE
 Khul
 Kharijism
 Kharijites
+Knopf
+Kecia
+Kuran
 ki
 ke
 kuch
@@ -27374,6 +27381,9 @@ Telecom
 TRAI
 Transferred
 Tied
+Tom
+Taqi
+Timur
 Points
 Pehle
 Parehsaniya
@@ -35850,6 +35860,7 @@ Isra
 Iyy
 Iyad
 Ihdinas
+Isabel
 Likhne
 Lekis
 Lock
@@ -37962,6 +37973,7 @@ Lexical
 Larry
 Lacking
 LOCAL
+Lings
 Maqsad
 Mubarak
 Moosa
@@ -41871,6 +41883,11 @@ Mistranslated
 Misinterpreted
 Myron
 Mantri
+Mediterranean
+Misquoting
+Mohammad
+Mufti
+Mammon
 Sahih
 Surah
 Shaikh
@@ -48204,6 +48221,7 @@ Broadly
 Boards
 Borrowings
 Balwantrai
+BMJ
 points
 par
 paas
@@ -61080,6 +61098,7 @@ emphasising
 envisages
 elaboration
 earmarked
+edelman
 bade
 bhi
 ba
@@ -76195,6 +76214,7 @@ institutionalise
 insertion
 impede
 inertia
+ius
 tashreeh
 topic
 thodi
@@ -84196,6 +84216,7 @@ Guesswork
 Ghayril
 GOVERNANCE
 Grants
+Goitein
 dusre
 diya
 door
@@ -96158,6 +96179,7 @@ Usury
 Unite
 Unconditional
 Untied
+Usmani
 Wird
 Wazifa
 Welcome
@@ -98582,6 +98604,7 @@ Walladh
 Waking
 Wad
 Weiner
+Wilkerson
 Chahte
 Communities
 Community
@@ -101806,6 +101829,7 @@ Calibration
 Coordinative
 Conceptually
 Constituting
+Cash
 guftagu
 group
 ghaans
@@ -103940,6 +103964,7 @@ galvanizing
 guarantor
 ghal
 graves
+gentium
 filhal
 fa
 for
@@ -107838,6 +107863,7 @@ Yutang
 Yahya
 Yahsubi
 Yojana
+Yale
 Fayada
 Family
 Fostering
@@ -110161,6 +110187,8 @@ Fosterage
 Fatt
 Finances
 Forums
+Frontmatter
+Footsteps
 Rozana
 Revision
 Roti
@@ -113504,6 +113532,7 @@ Rafidites
 Revere
 Redefined
 Revenues
+Rogan
 Namaaz
 Naamo
 Namak
@@ -123386,6 +123415,9 @@ Declare
 Demonstrations
 DECENTRALISATION
 Downward
+Deming
+Doubleday
+Discontents
 vast
 various
 vision
@@ -130183,6 +130215,9 @@ Embassy
 Entanglement
 Extremes
 Eleventh
+Edwards
+Earliest
+Eugene
 Jannat
 Jahannam
 Jab
@@ -132408,6 +132443,7 @@ Jahiliyyah
 Jolie
 JazakAllah
 Jibril
+Jacket
 Qqabid
 Quran
 Questions
@@ -138670,6 +138706,7 @@ OVERVIEW
 Orchard
 Originator
 Overburdened
+Oneworld
 quality
 quantified
 qualitatively

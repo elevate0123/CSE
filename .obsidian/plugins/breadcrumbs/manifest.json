@@ -1,12 +1,15 @@
 {
 	"id": "breadcrumbs",
 	"name": "Breadcrumbs",
-	"version": "4.5.0",
-	"minAppVersion": "1.0.0",
-	"description": "Add structured hierarchies to your notes",
-	"author": "SkepticMystic",
-	"authorUrl": "https://github.com/SkepticMystic/breadcrumbs",
-	"fundingUrl": "https://github.com/SkepticMystic/breadcrumbs#donations",
-	"helpUrl": "https://publish.obsidian.md/breadcrumbs-docs",
+	"version": "4.14.2",
+	"minAppVersion": "1.12.3",
+	"description": "Add structured hierarchies to your notes.",
+	"author": "MichaelPPorter",
+	"authorUrl": "https://github.com/michaelpporter",
+	"fundingUrl": {
+		"GitHub Sponsors": "https://github.com/sponsors/michaelpporter",
+		"Buy Me a Coffee": "https://www.buymeacoffee.com/michaelpporter"
+	},
+	"helpUrl": "https://breadcrumbs-docs.michaelpporter.com",
 	"isDesktopOnly": false
 }

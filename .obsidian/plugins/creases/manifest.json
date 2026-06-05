@@ -1,8 +1,8 @@
 {
   "id": "creases",
   "name": "Creases",
-  "description": "Tools for efficiently folding markdown sections in Obsidian",
-  "version": "0.7.0",
+  "description": "Tools for efficiently folding Markdown sections.",
+  "version": "0.7.8",
   "author": "Liam Cain",
   "authorUrl": "https://github.com/liamcain/",
   "isDesktopOnly": false,

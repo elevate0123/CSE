@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "bdc05529ba44534c",
+        "id": "06fbb6af76f0f0f3",
         "type": "tabs",
         "children": [
           {
-            "id": "e03b087a1fb3cd39",
+            "id": "1a5e09be76174b39",
             "type": "leaf",
             "state": {
               "type": "home-tab-view",
@@ -142,16 +142,6 @@
               "icon": "lucide-file-signature",
               "title": "Footnotes"
             }
-          },
-          {
-            "id": "3f8090e508c3fb74",
-            "type": "leaf",
-            "state": {
-              "type": "mermaid-toolbar-view",
-              "state": {},
-              "icon": "trident-custom",
-              "title": "Mermaid Toolbar"
-            }
           }
         ]
       }
@@ -174,8 +164,9 @@
       "terminal:Open terminal": false
     }
   },
-  "active": "e03b087a1fb3cd39",
+  "active": "1a5e09be76174b39",
   "lastOpenFiles": [
+    "00 Insaan-aur-Aalam/Kagaz Qalam Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/00 Manus Ur Clod Rectified.md",
     "IGNOU MSO/SY/MSO SY Assignments 1.md",
     "IGNOU MSO/UGC NET/2 23.pdf",
     "IGNOU MSO/UGC NET/2 23 1.pdf",
