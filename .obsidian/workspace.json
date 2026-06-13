@@ -11,10 +11,15 @@
             "id": "1a5e09be76174b39",
             "type": "leaf",
             "state": {
-              "type": "home-tab-view",
-              "state": {},
-              "icon": "search",
-              "title": "Home tab"
+              "type": "markdown",
+              "state": {
+                "file": "IGNOU MSO/SY/SY MSOE 03 Sociology of Religion.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": false
+              },
+              "icon": "lucide-file",
+              "title": "SY MSOE 03 Sociology of Religion"
             }
           }
         ]
@@ -90,12 +95,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "IGNOU MSO/SY/SY MSOE 03 Sociology of Religion.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of SY MSOE 03 Sociology of Religion"
             }
           },
           {
@@ -142,8 +148,19 @@
               "icon": "lucide-file-signature",
               "title": "Footnotes"
             }
+          },
+          {
+            "id": "6a424c6bbe40663a",
+            "type": "leaf",
+            "state": {
+              "type": "quiet-outline",
+              "state": {},
+              "icon": "lines-of-text",
+              "title": "Quiet Outline"
+            }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
@@ -164,7 +181,7 @@
       "terminal:Open terminal": false
     }
   },
-  "active": "1a5e09be76174b39",
+  "active": "6a424c6bbe40663a",
   "lastOpenFiles": [
     "00 Insaan-aur-Aalam/Kagaz Qalam Project Books - Ilm & Noor/Prophet Architect of a Civilisation Book/00 Manus Ur Clod Rectified.md",
     "IGNOU MSO/SY/MSO SY Assignments 1.md",

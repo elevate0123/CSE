@@ -23,10 +23,9 @@
   "mermaid-tools",
   "obsidian-pandoc",
   "obsidian-outliner",
-  "obsidian-graphviz",
   "last-modified-timestamp-in-status-bar",
   "cm-editor-syntax-highlight-obsidian",
   "creases",
   "obsidian-wordy",
-  "terminal"
+  "obsidian-quiet-outline"
 ]
