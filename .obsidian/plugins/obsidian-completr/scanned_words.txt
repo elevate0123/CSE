@@ -4760,6 +4760,7 @@ Akhir
 Acute
 Administratively
 Awas
+Adhyaksh
 al
 agar
 asani
@@ -8651,6 +8652,8 @@ aphoristic
 applauds
 akhirah
 authorise
+approving
+attended
 Husna
 Hazrat
 Hashr
@@ -18190,6 +18193,7 @@ khayru
 khirah
 khidmah
 khawf
+knowledges
 shuruat
 sochaa
 sabhi
@@ -21374,6 +21378,16 @@ separatist
 suppressing
 skyrocketing
 subsidiarity
+stamp
+strongmen
+subverting
+subversion
+shorthand
+stamps
+scrutinize
+streetlights
+supervises
+supplant
 mai
 mehsoos
 ma
@@ -24602,6 +24616,12 @@ misreadings
 marginalisation
 modelled
 matched
+modalities
+ministry
+mandating
+monopolized
+multiplicity
+majorities
 Tehreer
 Taha
 Tarjame
@@ -30793,6 +30813,12 @@ Politically
 Previously
 Programmatic
 PRI
+Panches
+Pramukh
+Parastatals
+Perils
+Partners
+Potentially
 Iss
 Inn
 Imam
@@ -35861,6 +35887,7 @@ Iyy
 Iyad
 Ihdinas
 Isabel
+Ineffective
 Likhne
 Lekis
 Lock
@@ -37974,6 +38001,7 @@ Larry
 Lacking
 LOCAL
 Lings
+Logically
 Maqsad
 Mubarak
 Moosa
@@ -41888,6 +41916,11 @@ Misquoting
 Mohammad
 Mufti
 Mammon
+Modalities
+Municipality
+Mayor
+Motto
+MTAs
 Sahih
 Surah
 Shaikh
@@ -45071,6 +45104,14 @@ SECs
 SFCs
 SFC
 Sponsored
+SPAs
+Sarpanches
+Strongest
+Scourge
+Samitis
+Sewerage
+Statutory
+Stronger
 Bukhari
 Bache
 Budhe
@@ -48222,6 +48263,7 @@ Boards
 Borrowings
 Balwantrai
 BMJ
+Bhagidari
 points
 par
 paas
@@ -51322,6 +51364,11 @@ prints
 painter
 publicising
 practicable
+pronounced
+purse
+parastatals
+practically
+pitfalls
 nazar
 naam
 ne
@@ -55510,6 +55557,10 @@ reasserted
 reorganisation
 realisation
 rearrangement
+resounding
+rubber
+reconfiguring
+rightfully
 hue
 hua
 ho
@@ -61099,6 +61150,8 @@ envisages
 elaboration
 earmarked
 edelman
+establishments
+electing
 bade
 bhi
 ba
@@ -63295,6 +63348,12 @@ bliss
 budu
 bypasses
 bifurcated
+budgets
+budgeting
+bureaucratically
+bears
+bearers
+bypassed
 level
 likhi
 lekin
@@ -65370,6 +65429,8 @@ labelloc
 lad
 liberalised
 legislatures
+lauded
+litmus
 jisme
 jaye
 jo
@@ -67351,6 +67412,7 @@ jeopardy
 jumlati
 jinn
 jewels
+jurisdictions
 yaad
 yeh
 ya
@@ -71965,6 +72027,14 @@ constitutionalisation
 channelled
 constituents
 coordinating
+chairperson
+cadre
+competent
+caps
+certificates
+collides
+councillors
+centralisation
 isme
 iss
 isliye
@@ -76215,6 +76285,7 @@ insertion
 impede
 inertia
 ius
+incommensurable
 tashreeh
 topic
 thodi
@@ -84217,6 +84288,7 @@ Ghayril
 GOVERNANCE
 Grants
 Goitein
+Genuine
 dusre
 diya
 door
@@ -87429,6 +87501,9 @@ decentralisation
 deconcentration
 downwardly
 doorstep
+disempowered
+deliberative
+disempowerment
 wo
 wajah
 waqt
@@ -89591,6 +89666,8 @@ whim
 waver
 walker
 workloads
+workload
+withholds
 uss
 unn
 uski
@@ -92386,6 +92463,8 @@ untied
 understaffed
 unrealised
 upwards
+unresponsive
+unauthorized
 Ul
 Upliftment
 Us
@@ -96180,6 +96259,11 @@ Unite
 Unconditional
 Untied
 Usmani
+Unbalanced
+Unholy
+Utilisation
+Unelected
+Undermining
 Wird
 Wazifa
 Welcome
@@ -101830,6 +101914,10 @@ Coordinative
 Conceptually
 Constituting
 Cash
+Centralising
+Chairperson
+Chairpersons
+Centralisation
 guftagu
 group
 ghaans
@@ -106185,6 +106273,7 @@ firefighter
 favourable
 ferries
 fines
+firewood
 Yaad
 Yeh
 Yaa
@@ -110189,6 +110278,12 @@ Finances
 Forums
 Frontmatter
 Footsteps
+FUNCTIONS
+FUNDS
+FUNCTIONARIES
+Famously
+Forestry
+Financially
 Rozana
 Revision
 Roti
@@ -113533,6 +113628,8 @@ Revere
 Redefined
 Revenues
 Rogan
+RWAs
+Representatives
 Namaaz
 Naamo
 Namak
@@ -115372,6 +115469,7 @@ Nawawi
 Nasta
 Narrowly
 NAPCC
+NPM
 Zuban
 Zikr
 Zindagi
@@ -123418,6 +123516,10 @@ Downward
 Deming
 Doubleday
 Discontents
+Decentralised
+Delegation
+Decentralising
+Depletion
 vast
 various
 vision
@@ -127244,6 +127346,9 @@ orbit
 oceans
 omission
 obstructed
+orbits
+overstate
+octroi
 Examples
 Empowering
 Educational
@@ -130218,6 +130323,7 @@ Eleventh
 Edwards
 Earliest
 Eugene
+Elected
 Jannat
 Jahannam
 Jab
@@ -132444,6 +132550,7 @@ Jolie
 JazakAllah
 Jibril
 Jacket
+Jurisdictions
 Qqabid
 Quran
 Questions
@@ -138707,6 +138814,7 @@ Orchard
 Originator
 Overburdened
 Oneworld
+Organisational
 quality
 quantified
 qualitatively
@@ -140439,6 +140547,7 @@ qis
 qiw
 quiz
 qibla
+quantities
 XXXXXXXXXX
 XR
 XJ

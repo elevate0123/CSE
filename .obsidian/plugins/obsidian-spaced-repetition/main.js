@@ -9,7 +9,11 @@ var __typeError = (msg) => {
 };
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  try {
+    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  } catch (e2) {
+    throw mod = 0, e2;
+  }
 };
 var __export = (target, all) => {
   for (var name in all)
@@ -38,6 +42,605 @@ var __privateGet = (obj, member, getter) => (__accessCheck(obj, member, "read fr
 var __privateAdd = (obj, member, value) => member.has(obj) ? __typeError("Cannot add the same private member more than once") : member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
 var __privateSet = (obj, member, value, setter) => (__accessCheck(obj, member, "write to private field"), setter ? setter.call(obj, value) : member.set(obj, value), value);
 var __privateMethod = (obj, member, method) => (__accessCheck(obj, member, "access private method"), method);
+
+// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/utils.js
+var require_utils = __commonJS({
+  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/utils.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.simpleFormatter = exports.htmlFormatter = exports.escapeRegexString = void 0;
+    function escapeRegexString(str) {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+    exports.escapeRegexString = escapeRegexString;
+    var htmlFormatter = class {
+      asking(answer, hint) {
+        return `<span style='color:#2196f3'>${!hint ? "[...]" : `[${hint}]`}</span>`;
+      }
+      showingAnswer(answer, hint) {
+        return `<span style='color:#2196f3'>${answer}</span>`;
+      }
+      hiding(answer, hint) {
+        return `${!hint ? "..." : `[${hint}]`} `;
+      }
+    };
+    exports.htmlFormatter = htmlFormatter;
+    var simpleFormatter = class {
+      asking(answer, hint) {
+        return `${!hint ? "[...]" : `[${hint}]`}`;
+      }
+      showingAnswer(answer, hint) {
+        return answer;
+      }
+      hiding(answer, hint) {
+        return `...`;
+      }
+    };
+    exports.simpleFormatter = simpleFormatter;
+  }
+});
+
+// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeFieldEnum.js
+var require_ClozeFieldEnum = __commonJS({
+  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeFieldEnum.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ClozeFieldEnum = void 0;
+    var ClozeFieldEnum;
+    (function(ClozeFieldEnum2) {
+      ClozeFieldEnum2["seq"] = "seq";
+      ClozeFieldEnum2["answer"] = "answer";
+      ClozeFieldEnum2["hint"] = "hint";
+    })(ClozeFieldEnum || (exports.ClozeFieldEnum = ClozeFieldEnum = {}));
+  }
+});
+
+// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeRegExp.js
+var require_ClozeRegExp = __commonJS({
+  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeRegExp.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ClozeRegExp = void 0;
+    var ClozeFieldEnum_1 = require_ClozeFieldEnum();
+    var ClozeRegExp = class {
+      constructor(pattern, clozeFieldsOrder, flags) {
+        this.regex = new RegExp(pattern, flags);
+        this.clozeFieldsOrder = clozeFieldsOrder;
+      }
+      exec(str) {
+        let match2 = this.regex.exec(str);
+        if (!match2) {
+          return null;
+        }
+        if (this.clozeFieldsOrder.indexOf(ClozeFieldEnum_1.ClozeFieldEnum.answer) == -1) {
+          throw new Error("Cloze text not found in clozeFieldsOrder");
+        }
+        if (this.clozeFieldsOrder.indexOf(ClozeFieldEnum_1.ClozeFieldEnum.hint) == -1) {
+          throw new Error("Cloze hint not found in clozeFieldsOrder");
+        }
+        if (this.clozeFieldsOrder.indexOf(ClozeFieldEnum_1.ClozeFieldEnum.seq) == -1) {
+          match2.seq = null;
+        } else {
+          match2.seq = match2[this.clozeFieldsOrder.indexOf(ClozeFieldEnum_1.ClozeFieldEnum.seq) + 1];
+        }
+        match2.raw = match2[0];
+        match2.answer = match2[this.clozeFieldsOrder.indexOf(ClozeFieldEnum_1.ClozeFieldEnum.answer) + 1];
+        match2.hint = match2[this.clozeFieldsOrder.indexOf(ClozeFieldEnum_1.ClozeFieldEnum.hint) + 1];
+        return match2;
+      }
+      test(str) {
+        return this.regex.test(str);
+      }
+    };
+    exports.ClozeRegExp = ClozeRegExp;
+  }
+});
+
+// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNote.js
+var require_ClozeNote = __commonJS({
+  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNote.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ClozeNote = void 0;
+    var ClozeNote = class {
+      /**
+       * Creates a new ClozeNote instance.
+       *
+       * @param raw The raw text of the cloze note before processing.
+       */
+      constructor(raw, patterns) {
+        this._raw = raw;
+        const { clozeDeletions, numCards } = this.initParsing(raw, patterns);
+        this._clozeDeletions = clozeDeletions;
+        this._numCards = numCards;
+      }
+      get raw() {
+        return this._raw;
+      }
+      get numCards() {
+        return this._numCards;
+      }
+    };
+    exports.ClozeNote = ClozeNote;
+  }
+});
+
+// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNoteClassic.js
+var require_ClozeNoteClassic = __commonJS({
+  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNoteClassic.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ClozeNoteClassic = void 0;
+    var ClozeNote_1 = require_ClozeNote();
+    var utils_1 = require_utils();
+    var ClozeTypeEnum_1 = require_ClozeTypeEnum();
+    var ClozeNoteClassic = class extends ClozeNote_1.ClozeNote {
+      constructor(raw, patterns) {
+        super(raw, patterns);
+      }
+      get clozeType() {
+        return ClozeTypeEnum_1.ClozeTypeEnum.CLASSIC;
+      }
+      initParsing(rawNote, patterns) {
+        let clozeDeletions = [];
+        let numCards = 0;
+        patterns.forEach((pattern) => {
+          const regex = pattern.getClozeRegex(ClozeTypeEnum_1.ClozeTypeEnum.CLASSIC);
+          let match2;
+          while (match2 = regex.exec(rawNote)) {
+            if (!match2.seq) {
+              break;
+            }
+            let newCloze = {
+              raw: match2.raw,
+              answer: match2.answer,
+              seq: parseInt(match2.seq),
+              hint: match2.hint
+            };
+            clozeDeletions.push(newCloze);
+            if (numCards < newCloze.seq) {
+              numCards = newCloze.seq;
+            }
+          }
+        });
+        return { clozeDeletions, numCards };
+      }
+      getCardFront(cardIndex, formatter) {
+        if (cardIndex >= this._numCards || cardIndex < 0) {
+          throw new Error(`Card ${cardIndex} does not exist`);
+        }
+        if (!formatter) {
+          formatter = new utils_1.simpleFormatter();
+        }
+        let frontText = this.raw;
+        for (const deletion of this._clozeDeletions) {
+          if (deletion.seq !== cardIndex + 1) {
+            frontText = frontText.replace(deletion.raw, deletion.answer);
+            continue;
+          }
+          frontText = frontText.replace(deletion.raw, formatter.asking(deletion.answer, deletion.hint));
+        }
+        return frontText;
+      }
+      getCardBack(cardIndex, formatter) {
+        if (cardIndex >= this._numCards || cardIndex < 0) {
+          throw new Error(`Card ${cardIndex} does not exist`);
+        }
+        if (!formatter) {
+          formatter = new utils_1.simpleFormatter();
+        }
+        let backText = this.raw;
+        for (const deletion of this._clozeDeletions) {
+          if (deletion.seq === cardIndex + 1) {
+            backText = backText.replace(deletion.raw, formatter.showingAnswer(deletion.answer, deletion.hint));
+          } else {
+            backText = backText.replace(deletion.raw, deletion.answer);
+          }
+        }
+        return backText;
+      }
+    };
+    exports.ClozeNoteClassic = ClozeNoteClassic;
+  }
+});
+
+// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNoteOL.js
+var require_ClozeNoteOL = __commonJS({
+  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNoteOL.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ClozeNoteOL = void 0;
+    var ClozeNote_1 = require_ClozeNote();
+    var utils_1 = require_utils();
+    var ClozeTypeEnum_1 = require_ClozeTypeEnum();
+    var ClozeNoteOL = class extends ClozeNote_1.ClozeNote {
+      constructor(raw, patterns) {
+        super(raw, patterns);
+      }
+      get clozeType() {
+        return ClozeTypeEnum_1.ClozeTypeEnum.OVERLAPPING;
+      }
+      initParsing(rawNote, patterns) {
+        let clozeDeletions = [];
+        let numCards = 0;
+        patterns.forEach((pattern) => {
+          const regex = pattern.getClozeRegex(ClozeTypeEnum_1.ClozeTypeEnum.OVERLAPPING);
+          let match2;
+          while (match2 = regex.exec(rawNote)) {
+            if (!match2.seq) {
+              break;
+            }
+            let newCloze = {
+              raw: match2.raw,
+              answer: match2.answer,
+              seq: match2.seq,
+              hint: match2.hint
+            };
+            clozeDeletions.push(newCloze);
+            if (numCards < newCloze.seq.length) {
+              numCards = newCloze.seq.length;
+            }
+          }
+        });
+        return { clozeDeletions, numCards };
+      }
+      getCardFront(cardIndex, formatter) {
+        if (cardIndex >= this._numCards || cardIndex < 0) {
+          throw new Error(`Card ${cardIndex} does not exist`);
+        }
+        if (!formatter) {
+          formatter = new utils_1.simpleFormatter();
+        }
+        let frontText = this.raw;
+        for (const deletion of this._clozeDeletions) {
+          let clozeAction = "s";
+          if (cardIndex < deletion.seq.length) {
+            clozeAction = deletion.seq[cardIndex];
+          }
+          switch (clozeAction) {
+            case "a":
+              frontText = frontText.replace(deletion.raw, formatter.asking(deletion.answer, deletion.hint));
+              break;
+            case "h":
+              frontText = frontText.replace(deletion.raw, formatter.hiding(deletion.answer, deletion.hint));
+              break;
+            case "s":
+              frontText = frontText.replace(deletion.raw, deletion.answer);
+              break;
+          }
+        }
+        return frontText;
+      }
+      getCardBack(cardIndex, formatter) {
+        if (cardIndex >= this._numCards || cardIndex < 0) {
+          throw new Error(`Card ${cardIndex} does not exist`);
+        }
+        if (!formatter) {
+          formatter = new utils_1.simpleFormatter();
+        }
+        let backText = this.raw;
+        for (const deletion of this._clozeDeletions) {
+          let clozeAction = "s";
+          if (cardIndex < deletion.seq.length) {
+            clozeAction = deletion.seq[cardIndex];
+          }
+          switch (clozeAction) {
+            case "a":
+              backText = backText.replace(deletion.raw, formatter.showingAnswer(deletion.answer, deletion.hint));
+              break;
+            case "h":
+              backText = backText.replace(deletion.raw, formatter.hiding(deletion.answer, deletion.hint));
+              break;
+            case "s":
+              backText = backText.replace(deletion.raw, deletion.answer);
+              break;
+          }
+        }
+        return backText;
+      }
+    };
+    exports.ClozeNoteOL = ClozeNoteOL;
+  }
+});
+
+// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNoteSimple.js
+var require_ClozeNoteSimple = __commonJS({
+  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNoteSimple.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ClozeNoteSimple = void 0;
+    var ClozeNote_1 = require_ClozeNote();
+    var ClozeTypeEnum_1 = require_ClozeTypeEnum();
+    var utils_1 = require_utils();
+    var ClozeNoteSimple = class extends ClozeNote_1.ClozeNote {
+      constructor(raw, patterns) {
+        super(raw, patterns);
+      }
+      get clozeType() {
+        return ClozeTypeEnum_1.ClozeTypeEnum.SIMPLE;
+      }
+      initParsing(rawNote, patterns) {
+        let clozeDeletions = [];
+        let numCards = 0;
+        patterns.forEach((pattern) => {
+          const regex = pattern.getClozeRegex(ClozeTypeEnum_1.ClozeTypeEnum.SIMPLE);
+          let match2;
+          while (match2 = regex.exec(rawNote)) {
+            numCards++;
+            let newCloze = {
+              raw: match2.raw,
+              answer: match2.answer,
+              seq: numCards,
+              hint: match2.hint
+            };
+            clozeDeletions.push(newCloze);
+          }
+        });
+        return { clozeDeletions, numCards };
+      }
+      getCardFront(cardIndex, formatter) {
+        if (cardIndex >= this._numCards || cardIndex < 0) {
+          throw new Error(`Card ${cardIndex} does not exist`);
+        }
+        if (!formatter) {
+          formatter = new utils_1.simpleFormatter();
+        }
+        let frontText = this.raw;
+        for (const deletion of this._clozeDeletions) {
+          if (deletion.seq !== cardIndex + 1) {
+            frontText = frontText.replace(deletion.raw, deletion.answer);
+            continue;
+          }
+          frontText = frontText.replace(deletion.raw, formatter.asking(deletion.answer, deletion.hint));
+        }
+        return frontText;
+      }
+      getCardBack(cardIndex, formatter) {
+        if (cardIndex >= this._numCards || cardIndex < 0) {
+          throw new Error(`Card ${cardIndex} does not exist`);
+        }
+        if (!formatter) {
+          formatter = new utils_1.simpleFormatter();
+        }
+        let backText = this.raw;
+        for (const deletion of this._clozeDeletions) {
+          if (deletion.seq === cardIndex + 1) {
+            backText = backText.replace(deletion.raw, formatter.showingAnswer(deletion.answer, deletion.hint));
+          } else {
+            backText = backText.replace(deletion.raw, deletion.answer);
+          }
+        }
+        return backText;
+      }
+    };
+    exports.ClozeNoteSimple = ClozeNoteSimple;
+  }
+});
+
+// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeTypeEnum.js
+var require_ClozeTypeEnum = __commonJS({
+  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeTypeEnum.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.NoteClassByClozeType = exports.ClozeTypesPriority = exports.ClozeTypeEnum = void 0;
+    var ClozeNoteClassic_1 = require_ClozeNoteClassic();
+    var ClozeNoteOL_1 = require_ClozeNoteOL();
+    var ClozeNoteSimple_1 = require_ClozeNoteSimple();
+    var ClozeTypeEnum;
+    (function(ClozeTypeEnum2) {
+      ClozeTypeEnum2["CLASSIC"] = "classic";
+      ClozeTypeEnum2["OVERLAPPING"] = "overlapping";
+      ClozeTypeEnum2["SIMPLE"] = "simple";
+    })(ClozeTypeEnum || (exports.ClozeTypeEnum = ClozeTypeEnum = {}));
+    exports.ClozeTypesPriority = [
+      ClozeTypeEnum.CLASSIC,
+      ClozeTypeEnum.OVERLAPPING,
+      ClozeTypeEnum.SIMPLE
+      // Cloze Simple must be the last one because it is a subset of Cloze Classic and Cloze Overlapping
+    ];
+    exports.NoteClassByClozeType = {
+      [ClozeTypeEnum.CLASSIC]: ClozeNoteClassic_1.ClozeNoteClassic,
+      [ClozeTypeEnum.OVERLAPPING]: ClozeNoteOL_1.ClozeNoteOL,
+      [ClozeTypeEnum.SIMPLE]: ClozeNoteSimple_1.ClozeNoteSimple
+    };
+  }
+});
+
+// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozePattern.js
+var require_ClozePattern = __commonJS({
+  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozePattern.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ClozePattern = void 0;
+    var utils_1 = require_utils();
+    var ClozeRegExp_1 = require_ClozeRegExp();
+    var ClozeFieldEnum_1 = require_ClozeFieldEnum();
+    var ClozeTypeEnum_1 = require_ClozeTypeEnum();
+    var numPatternRegex = new RegExp(`\\[(?:(?:\\\\\\])?[^\\]]?)+?\\d+(?:(?:\\\\\\])?[^\\]]?)+?\\]`);
+    var hintPatternRegex = new RegExp(`\\[(?:(?:\\\\\\])?[^\\]]?)+?hint(?:(?:\\\\\\])?[^\\]]?)+?\\]`);
+    var answerKeyword = `answer`;
+    var ClozePattern = class _ClozePattern {
+      constructor(raw) {
+        this.clozeRegexByType = {
+          [ClozeTypeEnum_1.ClozeTypeEnum.CLASSIC]: void 0,
+          [ClozeTypeEnum_1.ClozeTypeEnum.OVERLAPPING]: void 0,
+          [ClozeTypeEnum_1.ClozeTypeEnum.SIMPLE]: void 0
+        };
+        this.generateClozeRegexByType = {
+          [ClozeTypeEnum_1.ClozeTypeEnum.CLASSIC]: this.generateClozeClassicRegex,
+          [ClozeTypeEnum_1.ClozeTypeEnum.OVERLAPPING]: this.generateClozeOLRegex,
+          [ClozeTypeEnum_1.ClozeTypeEnum.SIMPLE]: this.generateClozeSimpleRegex
+        };
+        this._raw = raw;
+        let _numMatch = numPatternRegex.exec(raw);
+        let _hintMatch = hintPatternRegex.exec(raw);
+        if (!_numMatch) {
+          throw new Error("No cloze number pattern found");
+        }
+        if (!_hintMatch) {
+          throw new Error("No cloze hint pattern found");
+        }
+        if (raw.indexOf(answerKeyword) == -1) {
+          throw new Error(`No answer keyword (${answerKeyword}) found in the pattern.`);
+        }
+        this.numPattern = _numMatch;
+        this.hintPattern = _hintMatch;
+        this.numRegex = _ClozePattern.processPattern(_numMatch[0], (text) => text.replace(/\d+/g, "(\\d+)"));
+        this.seqRegex = _ClozePattern.processPattern(_numMatch[0], (text) => text.replace(/\d+/g, "([ash]+)"));
+        this.hintRegex = _ClozePattern.processPattern(_hintMatch[0], (text) => text.replace(/hint/g, "(.+?)"));
+        this.hintRegex = "(?:" + this.hintRegex + ")?";
+        this._clozeFieldOrder = [ClozeFieldEnum_1.ClozeFieldEnum.answer, ClozeFieldEnum_1.ClozeFieldEnum.hint, ClozeFieldEnum_1.ClozeFieldEnum.seq];
+        let positions2 = {
+          [ClozeFieldEnum_1.ClozeFieldEnum.answer]: raw.indexOf(answerKeyword),
+          [ClozeFieldEnum_1.ClozeFieldEnum.hint]: this.hintPattern.index,
+          [ClozeFieldEnum_1.ClozeFieldEnum.seq]: this.numPattern.index
+        };
+        this._clozeFieldOrder.sort((a2, b2) => positions2[a2] - positions2[b2]);
+      }
+      static processPattern(text, rplc) {
+        let ans = text.substring(1, text.length - 1);
+        ans = ans.replace(/\\\[/g, "[").replace(/\\]/g, "]");
+        ans = (0, utils_1.escapeRegexString)(ans);
+        ans = rplc(ans);
+        return ans;
+      }
+      generateClozeRegexStr(first, firstReplace, second, secondReplace) {
+        let begin = this._raw.slice(0, first.index);
+        let middle = this._raw.slice(first.index + first[0].length, second.index);
+        let ending = this._raw.slice(second.index + second[0].length, this._raw.length);
+        let regexStr = (0, utils_1.escapeRegexString)(begin) + firstReplace + (0, utils_1.escapeRegexString)(middle) + secondReplace + (0, utils_1.escapeRegexString)(ending);
+        regexStr = regexStr.replace(answerKeyword, "(.+?)");
+        return regexStr;
+      }
+      generateClozeSimpleRegex(pattern) {
+        let regexStr;
+        if (pattern.numPattern.index < pattern.hintPattern.index) {
+          regexStr = pattern.generateClozeRegexStr(pattern.numPattern, "", pattern.hintPattern, pattern.hintRegex);
+        } else {
+          regexStr = pattern.generateClozeRegexStr(pattern.hintPattern, pattern.hintRegex, pattern.numPattern, "");
+        }
+        let clozeFieldsOrderWithoutSeq = pattern._clozeFieldOrder.filter((x2) => x2 != ClozeFieldEnum_1.ClozeFieldEnum.seq);
+        return new ClozeRegExp_1.ClozeRegExp(regexStr, clozeFieldsOrderWithoutSeq, "g");
+      }
+      generateClozeClassicRegex(pattern) {
+        let regexStr;
+        if (pattern.numPattern.index < pattern.hintPattern.index) {
+          regexStr = pattern.generateClozeRegexStr(pattern.numPattern, pattern.numRegex, pattern.hintPattern, pattern.hintRegex);
+        } else {
+          regexStr = pattern.generateClozeRegexStr(pattern.hintPattern, pattern.hintRegex, pattern.numPattern, pattern.numRegex);
+        }
+        return new ClozeRegExp_1.ClozeRegExp(regexStr, pattern._clozeFieldOrder, "g");
+      }
+      generateClozeOLRegex(pattern) {
+        let regexStr;
+        if (pattern.numPattern.index < pattern.hintPattern.index) {
+          regexStr = pattern.generateClozeRegexStr(pattern.numPattern, pattern.seqRegex, pattern.hintPattern, pattern.hintRegex);
+        } else {
+          regexStr = pattern.generateClozeRegexStr(pattern.hintPattern, pattern.hintRegex, pattern.numPattern, pattern.seqRegex);
+        }
+        return new ClozeRegExp_1.ClozeRegExp(regexStr, pattern._clozeFieldOrder, "g");
+      }
+      get clozeFieldsOrder() {
+        return this._clozeFieldOrder;
+      }
+      getClozeRegex(clozeType) {
+        let clozeRegex = this.clozeRegexByType[clozeType];
+        if (clozeRegex != void 0) {
+          clozeRegex.regex.lastIndex = 0;
+          return clozeRegex;
+        }
+        clozeRegex = this.generateClozeRegexByType[clozeType](this);
+        this.clozeRegexByType[clozeType] = clozeRegex;
+        return clozeRegex;
+      }
+      hasClozeType(text, clozeType) {
+        for (const priorityType of ClozeTypeEnum_1.ClozeTypesPriority) {
+          if (this.getClozeRegex(priorityType).test(text)) {
+            return clozeType == priorityType;
+          }
+        }
+        return false;
+      }
+      getClozeTypes(text) {
+        const clozeTypes = [];
+        for (const priorityType of ClozeTypeEnum_1.ClozeTypesPriority) {
+          if (this.getClozeRegex(priorityType).test(text)) {
+            clozeTypes.push(priorityType);
+          }
+        }
+        return clozeTypes;
+      }
+      getMainClozeType(text) {
+        for (const priorityType of ClozeTypeEnum_1.ClozeTypesPriority) {
+          if (this.getClozeRegex(priorityType).test(text)) {
+            return priorityType;
+          }
+        }
+        return null;
+      }
+    };
+    exports.ClozePattern = ClozePattern;
+  }
+});
+
+// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeCrafter.js
+var require_ClozeCrafter = __commonJS({
+  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeCrafter.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ClozeCrafter = void 0;
+    var ClozePattern_1 = require_ClozePattern();
+    var ClozeTypeEnum_1 = require_ClozeTypeEnum();
+    var ClozeCrafter3 = class {
+      constructor(patterns) {
+        this.patterns = patterns.map((patternStr) => new ClozePattern_1.ClozePattern(patternStr));
+      }
+      createClozeNote(text) {
+        const noteType = this.getNoteType(text);
+        if (noteType === null) {
+          return null;
+        }
+        const selectedClass = ClozeTypeEnum_1.NoteClassByClozeType[noteType];
+        const clozeNote = new selectedClass(text, this.patterns);
+        return clozeNote;
+      }
+      getNoteType(text) {
+        let noteType = null;
+        for (const pattern of this.patterns) {
+          const currentType = pattern.getMainClozeType(text);
+          if (currentType !== null && (noteType === null || ClozeTypeEnum_1.ClozeTypesPriority.indexOf(currentType) < ClozeTypeEnum_1.ClozeTypesPriority.indexOf(noteType))) {
+            noteType = currentType;
+          }
+        }
+        return noteType;
+      }
+      isClozeNote(text) {
+        return this.getNoteType(text) !== null;
+      }
+    };
+    exports.ClozeCrafter = ClozeCrafter3;
+  }
+});
+
+// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/index.js
+var require_dist = __commonJS({
+  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/index.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ClozeTypesPriority = exports.ClozeTypeEnum = exports.ClozeCrafter = void 0;
+    var ClozeCrafter_1 = require_ClozeCrafter();
+    Object.defineProperty(exports, "ClozeCrafter", { enumerable: true, get: function() {
+      return ClozeCrafter_1.ClozeCrafter;
+    } });
+    var ClozeTypeEnum_1 = require_ClozeTypeEnum();
+    Object.defineProperty(exports, "ClozeTypeEnum", { enumerable: true, get: function() {
+      return ClozeTypeEnum_1.ClozeTypeEnum;
+    } });
+    Object.defineProperty(exports, "ClozeTypesPriority", { enumerable: true, get: function() {
+      return ClozeTypeEnum_1.ClozeTypesPriority;
+    } });
+  }
+});
 
 // node_modules/.pnpm/moment@2.30.1/node_modules/moment/moment.js
 var require_moment = __commonJS({
@@ -4039,605 +4642,6 @@ var require_moment = __commonJS({
   }
 });
 
-// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/utils.js
-var require_utils = __commonJS({
-  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/utils.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.simpleFormatter = exports.htmlFormatter = exports.escapeRegexString = void 0;
-    function escapeRegexString(str) {
-      return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    }
-    exports.escapeRegexString = escapeRegexString;
-    var htmlFormatter = class {
-      asking(answer, hint) {
-        return `<span style='color:#2196f3'>${!hint ? "[...]" : `[${hint}]`}</span>`;
-      }
-      showingAnswer(answer, hint) {
-        return `<span style='color:#2196f3'>${answer}</span>`;
-      }
-      hiding(answer, hint) {
-        return `${!hint ? "..." : `[${hint}]`} `;
-      }
-    };
-    exports.htmlFormatter = htmlFormatter;
-    var simpleFormatter = class {
-      asking(answer, hint) {
-        return `${!hint ? "[...]" : `[${hint}]`}`;
-      }
-      showingAnswer(answer, hint) {
-        return answer;
-      }
-      hiding(answer, hint) {
-        return `...`;
-      }
-    };
-    exports.simpleFormatter = simpleFormatter;
-  }
-});
-
-// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeFieldEnum.js
-var require_ClozeFieldEnum = __commonJS({
-  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeFieldEnum.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.ClozeFieldEnum = void 0;
-    var ClozeFieldEnum;
-    (function(ClozeFieldEnum2) {
-      ClozeFieldEnum2["seq"] = "seq";
-      ClozeFieldEnum2["answer"] = "answer";
-      ClozeFieldEnum2["hint"] = "hint";
-    })(ClozeFieldEnum || (exports.ClozeFieldEnum = ClozeFieldEnum = {}));
-  }
-});
-
-// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeRegExp.js
-var require_ClozeRegExp = __commonJS({
-  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeRegExp.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.ClozeRegExp = void 0;
-    var ClozeFieldEnum_1 = require_ClozeFieldEnum();
-    var ClozeRegExp = class {
-      constructor(pattern, clozeFieldsOrder, flags) {
-        this.regex = new RegExp(pattern, flags);
-        this.clozeFieldsOrder = clozeFieldsOrder;
-      }
-      exec(str) {
-        let match2 = this.regex.exec(str);
-        if (!match2) {
-          return null;
-        }
-        if (this.clozeFieldsOrder.indexOf(ClozeFieldEnum_1.ClozeFieldEnum.answer) == -1) {
-          throw new Error("Cloze text not found in clozeFieldsOrder");
-        }
-        if (this.clozeFieldsOrder.indexOf(ClozeFieldEnum_1.ClozeFieldEnum.hint) == -1) {
-          throw new Error("Cloze hint not found in clozeFieldsOrder");
-        }
-        if (this.clozeFieldsOrder.indexOf(ClozeFieldEnum_1.ClozeFieldEnum.seq) == -1) {
-          match2.seq = null;
-        } else {
-          match2.seq = match2[this.clozeFieldsOrder.indexOf(ClozeFieldEnum_1.ClozeFieldEnum.seq) + 1];
-        }
-        match2.raw = match2[0];
-        match2.answer = match2[this.clozeFieldsOrder.indexOf(ClozeFieldEnum_1.ClozeFieldEnum.answer) + 1];
-        match2.hint = match2[this.clozeFieldsOrder.indexOf(ClozeFieldEnum_1.ClozeFieldEnum.hint) + 1];
-        return match2;
-      }
-      test(str) {
-        return this.regex.test(str);
-      }
-    };
-    exports.ClozeRegExp = ClozeRegExp;
-  }
-});
-
-// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNote.js
-var require_ClozeNote = __commonJS({
-  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNote.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.ClozeNote = void 0;
-    var ClozeNote = class {
-      /**
-       * Creates a new ClozeNote instance.
-       *
-       * @param raw The raw text of the cloze note before processing.
-       */
-      constructor(raw, patterns) {
-        this._raw = raw;
-        const { clozeDeletions, numCards } = this.initParsing(raw, patterns);
-        this._clozeDeletions = clozeDeletions;
-        this._numCards = numCards;
-      }
-      get raw() {
-        return this._raw;
-      }
-      get numCards() {
-        return this._numCards;
-      }
-    };
-    exports.ClozeNote = ClozeNote;
-  }
-});
-
-// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNoteClassic.js
-var require_ClozeNoteClassic = __commonJS({
-  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNoteClassic.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.ClozeNoteClassic = void 0;
-    var ClozeNote_1 = require_ClozeNote();
-    var utils_1 = require_utils();
-    var ClozeTypeEnum_1 = require_ClozeTypeEnum();
-    var ClozeNoteClassic = class extends ClozeNote_1.ClozeNote {
-      constructor(raw, patterns) {
-        super(raw, patterns);
-      }
-      get clozeType() {
-        return ClozeTypeEnum_1.ClozeTypeEnum.CLASSIC;
-      }
-      initParsing(rawNote, patterns) {
-        let clozeDeletions = [];
-        let numCards = 0;
-        patterns.forEach((pattern) => {
-          const regex = pattern.getClozeRegex(ClozeTypeEnum_1.ClozeTypeEnum.CLASSIC);
-          let match2;
-          while (match2 = regex.exec(rawNote)) {
-            if (!match2.seq) {
-              break;
-            }
-            let newCloze = {
-              raw: match2.raw,
-              answer: match2.answer,
-              seq: parseInt(match2.seq),
-              hint: match2.hint
-            };
-            clozeDeletions.push(newCloze);
-            if (numCards < newCloze.seq) {
-              numCards = newCloze.seq;
-            }
-          }
-        });
-        return { clozeDeletions, numCards };
-      }
-      getCardFront(cardIndex, formatter) {
-        if (cardIndex >= this._numCards || cardIndex < 0) {
-          throw new Error(`Card ${cardIndex} does not exist`);
-        }
-        if (!formatter) {
-          formatter = new utils_1.simpleFormatter();
-        }
-        let frontText = this.raw;
-        for (const deletion of this._clozeDeletions) {
-          if (deletion.seq !== cardIndex + 1) {
-            frontText = frontText.replace(deletion.raw, deletion.answer);
-            continue;
-          }
-          frontText = frontText.replace(deletion.raw, formatter.asking(deletion.answer, deletion.hint));
-        }
-        return frontText;
-      }
-      getCardBack(cardIndex, formatter) {
-        if (cardIndex >= this._numCards || cardIndex < 0) {
-          throw new Error(`Card ${cardIndex} does not exist`);
-        }
-        if (!formatter) {
-          formatter = new utils_1.simpleFormatter();
-        }
-        let backText = this.raw;
-        for (const deletion of this._clozeDeletions) {
-          if (deletion.seq === cardIndex + 1) {
-            backText = backText.replace(deletion.raw, formatter.showingAnswer(deletion.answer, deletion.hint));
-          } else {
-            backText = backText.replace(deletion.raw, deletion.answer);
-          }
-        }
-        return backText;
-      }
-    };
-    exports.ClozeNoteClassic = ClozeNoteClassic;
-  }
-});
-
-// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNoteOL.js
-var require_ClozeNoteOL = __commonJS({
-  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNoteOL.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.ClozeNoteOL = void 0;
-    var ClozeNote_1 = require_ClozeNote();
-    var utils_1 = require_utils();
-    var ClozeTypeEnum_1 = require_ClozeTypeEnum();
-    var ClozeNoteOL = class extends ClozeNote_1.ClozeNote {
-      constructor(raw, patterns) {
-        super(raw, patterns);
-      }
-      get clozeType() {
-        return ClozeTypeEnum_1.ClozeTypeEnum.OVERLAPPING;
-      }
-      initParsing(rawNote, patterns) {
-        let clozeDeletions = [];
-        let numCards = 0;
-        patterns.forEach((pattern) => {
-          const regex = pattern.getClozeRegex(ClozeTypeEnum_1.ClozeTypeEnum.OVERLAPPING);
-          let match2;
-          while (match2 = regex.exec(rawNote)) {
-            if (!match2.seq) {
-              break;
-            }
-            let newCloze = {
-              raw: match2.raw,
-              answer: match2.answer,
-              seq: match2.seq,
-              hint: match2.hint
-            };
-            clozeDeletions.push(newCloze);
-            if (numCards < newCloze.seq.length) {
-              numCards = newCloze.seq.length;
-            }
-          }
-        });
-        return { clozeDeletions, numCards };
-      }
-      getCardFront(cardIndex, formatter) {
-        if (cardIndex >= this._numCards || cardIndex < 0) {
-          throw new Error(`Card ${cardIndex} does not exist`);
-        }
-        if (!formatter) {
-          formatter = new utils_1.simpleFormatter();
-        }
-        let frontText = this.raw;
-        for (const deletion of this._clozeDeletions) {
-          let clozeAction = "s";
-          if (cardIndex < deletion.seq.length) {
-            clozeAction = deletion.seq[cardIndex];
-          }
-          switch (clozeAction) {
-            case "a":
-              frontText = frontText.replace(deletion.raw, formatter.asking(deletion.answer, deletion.hint));
-              break;
-            case "h":
-              frontText = frontText.replace(deletion.raw, formatter.hiding(deletion.answer, deletion.hint));
-              break;
-            case "s":
-              frontText = frontText.replace(deletion.raw, deletion.answer);
-              break;
-          }
-        }
-        return frontText;
-      }
-      getCardBack(cardIndex, formatter) {
-        if (cardIndex >= this._numCards || cardIndex < 0) {
-          throw new Error(`Card ${cardIndex} does not exist`);
-        }
-        if (!formatter) {
-          formatter = new utils_1.simpleFormatter();
-        }
-        let backText = this.raw;
-        for (const deletion of this._clozeDeletions) {
-          let clozeAction = "s";
-          if (cardIndex < deletion.seq.length) {
-            clozeAction = deletion.seq[cardIndex];
-          }
-          switch (clozeAction) {
-            case "a":
-              backText = backText.replace(deletion.raw, formatter.showingAnswer(deletion.answer, deletion.hint));
-              break;
-            case "h":
-              backText = backText.replace(deletion.raw, formatter.hiding(deletion.answer, deletion.hint));
-              break;
-            case "s":
-              backText = backText.replace(deletion.raw, deletion.answer);
-              break;
-          }
-        }
-        return backText;
-      }
-    };
-    exports.ClozeNoteOL = ClozeNoteOL;
-  }
-});
-
-// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNoteSimple.js
-var require_ClozeNoteSimple = __commonJS({
-  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeNoteSimple.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.ClozeNoteSimple = void 0;
-    var ClozeNote_1 = require_ClozeNote();
-    var ClozeTypeEnum_1 = require_ClozeTypeEnum();
-    var utils_1 = require_utils();
-    var ClozeNoteSimple = class extends ClozeNote_1.ClozeNote {
-      constructor(raw, patterns) {
-        super(raw, patterns);
-      }
-      get clozeType() {
-        return ClozeTypeEnum_1.ClozeTypeEnum.SIMPLE;
-      }
-      initParsing(rawNote, patterns) {
-        let clozeDeletions = [];
-        let numCards = 0;
-        patterns.forEach((pattern) => {
-          const regex = pattern.getClozeRegex(ClozeTypeEnum_1.ClozeTypeEnum.SIMPLE);
-          let match2;
-          while (match2 = regex.exec(rawNote)) {
-            numCards++;
-            let newCloze = {
-              raw: match2.raw,
-              answer: match2.answer,
-              seq: numCards,
-              hint: match2.hint
-            };
-            clozeDeletions.push(newCloze);
-          }
-        });
-        return { clozeDeletions, numCards };
-      }
-      getCardFront(cardIndex, formatter) {
-        if (cardIndex >= this._numCards || cardIndex < 0) {
-          throw new Error(`Card ${cardIndex} does not exist`);
-        }
-        if (!formatter) {
-          formatter = new utils_1.simpleFormatter();
-        }
-        let frontText = this.raw;
-        for (const deletion of this._clozeDeletions) {
-          if (deletion.seq !== cardIndex + 1) {
-            frontText = frontText.replace(deletion.raw, deletion.answer);
-            continue;
-          }
-          frontText = frontText.replace(deletion.raw, formatter.asking(deletion.answer, deletion.hint));
-        }
-        return frontText;
-      }
-      getCardBack(cardIndex, formatter) {
-        if (cardIndex >= this._numCards || cardIndex < 0) {
-          throw new Error(`Card ${cardIndex} does not exist`);
-        }
-        if (!formatter) {
-          formatter = new utils_1.simpleFormatter();
-        }
-        let backText = this.raw;
-        for (const deletion of this._clozeDeletions) {
-          if (deletion.seq === cardIndex + 1) {
-            backText = backText.replace(deletion.raw, formatter.showingAnswer(deletion.answer, deletion.hint));
-          } else {
-            backText = backText.replace(deletion.raw, deletion.answer);
-          }
-        }
-        return backText;
-      }
-    };
-    exports.ClozeNoteSimple = ClozeNoteSimple;
-  }
-});
-
-// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeTypeEnum.js
-var require_ClozeTypeEnum = __commonJS({
-  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeTypeEnum.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.NoteClassByClozeType = exports.ClozeTypesPriority = exports.ClozeTypeEnum = void 0;
-    var ClozeNoteClassic_1 = require_ClozeNoteClassic();
-    var ClozeNoteOL_1 = require_ClozeNoteOL();
-    var ClozeNoteSimple_1 = require_ClozeNoteSimple();
-    var ClozeTypeEnum;
-    (function(ClozeTypeEnum2) {
-      ClozeTypeEnum2["CLASSIC"] = "classic";
-      ClozeTypeEnum2["OVERLAPPING"] = "overlapping";
-      ClozeTypeEnum2["SIMPLE"] = "simple";
-    })(ClozeTypeEnum || (exports.ClozeTypeEnum = ClozeTypeEnum = {}));
-    exports.ClozeTypesPriority = [
-      ClozeTypeEnum.CLASSIC,
-      ClozeTypeEnum.OVERLAPPING,
-      ClozeTypeEnum.SIMPLE
-      // Cloze Simple must be the last one because it is a subset of Cloze Classic and Cloze Overlapping
-    ];
-    exports.NoteClassByClozeType = {
-      [ClozeTypeEnum.CLASSIC]: ClozeNoteClassic_1.ClozeNoteClassic,
-      [ClozeTypeEnum.OVERLAPPING]: ClozeNoteOL_1.ClozeNoteOL,
-      [ClozeTypeEnum.SIMPLE]: ClozeNoteSimple_1.ClozeNoteSimple
-    };
-  }
-});
-
-// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozePattern.js
-var require_ClozePattern = __commonJS({
-  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozePattern.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.ClozePattern = void 0;
-    var utils_1 = require_utils();
-    var ClozeRegExp_1 = require_ClozeRegExp();
-    var ClozeFieldEnum_1 = require_ClozeFieldEnum();
-    var ClozeTypeEnum_1 = require_ClozeTypeEnum();
-    var numPatternRegex = new RegExp(`\\[(?:(?:\\\\\\])?[^\\]]?)+?\\d+(?:(?:\\\\\\])?[^\\]]?)+?\\]`);
-    var hintPatternRegex = new RegExp(`\\[(?:(?:\\\\\\])?[^\\]]?)+?hint(?:(?:\\\\\\])?[^\\]]?)+?\\]`);
-    var answerKeyword = `answer`;
-    var ClozePattern = class _ClozePattern {
-      constructor(raw) {
-        this.clozeRegexByType = {
-          [ClozeTypeEnum_1.ClozeTypeEnum.CLASSIC]: void 0,
-          [ClozeTypeEnum_1.ClozeTypeEnum.OVERLAPPING]: void 0,
-          [ClozeTypeEnum_1.ClozeTypeEnum.SIMPLE]: void 0
-        };
-        this.generateClozeRegexByType = {
-          [ClozeTypeEnum_1.ClozeTypeEnum.CLASSIC]: this.generateClozeClassicRegex,
-          [ClozeTypeEnum_1.ClozeTypeEnum.OVERLAPPING]: this.generateClozeOLRegex,
-          [ClozeTypeEnum_1.ClozeTypeEnum.SIMPLE]: this.generateClozeSimpleRegex
-        };
-        this._raw = raw;
-        let _numMatch = numPatternRegex.exec(raw);
-        let _hintMatch = hintPatternRegex.exec(raw);
-        if (!_numMatch) {
-          throw new Error("No cloze number pattern found");
-        }
-        if (!_hintMatch) {
-          throw new Error("No cloze hint pattern found");
-        }
-        if (raw.indexOf(answerKeyword) == -1) {
-          throw new Error(`No answer keyword (${answerKeyword}) found in the pattern.`);
-        }
-        this.numPattern = _numMatch;
-        this.hintPattern = _hintMatch;
-        this.numRegex = _ClozePattern.processPattern(_numMatch[0], (text) => text.replace(/\d+/g, "(\\d+)"));
-        this.seqRegex = _ClozePattern.processPattern(_numMatch[0], (text) => text.replace(/\d+/g, "([ash]+)"));
-        this.hintRegex = _ClozePattern.processPattern(_hintMatch[0], (text) => text.replace(/hint/g, "(.+?)"));
-        this.hintRegex = "(?:" + this.hintRegex + ")?";
-        this._clozeFieldOrder = [ClozeFieldEnum_1.ClozeFieldEnum.answer, ClozeFieldEnum_1.ClozeFieldEnum.hint, ClozeFieldEnum_1.ClozeFieldEnum.seq];
-        let positions2 = {
-          [ClozeFieldEnum_1.ClozeFieldEnum.answer]: raw.indexOf(answerKeyword),
-          [ClozeFieldEnum_1.ClozeFieldEnum.hint]: this.hintPattern.index,
-          [ClozeFieldEnum_1.ClozeFieldEnum.seq]: this.numPattern.index
-        };
-        this._clozeFieldOrder.sort((a2, b2) => positions2[a2] - positions2[b2]);
-      }
-      static processPattern(text, rplc) {
-        let ans = text.substring(1, text.length - 1);
-        ans = ans.replace(/\\\[/g, "[").replace(/\\]/g, "]");
-        ans = (0, utils_1.escapeRegexString)(ans);
-        ans = rplc(ans);
-        return ans;
-      }
-      generateClozeRegexStr(first, firstReplace, second, secondReplace) {
-        let begin = this._raw.slice(0, first.index);
-        let middle = this._raw.slice(first.index + first[0].length, second.index);
-        let ending = this._raw.slice(second.index + second[0].length, this._raw.length);
-        let regexStr = (0, utils_1.escapeRegexString)(begin) + firstReplace + (0, utils_1.escapeRegexString)(middle) + secondReplace + (0, utils_1.escapeRegexString)(ending);
-        regexStr = regexStr.replace(answerKeyword, "(.+?)");
-        return regexStr;
-      }
-      generateClozeSimpleRegex(pattern) {
-        let regexStr;
-        if (pattern.numPattern.index < pattern.hintPattern.index) {
-          regexStr = pattern.generateClozeRegexStr(pattern.numPattern, "", pattern.hintPattern, pattern.hintRegex);
-        } else {
-          regexStr = pattern.generateClozeRegexStr(pattern.hintPattern, pattern.hintRegex, pattern.numPattern, "");
-        }
-        let clozeFieldsOrderWithoutSeq = pattern._clozeFieldOrder.filter((x2) => x2 != ClozeFieldEnum_1.ClozeFieldEnum.seq);
-        return new ClozeRegExp_1.ClozeRegExp(regexStr, clozeFieldsOrderWithoutSeq, "g");
-      }
-      generateClozeClassicRegex(pattern) {
-        let regexStr;
-        if (pattern.numPattern.index < pattern.hintPattern.index) {
-          regexStr = pattern.generateClozeRegexStr(pattern.numPattern, pattern.numRegex, pattern.hintPattern, pattern.hintRegex);
-        } else {
-          regexStr = pattern.generateClozeRegexStr(pattern.hintPattern, pattern.hintRegex, pattern.numPattern, pattern.numRegex);
-        }
-        return new ClozeRegExp_1.ClozeRegExp(regexStr, pattern._clozeFieldOrder, "g");
-      }
-      generateClozeOLRegex(pattern) {
-        let regexStr;
-        if (pattern.numPattern.index < pattern.hintPattern.index) {
-          regexStr = pattern.generateClozeRegexStr(pattern.numPattern, pattern.seqRegex, pattern.hintPattern, pattern.hintRegex);
-        } else {
-          regexStr = pattern.generateClozeRegexStr(pattern.hintPattern, pattern.hintRegex, pattern.numPattern, pattern.seqRegex);
-        }
-        return new ClozeRegExp_1.ClozeRegExp(regexStr, pattern._clozeFieldOrder, "g");
-      }
-      get clozeFieldsOrder() {
-        return this._clozeFieldOrder;
-      }
-      getClozeRegex(clozeType) {
-        let clozeRegex = this.clozeRegexByType[clozeType];
-        if (clozeRegex != void 0) {
-          clozeRegex.regex.lastIndex = 0;
-          return clozeRegex;
-        }
-        clozeRegex = this.generateClozeRegexByType[clozeType](this);
-        this.clozeRegexByType[clozeType] = clozeRegex;
-        return clozeRegex;
-      }
-      hasClozeType(text, clozeType) {
-        for (const priorityType of ClozeTypeEnum_1.ClozeTypesPriority) {
-          if (this.getClozeRegex(priorityType).test(text)) {
-            return clozeType == priorityType;
-          }
-        }
-        return false;
-      }
-      getClozeTypes(text) {
-        const clozeTypes = [];
-        for (const priorityType of ClozeTypeEnum_1.ClozeTypesPriority) {
-          if (this.getClozeRegex(priorityType).test(text)) {
-            clozeTypes.push(priorityType);
-          }
-        }
-        return clozeTypes;
-      }
-      getMainClozeType(text) {
-        for (const priorityType of ClozeTypeEnum_1.ClozeTypesPriority) {
-          if (this.getClozeRegex(priorityType).test(text)) {
-            return priorityType;
-          }
-        }
-        return null;
-      }
-    };
-    exports.ClozePattern = ClozePattern;
-  }
-});
-
-// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeCrafter.js
-var require_ClozeCrafter = __commonJS({
-  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/implementation/ClozeCrafter.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.ClozeCrafter = void 0;
-    var ClozePattern_1 = require_ClozePattern();
-    var ClozeTypeEnum_1 = require_ClozeTypeEnum();
-    var ClozeCrafter3 = class {
-      constructor(patterns) {
-        this.patterns = patterns.map((patternStr) => new ClozePattern_1.ClozePattern(patternStr));
-      }
-      createClozeNote(text) {
-        const noteType = this.getNoteType(text);
-        if (noteType === null) {
-          return null;
-        }
-        const selectedClass = ClozeTypeEnum_1.NoteClassByClozeType[noteType];
-        const clozeNote = new selectedClass(text, this.patterns);
-        return clozeNote;
-      }
-      getNoteType(text) {
-        let noteType = null;
-        for (const pattern of this.patterns) {
-          const currentType = pattern.getMainClozeType(text);
-          if (currentType !== null && (noteType === null || ClozeTypeEnum_1.ClozeTypesPriority.indexOf(currentType) < ClozeTypeEnum_1.ClozeTypesPriority.indexOf(noteType))) {
-            noteType = currentType;
-          }
-        }
-        return noteType;
-      }
-      isClozeNote(text) {
-        return this.getNoteType(text) !== null;
-      }
-    };
-    exports.ClozeCrafter = ClozeCrafter3;
-  }
-});
-
-// node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/index.js
-var require_dist = __commonJS({
-  "node_modules/.pnpm/clozecraft@0.4.0/node_modules/clozecraft/dist/index.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.ClozeTypesPriority = exports.ClozeTypeEnum = exports.ClozeCrafter = void 0;
-    var ClozeCrafter_1 = require_ClozeCrafter();
-    Object.defineProperty(exports, "ClozeCrafter", { enumerable: true, get: function() {
-      return ClozeCrafter_1.ClozeCrafter;
-    } });
-    var ClozeTypeEnum_1 = require_ClozeTypeEnum();
-    Object.defineProperty(exports, "ClozeTypeEnum", { enumerable: true, get: function() {
-      return ClozeTypeEnum_1.ClozeTypeEnum;
-    } });
-    Object.defineProperty(exports, "ClozeTypesPriority", { enumerable: true, get: function() {
-      return ClozeTypeEnum_1.ClozeTypesPriority;
-    } });
-  }
-});
-
 // node_modules/.pnpm/pagerank.js@1.0.2/node_modules/pagerank.js/lib/index.js
 var require_lib = __commonJS({
   "node_modules/.pnpm/pagerank.js@1.0.2/node_modules/pagerank.js/lib/index.js"(exports, module2) {
@@ -4740,10 +4744,10 @@ __export(main_exports, {
   default: () => SRPlugin
 });
 module.exports = __toCommonJS(main_exports);
-var import_obsidian39 = require("obsidian");
+var import_obsidian40 = require("obsidian");
 
 // src/command-manager.ts
-var import_obsidian33 = require("obsidian");
+var import_obsidian34 = require("obsidian");
 
 // src/lang/locale/en.ts
 var en = {
@@ -9237,6 +9241,9 @@ var RepetitionItem = class {
   }
 };
 
+// src/scheduling/flashcard-review-sequencer.ts
+var import_obsidian2 = require("obsidian");
+
 // src/data/constants.ts
 var SR_COMMENT_AND_WHITESPACE_FINDER = /\s?<!--SR:!.+?-->/g;
 var SM2_SCHEDULE_INFO_EXTRACTOR = /<!--SR:!(.+?),(\d+),(\d+),*(\d+)*-->/gm;
@@ -9259,6 +9266,19 @@ var DataStore = class _DataStore {
       throw new Error("there is no QuestionDataStore instance.");
     }
     return _DataStore.instance;
+  }
+};
+
+// src/data/data-structures/card/questions/question-type.ts
+var import_clozecraft = __toESM(require_dist());
+
+// src/data/data-store/base/data-store-algorithm.ts
+var DataStoreAlgorithm = class _DataStoreAlgorithm {
+  static getInstance() {
+    if (!_DataStoreAlgorithm.instance) {
+      throw new Error("there is no DataStoreAlgorithm instance.");
+    }
+    return _DataStoreAlgorithm.instance;
   }
 };
 
@@ -9424,373 +9444,6 @@ var TopicPathWithWs = class {
   }
   formatWithWs() {
     return `${this.preWhitespace}${this.topicPath.formatAsTag()}${this.postWhitespace}`;
-  }
-};
-
-// src/utils/dates.ts
-var import_moment = __toESM(require_moment());
-function formatDate(arg1, arg2, arg3, format = PREFERRED_DATE_FORMAT) {
-  let _date = null;
-  if (typeof arg1 === "number" && typeof arg2 === "number" && typeof arg3 === "number") {
-    _date = new Date(arg1, arg2 - 1, arg3);
-  } else if (typeof arg1 === "number") {
-    _date = new Date(arg1);
-  } else if (typeof arg1 === typeof /* @__PURE__ */ new Date()) {
-    _date = arg1;
-  }
-  if (!_date) return "";
-  let result = format;
-  result = result.replaceAll(/YYYY/g, _date.getFullYear().toString().padStart(4, "0"));
-  result = result.replaceAll(/MM/g, (_date.getMonth() + 1).toString().padStart(2, "0"));
-  result = result.replaceAll(/DD/g, _date.getDate().toString().padStart(2, "0"));
-  return result;
-}
-function formatDateWithMoment(ticks, format) {
-  return (0, import_moment.default)(ticks).format(format);
-}
-var LiveDateProvider = class {
-  constructor() {
-    this.dayBoundary = null;
-  }
-  get now() {
-    return (0, import_moment.default)();
-  }
-  get today() {
-    let result = (0, import_moment.default)().startOf("day");
-    if (this.dayBoundary && this.dayBoundary.hour !== 0 && this.dayBoundary.minute !== 0 && this.dayBoundary.second !== 0) {
-      const nowTime = (0, import_moment.default)();
-      const customDayBoundary = (0, import_moment.default)().hour(this.dayBoundary.hour).minute(this.dayBoundary.minute).second(this.dayBoundary.second).millisecond(0);
-      if (nowTime.isBefore(customDayBoundary)) {
-        result = (0, import_moment.default)().startOf("day").subtract(1, "day");
-      } else {
-        result = (0, import_moment.default)().startOf("day");
-      }
-    }
-    return result;
-  }
-  getDayBoundary() {
-    return this.dayBoundary;
-  }
-  setDayBoundary(dayBoundary) {
-    this.dayBoundary = dayBoundary;
-  }
-};
-var DateUtil = class {
-  static dateStrToMoment(str) {
-    return (0, import_moment.default)(str, ALLOWED_DATE_FORMATS);
-  }
-  static strToDayBoundary(str) {
-    const dayStr = str.split(":");
-    if (dayStr.length !== 3) {
-      return null;
-    }
-    const hour = parseInt(dayStr[0]);
-    if (hour < 0 || hour > 23 || Number.isNaN(hour)) {
-      return null;
-    }
-    const minute = parseInt(dayStr[1]);
-    if (minute < 0 || minute > 59 || Number.isNaN(minute)) {
-      return null;
-    }
-    const second = parseInt(dayStr[2]);
-    if (second < 0 || second > 59 || Number.isNaN(second)) {
-      return null;
-    }
-    const dayBoundary = {
-      hour,
-      minute,
-      second
-    };
-    return dayBoundary;
-  }
-};
-var globalDateProvider = new LiveDateProvider();
-
-// src/scheduling/flashcard-review-sequencer.ts
-var DeckStats = class {
-  constructor(totalCount, dueCount, newCount, cardsInQueueCount, dueCardsInQueueOfThisDeckCount, newCardsInQueueOfThisDeckCount, cardsInQueueOfThisDeckCount, subDecksInQueueOfThisDeckCount, decksInQueueOfThisDeckCount) {
-    this.dueCount = dueCount;
-    this.newCount = newCount;
-    this.totalCount = totalCount;
-    this.cardsInQueueCount = cardsInQueueCount;
-    this.dueCardsInQueueOfThisDeckCount = dueCardsInQueueOfThisDeckCount;
-    this.newCardsInQueueOfThisDeckCount = newCardsInQueueOfThisDeckCount;
-    this.cardsInQueueOfThisDeckCount = cardsInQueueOfThisDeckCount;
-    this.subDecksInQueueOfThisDeckCount = subDecksInQueueOfThisDeckCount;
-    this.decksInQueueOfThisDeckCount = decksInQueueOfThisDeckCount;
-  }
-};
-var FlashcardReviewSequencer = class {
-  constructor(reviewMode, cardSequencer, settings, srsAlgorithm, questionPostponementList, dueDateFlashcardHistogram) {
-    this.pendingCards = [];
-    this.currentTopicPath = TopicPath.emptyPath;
-    this.reviewMode = reviewMode;
-    this.cardSequencer = cardSequencer;
-    this.settings = settings;
-    this.srsAlgorithm = srsAlgorithm;
-    this.questionPostponementList = questionPostponementList;
-    this.dueDateFlashcardHistogram = dueDateFlashcardHistogram;
-  }
-  get hasCurrentCard() {
-    return this.cardSequencer.currentRepItem !== null && this.cardSequencer.currentRepItem !== void 0;
-  }
-  get hasPendingCards() {
-    return this.pendingCards.length > 0;
-  }
-  get currentCard() {
-    return this.cardSequencer.currentRepItem;
-  }
-  get currentQuestion() {
-    var _a2;
-    return (_a2 = this.currentCard) == null ? void 0 : _a2.question;
-  }
-  get currentDeck() {
-    return this.cardSequencer.currentDeck;
-  }
-  get nextPendingDueUnix() {
-    return this.pendingCards.length > 0 ? Math.min(...this.pendingCards.map((pendingCard) => pendingCard.dueUnix)) : null;
-  }
-  get currentNote() {
-    return this.currentQuestion.note;
-  }
-  // originalDeckTree isn't modified by the review process
-  // Only remainingDeckTree
-  setDeckTree(originalDeckTree, remainingDeckTree) {
-    this.cardSequencer.setBaseDeck(remainingDeckTree);
-    this._originalDeckTree = originalDeckTree;
-    this.remainingDeckTree = remainingDeckTree;
-    this.pendingCards = [];
-    this.setCurrentDeck(TopicPath.emptyPath);
-  }
-  setCurrentDeck(topicPath) {
-    this.currentTopicPath = topicPath;
-    this.wakeDuePendingCards();
-    this.cardSequencer.setIteratorTopicPath(topicPath);
-    this.cardSequencer.nextRepItem();
-  }
-  refreshCurrentDeck() {
-    this.setCurrentDeck(this.currentTopicPath);
-  }
-  get originalDeckTree() {
-    return this._originalDeckTree;
-  }
-  getDeckStats(topicPath) {
-    this.wakeDuePendingCards();
-    const totalCount = this._originalDeckTree.getDeck(topicPath).getDistinctRepItemCount(2 /* AnyItem */, true);
-    const remainingDeck = this.remainingDeckTree.getDeck(topicPath);
-    const newCount = remainingDeck.getDistinctRepItemCount(0 /* NewItem */, true);
-    const dueCount = remainingDeck.getDistinctRepItemCount(1 /* DueItem */, true);
-    const newCardsInQueueOfThisDeckCount = remainingDeck.getDistinctRepItemCount(
-      0 /* NewItem */,
-      false
-    );
-    const dueCardsInQueueOfThisDeckCount = remainingDeck.getDistinctRepItemCount(
-      1 /* DueItem */,
-      false
-    );
-    const cardsInQueueOfThisDeckCount = newCardsInQueueOfThisDeckCount + dueCardsInQueueOfThisDeckCount;
-    const subDecksInQueueOfThisDeckCount = this.getSubDecksWithCardsInQueue(remainingDeck).length;
-    const decksInQueueOfThisDeckCount = cardsInQueueOfThisDeckCount > 0 ? subDecksInQueueOfThisDeckCount + 1 : subDecksInQueueOfThisDeckCount;
-    return new DeckStats(
-      totalCount,
-      dueCount,
-      newCount,
-      dueCount + newCount,
-      dueCardsInQueueOfThisDeckCount,
-      newCardsInQueueOfThisDeckCount,
-      cardsInQueueOfThisDeckCount,
-      subDecksInQueueOfThisDeckCount,
-      decksInQueueOfThisDeckCount
-    );
-  }
-  getSubDecksWithCardsInQueue(deck) {
-    this.wakeDuePendingCards();
-    let subDecksWithCardsInQueue = [];
-    deck.subdecks.forEach((subDeck) => {
-      subDecksWithCardsInQueue = subDecksWithCardsInQueue.concat(
-        this.getSubDecksWithCardsInQueue(subDeck)
-      );
-      const newCount = subDeck.getDistinctRepItemCount(0 /* NewItem */, false);
-      const dueCount = subDeck.getDistinctRepItemCount(1 /* DueItem */, false);
-      if (newCount + dueCount > 0) subDecksWithCardsInQueue.push(subDeck);
-    });
-    return subDecksWithCardsInQueue;
-  }
-  skipCurrentCard() {
-    this.cardSequencer.deleteCurrentQuestionFromAllDecks();
-  }
-  deleteCurrentCard() {
-    this.cardSequencer.deleteCurrentRepItemFromAllDecks();
-  }
-  async processReview(response) {
-    switch (this.reviewMode) {
-      case 1 /* Review */:
-        await this.processReviewReviewMode(response);
-        break;
-      case 0 /* Cram */:
-        this.processReviewCramMode(response);
-        break;
-    }
-  }
-  async processReviewReviewMode(response) {
-    let shortTermRequeue = "none";
-    if (response !== 4 /* Reset */ || this.currentCard.hasSchedule) {
-      const oldSchedule = this.currentCard.scheduleInfo;
-      this.currentCard.scheduleInfo = this.determineCardSchedule(response, this.currentCard);
-      shortTermRequeue = this.getShortTermRequeueMode(this.currentCard.scheduleInfo);
-      await DataStore.getInstance().writeSchedule(this.currentQuestion);
-      if (oldSchedule) {
-        const now2 = globalDateProvider.now.valueOf();
-        const nDays = Math.ceil((oldSchedule.dueDateAsUnix - now2) / TICKS_PER_DAY);
-        this.dueDateFlashcardHistogram.decrement(nDays);
-      }
-      this.dueDateFlashcardHistogram.increment(this.currentCard.scheduleInfo.interval);
-    } else if (response === 4 /* Reset */) {
-      shortTermRequeue = "immediate";
-    }
-    if (shortTermRequeue === "pending") {
-      await this.handlePendingRequeue();
-    } else if (shortTermRequeue === "immediate" || response === 4 /* Reset */) {
-      if (this.settings.burySiblingCards) {
-        await this.burySiblingCards();
-        this.deleteSiblingCardsFromAllDecks();
-      }
-      this.cardSequencer.moveCurrentRepItemToEndOfList();
-      this.cardSequencer.nextRepItem();
-    } else {
-      if (this.settings.burySiblingCards) {
-        await this.burySiblingCards();
-        this.cardSequencer.deleteCurrentQuestionFromAllDecks();
-      } else {
-        this.deleteCurrentCard();
-      }
-    }
-  }
-  async burySiblingCards() {
-    const remaining = this.currentDeck.getQuestionRepItemCount(this.currentQuestion);
-    if (remaining > 1) {
-      this.questionPostponementList.add(this.currentQuestion);
-      await this.questionPostponementList.write();
-    }
-  }
-  deleteSiblingCardsFromAllDecks() {
-    for (const siblingCard of this.currentQuestion.cards) {
-      if (Object.is(siblingCard, this.currentCard)) {
-        continue;
-      }
-      this.remainingDeckTree.deleteCardFromAllDecks(siblingCard, false);
-    }
-  }
-  async handlePendingRequeue() {
-    var _a2;
-    const pendingCard = this.currentCard;
-    const dueUnix = (_a2 = pendingCard.scheduleInfo) == null ? void 0 : _a2.dueDateAsUnix;
-    if (this.settings.burySiblingCards) {
-      await this.burySiblingCards();
-      this.deleteSiblingCardsFromAllDecks();
-    }
-    this.cardSequencer.deleteCurrentRepItemFromAllDecks();
-    this.pendingCards.push({ card: pendingCard, dueUnix });
-  }
-  processReviewCramMode(response) {
-    if (response === 0 /* Easy */) this.deleteCurrentCard();
-    else {
-      this.cardSequencer.moveCurrentRepItemToEndOfList();
-      this.cardSequencer.nextRepItem();
-    }
-  }
-  getShortTermRequeueMode(scheduleInfo) {
-    if (!scheduleInfo || scheduleInfo.interval >= 1) {
-      return "none";
-    }
-    return scheduleInfo.isDue() ? "immediate" : "pending";
-  }
-  wakeDuePendingCards() {
-    if (this.pendingCards.length === 0) {
-      return;
-    }
-    const nowUnix = globalDateProvider.now.valueOf();
-    const remainingPendingCards = [];
-    for (const pendingCard of this.pendingCards) {
-      if (pendingCard.dueUnix <= nowUnix) {
-        this.remainingDeckTree.appendRepItem(
-          pendingCard.card.question.topicPathList,
-          pendingCard.card
-        );
-      } else {
-        remainingPendingCards.push(pendingCard);
-      }
-    }
-    this.pendingCards = remainingPendingCards;
-  }
-  determineCardSchedule(response, card) {
-    let result;
-    if (response === 4 /* Reset */) {
-      result = this.srsAlgorithm.cardGetResetSchedule();
-    } else {
-      if (card.hasSchedule) {
-        result = this.srsAlgorithm.cardCalcUpdatedSchedule(
-          response,
-          card.scheduleInfo,
-          this.dueDateFlashcardHistogram
-        );
-      } else {
-        const currentNote = card.question.note;
-        result = this.srsAlgorithm.cardGetNewSchedule(
-          response,
-          currentNote.filePath,
-          this.dueDateFlashcardHistogram
-        );
-      }
-    }
-    return result;
-  }
-  async updateCurrentQuestionText(text) {
-    const q2 = this.currentQuestion.questionText;
-    q2.actualQuestion = text;
-    await DataStore.getInstance().write(this.currentQuestion);
-  }
-  async deleteCurrentCardFromNote() {
-    const question = this.currentQuestion;
-    await DataStore.getInstance().delete(question);
-    this._originalDeckTree.deleteQuestionFromAllDecks(question, false);
-    this.cardSequencer.deleteCurrentQuestionFromAllDecks();
-  }
-};
-
-// src/ui/ui-manager.tsx
-var import_obsidian32 = require("obsidian");
-
-// src/icons/app-icon.ts
-var import_obsidian2 = require("obsidian");
-function appIcon() {
-  (0, import_obsidian2.addIcon)(
-    "SpacedRepIcon",
-    `<path fill="currentColor" stroke="currentColor" d="M 88.960938 17.257812 L 47.457031 17.257812 C 45.679688 17.257812 44.230469 18.703125 44.230469 20.484375 L 44.230469 86.558594 C 44.230469 88.335938 45.679688 89.785156 47.457031 89.785156 L 88.960938 89.785156 C 90.738281 89.785156 92.1875 88.335938 92.1875 86.558594 L 92.1875 20.484375 C 92.1875 18.703125 90.738281 17.257812 88.960938 17.257812 Z M 88.28125 85.878906 L 48.136719 85.878906 L 48.136719 21.164062 L 88.28125 21.164062 Z M 88.28125 85.878906 "/>
-        <path fill="currentColor" stroke="currentColor"  d="M 88.960938 9.445312 L 61.667969 9.445312 C 59.925781 3.816406 54.011719 0.515625 48.269531 2.054688 L 8.183594 12.796875 C 2.304688 14.371094 -1.199219 20.4375 0.378906 26.316406 L 17.476562 90.140625 C 18.796875 95.066406 23.269531 98.324219 28.144531 98.324219 C 29.085938 98.324219 30.046875 98.199219 31 97.945312 L 40.765625 95.328125 C 42.625 96.75 44.941406 97.597656 47.457031 97.597656 L 88.960938 97.597656 C 95.046875 97.597656 100 92.644531 100 86.558594 L 100 20.484375 C 100 14.398438 95.046875 9.445312 88.960938 9.445312 Z M 29.988281 94.171875 C 26.1875 95.191406 22.269531 92.925781 21.25 89.128906 L 4.152344 25.304688 C 3.132812 21.507812 5.394531 17.585938 9.195312 16.570312 L 49.28125 5.828125 C 52.578125 4.945312 55.960938 6.53125 57.464844 9.445312 L 47.457031 9.445312 C 41.371094 9.445312 36.417969 14.398438 36.417969 20.484375 L 36.417969 86.558594 C 36.417969 88.558594 36.957031 90.433594 37.890625 92.054688 Z M 96.09375 86.558594 C 96.09375 90.492188 92.894531 93.691406 88.960938 93.691406 L 47.457031 93.691406 C 43.523438 93.691406 40.324219 90.492188 40.324219 86.558594 L 40.324219 20.484375 C 40.324219 16.550781 43.523438 13.351562 47.457031 13.351562 L 88.960938 13.351562 C 92.894531 13.351562 96.09375 16.550781 96.09375 20.484375 Z M 96.09375 86.558594 "/>
-        <path fill="currentColor" stroke="currentColor"  d="M 54.101562 53.09375 L 60.070312 57.410156 L 57.789062 64.378906 C 56.90625 67.074219 59.996094 69.320312 62.285156 67.648438 L 68.210938 63.324219 L 74.132812 67.648438 C 76.421875 69.320312 79.511719 67.074219 78.628906 64.378906 L 76.347656 57.410156 L 82.320312 53.09375 C 84.613281 51.433594 83.441406 47.804688 80.605469 47.804688 L 73.242188 47.804688 L 70.988281 40.839844 C 70.117188 38.144531 66.300781 38.144531 65.429688 40.839844 L 63.179688 47.804688 L 55.8125 47.804688 C 52.980469 47.804688 51.804688 51.433594 54.101562 53.09375 Z M 54.101562 53.09375 "/>
-        `
-  );
-}
-
-// src/ui/obsidian-ui-components/item-views/sr-tab-view.tsx
-var import_obsidian17 = require("obsidian");
-
-// src/ui/obsidian-ui-components/content-container/content-manager.tsx
-var import_moment4 = __toESM(require_moment());
-var import_obsidian16 = require("obsidian");
-
-// src/ui/obsidian-ui-components/content-container/card-container/card-container.tsx
-var import_moment3 = __toESM(require_moment());
-var import_obsidian11 = require("obsidian");
-
-// src/data/data-store/base/data-store-algorithm.ts
-var DataStoreAlgorithm = class _DataStoreAlgorithm {
-  static getInstance() {
-    if (!_DataStoreAlgorithm.instance) {
-      throw new Error("there is no DataStoreAlgorithm instance.");
-    }
-    return _DataStoreAlgorithm.instance;
   }
 };
 
@@ -10081,6 +9734,510 @@ ${scheduleHtml}`;
   }
 };
 
+// src/data/data-structures/card/questions/question-type.ts
+var CardFrontBack = class {
+  // The caller is responsible for any required trimming of leading/trailing spaces
+  constructor(front, back) {
+    this.front = front;
+    this.back = back;
+  }
+};
+var CardFrontBackUtil = class {
+  static expand(questionType, questionText, settings) {
+    const handler = QuestionTypeFactory.create(questionType);
+    return handler.expand(questionText, settings);
+  }
+};
+var QuestionTypeSingleLineBasic = class {
+  expand(questionText, settings) {
+    const idx = questionText.indexOf(settings.singleLineCardSeparator);
+    const item = new CardFrontBack(
+      questionText.substring(0, idx),
+      questionText.substring(idx + settings.singleLineCardSeparator.length)
+    );
+    const result = [item];
+    return result;
+  }
+};
+var QuestionTypeSingleLineReversed = class {
+  expand(questionText, settings) {
+    const idx = questionText.indexOf(settings.singleLineReversedCardSeparator);
+    const side1 = questionText.substring(0, idx), side2 = questionText.substring(
+      idx + settings.singleLineReversedCardSeparator.length
+    );
+    const result = [
+      new CardFrontBack(side1, side2),
+      new CardFrontBack(side2, side1)
+    ];
+    return result;
+  }
+};
+var QuestionTypeMultiLineBasic = class {
+  expand(questionText, settings) {
+    const questionLines = questionText.split("\n");
+    const lineIdx = findLineIndexOfSearchStringIgnoringWs(
+      questionLines,
+      settings.multilineCardSeparator
+    );
+    const side1 = questionLines.slice(0, lineIdx).join("\n");
+    const side2 = questionLines.slice(lineIdx + 1).join("\n");
+    const result = [new CardFrontBack(side1, side2)];
+    return result;
+  }
+};
+var QuestionTypeMultiLineReversed = class {
+  expand(questionText, settings) {
+    const questionLines = questionText.split("\n");
+    const lineIdx = findLineIndexOfSearchStringIgnoringWs(
+      questionLines,
+      settings.multilineReversedCardSeparator
+    );
+    const side1 = questionLines.slice(0, lineIdx).join("\n");
+    const side2 = questionLines.slice(lineIdx + 1).join("\n");
+    const result = [
+      new CardFrontBack(side1, side2),
+      new CardFrontBack(side2, side1)
+    ];
+    return result;
+  }
+};
+var QuestionTypeCloze = class {
+  expand(questionText, settings) {
+    const clozecrafter = new import_clozecraft.ClozeCrafter(settings.clozePatterns);
+    const clozeNote = clozecrafter.createClozeNote(questionText);
+    const clozeFormatter = settings.convertClozePatternsToInputs ? new QuestionTypeClozeInputFormatter() : new QuestionTypeClozeFormatter();
+    let front, back;
+    const result = [];
+    if (clozeNote === null) return result;
+    for (let i2 = 0; i2 < clozeNote.numCards; i2++) {
+      front = clozeNote.getCardFront(i2, clozeFormatter);
+      back = clozeNote.getCardBack(i2, clozeFormatter);
+      result.push(new CardFrontBack(front, back));
+    }
+    return result;
+  }
+};
+var QuestionTypeClozeFormatter = class {
+  asking(_2, hint) {
+    return `<span style='color:#2196f3'>${!hint ? "[...]" : `[${hint}]`}</span>`;
+  }
+  showingAnswer(answer, _2) {
+    return `<span style='color:#2196f3'>${answer}</span>`;
+  }
+  hiding(_2, hint) {
+    return `<span style='color:var(--code-comment)'>${!hint ? "[...]" : `[${hint}]`}</span>`;
+  }
+};
+var QuestionTypeClozeInputFormatter = class {
+  asking(answer, hint) {
+    return `<span style='color:#2196f3'><input class="cloze-input" type="text" size="${!answer ? 1 : answer.length}" />${!hint ? "" : `[${hint}]`}</span>`;
+  }
+  showingAnswer(answer, _2) {
+    return `<span class="cloze-answer" style='color:#2196f3'>${answer}</span>`;
+  }
+  hiding(_2, hint) {
+    return `<span style='color:var(--code-comment)'>${!hint ? "[...]" : `[${hint}]`}</span>`;
+  }
+};
+var QuestionTypeFactory = class {
+  static create(questionType) {
+    let handler;
+    switch (questionType) {
+      case 0 /* SingleLineBasic */:
+        handler = new QuestionTypeSingleLineBasic();
+        break;
+      case 1 /* SingleLineReversed */:
+        handler = new QuestionTypeSingleLineReversed();
+        break;
+      case 2 /* MultiLineBasic */:
+        handler = new QuestionTypeMultiLineBasic();
+        break;
+      case 3 /* MultiLineReversed */:
+        handler = new QuestionTypeMultiLineReversed();
+        break;
+      case 4 /* Cloze */:
+        handler = new QuestionTypeCloze();
+        break;
+    }
+    return handler;
+  }
+};
+
+// src/utils/dates.ts
+var import_moment = __toESM(require_moment());
+function formatDate(arg1, arg2, arg3, format = PREFERRED_DATE_FORMAT) {
+  let _date = null;
+  if (typeof arg1 === "number" && typeof arg2 === "number" && typeof arg3 === "number") {
+    _date = new Date(arg1, arg2 - 1, arg3);
+  } else if (typeof arg1 === "number") {
+    _date = new Date(arg1);
+  } else if (typeof arg1 === typeof /* @__PURE__ */ new Date()) {
+    _date = arg1;
+  }
+  if (!_date) return "";
+  let result = format;
+  result = result.replaceAll(/YYYY/g, _date.getFullYear().toString().padStart(4, "0"));
+  result = result.replaceAll(/MM/g, (_date.getMonth() + 1).toString().padStart(2, "0"));
+  result = result.replaceAll(/DD/g, _date.getDate().toString().padStart(2, "0"));
+  return result;
+}
+function formatDateWithMoment(ticks, format) {
+  return (0, import_moment.default)(ticks).format(format);
+}
+var LiveDateProvider = class {
+  constructor() {
+    this.dayBoundary = null;
+  }
+  get now() {
+    return (0, import_moment.default)();
+  }
+  get today() {
+    let result = (0, import_moment.default)().startOf("day");
+    if (this.dayBoundary && this.dayBoundary.hour !== 0 && this.dayBoundary.minute !== 0 && this.dayBoundary.second !== 0) {
+      const nowTime = (0, import_moment.default)();
+      const customDayBoundary = (0, import_moment.default)().hour(this.dayBoundary.hour).minute(this.dayBoundary.minute).second(this.dayBoundary.second).millisecond(0);
+      if (nowTime.isBefore(customDayBoundary)) {
+        result = (0, import_moment.default)().startOf("day").subtract(1, "day");
+      } else {
+        result = (0, import_moment.default)().startOf("day");
+      }
+    }
+    return result;
+  }
+  getDayBoundary() {
+    return this.dayBoundary;
+  }
+  setDayBoundary(dayBoundary) {
+    this.dayBoundary = dayBoundary;
+  }
+};
+var DateUtil = class {
+  static dateStrToMoment(str) {
+    return (0, import_moment.default)(str, ALLOWED_DATE_FORMATS);
+  }
+  static strToDayBoundary(str) {
+    const dayStr = str.split(":");
+    if (dayStr.length !== 3) {
+      return null;
+    }
+    const hour = parseInt(dayStr[0]);
+    if (hour < 0 || hour > 23 || Number.isNaN(hour)) {
+      return null;
+    }
+    const minute = parseInt(dayStr[1]);
+    if (minute < 0 || minute > 59 || Number.isNaN(minute)) {
+      return null;
+    }
+    const second = parseInt(dayStr[2]);
+    if (second < 0 || second > 59 || Number.isNaN(second)) {
+      return null;
+    }
+    const dayBoundary = {
+      hour,
+      minute,
+      second
+    };
+    return dayBoundary;
+  }
+};
+var globalDateProvider = new LiveDateProvider();
+
+// src/scheduling/flashcard-review-sequencer.ts
+var DeckStats = class {
+  constructor(totalCount, dueCount, newCount, cardsInQueueCount, dueCardsInQueueOfThisDeckCount, newCardsInQueueOfThisDeckCount, cardsInQueueOfThisDeckCount, subDecksInQueueOfThisDeckCount, decksInQueueOfThisDeckCount) {
+    this.dueCount = dueCount;
+    this.newCount = newCount;
+    this.totalCount = totalCount;
+    this.cardsInQueueCount = cardsInQueueCount;
+    this.dueCardsInQueueOfThisDeckCount = dueCardsInQueueOfThisDeckCount;
+    this.newCardsInQueueOfThisDeckCount = newCardsInQueueOfThisDeckCount;
+    this.cardsInQueueOfThisDeckCount = cardsInQueueOfThisDeckCount;
+    this.subDecksInQueueOfThisDeckCount = subDecksInQueueOfThisDeckCount;
+    this.decksInQueueOfThisDeckCount = decksInQueueOfThisDeckCount;
+  }
+};
+var FlashcardReviewSequencer = class {
+  constructor(reviewMode, cardSequencer, settings, srsAlgorithm, questionPostponementList, dueDateFlashcardHistogram) {
+    this.pendingCards = [];
+    this.currentTopicPath = TopicPath.emptyPath;
+    this.reviewMode = reviewMode;
+    this.cardSequencer = cardSequencer;
+    this.settings = settings;
+    this.srsAlgorithm = srsAlgorithm;
+    this.questionPostponementList = questionPostponementList;
+    this.dueDateFlashcardHistogram = dueDateFlashcardHistogram;
+  }
+  get hasCurrentCard() {
+    return this.cardSequencer.currentRepItem !== null && this.cardSequencer.currentRepItem !== void 0;
+  }
+  get hasPendingCards() {
+    return this.pendingCards.length > 0;
+  }
+  get currentCard() {
+    if (this.cardSequencer.currentRepItem === null) return null;
+    return this.cardSequencer.currentRepItem;
+  }
+  get currentQuestion() {
+    var _a2;
+    return (_a2 = this.currentCard) == null ? void 0 : _a2.question;
+  }
+  get currentDeck() {
+    return this.cardSequencer.currentDeck;
+  }
+  get nextPendingDueUnix() {
+    return this.pendingCards.length > 0 ? Math.min(...this.pendingCards.map((pendingCard) => pendingCard.dueUnix)) : null;
+  }
+  get currentNote() {
+    return this.currentQuestion.note;
+  }
+  // originalDeckTree isn't modified by the review process
+  // Only remainingDeckTree
+  setDeckTree(originalDeckTree, remainingDeckTree) {
+    this.cardSequencer.setBaseDeck(remainingDeckTree);
+    this._originalDeckTree = originalDeckTree;
+    this.remainingDeckTree = remainingDeckTree;
+    this.pendingCards = [];
+    this.setCurrentDeck(TopicPath.emptyPath);
+  }
+  setCurrentDeck(topicPath) {
+    this.currentTopicPath = topicPath;
+    this.wakeDuePendingCards();
+    this.cardSequencer.setIteratorTopicPath(topicPath);
+    this.cardSequencer.nextRepItem();
+  }
+  refreshCurrentDeck() {
+    this.setCurrentDeck(this.currentTopicPath);
+  }
+  get originalDeckTree() {
+    return this._originalDeckTree;
+  }
+  getDeckStats(topicPath) {
+    this.wakeDuePendingCards();
+    const totalCount = this._originalDeckTree.getDeck(topicPath).getDistinctRepItemCount(2 /* AnyItem */, true);
+    const remainingDeck = this.remainingDeckTree.getDeck(topicPath);
+    const newCount = remainingDeck.getDistinctRepItemCount(0 /* NewItem */, true);
+    const dueCount = remainingDeck.getDistinctRepItemCount(1 /* DueItem */, true);
+    const newCardsInQueueOfThisDeckCount = remainingDeck.getDistinctRepItemCount(
+      0 /* NewItem */,
+      false
+    );
+    const dueCardsInQueueOfThisDeckCount = remainingDeck.getDistinctRepItemCount(
+      1 /* DueItem */,
+      false
+    );
+    const cardsInQueueOfThisDeckCount = newCardsInQueueOfThisDeckCount + dueCardsInQueueOfThisDeckCount;
+    const subDecksInQueueOfThisDeckCount = this.getSubDecksWithCardsInQueue(remainingDeck).length;
+    const decksInQueueOfThisDeckCount = cardsInQueueOfThisDeckCount > 0 ? subDecksInQueueOfThisDeckCount + 1 : subDecksInQueueOfThisDeckCount;
+    return new DeckStats(
+      totalCount,
+      dueCount,
+      newCount,
+      dueCount + newCount,
+      dueCardsInQueueOfThisDeckCount,
+      newCardsInQueueOfThisDeckCount,
+      cardsInQueueOfThisDeckCount,
+      subDecksInQueueOfThisDeckCount,
+      decksInQueueOfThisDeckCount
+    );
+  }
+  getSubDecksWithCardsInQueue(deck) {
+    this.wakeDuePendingCards();
+    let subDecksWithCardsInQueue = [];
+    deck.subdecks.forEach((subDeck) => {
+      subDecksWithCardsInQueue = subDecksWithCardsInQueue.concat(
+        this.getSubDecksWithCardsInQueue(subDeck)
+      );
+      const newCount = subDeck.getDistinctRepItemCount(0 /* NewItem */, false);
+      const dueCount = subDeck.getDistinctRepItemCount(1 /* DueItem */, false);
+      if (newCount + dueCount > 0) subDecksWithCardsInQueue.push(subDeck);
+    });
+    return subDecksWithCardsInQueue;
+  }
+  skipCurrentCard() {
+    this.cardSequencer.deleteCurrentQuestionFromAllDecks();
+  }
+  deleteCurrentCard() {
+    this.cardSequencer.deleteCurrentRepItemFromAllDecks();
+  }
+  async processReview(response) {
+    switch (this.reviewMode) {
+      case 1 /* Review */:
+        await this.processReviewReviewMode(response);
+        break;
+      case 0 /* Cram */:
+        this.processReviewCramMode(response);
+        break;
+    }
+  }
+  async processReviewReviewMode(response) {
+    let shortTermRequeue = "none";
+    if (response !== 4 /* Reset */ || this.currentCard.hasSchedule) {
+      const oldSchedule = this.currentCard.scheduleInfo;
+      this.currentCard.scheduleInfo = this.determineCardSchedule(response, this.currentCard);
+      shortTermRequeue = this.getShortTermRequeueMode(this.currentCard.scheduleInfo);
+      await DataStore.getInstance().writeSchedule(this.currentQuestion);
+      if (oldSchedule) {
+        const now2 = globalDateProvider.now.valueOf();
+        const nDays = Math.ceil((oldSchedule.dueDateAsUnix - now2) / TICKS_PER_DAY);
+        this.dueDateFlashcardHistogram.decrement(nDays);
+      }
+      this.dueDateFlashcardHistogram.increment(this.currentCard.scheduleInfo.interval);
+    } else if (response === 4 /* Reset */) {
+      shortTermRequeue = "immediate";
+    }
+    if (shortTermRequeue === "pending") {
+      await this.handlePendingRequeue();
+    } else if (shortTermRequeue === "immediate" || response === 4 /* Reset */) {
+      if (this.settings.burySiblingCards) {
+        await this.burySiblingCards();
+        this.deleteSiblingCardsFromAllDecks();
+      }
+      this.cardSequencer.moveCurrentRepItemToEndOfList();
+      this.cardSequencer.nextRepItem();
+    } else {
+      if (this.settings.burySiblingCards) {
+        await this.burySiblingCards();
+        this.cardSequencer.deleteCurrentQuestionFromAllDecks();
+      } else {
+        this.deleteCurrentCard();
+      }
+    }
+  }
+  async burySiblingCards() {
+    const remaining = this.currentDeck.getQuestionRepItemCount(this.currentQuestion);
+    if (remaining > 1) {
+      this.questionPostponementList.add(this.currentQuestion);
+      await this.questionPostponementList.write();
+    }
+  }
+  deleteSiblingCardsFromAllDecks() {
+    for (const siblingCard of this.currentQuestion.cards) {
+      if (Object.is(siblingCard, this.currentCard)) {
+        continue;
+      }
+      this.remainingDeckTree.deleteCardFromAllDecks(siblingCard, false);
+    }
+  }
+  async handlePendingRequeue() {
+    var _a2;
+    const pendingCard = this.currentCard;
+    const dueUnix = (_a2 = pendingCard.scheduleInfo) == null ? void 0 : _a2.dueDateAsUnix;
+    if (this.settings.burySiblingCards) {
+      await this.burySiblingCards();
+      this.cardSequencer.deleteCurrentQuestionFromAllDecks();
+    } else {
+      this.cardSequencer.deleteCurrentRepItemFromAllDecks();
+    }
+    this.pendingCards.push({ card: pendingCard, dueUnix });
+  }
+  processReviewCramMode(response) {
+    if (response === 0 /* Easy */) this.deleteCurrentCard();
+    else {
+      this.cardSequencer.moveCurrentRepItemToEndOfList();
+      this.cardSequencer.nextRepItem();
+    }
+  }
+  getShortTermRequeueMode(scheduleInfo) {
+    if (!scheduleInfo || scheduleInfo.interval >= 1) {
+      return "none";
+    }
+    return scheduleInfo.isDue() ? "immediate" : "pending";
+  }
+  wakeDuePendingCards() {
+    if (this.pendingCards.length === 0) {
+      return;
+    }
+    const nowUnix = globalDateProvider.now.valueOf();
+    const remainingPendingCards = [];
+    for (const pendingCard of this.pendingCards) {
+      if (pendingCard.dueUnix <= nowUnix) {
+        this.remainingDeckTree.appendRepItem(
+          pendingCard.card.question.topicPathList,
+          pendingCard.card
+        );
+      } else {
+        remainingPendingCards.push(pendingCard);
+      }
+    }
+    this.pendingCards = remainingPendingCards;
+  }
+  determineCardSchedule(response, card) {
+    let result;
+    if (response === 4 /* Reset */) {
+      result = this.srsAlgorithm.cardGetResetSchedule();
+    } else {
+      if (card.hasSchedule) {
+        result = this.srsAlgorithm.cardCalcUpdatedSchedule(
+          response,
+          card.scheduleInfo,
+          this.dueDateFlashcardHistogram
+        );
+      } else {
+        const currentNote = card.question.note;
+        result = this.srsAlgorithm.cardGetNewSchedule(
+          response,
+          currentNote.filePath,
+          this.dueDateFlashcardHistogram
+        );
+      }
+    }
+    return result;
+  }
+  async updateCurrentQuestionTextAndCards(text) {
+    const question = this.currentQuestion;
+    const q2 = question.questionText;
+    const cardFrontBackList = CardFrontBackUtil.expand(
+      question.questionType,
+      text,
+      this.settings
+    );
+    q2.actualQuestion = text;
+    await this.currentQuestion.writeQuestion(this.settings);
+    if (cardFrontBackList.length !== question.cards.length) {
+      console.warn("SR: Cards count does not match question text. Skipping redraw.");
+      new import_obsidian2.Notice("Cards count does not match cards from question text. Skipping redraw.");
+      return;
+    }
+    question.cards.forEach((card, i2) => {
+      const { front, back } = cardFrontBackList[i2];
+      card.front = front;
+      card.back = back;
+    });
+  }
+  async deleteCurrentCardFromNote() {
+    const question = this.currentQuestion;
+    await DataStore.getInstance().delete(question);
+    this._originalDeckTree.deleteQuestionFromAllDecks(question, false);
+    this.cardSequencer.deleteCurrentQuestionFromAllDecks();
+  }
+};
+
+// src/ui/ui-manager.tsx
+var import_obsidian33 = require("obsidian");
+
+// src/icons/app-icon.ts
+var import_obsidian3 = require("obsidian");
+function appIcon() {
+  (0, import_obsidian3.addIcon)(
+    "SpacedRepIcon",
+    `<path fill="currentColor" stroke="currentColor" d="M 88.960938 17.257812 L 47.457031 17.257812 C 45.679688 17.257812 44.230469 18.703125 44.230469 20.484375 L 44.230469 86.558594 C 44.230469 88.335938 45.679688 89.785156 47.457031 89.785156 L 88.960938 89.785156 C 90.738281 89.785156 92.1875 88.335938 92.1875 86.558594 L 92.1875 20.484375 C 92.1875 18.703125 90.738281 17.257812 88.960938 17.257812 Z M 88.28125 85.878906 L 48.136719 85.878906 L 48.136719 21.164062 L 88.28125 21.164062 Z M 88.28125 85.878906 "/>
+        <path fill="currentColor" stroke="currentColor"  d="M 88.960938 9.445312 L 61.667969 9.445312 C 59.925781 3.816406 54.011719 0.515625 48.269531 2.054688 L 8.183594 12.796875 C 2.304688 14.371094 -1.199219 20.4375 0.378906 26.316406 L 17.476562 90.140625 C 18.796875 95.066406 23.269531 98.324219 28.144531 98.324219 C 29.085938 98.324219 30.046875 98.199219 31 97.945312 L 40.765625 95.328125 C 42.625 96.75 44.941406 97.597656 47.457031 97.597656 L 88.960938 97.597656 C 95.046875 97.597656 100 92.644531 100 86.558594 L 100 20.484375 C 100 14.398438 95.046875 9.445312 88.960938 9.445312 Z M 29.988281 94.171875 C 26.1875 95.191406 22.269531 92.925781 21.25 89.128906 L 4.152344 25.304688 C 3.132812 21.507812 5.394531 17.585938 9.195312 16.570312 L 49.28125 5.828125 C 52.578125 4.945312 55.960938 6.53125 57.464844 9.445312 L 47.457031 9.445312 C 41.371094 9.445312 36.417969 14.398438 36.417969 20.484375 L 36.417969 86.558594 C 36.417969 88.558594 36.957031 90.433594 37.890625 92.054688 Z M 96.09375 86.558594 C 96.09375 90.492188 92.894531 93.691406 88.960938 93.691406 L 47.457031 93.691406 C 43.523438 93.691406 40.324219 90.492188 40.324219 86.558594 L 40.324219 20.484375 C 40.324219 16.550781 43.523438 13.351562 47.457031 13.351562 L 88.960938 13.351562 C 92.894531 13.351562 96.09375 16.550781 96.09375 20.484375 Z M 96.09375 86.558594 "/>
+        <path fill="currentColor" stroke="currentColor"  d="M 54.101562 53.09375 L 60.070312 57.410156 L 57.789062 64.378906 C 56.90625 67.074219 59.996094 69.320312 62.285156 67.648438 L 68.210938 63.324219 L 74.132812 67.648438 C 76.421875 69.320312 79.511719 67.074219 78.628906 64.378906 L 76.347656 57.410156 L 82.320312 53.09375 C 84.613281 51.433594 83.441406 47.804688 80.605469 47.804688 L 73.242188 47.804688 L 70.988281 40.839844 C 70.117188 38.144531 66.300781 38.144531 65.429688 40.839844 L 63.179688 47.804688 L 55.8125 47.804688 C 52.980469 47.804688 51.804688 51.433594 54.101562 53.09375 Z M 54.101562 53.09375 "/>
+        `
+  );
+}
+
+// src/ui/obsidian-ui-components/item-views/sr-tab-view.tsx
+var import_obsidian18 = require("obsidian");
+
+// src/ui/obsidian-ui-components/content-container/content-manager.tsx
+var import_moment4 = __toESM(require_moment());
+var import_obsidian17 = require("obsidian");
+
+// src/ui/obsidian-ui-components/content-container/card-container/card-container.tsx
+var import_moment3 = __toESM(require_moment());
+var import_obsidian12 = require("obsidian");
+
 // src/ui/obsidian-ui-components/content-container/card-container/context-section/context-section.tsx
 var ContextSectionComponent = class {
   constructor(parentEl) {
@@ -10117,7 +10274,7 @@ var ContextSectionComponent = class {
 };
 
 // src/ui/obsidian-ui-components/content-container/card-container/response-section/response-section.tsx
-var import_obsidian4 = require("obsidian");
+var import_obsidian5 = require("obsidian");
 
 // src/scheduling/algorithms/schedule-display.ts
 var import_moment2 = __toESM(require_moment());
@@ -10187,8 +10344,8 @@ function formatScheduleInterval(schedule, isMobile) {
 }
 
 // src/ui/sr-button.tsx
-var import_obsidian3 = require("obsidian");
-var SRButtonComponent = class extends import_obsidian3.ButtonComponent {
+var import_obsidian4 = require("obsidian");
+var SRButtonComponent = class extends import_obsidian4.ButtonComponent {
   constructor(container, props) {
     super(container);
     this.setClass("sr-button");
@@ -10361,7 +10518,7 @@ var ResponseSectionComponent = class {
     if (showInterval) {
       button.setSmallText(formatScheduleInterval(schedule, true));
       button.setLargeText(`${buttonName} - ${formatScheduleInterval(schedule, false)}`);
-      if (EmulatedPlatform().isMobile || import_obsidian4.Platform.isMobile) {
+      if (EmulatedPlatform().isMobile || import_obsidian5.Platform.isMobile) {
         if (button.buttonEl.hasClass("sr-show-large-text")) {
           button.buttonEl.removeClass("sr-show-large-text");
         }
@@ -10389,13 +10546,13 @@ var ResponseSectionComponent = class {
 };
 
 // src/ui/obsidian-ui-components/content-container/card-container/toolbar/toolbar.tsx
-var import_obsidian8 = require("obsidian");
+var import_obsidian9 = require("obsidian");
 
 // src/ui/obsidian-ui-components/content-container/card-container/toolbar/deck-info/deck-info.tsx
-var import_obsidian6 = require("obsidian");
+var import_obsidian7 = require("obsidian");
 
 // src/ui/obsidian-ui-components/content-container/card-container/toolbar/deck-info/counter-component.tsx
-var import_obsidian5 = require("obsidian");
+var import_obsidian6 = require("obsidian");
 var CounterComponent = class {
   constructor(parentEl, iconId, classNames) {
     this.counterEl = parentEl.createDiv();
@@ -10407,7 +10564,7 @@ var CounterComponent = class {
     this.counterTextEl.addClass("sr-counter");
     this.counterIconEl = this.counterEl.createDiv();
     this.counterIconEl.addClass("sr-counter-icon");
-    (0, import_obsidian5.setIcon)(this.counterIconEl, iconId);
+    (0, import_obsidian6.setIcon)(this.counterIconEl, iconId);
   }
   setText(text) {
     this.counterTextEl.setText(text);
@@ -10460,7 +10617,7 @@ var DeckInfoComponent = class {
       0
     );
     this.deckPointer = this.deckInfoContainer.createDiv();
-    (0, import_obsidian6.setIcon)(this.deckPointer, "chevron-right");
+    (0, import_obsidian7.setIcon)(this.deckPointer, "chevron-right");
     this.deckPointer.addClass("sr-deck-pointer");
     this.currentDeckInfo = this.deckInfoContainer.createDiv();
     this.currentDeckInfo.addClass("sr-deck-info");
@@ -10574,7 +10731,7 @@ var BackButtonComponent = class extends SRButtonComponent {
 };
 
 // src/ui/obsidian-ui-components/content-container/card-container/toolbar/toolbar-buttons/card-menu-button.tsx
-var import_obsidian7 = require("obsidian");
+var import_obsidian8 = require("obsidian");
 
 // src/ui/obsidian-ui-components/content-container/menu-button.tsx
 var MenuButtonComponent = class extends SRButtonComponent {
@@ -10596,7 +10753,7 @@ var CardMenuButtonComponent = class extends MenuButtonComponent {
     super(
       container,
       (evt) => {
-        const cardMenu = new import_obsidian7.Menu();
+        const cardMenu = new import_obsidian8.Menu();
         this.buildMenu(
           cardMenu,
           showDeleteButton,
@@ -10734,7 +10891,7 @@ var CardToolbarComponent = class {
     this.toolbar.addClass("sr-card-toolbar");
     const isModal = closeModal !== void 0;
     new BackButtonComponent(this.toolbar, async () => await backToDeckHandler(), [
-      (EmulatedPlatform().isPhone || import_obsidian8.Platform.isPhone) && isModal ? "mod-raised" : "clickable-icon"
+      (EmulatedPlatform().isPhone || import_obsidian9.Platform.isPhone) && isModal ? "mod-raised" : "clickable-icon"
     ]);
     const centerSpacer = this.toolbar.createDiv();
     centerSpacer.addClass("sr-flex-spacer");
@@ -10744,18 +10901,18 @@ var CardToolbarComponent = class {
     new EditButtonComponent(
       this.toolbar,
       editClickHandler,
-      EmulatedPlatform().isPhone || import_obsidian8.Platform.isPhone ? ["mod-raised"] : ["clickable-icon"]
+      EmulatedPlatform().isPhone || import_obsidian9.Platform.isPhone ? ["mod-raised"] : ["clickable-icon"]
     );
     this.resetButton = new ResetButtonComponent(
       this.toolbar,
       onOpenResetModalClick,
-      EmulatedPlatform().isPhone || import_obsidian8.Platform.isPhone ? ["mod-raised"] : ["clickable-icon"]
+      EmulatedPlatform().isPhone || import_obsidian9.Platform.isPhone ? ["mod-raised"] : ["clickable-icon"]
     );
     this.resetButton.setDisabled(true);
     new SkipButtonComponent(
       this.toolbar,
       () => skipCurrentCard(),
-      EmulatedPlatform().isPhone || import_obsidian8.Platform.isPhone ? ["mod-raised"] : ["clickable-icon"]
+      EmulatedPlatform().isPhone || import_obsidian9.Platform.isPhone ? ["mod-raised"] : ["clickable-icon"]
     );
     this.toolbar.createDiv("sr-divider");
     this.shortMenuButton = new CardMenuButtonComponent(
@@ -10772,7 +10929,7 @@ var CardToolbarComponent = class {
       skipCurrentCard,
       onOpenResetModalClick,
       closeModal,
-      EmulatedPlatform().isPhone || import_obsidian8.Platform.isPhone ? ["mod-raised", "sr-short-menu-button"] : ["clickable-icon", "sr-short-menu-button"]
+      EmulatedPlatform().isPhone || import_obsidian9.Platform.isPhone ? ["mod-raised", "sr-short-menu-button"] : ["clickable-icon", "sr-short-menu-button"]
     );
     this.extendedMenuButton = new CardMenuButtonComponent(
       this.toolbar,
@@ -10788,11 +10945,11 @@ var CardToolbarComponent = class {
       skipCurrentCard,
       onOpenResetModalClick,
       closeModal,
-      EmulatedPlatform().isPhone || import_obsidian8.Platform.isPhone ? ["mod-raised", "sr-extended-menu-button"] : ["clickable-icon", "sr-extended-menu-button"]
+      EmulatedPlatform().isPhone || import_obsidian9.Platform.isPhone ? ["mod-raised", "sr-extended-menu-button"] : ["clickable-icon", "sr-extended-menu-button"]
     );
     if (closeModal === void 0) return;
     const closeButtonClasses = [
-      EmulatedPlatform().isPhone || import_obsidian8.Platform.isPhone ? "mod-raised" : "clickable-icon"
+      EmulatedPlatform().isPhone || import_obsidian9.Platform.isPhone ? "mod-raised" : "clickable-icon"
     ];
     new ModalCloseButtonComponent(this.toolbar, closeModal, closeButtonClasses);
   }
@@ -10832,8 +10989,8 @@ var CardToolbarComponent = class {
 };
 
 // src/ui/obsidian-ui-components/modals/confirmation-modal.tsx
-var import_obsidian9 = require("obsidian");
-var ConfirmationModal = class extends import_obsidian9.Modal {
+var import_obsidian10 = require("obsidian");
+var ConfirmationModal = class extends import_obsidian10.Modal {
   /**
    * Creates a confirmation modal.
    * @param app - The Obsidian app instance.
@@ -10848,10 +11005,10 @@ var ConfirmationModal = class extends import_obsidian9.Modal {
     this.titleEl.addClass("sr-confirmation-modal-header");
     this.setContent(description);
     this.contentEl.addClass("sr-confirmation-modal-content");
-    new import_obsidian9.Setting(this.contentEl).setClass("sr-confirmation-modal-button-container").addButton(
+    new import_obsidian10.Setting(this.contentEl).setClass("sr-confirmation-modal-button-container").addButton(
       (button) => button.setButtonText(t("CONFIRM")).setClass("mod-warning").onClick(async () => {
         if (confirmationMessage) {
-          new import_obsidian9.Notice(confirmationMessage);
+          new import_obsidian10.Notice(confirmationMessage);
         }
         if (onConfirm) {
           await onConfirm();
@@ -10872,7 +11029,7 @@ function escapeHtml(s2) {
 }
 
 // src/utils/renderers.ts
-var import_obsidian10 = require("obsidian");
+var import_obsidian11 = require("obsidian");
 var RenderMarkdownWrapper = class {
   constructor(app, plugin, notePath) {
     this.app = app;
@@ -10889,9 +11046,9 @@ var RenderMarkdownWrapper = class {
     if (!el.hasClass("markdown-rendered")) {
       el.addClass("markdown-rendered");
     }
-    const renderChild = new import_obsidian10.MarkdownRenderChild(el);
+    const renderChild = new import_obsidian11.MarkdownRenderChild(el);
     this.plugin.addChild(renderChild);
-    await import_obsidian10.MarkdownRenderer.render(this.app, markdownString, el, this.notePath, renderChild);
+    await import_obsidian11.MarkdownRenderer.render(this.app, markdownString, el, this.notePath, renderChild);
     el.findAll(".internal-link").forEach((el2) => {
       el2.addEventListener("click", (e2) => {
         e2.preventDefault();
@@ -10932,7 +11089,7 @@ var CardContainer = class {
     this._keydownHandler = (e2) => {
       if (!this.plugin.isInitialized) throw new Error("SR plugin or data not initialized!!!");
       if (this.plugin.uiManager === null) throw new Error("UI manager not initialized!!!");
-      if (this.plugin.dataManager.data.settings.useCustomHotkeys || activeDocument.activeElement !== null && (activeDocument.activeElement.nodeName === "TEXTAREA" || activeDocument.activeElement.nodeName === "INPUT") || this.cardState === 2 /* Closed */ || !this.plugin.uiManager.getSRInFocusState() || import_obsidian11.Platform.isMobile || // No keyboard events on mobile
+      if (this.plugin.dataManager.data.settings.useCustomHotkeys || activeDocument.activeElement !== null && (activeDocument.activeElement.nodeName === "TEXTAREA" || activeDocument.activeElement.nodeName === "INPUT") || this.cardState === 2 /* Closed */ || !this.plugin.uiManager.getSRInFocusState() || import_obsidian12.Platform.isMobile || // No keyboard events on mobile
       EmulatedPlatform().isMobile) {
         return;
       }
@@ -11082,7 +11239,17 @@ var CardContainer = class {
     this.toolbar.setResetButtonDisabled(true);
     this.cardState = sessionData.cardData.currentCardState;
     this._updateInfoBar(sessionData, settings.flashcardCardOrder);
-    this.content.empty();
+    await this.drawCardFrontContent(sessionData, settings);
+    this.response.resetResponseButtons();
+    this._setupClozeInputListeners();
+    if (sessionData.currentQuestion.questionType === 4 /* Cloze */) {
+      const firstInput = activeDocument.querySelector(".cloze-input");
+      if (firstInput) {
+        firstInput.focus();
+      }
+    }
+  }
+  drawCardContext(sessionData, settings) {
     if (settings.showContextInCards) {
       this.contextSection = new ContextSectionComponent(this.content);
       this.contextSection.updateCardContext(
@@ -11091,6 +11258,10 @@ var CardContainer = class {
         sessionData.currentNote
       );
     }
+  }
+  async drawCardFrontContent(sessionData, settings) {
+    this.content.empty();
+    this.drawCardContext(sessionData, settings);
     const wrapper = new RenderMarkdownWrapper(
       this.app,
       this.plugin,
@@ -11103,14 +11274,6 @@ var CardContainer = class {
       // sessionData.cardData.currentCardState
     );
     this.content.scrollTop = 0;
-    this.response.resetResponseButtons();
-    this._setupClozeInputListeners();
-    if (sessionData.currentQuestion.questionType === 4 /* Cloze */) {
-      const firstInput = activeDocument.querySelector(".cloze-input");
-      if (firstInput) {
-        firstInput.focus();
-      }
-    }
   }
   drawPendingState(nextPendingDueUnix) {
     this.toolbar.setResetButtonDisabled(true);
@@ -11212,10 +11375,12 @@ var CardContainer = class {
     this.cardState = sessionData.cardData.currentCardState;
     this.toolbar.setResetButtonDisabled(false);
     if (sessionData.currentQuestion.questionType !== 4 /* Cloze */) {
+      await this.drawCardFrontContent(sessionData, settings);
       const hr = activeDocument.createElement("hr");
       this.content.appendChild(hr);
     } else {
       this.content.empty();
+      this.drawCardContext(sessionData, settings);
     }
     const wrapper = new RenderMarkdownWrapper(
       this.app,
@@ -11245,8 +11410,8 @@ var CardContainer = class {
 };
 
 // src/ui/obsidian-ui-components/content-container/card-container/toolbar/toolbar-buttons/card-info-notice.tsx
-var import_obsidian12 = require("obsidian");
-var CardInfoNotice = class extends import_obsidian12.Notice {
+var import_obsidian13 = require("obsidian");
+var CardInfoNotice = class extends import_obsidian13.Notice {
   constructor(schedule, notePath) {
     var _a2;
     const currentEaseStr = t("CURRENT_EASE_HELP_TEXT") + ((_a2 = schedule == null ? void 0 : schedule.latestEase) != null ? _a2 : t("NEW"));
@@ -11259,7 +11424,7 @@ var CardInfoNotice = class extends import_obsidian12.Notice {
 };
 
 // src/ui/obsidian-ui-components/content-container/deck-container/deck-list.tsx
-var import_obsidian13 = require("obsidian");
+var import_obsidian14 = require("obsidian");
 var DeckListComponent = class {
   constructor(parentEl, startReviewOfDeck) {
     this.startReviewOfDeck = startReviewOfDeck;
@@ -11397,7 +11562,7 @@ var DeckListComponent = class {
     treeRowSelf.addClass("sr-tree-item-row");
     let collapsed = !initiallyExpanded;
     const collapseIconEl = treeRowSelf.createDiv("tree-item-icon collapse-icon");
-    (0, import_obsidian13.setIcon)(collapseIconEl, "chevron-down");
+    (0, import_obsidian14.setIcon)(collapseIconEl, "chevron-down");
     if (collapsed) collapseIconEl.addClass("is-collapsed");
     if (numOfSubdecks === 0) collapseIconEl.setCssProps({ display: "none" });
     const treeRowInner = treeRowSelf.createDiv("tree-item-inner");
@@ -11456,7 +11621,7 @@ var DeckListComponent = class {
 };
 
 // src/ui/obsidian-ui-components/content-container/deck-container/deck-list-header.tsx
-var import_obsidian14 = require("obsidian");
+var import_obsidian15 = require("obsidian");
 var DeckListHeaderComponent = class {
   constructor(parentEl, changeReviewMode, closeModal) {
     this.header = parentEl.createDiv();
@@ -11464,12 +11629,12 @@ var DeckListHeaderComponent = class {
     this.header.addClass("sr-header");
     this.deckIcon = this.header.createDiv();
     this.deckIcon.addClass("sr-deck-icon");
-    (0, import_obsidian14.setIcon)(this.deckIcon, "layers");
+    (0, import_obsidian15.setIcon)(this.deckIcon, "layers");
     this.title = this.header.createDiv();
     this.title.addClass("sr-title");
     this.title.setText(t("DECKS"));
     this.header.createDiv().addClass("sr-flex-spacer");
-    this.reviewModeDropdown = new import_obsidian14.DropdownComponent(this.header);
+    this.reviewModeDropdown = new import_obsidian15.DropdownComponent(this.header);
     const reviewModeOptions = {
       Review: t("REVIEW_MODE"),
       Cram: t("CRAM_MODE")
@@ -11484,9 +11649,9 @@ var DeckListHeaderComponent = class {
     if (closeModal === void 0) return;
     const closeButtonClasses = [
       "sr-modal-close-button",
-      EmulatedPlatform().isPhone || import_obsidian14.Platform.isPhone ? "mod-raised" : "clickable-icon"
+      EmulatedPlatform().isPhone || import_obsidian15.Platform.isPhone ? "mod-raised" : "clickable-icon"
     ];
-    if (EmulatedPlatform().isPhone || import_obsidian14.Platform.isPhone) {
+    if (EmulatedPlatform().isPhone || import_obsidian15.Platform.isPhone) {
       closeButtonClasses.push("mod-raised");
       closeButtonClasses.push("clickable-icon");
     }
@@ -11539,8 +11704,8 @@ var DeckContainer = class {
 };
 
 // src/ui/obsidian-ui-components/modals/edit-modal.tsx
-var import_obsidian15 = require("obsidian");
-var FlashcardEditModal = class _FlashcardEditModal extends import_obsidian15.Modal {
+var import_obsidian16 = require("obsidian");
+var FlashcardEditModal = class _FlashcardEditModal extends import_obsidian16.Modal {
   constructor(app, settings, currentCard, existingText, textDirection) {
     super(app);
     this.resolvePromise = null;
@@ -11552,6 +11717,11 @@ var FlashcardEditModal = class _FlashcardEditModal extends import_obsidian15.Mod
     // -> Functions & helpers
     this.saveClickCallback = (_2) => this.save();
     this.cancelClickCallback = (_2) => this.close();
+    this.emptyListenerCallback = (_2) => {
+      const isBackEmpty = this.textAreaBack === null || this.separator === null ? false : this.textAreaBack.value.length === 0;
+      const isFrontEmpty = this.textAreaFront !== null && this.textAreaFront.value.length === 0;
+      this.saveButton.setDisabled(isBackEmpty || isFrontEmpty);
+    };
     this.keyListenerCallback = (evt) => {
       if (evt.key === "Tab") {
         evt.preventDefault();
@@ -11574,8 +11744,12 @@ var FlashcardEditModal = class _FlashcardEditModal extends import_obsidian15.Mod
     this.cardType = this.currentCard.question.questionType;
     this.separator = this.getSeparatorFromCardType(this.cardType, settings);
     if (this.separator !== null) {
-      this.textFront = this.currentCard.front;
-      this.textBack = this.currentCard.back;
+      this.textFront = this.currentCard.question.questionText.actualQuestion.split(
+        this.separator
+      )[0];
+      this.textBack = this.currentCard.question.questionText.actualQuestion.split(
+        this.separator
+      )[1];
       if (this.cardType === 2 /* MultiLineBasic */ || this.cardType === 3 /* MultiLineReversed */) {
         this.textBack = this.textBack.trimStart();
         this.textFront = this.textFront.trimEnd();
@@ -11598,6 +11772,7 @@ var FlashcardEditModal = class _FlashcardEditModal extends import_obsidian15.Mod
     this.textAreaFront.addClass("sr-input");
     this.textAreaFront.setText(this.textFront);
     this.textAreaFront.addEventListener("keydown", this.keyListenerCallback);
+    this.textAreaFront.addEventListener("input", this.emptyListenerCallback);
     if (this.textDirection === 2 /* Rtl */) {
       this.textAreaFront.setAttribute("dir", "rtl");
     }
@@ -11608,13 +11783,14 @@ var FlashcardEditModal = class _FlashcardEditModal extends import_obsidian15.Mod
     } else {
       this.textAreaBack.setText(this.textBack);
       this.textAreaBack.addEventListener("keydown", this.keyListenerCallback);
+      this.textAreaBack.addEventListener("input", this.emptyListenerCallback);
       if (this.textDirection === 2 /* Rtl */) {
         this.textAreaBack.setAttribute("dir", "rtl");
       }
     }
     const response = this.contentEl.createDiv();
     response.addClass("sr-response");
-    const saveButton = new import_obsidian15.ButtonComponent(response);
+    const saveButton = new import_obsidian16.ButtonComponent(response);
     saveButton.setClass("sr-response-button");
     saveButton.setClass("sr-save-button");
     saveButton.setClass("sr-bg-green");
@@ -11622,10 +11798,11 @@ var FlashcardEditModal = class _FlashcardEditModal extends import_obsidian15.Mod
     saveButton.onClick((evt) => {
       this.saveClickCallback(evt);
     });
+    this.saveButton = saveButton;
     const button = response.createEl("button");
     button.addClasses(["sr-response-button", "sr-dummy-button"]);
     button.setText("");
-    const cancelButton = new import_obsidian15.ButtonComponent(response);
+    const cancelButton = new import_obsidian16.ButtonComponent(response);
     cancelButton.setClass("sr-response-button");
     cancelButton.setClass("sr-cancel-button");
     cancelButton.setClass("sr-bg-red");
@@ -11685,6 +11862,11 @@ var FlashcardEditModal = class _FlashcardEditModal extends import_obsidian15.Mod
   removeInputListener() {
     if (this.textAreaFront !== null) {
       this.textAreaFront.removeEventListener("keydown", this.keyListenerCallback);
+      this.textAreaFront.removeEventListener("input", this.emptyListenerCallback);
+    }
+    if (this.textAreaBack !== null) {
+      this.textAreaBack.removeEventListener("keydown", this.keyListenerCallback);
+      this.textAreaBack.removeEventListener("input", this.emptyListenerCallback);
     }
   }
   getSeparatorFromCardType(cardType, settings) {
@@ -11754,19 +11936,12 @@ var ContentManager = class {
     let openImmediately = false;
     let deckWithCards = null;
     for (const subdeck of subdecksWithCardsInQueue) {
-      const hasNewCards = subdeck.newRepItems.length > 0;
-      const hasDueCards = subdeck.dueRepItems.length > 0;
-      const hasDueCardsToday = hasDueCards && subdeck.dueRepItems.some((card) => {
-        const dueDate = card.scheduleInfo.dueDateAsUnix;
-        const nowUnix = globalDateProvider.now.valueOf();
-        return dueDate <= nowUnix;
-      });
-      const hasCardsToday = hasNewCards || hasDueCardsToday;
-      if (openImmediately && (hasCardsToday || this.reviewMode === 0 /* Cram */)) {
+      const subdeckStats = this.reviewSequencer.getDeckStats(subdeck.getTopicPath());
+      if (openImmediately && (subdeckStats.cardsInQueueOfThisDeckCount || this.reviewMode === 0 /* Cram */)) {
         openImmediately = false;
         break;
       }
-      if (hasCardsToday || this.reviewMode === 0 /* Cram */) {
+      if (subdeckStats.cardsInQueueOfThisDeckCount || this.reviewMode === 0 /* Cram */) {
         openImmediately = true;
         deckWithCards = subdeck;
       }
@@ -11852,14 +12027,13 @@ var ContentManager = class {
   }
   _getNewSessionData(deck) {
     if (this.reviewSequencer === null) return null;
-    const deckStats = this.reviewSequencer.getDeckStats(deck.getTopicPath());
-    const totalCardsInSession = deckStats.cardsInQueueCount;
-    const totalDecksInSession = deckStats.decksInQueueOfThisDeckCount;
+    const chosenDeckStats = this.reviewSequencer.getDeckStats(deck.getTopicPath());
+    const totalCardsInSession = chosenDeckStats.cardsInQueueCount;
+    const totalDecksInSession = chosenDeckStats.decksInQueueOfThisDeckCount;
     const currentCardState = 0 /* Front */;
-    const currentDeckStats = this.reviewSequencer.getDeckStats(
+    const currentDeckStats = this.reviewSequencer.currentDeck === null ? null : this.reviewSequencer.getDeckStats(
       this.reviewSequencer.currentDeck.getTopicPath()
     );
-    const chosenDeckStats = this.reviewSequencer.getDeckStats(deck.getTopicPath());
     return {
       cardData: {
         currentCard: this.reviewSequencer.currentCard,
@@ -11869,7 +12043,7 @@ var ContentManager = class {
         chosenDeck: deck,
         currentDeck: this.reviewSequencer.currentDeck,
         previousDeck: null,
-        currentDeckTotalCardsInQueue: currentDeckStats.cardsInQueueOfThisDeckCount,
+        currentDeckTotalCardsInQueue: currentDeckStats === null ? 0 : currentDeckStats.cardsInQueueOfThisDeckCount,
         currentDeckStats,
         previousDeckStats: null,
         chosenDeckStats
@@ -11922,6 +12096,7 @@ var ContentManager = class {
     const currentCard = this.reviewSequencer.currentCard;
     const currentQ = this.reviewSequencer.currentQuestion;
     const textPrompt = currentQ.questionText.actualQuestion;
+    const currentUIState = this.uiManager.uiState;
     this.uiManager.setUIState(4 /* EditModal */);
     const editModal = FlashcardEditModal.Prompt(
       this.app,
@@ -11932,8 +12107,21 @@ var ContentManager = class {
     );
     await editModal.then(async (modifiedCardText) => {
       if (this.reviewSequencer === null) return;
-      await this.reviewSequencer.updateCurrentQuestionText(modifiedCardText);
-      this.uiManager.setUIState(3 /* CardBack */);
+      await this.reviewSequencer.updateCurrentQuestionTextAndCards(modifiedCardText);
+      this.uiManager.setUIState(currentUIState);
+      if (this.sessionData !== null) {
+        if (this.uiManager.uiState === 2 /* CardFront */) {
+          await this.cardContainer.drawCardFront(this.sessionData, this.settings);
+        }
+        if (this.uiManager.uiState === 3 /* CardBack */) {
+          await this.cardContainer.drawBack(
+            this.sessionData,
+            this.reviewMode,
+            this.settings,
+            this._determineButtonSchedule.bind(this)
+          );
+        }
+      }
     }).catch((reason) => console.log(reason));
   }
   async _jumpToCurrentCard() {
@@ -11941,8 +12129,8 @@ var ContentManager = class {
     if (this.reviewSequencer === null) return;
     const currentQuestion = this.reviewSequencer.currentQuestion;
     if (!currentQuestion) return;
-    if (!this.settings.openViewInNewTab && !(import_obsidian16.Platform.isMobile || EmulatedPlatform().isMobile) || !this.settings.openViewInNewTabMobile && (import_obsidian16.Platform.isMobile || EmulatedPlatform().isMobile)) {
-      new import_obsidian16.Notice("Note was opened in new tab in the background");
+    if (!this.settings.openViewInNewTab && !(import_obsidian17.Platform.isMobile || EmulatedPlatform().isMobile) || !this.settings.openViewInNewTabMobile && (import_obsidian17.Platform.isMobile || EmulatedPlatform().isMobile)) {
+      new import_obsidian17.Notice("Note was opened in new tab in the background");
     }
     const file = currentQuestion.note.file.tfile;
     const blockId = currentQuestion.questionText.obsidianBlockId;
@@ -12031,7 +12219,7 @@ var ContentManager = class {
 };
 
 // src/ui/obsidian-ui-components/item-views/sr-tab-view.tsx
-var SRTabView = class extends import_obsidian17.ItemView {
+var SRTabView = class extends import_obsidian18.ItemView {
   constructor(leaf, plugin, settings, reviewQueueLoader) {
     super(leaf);
     this.reviewQueueLoader = null;
@@ -12054,7 +12242,7 @@ var SRTabView = class extends import_obsidian17.ItemView {
     this.viewContainerEl.addClass("sr-tab-view");
     this.viewContainerEl.addClass("sr-view");
     this.viewContentEl = this.viewContainerEl.createDiv("sr-tab-view-content");
-    const isMobile = import_obsidian17.Platform.isMobile || EmulatedPlatform().isMobile;
+    const isMobile = import_obsidian18.Platform.isMobile || EmulatedPlatform().isMobile;
     const heightPercent = isMobile ? this.settings.flashcardHeightPercentageMobile : this.settings.flashcardHeightPercentage;
     const widthPercent = isMobile ? this.settings.flashcardWidthPercentageMobile : this.settings.flashcardWidthPercentage;
     this.setSize(widthPercent, heightPercent);
@@ -12152,14 +12340,14 @@ var SRTabView = class extends import_obsidian17.ItemView {
 };
 
 // src/ui/obsidian-ui-components/modals/sr-modal-view.tsx
-var import_obsidian18 = require("obsidian");
-var SRModalView = class extends import_obsidian18.Modal {
+var import_obsidian19 = require("obsidian");
+var SRModalView = class extends import_obsidian19.Modal {
   constructor(app, plugin, settingsManager, reviewQueueLoader) {
     super(app);
     this.resizeObserver = null;
     this.plugin = plugin;
     this.settingsManager = settingsManager;
-    if (import_obsidian18.Platform.isMobile || EmulatedPlatform().isMobile) {
+    if (import_obsidian19.Platform.isMobile || EmulatedPlatform().isMobile) {
       this.setModalSize(
         this.settingsManager.settings.flashcardHeightPercentageMobile,
         this.settingsManager.settings.flashcardWidthPercentageMobile
@@ -12209,7 +12397,7 @@ var SRModalView = class extends import_obsidian18.Modal {
     await this.saveSizeToSettings(
       heightPercent,
       widthPercent,
-      import_obsidian18.Platform.isMobile || EmulatedPlatform().isMobile
+      import_obsidian19.Platform.isMobile || EmulatedPlatform().isMobile
     );
   }
   setRoundedModalCorners(rounded) {
@@ -12236,10 +12424,10 @@ var SRModalView = class extends import_obsidian18.Modal {
 };
 
 // src/ui/obsidian-ui-components/settings-tab.tsx
-var import_obsidian28 = require("obsidian");
+var import_obsidian29 = require("obsidian");
 
 // src/ui/obsidian-ui-components/content-container/settings-page/data-page.tsx
-var import_obsidian20 = require("obsidian");
+var import_obsidian21 = require("obsidian");
 
 // node_modules/.pnpm/balanced-match@4.0.4/node_modules/balanced-match/dist/esm/index.js
 var balanced = (a2, b2, str) => {
@@ -14123,7 +14311,7 @@ var DEFAULT_SETTINGS = {
   deleteTagsOnSchedulingDataDeletion: false,
   maxNDaysNotesReviewQueue: 365,
   // UI settings
-  showRibbonIcon: true,
+  showRibbonIcon: void 0,
   showStatusBar: true,
   showCardStatusBarItem: true,
   showNoteStatusBarItem: true,
@@ -14167,6 +14355,9 @@ var DEFAULT_SETTINGS = {
   preferredLocale: "-"
 };
 function upgradeSettings(settings) {
+  if (settings.showRibbonIcon) {
+    settings.showRibbonIcon = DEFAULT_SETTINGS.showRibbonIcon;
+  }
   if (settings.randomizeCardOrder !== null && settings.randomizeCardOrder !== void 0 && (settings.flashcardCardOrder === null || settings.flashcardCardOrder === void 0) && (settings.flashcardDeckOrder === null || settings.flashcardDeckOrder === void 0)) {
     settings.flashcardCardOrder = settings.randomizeCardOrder ? "DueFirstRandom" : "DueFirstSequential";
     settings.flashcardDeckOrder = "PrevDeckComplete_Sequential";
@@ -14289,7 +14480,7 @@ var SettingsUtil = class _SettingsUtil {
 };
 
 // src/ui/obsidian-ui-components/content-container/settings-page/settings-page.tsx
-var import_obsidian19 = require("obsidian");
+var import_obsidian20 = require("obsidian");
 var SettingsPage = class {
   constructor(pageContainerEl, plugin, settingsManager, dataManager, pageType, applySettingsUpdate, display, openPage, scrollListener) {
     this.plugin = plugin;
@@ -14309,7 +14500,7 @@ var SettingsPage = class {
       this.backToMainPage();
     });
     if (pageType === "main-page") this.pageHeaderEl.addClass("sr-is-hidden");
-    this.backButton = new import_obsidian19.ButtonComponent(this.pageHeaderEl);
+    this.backButton = new import_obsidian20.ButtonComponent(this.pageHeaderEl);
     this.backButton.setClass("sr-settings-page-back-button");
     this.backButton.setClass("clickable-icon");
     this.backButton.setIcon("chevron-left");
@@ -14320,7 +14511,7 @@ var SettingsPage = class {
     this.titleWrapperEl.addClass("sr-settings-page-title-wrapper");
     this.titleIconEl = this.titleWrapperEl.createDiv();
     this.titleIconEl.addClass("sr-settings-page-title-icon");
-    (0, import_obsidian19.setIcon)(this.titleIconEl, getPageIcon(pageType));
+    (0, import_obsidian20.setIcon)(this.titleIconEl, getPageIcon(pageType));
     this.titleEl = this.titleWrapperEl.createDiv();
     this.titleEl.addClass("sr-settings-page-title");
     this.titleEl.setText(getPageName(pageType));
@@ -14408,7 +14599,7 @@ var DataPage = class extends SettingsPage {
       openPage,
       scrollListener
     );
-    const dataStorageGroup = new import_obsidian20.SettingGroup(this.containerEl).setHeading(
+    const dataStorageGroup = new import_obsidian21.SettingGroup(this.containerEl).setHeading(
       t("GROUP_DATA_STORAGE")
     );
     dataStorageGroup.addSetting((setting) => {
@@ -14443,7 +14634,7 @@ var DataPage = class extends SettingsPage {
         });
       });
     });
-    new import_obsidian20.SettingGroup(this.containerEl).setHeading(t("DELETE_SCHEDULING_DATA_ALL")).addSetting((setting) => {
+    new import_obsidian21.SettingGroup(this.containerEl).setHeading(t("DELETE_SCHEDULING_DATA_ALL")).addSetting((setting) => {
       setting.setName(t("DELETE_TAGS_WHEN_DELETING_SCHEDULING_DATA")).setDesc(t("DELETE_TAGS_WHEN_DELETING_SCHEDULING_DATA_DESC")).addToggle(
         (toggle) => toggle.setValue(
           this.settingsManager.settings.deleteTagsOnSchedulingDataDeletion
@@ -14506,7 +14697,7 @@ var DataPage = class extends SettingsPage {
         });
       });
     });
-    new import_obsidian20.SettingGroup(this.containerEl).setHeading(t("GROUP_RESET_SETTINGS")).addSetting((setting) => {
+    new import_obsidian21.SettingGroup(this.containerEl).setHeading(t("GROUP_RESET_SETTINGS")).addSetting((setting) => {
       setting.setName(t("GROUP_RESET_SETTINGS")).setDesc(t("GROUP_RESET_SETTINGS_DESC")).addButton((button) => {
         button.setButtonText(t("RESET_SETTINGS")).setClass("mod-warning").onClick(() => {
           new ConfirmationModal(
@@ -14526,7 +14717,7 @@ var DataPage = class extends SettingsPage {
 };
 
 // src/ui/obsidian-ui-components/content-container/settings-page/flashcards-page.tsx
-var import_obsidian21 = require("obsidian");
+var import_obsidian22 = require("obsidian");
 var FlashcardsPage = class extends SettingsPage {
   constructor(pageContainerEl, plugin, settingsManager, dataManager, pageType, didReadMultilineEndMarkerWarning, applySettingsUpdate, display, openPage, scrollListener, changeMultilineEndMarkerWarningState) {
     super(
@@ -14540,7 +14731,7 @@ var FlashcardsPage = class extends SettingsPage {
       openPage,
       scrollListener
     );
-    new import_obsidian21.SettingGroup(this.containerEl).setHeading(t("GROUP_TAGS_FOLDERS")).addSetting((setting) => {
+    new import_obsidian22.SettingGroup(this.containerEl).setHeading(t("GROUP_TAGS_FOLDERS")).addSetting((setting) => {
       setting.setName(t("FLASHCARD_TAGS")).setDesc(t("FLASHCARD_TAGS_DESC")).addTextArea(
         (text) => text.setValue(this.settingsManager.settings.flashcardTags.join(" ")).onChange((value) => {
           applySettingsUpdate(async () => {
@@ -14582,7 +14773,7 @@ var FlashcardsPage = class extends SettingsPage {
         })
       );
     });
-    new import_obsidian21.SettingGroup(this.containerEl).setHeading(t("GROUP_FLASHCARD_REVIEW")).addSetting((setting) => {
+    new import_obsidian22.SettingGroup(this.containerEl).setHeading(t("GROUP_FLASHCARD_REVIEW")).addSetting((setting) => {
       setting.setName(t("BURY_SIBLINGS_TILL_NEXT_DAY")).setDesc(t("BURY_SIBLINGS_TILL_NEXT_DAY_DESC")).addToggle(
         (toggle) => toggle.setValue(this.settingsManager.settings.burySiblingCards).onChange(async (value) => {
           this.settingsManager.settings.burySiblingCards = value;
@@ -14629,7 +14820,7 @@ var FlashcardsPage = class extends SettingsPage {
         })
       );
     });
-    new import_obsidian21.SettingGroup(this.containerEl).setHeading(t("GROUP_FLASHCARD_SEPARATORS")).addSetting((setting) => {
+    new import_obsidian22.SettingGroup(this.containerEl).setHeading(t("GROUP_FLASHCARD_SEPARATORS")).addSetting((setting) => {
       const convertHighlightsToClozesEl = setting.setName(
         t("CONVERT_HIGHLIGHTS_TO_CLOZES")
       );
@@ -14854,7 +15045,7 @@ var FlashcardsPage = class extends SettingsPage {
 };
 
 // src/ui/obsidian-ui-components/content-container/settings-page/main-page.tsx
-var import_obsidian22 = require("obsidian");
+var import_obsidian23 = require("obsidian");
 
 // src/data/debug-logger.ts
 var DebugLogger = class {
@@ -14929,7 +15120,7 @@ _DebugLoggerInstance.instance = null;
 var DebugLoggerInstance = _DebugLoggerInstance;
 
 // src/parser.ts
-var import_clozecraft = __toESM(require_dist());
+var import_clozecraft2 = __toESM(require_dist());
 var debugParser = false;
 function setDebugParser(value) {
   debugParser = value;
@@ -14977,7 +15168,7 @@ function parse(text, options) {
   let cardText = "";
   let cardType = null;
   let firstLineNo = 0, lastLineNo;
-  const clozecrafter = new import_clozecraft.ClozeCrafter(options.clozePatterns);
+  const clozecrafter = new import_clozecraft2.ClozeCrafter(options.clozePatterns);
   const lines = text.replaceAll("\r\n", "\n").split("\n");
   for (let i2 = 0; i2 < lines.length; i2++) {
     const currentLine = lines[i2], currentTrimmed = lines[i2].trim();
@@ -15081,7 +15272,7 @@ var MainPage = class extends SettingsPage {
       scrollListener
     );
     this.containerEl.addClass("sr-main-page");
-    const mainSettingsGroup = new import_obsidian22.SettingGroup(this.containerEl).setHeading(
+    const mainSettingsGroup = new import_obsidian23.SettingGroup(this.containerEl).setHeading(
       t("SETTINGS_TAB_HEADING")
     );
     SettingsPageTypesArray.forEach((pageType2) => {
@@ -15096,7 +15287,7 @@ var MainPage = class extends SettingsPage {
         });
         const iconEl = activeDocument.createElement("div");
         iconEl.addClass("sr-settings-page-title-icon");
-        (0, import_obsidian22.setIcon)(iconEl, getPageIcon(pageType2));
+        (0, import_obsidian23.setIcon)(iconEl, getPageIcon(pageType2));
         setting.nameEl.insertBefore(iconEl, setting.nameEl.firstChild);
         setting.nameEl.addClass("sr-settings-page-title");
         setting.settingEl.addClass("sr-settings-page-title-setting");
@@ -15125,7 +15316,7 @@ var MainPage = class extends SettingsPage {
         });
       });
     });
-    new import_obsidian22.SettingGroup(this.containerEl).setHeading(t("INFO")).addSetting((setting) => {
+    new import_obsidian23.SettingGroup(this.containerEl).setHeading(t("INFO")).addSetting((setting) => {
       setting.setName(getPageName("statistics-page")).addButton((button) => {
         button.setIcon("chevron-right").onClick(() => {
           this.openPage("statistics-page");
@@ -15134,7 +15325,7 @@ var MainPage = class extends SettingsPage {
       });
       const iconEl = activeDocument.createElement("div");
       iconEl.addClass("sr-settings-page-title-icon");
-      (0, import_obsidian22.setIcon)(iconEl, getPageIcon("statistics-page"));
+      (0, import_obsidian23.setIcon)(iconEl, getPageIcon("statistics-page"));
       setting.nameEl.insertBefore(iconEl, setting.nameEl.firstChild);
       setting.nameEl.addClass("sr-settings-page-title");
       setting.settingEl.addClass("sr-settings-page-title-setting");
@@ -15166,7 +15357,7 @@ var MainPage = class extends SettingsPage {
         setting.infoEl.append(elements[i2]);
       }
     });
-    new import_obsidian22.SettingGroup(this.containerEl).setHeading(t("HELP") + " & " + t("GROUP_CONTRIBUTING")).addSetting((setting) => {
+    new import_obsidian23.SettingGroup(this.containerEl).setHeading(t("HELP") + " & " + t("GROUP_CONTRIBUTING")).addSetting((setting) => {
       const elements = tHTML("GITHUB_DISCUSSIONS", {
         discussionsUrl: "https://github.com/st3v3nmw/obsidian-spaced-repetition/discussions/"
       });
@@ -15207,7 +15398,7 @@ var MainPage = class extends SettingsPage {
         setting.infoEl.append(elements[i2]);
       }
     });
-    new import_obsidian22.SettingGroup(this.containerEl).setHeading(t("LOGGING")).addSetting((setting) => {
+    new import_obsidian23.SettingGroup(this.containerEl).setHeading(t("LOGGING")).addSetting((setting) => {
       setting.setName(t("DISPLAY_SCHEDULING_DEBUG_INFO")).addToggle(
         (toggle) => toggle.setValue(this.settingsManager.settings.showSchedulingDebugMessages).onChange(async (value) => {
           this.settingsManager.settings.showSchedulingDebugMessages = value;
@@ -15237,7 +15428,7 @@ var MainPage = class extends SettingsPage {
 };
 
 // src/ui/obsidian-ui-components/content-container/settings-page/notes-page.tsx
-var import_obsidian23 = require("obsidian");
+var import_obsidian24 = require("obsidian");
 var NotesPage = class extends SettingsPage {
   constructor(pageContainerEl, plugin, settingsManager, dataManager, pageType, applySettingsUpdate, display, openPage, scrollListener) {
     super(
@@ -15251,7 +15442,7 @@ var NotesPage = class extends SettingsPage {
       openPage,
       scrollListener
     );
-    new import_obsidian23.SettingGroup(this.containerEl).setHeading(t("GROUP_TAGS_FOLDERS")).addSetting((setting) => {
+    new import_obsidian24.SettingGroup(this.containerEl).setHeading(t("GROUP_TAGS_FOLDERS")).addSetting((setting) => {
       setting.setName(t("TAGS_TO_REVIEW")).setDesc(t("TAGS_TO_REVIEW_DESC")).addTextArea(
         (text) => text.setValue(this.settingsManager.settings.tagsToReview.join(" ")).onChange((value) => {
           applySettingsUpdate(async () => {
@@ -15279,7 +15470,7 @@ var NotesPage = class extends SettingsPage {
         })
       );
     });
-    new import_obsidian23.SettingGroup(this.containerEl).setHeading(t("NOTES_REVIEW_QUEUE")).addSetting((setting) => {
+    new import_obsidian24.SettingGroup(this.containerEl).setHeading(t("NOTES_REVIEW_QUEUE")).addSetting((setting) => {
       setting.setName(t("DATE_FORMAT_FOR_NOTE_REVIEW_QUEUE")).addExtraButton((button) => {
         button.setIcon("reset").setTooltip(t("RESET_DEFAULT")).onClick(async () => {
           this.settingsManager.settings.preferredDateFormatForNoteReviewQueue = DEFAULT_SETTINGS.preferredDateFormatForNoteReviewQueue;
@@ -15342,7 +15533,7 @@ var NotesPage = class extends SettingsPage {
             const numValue = Number.parseInt(value);
             if (!isNaN(numValue)) {
               if (numValue < 1) {
-                new import_obsidian23.Notice(t("MIN_ONE_DAY"));
+                new import_obsidian24.Notice(t("MIN_ONE_DAY"));
                 text.setValue(
                   this.settingsManager.settings.maxNDaysNotesReviewQueue.toString()
                 );
@@ -15351,7 +15542,7 @@ var NotesPage = class extends SettingsPage {
               this.settingsManager.settings.maxNDaysNotesReviewQueue = numValue;
               await this.settingsManager.save();
             } else {
-              new import_obsidian23.Notice(t("VALID_NUMBER_WARNING"));
+              new import_obsidian24.Notice(t("VALID_NUMBER_WARNING"));
             }
           });
         })
@@ -15361,7 +15552,7 @@ var NotesPage = class extends SettingsPage {
 };
 
 // src/ui/obsidian-ui-components/content-container/settings-page/scheduling-page.tsx
-var import_obsidian24 = require("obsidian");
+var import_obsidian25 = require("obsidian");
 var SchedulingPage = class extends SettingsPage {
   async setAlgorithm(algorithm) {
     this.settingsManager.settings.algorithm = algorithm;
@@ -15381,7 +15572,7 @@ var SchedulingPage = class extends SettingsPage {
       openPage,
       scrollListener
     );
-    new import_obsidian24.SettingGroup(this.containerEl).setHeading(t("REVIEW_REMINDERS")).addSetting((setting) => {
+    new import_obsidian25.SettingGroup(this.containerEl).setHeading(t("REVIEW_REMINDERS")).addSetting((setting) => {
       setting.setName(t("REVIEW_REMINDERS")).setDesc(t("REVIEW_REMINDERS_DESC")).addToggle(
         (toggle) => toggle.setValue(this.settingsManager.settings.enableReviewReminders).onChange(async (value) => {
           this.settingsManager.settings.enableReviewReminders = value;
@@ -15412,7 +15603,7 @@ var SchedulingPage = class extends SettingsPage {
           this.applySettingsUpdate(async () => {
             const parsedValue = Number.parseInt(value);
             if (Number.isNaN(parsedValue) || parsedValue < 1 || parsedValue > 1440) {
-              new import_obsidian24.Notice(t("REVIEW_REMINDER_INTERVAL_MIN_WARNING"));
+              new import_obsidian25.Notice(t("REVIEW_REMINDER_INTERVAL_MIN_WARNING"));
               text.setValue(
                 this.settingsManager.settings.reviewReminderIntervalMinutes.toString()
               );
@@ -15470,7 +15661,7 @@ var SchedulingPage = class extends SettingsPage {
         })
       );
     });
-    const algorithmGroup = new import_obsidian24.SettingGroup(this.containerEl).setHeading(t("ALGORITHM"));
+    const algorithmGroup = new import_obsidian25.SettingGroup(this.containerEl).setHeading(t("ALGORITHM"));
     algorithmGroup.addSetting((setting) => {
       const algoSettingEl = setting.setName(t("ALGORITHM")).setDesc("").addDropdown(
         (dropdown) => dropdown.addOptions({
@@ -15524,7 +15715,7 @@ var SchedulingPage = class extends SettingsPage {
             applySettingsUpdate(async () => {
               const numValue = Number.parseFloat(value);
               if (Number.isNaN(numValue) || numValue <= 0 || numValue > 1) {
-                new import_obsidian24.Notice(
+                new import_obsidian25.Notice(
                   "FSRS desired retention must be between 0 and 1."
                 );
                 text.setValue(
@@ -15553,7 +15744,7 @@ var SchedulingPage = class extends SettingsPage {
               const numValue = Number.parseInt(value);
               if (!isNaN(numValue)) {
                 if (numValue < 130) {
-                  new import_obsidian24.Notice(t("BASE_EASE_MIN_WARNING"));
+                  new import_obsidian25.Notice(t("BASE_EASE_MIN_WARNING"));
                   text.setValue(
                     this.settingsManager.settings.baseEase.toString()
                   );
@@ -15562,7 +15753,7 @@ var SchedulingPage = class extends SettingsPage {
                 this.settingsManager.settings.baseEase = numValue;
                 await this.settingsManager.save();
               } else {
-                new import_obsidian24.Notice(t("VALID_NUMBER_WARNING"));
+                new import_obsidian25.Notice(t("VALID_NUMBER_WARNING"));
               }
             });
           })
@@ -15608,7 +15799,7 @@ var SchedulingPage = class extends SettingsPage {
               const numValue = Number.parseInt(value) / 100;
               if (!isNaN(numValue)) {
                 if (numValue < 1) {
-                  new import_obsidian24.Notice(t("EASY_BONUS_MIN_WARNING"));
+                  new import_obsidian25.Notice(t("EASY_BONUS_MIN_WARNING"));
                   text.setValue(
                     (this.settingsManager.settings.easyBonus * 100).toString()
                   );
@@ -15617,7 +15808,7 @@ var SchedulingPage = class extends SettingsPage {
                 this.settingsManager.settings.easyBonus = numValue;
                 await this.settingsManager.save();
               } else {
-                new import_obsidian24.Notice(t("VALID_NUMBER_WARNING"));
+                new import_obsidian25.Notice(t("VALID_NUMBER_WARNING"));
               }
             });
           })
@@ -15644,7 +15835,7 @@ var SchedulingPage = class extends SettingsPage {
             const numValue = Number.parseInt(value);
             if (!isNaN(numValue)) {
               if (numValue < 1) {
-                new import_obsidian24.Notice(t("MAX_INTERVAL_MIN_WARNING"));
+                new import_obsidian25.Notice(t("MAX_INTERVAL_MIN_WARNING"));
                 text.setValue(
                   this.settingsManager.settings.maximumInterval.toString()
                 );
@@ -15653,7 +15844,7 @@ var SchedulingPage = class extends SettingsPage {
               this.settingsManager.settings.maximumInterval = numValue;
               await this.settingsManager.save();
             } else {
-              new import_obsidian24.Notice(t("VALID_NUMBER_WARNING"));
+              new import_obsidian25.Notice(t("VALID_NUMBER_WARNING"));
             }
           });
         })
@@ -15670,7 +15861,7 @@ var SchedulingPage = class extends SettingsPage {
           applySettingsUpdate(async () => {
             const dayBoundary = DateUtil.strToDayBoundary(value);
             if (dayBoundary === null) {
-              new import_obsidian24.Notice(t("INVALID_START_OF_DAY_WARNING"));
+              new import_obsidian25.Notice(t("INVALID_START_OF_DAY_WARNING"));
               return;
             } else {
               this.settingsManager.settings.startOfDay = value;
@@ -27655,7 +27846,7 @@ __publicField(TimeSeriesScale, "id", "timeseries");
 __publicField(TimeSeriesScale, "defaults", TimeScale.defaults);
 
 // src/ui/obsidian-ui-components/content-container/settings-page/statistics-page/statistics-page.tsx
-var import_obsidian26 = require("obsidian");
+var import_obsidian27 = require("obsidian");
 
 // src/scheduling/algorithms/base/sr-algorithm.ts
 var SRAlgorithm = class _SRAlgorithm {
@@ -27668,8 +27859,8 @@ var SRAlgorithm = class _SRAlgorithm {
 };
 
 // src/ui/obsidian-ui-components/content-container/settings-page/statistics-page/settings-item-override-component.tsx
-var import_obsidian25 = require("obsidian");
-var SettingsItemOverrideComponent = class extends import_obsidian25.BaseComponent {
+var import_obsidian26 = require("obsidian");
+var SettingsItemOverrideComponent = class extends import_obsidian26.BaseComponent {
   constructor(parentContainerEl) {
     super();
     parentContainerEl.addClass("sr-setting-override");
@@ -29582,11 +29773,11 @@ var StatisticsPage = class extends SettingsPage {
     }
     const scheduledCount = cardStats.youngCount + cardStats.matureCount;
     maxN = Math.max(maxN, 1);
-    new import_obsidian26.Setting(this.containerEl).setName(t("PERIOD_TITLE")).setDesc(t("PERIOD_DESC")).addDropdown((el) => {
+    new import_obsidian27.Setting(this.containerEl).setName(t("PERIOD_TITLE")).setDesc(t("PERIOD_DESC")).addDropdown((el) => {
       el.addOption("month", t("MONTH")).addOption("quarter", t("QUARTER")).addOption("year", t("YEAR")).addOption("lifetime", t("LIFETIME")).setValue("month");
       el.selectEl.setAttr("id", "sr-chart-period");
     });
-    new import_obsidian26.SettingGroup(this.containerEl).setHeading(t("FORECAST")).addSetting((setting) => {
+    new import_obsidian27.SettingGroup(this.containerEl).setHeading(t("FORECAST")).addSetting((setting) => {
       this.forecastChart = new ChartComponent(
         setting.settingEl,
         "forecastChart",
@@ -29611,7 +29802,7 @@ var StatisticsPage = class extends SettingsPage {
       false
     );
     const longestInterval = textInterval(cardStats.intervals.getMaxValue(), false);
-    new import_obsidian26.SettingGroup(this.containerEl).setHeading(t("INTERVALS")).addSetting((setting) => {
+    new import_obsidian27.SettingGroup(this.containerEl).setHeading(t("INTERVALS")).addSetting((setting) => {
       this.intervalsChart = new ChartComponent(
         setting.settingEl,
         "intervalsChart",
@@ -29632,7 +29823,7 @@ var StatisticsPage = class extends SettingsPage {
       cardStats.eases.clearCountIfMissing(ease);
     }
     const averageEase = Math.round(cardStats.eases.getTotalOfValueMultiplyCount() / scheduledCount) || 0;
-    new import_obsidian26.SettingGroup(this.containerEl).setHeading(t("EASES")).addSetting((setting) => {
+    new import_obsidian27.SettingGroup(this.containerEl).setHeading(t("EASES")).addSetting((setting) => {
       this.easesChart = new ChartComponent(
         setting.settingEl,
         "easesChart",
@@ -29652,7 +29843,7 @@ var StatisticsPage = class extends SettingsPage {
       2 /* AnyItem */,
       true
     );
-    new import_obsidian26.SettingGroup(this.containerEl).setHeading(t("CARD_TYPES")).addSetting((setting) => {
+    new import_obsidian27.SettingGroup(this.containerEl).setHeading(t("CARD_TYPES")).addSetting((setting) => {
       this.cardTypesChart = new ChartComponent(
         setting.settingEl,
         "cardTypesChart",
@@ -29679,14 +29870,14 @@ var StatisticsPage = class extends SettingsPage {
         return [key.split(".")[0], Math.round(value)];
       }
     );
-    new import_obsidian26.SettingGroup(this.containerEl).setHeading(t("NOTES")).addSetting((setting) => {
+    new import_obsidian27.SettingGroup(this.containerEl).setHeading(t("NOTES")).addSetting((setting) => {
       this.noteStatsGrid = new NoteStatsComponent(setting.settingEl, noteEases);
     });
   }
 };
 
 // src/ui/obsidian-ui-components/content-container/settings-page/ui-preferences-page.tsx
-var import_obsidian27 = require("obsidian");
+var import_obsidian28 = require("obsidian");
 var UIPreferencesPage = class extends SettingsPage {
   constructor(containerEl, plugin, settingsManager, dataManager, uiManager, pageType, applySettingsUpdate, display, openPage, scrollListener) {
     super(
@@ -29701,9 +29892,9 @@ var UIPreferencesPage = class extends SettingsPage {
       scrollListener
     );
     this.uiManager = uiManager;
-    new import_obsidian27.SettingGroup(this.containerEl).setHeading(t("OBSIDIAN_INTEGRATION")).addSetting((setting) => {
+    new import_obsidian28.SettingGroup(this.containerEl).setHeading(t("OBSIDIAN_INTEGRATION")).addSetting((setting) => {
       setting.setName(t("OPEN_IN_TAB")).setDesc(t("OPEN_IN_TAB_DESC")).addToggle((toggle) => {
-        const isMobile = import_obsidian27.Platform.isMobile || EmulatedPlatform().isMobile;
+        const isMobile = import_obsidian28.Platform.isMobile || EmulatedPlatform().isMobile;
         toggle.setValue(
           isMobile ? this.settingsManager.settings.openViewInNewTabMobile : this.settingsManager.settings.openViewInNewTab
         ).onChange(async (value) => {
@@ -29728,7 +29919,7 @@ var UIPreferencesPage = class extends SettingsPage {
         });
       });
     }).addSetting((setting) => {
-      const isMobile = import_obsidian27.Platform.isMobile || EmulatedPlatform().isMobile;
+      const isMobile = import_obsidian28.Platform.isMobile || EmulatedPlatform().isMobile;
       setting.setName(t("USE_CUSTOM_HOTKEYS")).setDesc(t("USE_CUSTOM_HOTKEYS_DESC")).addToggle(
         (toggle) => toggle.setValue(this.settingsManager.settings.useCustomHotkeys).setDisabled(
           isMobile && !this.settingsManager.settings.openViewInNewTabMobile || !isMobile && !this.settingsManager.settings.openViewInNewTab
@@ -29741,14 +29932,6 @@ var UIPreferencesPage = class extends SettingsPage {
           }
           this.plugin.commandManager.addCustomHotkeys();
           await this.settingsManager.save();
-        })
-      );
-    }).addSetting((setting) => {
-      setting.setName(t("SHOW_RIBBON_ICON")).setDesc(t("SHOW_RIBBON_ICON_DESC")).addToggle(
-        (toggle) => toggle.setValue(this.settingsManager.settings.showRibbonIcon).onChange(async (value) => {
-          this.settingsManager.settings.showRibbonIcon = value;
-          await this.settingsManager.save();
-          this.uiManager.showRibbonIcon(value);
         })
       );
     }).addSetting((setting) => {
@@ -29775,7 +29958,7 @@ var UIPreferencesPage = class extends SettingsPage {
     }).addSetting((setting) => {
       setting.setName(t("CARD_MODAL_HEIGHT_PERCENT")).setDesc(t("CARD_MODAL_SIZE_PERCENT_DESC")).addExtraButton((button) => {
         button.setIcon("reset").setTooltip(t("RESET_DEFAULT")).onClick(async () => {
-          const isMobile = import_obsidian27.Platform.isMobile || EmulatedPlatform().isMobile;
+          const isMobile = import_obsidian28.Platform.isMobile || EmulatedPlatform().isMobile;
           if (isMobile) {
             this.settingsManager.settings.flashcardHeightPercentageMobile = DEFAULT_SETTINGS.flashcardHeightPercentageMobile;
           } else {
@@ -29785,7 +29968,7 @@ var UIPreferencesPage = class extends SettingsPage {
           this.display();
         });
       }).addSlider((slider) => {
-        const isMobile = import_obsidian27.Platform.isMobile || EmulatedPlatform().isMobile;
+        const isMobile = import_obsidian28.Platform.isMobile || EmulatedPlatform().isMobile;
         slider.setLimits(10, 100, 5).setValue(
           isMobile ? this.settingsManager.settings.flashcardHeightPercentageMobile : this.settingsManager.settings.flashcardHeightPercentage
         ).setDynamicTooltip().onChange(async (value) => {
@@ -29800,7 +29983,7 @@ var UIPreferencesPage = class extends SettingsPage {
     }).addSetting((setting) => {
       setting.setName(t("CARD_MODAL_WIDTH_PERCENT")).setDesc(t("CARD_MODAL_SIZE_PERCENT_DESC")).addExtraButton((button) => {
         button.setIcon("reset").setTooltip(t("RESET_DEFAULT")).onClick(async () => {
-          const isMobile = import_obsidian27.Platform.isMobile || EmulatedPlatform().isMobile;
+          const isMobile = import_obsidian28.Platform.isMobile || EmulatedPlatform().isMobile;
           if (isMobile) {
             this.settingsManager.settings.flashcardWidthPercentageMobile = DEFAULT_SETTINGS.flashcardWidthPercentageMobile;
           } else {
@@ -29810,7 +29993,7 @@ var UIPreferencesPage = class extends SettingsPage {
           this.display();
         });
       }).addSlider((slider) => {
-        const isMobile = import_obsidian27.Platform.isMobile || EmulatedPlatform().isMobile;
+        const isMobile = import_obsidian28.Platform.isMobile || EmulatedPlatform().isMobile;
         slider.setLimits(10, 100, 5).setValue(
           isMobile ? this.settingsManager.settings.flashcardWidthPercentageMobile : this.settingsManager.settings.flashcardWidthPercentage
         ).setDynamicTooltip().onChange(async (value) => {
@@ -29823,7 +30006,7 @@ var UIPreferencesPage = class extends SettingsPage {
         });
       });
     });
-    new import_obsidian27.SettingGroup(this.containerEl).setHeading(t("STATUS_BAR_SETTINGS")).addSetting((setting) => {
+    new import_obsidian28.SettingGroup(this.containerEl).setHeading(t("STATUS_BAR_SETTINGS")).addSetting((setting) => {
       setting.setName(t("SHOW_STATUS_BAR")).setDesc(t("SHOW_STATUS_BAR_DESC")).addToggle(
         (toggle) => toggle.setValue(this.settingsManager.settings.showStatusBar).onChange(async (value) => {
           this.settingsManager.settings.showStatusBar = value;
@@ -29858,7 +30041,7 @@ var UIPreferencesPage = class extends SettingsPage {
         })
       );
     });
-    new import_obsidian27.SettingGroup(this.containerEl).setHeading(t("FLASHCARDS")).addSetting((setting) => {
+    new import_obsidian28.SettingGroup(this.containerEl).setHeading(t("FLASHCARDS")).addSetting((setting) => {
       setting.setName(t("INITIALLY_EXPAND_SUBDECKS_IN_TREE")).setDesc(t("INITIALLY_EXPAND_SUBDECKS_IN_TREE_DESC")).addToggle(
         (toggle) => toggle.setValue(
           this.settingsManager.settings.initiallyExpandAllSubdecksInTree
@@ -29890,7 +30073,7 @@ var UIPreferencesPage = class extends SettingsPage {
         })
       );
     });
-    new import_obsidian27.SettingGroup(this.containerEl).setHeading(t("GROUP_FLASHCARDS_NOTES")).addSetting((setting) => {
+    new import_obsidian28.SettingGroup(this.containerEl).setHeading(t("GROUP_FLASHCARDS_NOTES")).addSetting((setting) => {
       setting.setName(t("FLASHCARD_EASY_LABEL")).setDesc(t("FLASHCARD_EASY_DESC")).addExtraButton((button) => {
         button.setIcon("reset").setTooltip(t("RESET_DEFAULT")).onClick(async () => {
           this.settingsManager.settings.flashcardEasyText = DEFAULT_SETTINGS.flashcardEasyText;
@@ -30181,7 +30364,7 @@ var SettingsPageManager = class {
 };
 
 // src/ui/obsidian-ui-components/settings-tab.tsx
-var SRSettingTab = class extends import_obsidian28.PluginSettingTab {
+var SRSettingTab = class extends import_obsidian29.PluginSettingTab {
   constructor(app, plugin, uiManager, settingsManager) {
     super(app, plugin);
     this.settingsPageManager = null;
@@ -31095,9 +31278,9 @@ var ReviewQueueLoader = class {
 };
 
 // src/ui/obsidian-ui-components/item-views/review-queue-list-view.tsx
-var import_obsidian29 = require("obsidian");
+var import_obsidian30 = require("obsidian");
 var REVIEW_QUEUE_VIEW_TYPE = "review-queue-list-view";
-var ReviewQueueListView = class extends import_obsidian29.ItemView {
+var ReviewQueueListView = class extends import_obsidian30.ItemView {
   constructor(leaf, nextNoteReviewHandler, settings, plugin) {
     super(leaf);
     this.headerEl = null;
@@ -31139,7 +31322,7 @@ var ReviewQueueListView = class extends import_obsidian29.ItemView {
     this.headerEl = this.contentEl.createDiv("sr-note-review-header");
     const titleWrapper = this.headerEl.createDiv("sr-note-review-header-title-wrapper");
     const titleIcon = titleWrapper.createDiv("sr-note-review-header-title-icon");
-    (0, import_obsidian29.setIcon)(titleIcon, "lucide-file-clock");
+    (0, import_obsidian30.setIcon)(titleIcon, "lucide-file-clock");
     titleWrapper.createDiv("sr-note-review-header-title").setText(t("OPEN_NOTE_FOR_REVIEW"));
     const subTitleWrapper = this.contentEl.createDiv("sr-note-review-header-subtitle-wrapper");
     subTitleWrapper.createDiv("sr-note-review-header-subtitle").setText(
@@ -31260,7 +31443,7 @@ var ReviewQueueListView = class extends import_obsidian29.ItemView {
     const collapseIconEl = folderTitleEl.createDiv(
       "tree-item-icon collapse-icon nav-folder-collapse-indicator"
     );
-    (0, import_obsidian29.setIcon)(collapseIconEl, "chevron-down");
+    (0, import_obsidian30.setIcon)(collapseIconEl, "chevron-down");
     folderTitleEl.createDiv("tree-item-inner nav-folder-title-content").setText(folderTitle);
     if (collapsed && !folderEl.hasClass("is-collapsed")) {
       folderEl.addClass("is-collapsed");
@@ -31317,10 +31500,10 @@ var ReviewQueueListView = class extends import_obsidian29.ItemView {
     const navFileContextBtn = navFileTitle.createDiv(
       "sr-review-context-btn clickable-icon"
     );
-    (0, import_obsidian29.setIcon)(navFileContextBtn, "ellipsis-vertical");
+    (0, import_obsidian30.setIcon)(navFileContextBtn, "ellipsis-vertical");
     navFileContextBtn.addEventListener("click", (event) => {
       event.preventDefault();
-      const fileMenu = new import_obsidian29.Menu();
+      const fileMenu = new import_obsidian30.Menu();
       fileMenu.addItem((item) => {
         item.setTitle(
           t("REVIEW_DIFFICULTY_FILE_MENU", {
@@ -31447,10 +31630,10 @@ var SidebarManager = class {
 };
 
 // src/ui/status-bar-manager.tsx
-var import_obsidian31 = require("obsidian");
+var import_obsidian32 = require("obsidian");
 
 // src/ui/obsidian-ui-components/statusbar-items/icon-statusbar-item.tsx
-var import_obsidian30 = require("obsidian");
+var import_obsidian31 = require("obsidian");
 
 // src/ui/obsidian-ui-components/statusbar-items/statusbar-item.tsx
 var StatusBarItem = class {
@@ -31528,7 +31711,7 @@ var IconStatusBarItem = class extends StatusBarItem {
         this.iconEl.empty();
       }
     }
-    (0, import_obsidian30.setIcon)(this.iconEl, this.icon);
+    (0, import_obsidian31.setIcon)(this.iconEl, this.icon);
     if (!this.iconEl.hasClass("status-bar-item-icon")) {
       this.iconEl.addClass("status-bar-item-icon");
     }
@@ -31753,7 +31936,7 @@ var StatusBarManager = class {
   }
   async getNewestVersion() {
     try {
-      const response = await (0, import_obsidian31.request)({
+      const response = await (0, import_obsidian32.request)({
         url: "https://api.github.com/repos/st3v3nmw/obsidian-spaced-repetition/releases/latest"
       });
       return (await JSON.parse(response)).tag_name;
@@ -31855,6 +32038,15 @@ var UIManager2 = class {
     this.tabViewManager.registerAllTabViews();
     this.sidebarManager = new SidebarManager(this.plugin, this.settingsManager);
     this.statusBarManager = new StatusBarManager(this.plugin, this.settingsManager);
+    this.ribbonIcon = this.plugin.addRibbonIcon(
+      "SpacedRepIcon",
+      t("REVIEW_CARDS"),
+      async () => {
+        if (this.plugin.isDataManagerLoaded()) {
+          await this.openDeckContainer(1 /* Review */);
+        }
+      }
+    );
     this.plugin.registerEvent(
       this.plugin.app.workspace.on("file-menu", (menu, file) => {
         this.fileMenuHandler(menu, file);
@@ -31869,7 +32061,6 @@ var UIManager2 = class {
     await this.plugin.dataManager.sync();
     await this.statusBarManager.createStatusBarItems();
     this.sidebarManager.init();
-    this.showRibbonIcon(this.settingsManager.settings.showRibbonIcon);
     this.registerSRFocusListener();
   }
   destroy() {
@@ -31950,7 +32141,7 @@ var UIManager2 = class {
    */
   focusObsidianWindow() {
     var _a2, _b, _c, _d, _e, _f, _g, _h;
-    if (!import_obsidian32.Platform.isDesktopApp) {
+    if (!import_obsidian33.Platform.isDesktopApp) {
       return;
     }
     const activeLeaf = this.plugin.app.workspace.activeLeaf;
@@ -32009,7 +32200,7 @@ var UIManager2 = class {
     const settings = this.settingsManager.settings;
     const reminderMessage = settings.reviewReminderMessage.trim() || t("REVIEW_REMINDER_NOTICE");
     if (settings.reviewReminderShowNotice) {
-      new import_obsidian32.Notice(reminderMessage, 5e3);
+      new import_obsidian33.Notice(reminderMessage, 5e3);
     }
     if (settings.reviewReminderPlaySound) {
       await this.playReviewReminderBeep();
@@ -32026,7 +32217,7 @@ var UIManager2 = class {
    */
   async playReviewReminderBeep() {
     var _a2, _b;
-    if (!import_obsidian32.Platform.isDesktopApp) {
+    if (!import_obsidian33.Platform.isDesktopApp) {
       return;
     }
     const windowObject = activeDocument.defaultView;
@@ -32073,7 +32264,7 @@ var UIManager2 = class {
    */
   bounceDockIcon() {
     var _a2, _b, _c, _d, _e, _f;
-    if (!import_obsidian32.Platform.isDesktopApp) {
+    if (!import_obsidian33.Platform.isDesktopApp) {
       return;
     }
     const requireFn = (_a2 = activeDocument.defaultView) == null ? void 0 : _a2.require;
@@ -32104,7 +32295,7 @@ var UIManager2 = class {
     this.focusObsidianWindow();
     await this.plugin.dataManager.sync();
     const settings = this.settingsManager.settings;
-    const isMobile = import_obsidian32.Platform.isMobile || EmulatedPlatform().isMobile;
+    const isMobile = import_obsidian33.Platform.isMobile || EmulatedPlatform().isMobile;
     const openInNewTab = !isMobile && settings.openViewInNewTab || isMobile && settings.openViewInNewTabMobile;
     const reviewQueueLoader = new ReviewQueueLoader(
       this.plugin,
@@ -32135,20 +32326,8 @@ var UIManager2 = class {
   getSRInFocusState() {
     return this.isSRInFocus;
   }
-  showRibbonIcon(status) {
-    if (!this.ribbonIcon) {
-      this.ribbonIcon = this.plugin.addRibbonIcon(
-        "SpacedRepIcon",
-        t("REVIEW_CARDS"),
-        async () => {
-          await this.openDeckContainer(1 /* Review */);
-        }
-      );
-    }
-    this.ribbonIcon.setCssProps({ display: status ? "" : "none" });
-  }
   fileMenuHandler(menu, file) {
-    if (!(file instanceof import_obsidian32.TFile && file.extension === "md")) return;
+    if (!(file instanceof import_obsidian33.TFile && file.extension === "md")) return;
     const settings = this.settingsManager.settings;
     if (settings.showFileMenuReviewOptions) {
       menu.addItem((item) => {
@@ -32277,7 +32456,7 @@ var CommandManager = class {
       }),
       repeatable: false,
       checkCallback: (checking) => {
-        if (this.plugin.isInitialized && this.uiManager.uiState === 3 /* CardBack */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian33.Platform.isMobile || // No keyboard events on mobile
+        if (this.plugin.isInitialized && this.uiManager.uiState === 3 /* CardBack */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian34.Platform.isMobile || // No keyboard events on mobile
         EmulatedPlatform().isMobile) && !(activeDocument.activeElement !== null && (activeDocument.activeElement.nodeName === "TEXTAREA" || activeDocument.activeElement.nodeName === "INPUT"))) {
           if (!checking) {
             void this.uiManager.contentManager._processReview(3 /* Again */);
@@ -32294,7 +32473,7 @@ var CommandManager = class {
       }),
       repeatable: false,
       checkCallback: (checking) => {
-        if (this.plugin.isInitialized && this.uiManager.uiState === 3 /* CardBack */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian33.Platform.isMobile || // No keyboard events on mobile
+        if (this.plugin.isInitialized && this.uiManager.uiState === 3 /* CardBack */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian34.Platform.isMobile || // No keyboard events on mobile
         EmulatedPlatform().isMobile) && !(activeDocument.activeElement !== null && (activeDocument.activeElement.nodeName === "TEXTAREA" || activeDocument.activeElement.nodeName === "INPUT"))) {
           if (!checking) {
             void this.uiManager.contentManager._processReview(2 /* Hard */);
@@ -32310,7 +32489,7 @@ var CommandManager = class {
         difficulty: this.settingsManager.settings.flashcardGoodText
       }),
       checkCallback: (checking) => {
-        if (this.plugin.isInitialized && this.uiManager.uiState === 3 /* CardBack */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian33.Platform.isMobile || // No keyboard events on mobile
+        if (this.plugin.isInitialized && this.uiManager.uiState === 3 /* CardBack */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian34.Platform.isMobile || // No keyboard events on mobile
         EmulatedPlatform().isMobile) && !(activeDocument.activeElement !== null && (activeDocument.activeElement.nodeName === "TEXTAREA" || activeDocument.activeElement.nodeName === "INPUT"))) {
           if (!checking) {
             void this.uiManager.contentManager._processReview(1 /* Good */);
@@ -32327,7 +32506,7 @@ var CommandManager = class {
       }),
       repeatable: false,
       checkCallback: (checking) => {
-        if (this.plugin.isInitialized && this.uiManager.uiState === 3 /* CardBack */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian33.Platform.isMobile || // No keyboard events on mobile
+        if (this.plugin.isInitialized && this.uiManager.uiState === 3 /* CardBack */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian34.Platform.isMobile || // No keyboard events on mobile
         EmulatedPlatform().isMobile) && !(activeDocument.activeElement !== null && (activeDocument.activeElement.nodeName === "TEXTAREA" || activeDocument.activeElement.nodeName === "INPUT"))) {
           if (!checking) {
             void this.uiManager.contentManager._processReview(0 /* Easy */);
@@ -32342,7 +32521,7 @@ var CommandManager = class {
       name: t("SHOW_ANSWER"),
       repeatable: false,
       checkCallback: (checking) => {
-        if (this.plugin.isInitialized && this.uiManager.uiState === 2 /* CardFront */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian33.Platform.isMobile || // No keyboard events on mobile
+        if (this.plugin.isInitialized && this.uiManager.uiState === 2 /* CardFront */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian34.Platform.isMobile || // No keyboard events on mobile
         EmulatedPlatform().isMobile) && !(activeDocument.activeElement !== null && (activeDocument.activeElement.nodeName === "TEXTAREA" || activeDocument.activeElement.nodeName === "INPUT"))) {
           if (!checking) {
             void this.uiManager.contentManager._showAnswer();
@@ -32357,7 +32536,7 @@ var CommandManager = class {
       name: t("SKIP"),
       repeatable: false,
       checkCallback: (checking) => {
-        if (this.plugin.isInitialized && (this.uiManager.uiState === 3 /* CardBack */ || this.uiManager.uiState === 2 /* CardFront */) && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian33.Platform.isMobile || // No keyboard events on mobile
+        if (this.plugin.isInitialized && (this.uiManager.uiState === 3 /* CardBack */ || this.uiManager.uiState === 2 /* CardFront */) && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian34.Platform.isMobile || // No keyboard events on mobile
         EmulatedPlatform().isMobile) && !(activeDocument.activeElement !== null && (activeDocument.activeElement.nodeName === "TEXTAREA" || activeDocument.activeElement.nodeName === "INPUT"))) {
           if (!checking) {
             void this.uiManager.contentManager._skipCurrentCard();
@@ -32372,7 +32551,7 @@ var CommandManager = class {
       name: t("RESET_CARD_PROGRESS"),
       repeatable: false,
       checkCallback: (checking) => {
-        if (this.plugin.isInitialized && this.uiManager.uiState === 3 /* CardBack */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian33.Platform.isMobile || // No keyboard events on mobile
+        if (this.plugin.isInitialized && this.uiManager.uiState === 3 /* CardBack */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian34.Platform.isMobile || // No keyboard events on mobile
         EmulatedPlatform().isMobile) && !(activeDocument.activeElement !== null && (activeDocument.activeElement.nodeName === "TEXTAREA" || activeDocument.activeElement.nodeName === "INPUT"))) {
           if (!checking) {
             void this.uiManager.contentManager._processReview(4 /* Reset */);
@@ -32387,7 +32566,7 @@ var CommandManager = class {
       name: t("OPEN_IN_BACKGROUND"),
       repeatable: false,
       checkCallback: (checking) => {
-        if (this.plugin.isInitialized && this.uiManager.uiState === 3 /* CardBack */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian33.Platform.isMobile || // No keyboard events on mobile
+        if (this.plugin.isInitialized && this.uiManager.uiState === 3 /* CardBack */ && this.uiManager.isSRInFocus && this.uiManager.contentManager !== null && !(import_obsidian34.Platform.isMobile || // No keyboard events on mobile
         EmulatedPlatform().isMobile) && !(activeDocument.activeElement !== null && (activeDocument.activeElement.nodeName === "TEXTAREA" || activeDocument.activeElement.nodeName === "INPUT"))) {
           if (!checking) {
             void this.uiManager.contentManager._jumpToCurrentCard();
@@ -32525,7 +32704,7 @@ var CommandManager = class {
 };
 
 // src/data/data-manager.ts
-var import_obsidian36 = require("obsidian");
+var import_obsidian37 = require("obsidian");
 
 // src/data/data-structures/deck/stats.ts
 var Stats = class {
@@ -32645,138 +32824,8 @@ var RepItemStorageInfo = class {
   }
 };
 
-// src/data/data-structures/card/questions/question-type.ts
-var import_clozecraft2 = __toESM(require_dist());
-var CardFrontBack = class {
-  // The caller is responsible for any required trimming of leading/trailing spaces
-  constructor(front, back) {
-    this.front = front;
-    this.back = back;
-  }
-};
-var CardFrontBackUtil = class {
-  static expand(questionType, questionText, settings) {
-    const handler = QuestionTypeFactory.create(questionType);
-    return handler.expand(questionText, settings);
-  }
-};
-var QuestionTypeSingleLineBasic = class {
-  expand(questionText, settings) {
-    const idx = questionText.indexOf(settings.singleLineCardSeparator);
-    const item = new CardFrontBack(
-      questionText.substring(0, idx),
-      questionText.substring(idx + settings.singleLineCardSeparator.length)
-    );
-    const result = [item];
-    return result;
-  }
-};
-var QuestionTypeSingleLineReversed = class {
-  expand(questionText, settings) {
-    const idx = questionText.indexOf(settings.singleLineReversedCardSeparator);
-    const side1 = questionText.substring(0, idx), side2 = questionText.substring(
-      idx + settings.singleLineReversedCardSeparator.length
-    );
-    const result = [
-      new CardFrontBack(side1, side2),
-      new CardFrontBack(side2, side1)
-    ];
-    return result;
-  }
-};
-var QuestionTypeMultiLineBasic = class {
-  expand(questionText, settings) {
-    const questionLines = questionText.split("\n");
-    const lineIdx = findLineIndexOfSearchStringIgnoringWs(
-      questionLines,
-      settings.multilineCardSeparator
-    );
-    const side1 = questionLines.slice(0, lineIdx).join("\n");
-    const side2 = questionLines.slice(lineIdx + 1).join("\n");
-    const result = [new CardFrontBack(side1, side2)];
-    return result;
-  }
-};
-var QuestionTypeMultiLineReversed = class {
-  expand(questionText, settings) {
-    const questionLines = questionText.split("\n");
-    const lineIdx = findLineIndexOfSearchStringIgnoringWs(
-      questionLines,
-      settings.multilineReversedCardSeparator
-    );
-    const side1 = questionLines.slice(0, lineIdx).join("\n");
-    const side2 = questionLines.slice(lineIdx + 1).join("\n");
-    const result = [
-      new CardFrontBack(side1, side2),
-      new CardFrontBack(side2, side1)
-    ];
-    return result;
-  }
-};
-var QuestionTypeCloze = class {
-  expand(questionText, settings) {
-    const clozecrafter = new import_clozecraft2.ClozeCrafter(settings.clozePatterns);
-    const clozeNote = clozecrafter.createClozeNote(questionText);
-    const clozeFormatter = settings.convertClozePatternsToInputs ? new QuestionTypeClozeInputFormatter() : new QuestionTypeClozeFormatter();
-    let front, back;
-    const result = [];
-    if (clozeNote === null) return result;
-    for (let i2 = 0; i2 < clozeNote.numCards; i2++) {
-      front = clozeNote.getCardFront(i2, clozeFormatter);
-      back = clozeNote.getCardBack(i2, clozeFormatter);
-      result.push(new CardFrontBack(front, back));
-    }
-    return result;
-  }
-};
-var QuestionTypeClozeFormatter = class {
-  asking(_2, hint) {
-    return `<span style='color:#2196f3'>${!hint ? "[...]" : `[${hint}]`}</span>`;
-  }
-  showingAnswer(answer, _2) {
-    return `<span style='color:#2196f3'>${answer}</span>`;
-  }
-  hiding(_2, hint) {
-    return `<span style='color:var(--code-comment)'>${!hint ? "[...]" : `[${hint}]`}</span>`;
-  }
-};
-var QuestionTypeClozeInputFormatter = class {
-  asking(answer, hint) {
-    return `<span style='color:#2196f3'><input class="cloze-input" type="text" size="${!answer ? 1 : answer.length}" />${!hint ? "" : `[${hint}]`}</span>`;
-  }
-  showingAnswer(answer, _2) {
-    return `<span class="cloze-answer" style='color:#2196f3'>${answer}</span>`;
-  }
-  hiding(_2, hint) {
-    return `<span style='color:var(--code-comment)'>${!hint ? "[...]" : `[${hint}]`}</span>`;
-  }
-};
-var QuestionTypeFactory = class {
-  static create(questionType) {
-    let handler;
-    switch (questionType) {
-      case 0 /* SingleLineBasic */:
-        handler = new QuestionTypeSingleLineBasic();
-        break;
-      case 1 /* SingleLineReversed */:
-        handler = new QuestionTypeSingleLineReversed();
-        break;
-      case 2 /* MultiLineBasic */:
-        handler = new QuestionTypeMultiLineBasic();
-        break;
-      case 3 /* MultiLineReversed */:
-        handler = new QuestionTypeMultiLineReversed();
-        break;
-      case 4 /* Cloze */:
-        handler = new QuestionTypeCloze();
-        break;
-    }
-    return handler;
-  }
-};
-
 // src/data/data-structures/file/sr-file.ts
-var import_obsidian34 = require("obsidian");
+var import_obsidian35 = require("obsidian");
 var frontmatterTagPseudoLineNum = -1;
 var frontmatterTagPseudoCol = -1;
 var frontmatterTagPseudoOffset = -1;
@@ -32841,7 +32890,7 @@ var SRTFile = class {
     if (!fileCachedData) {
       return [];
     }
-    const tags = (0, import_obsidian34.getAllTags)(fileCachedData) || [];
+    const tags = (0, import_obsidian35.getAllTags)(fileCachedData) || [];
     return tags;
   }
   /**
@@ -33640,7 +33689,7 @@ var OsrCore = class {
 };
 
 // src/data/data-store/notes-data-store/note-data-file-modifier.ts
-var import_obsidian35 = require("obsidian");
+var import_obsidian36 = require("obsidian");
 var NoteDataFileModifier = class {
   constructor(plugin) {
     this.plugin = plugin;
@@ -33757,7 +33806,7 @@ var NoteDataFileModifier = class {
         deckTagsToDelete
       );
     }
-    new import_obsidian35.Notice(t("SCHEDULING_DATA_HAS_BEEN_DELETED"));
+    new import_obsidian36.Notice(t("SCHEDULING_DATA_HAS_BEEN_DELETED"));
   }
   /**
    * Deletes all note scheduling data from all files in the vault.
@@ -33772,7 +33821,7 @@ var NoteDataFileModifier = class {
         tagsToDelete
       );
     }
-    new import_obsidian35.Notice(t("SCHEDULING_DATA_HAS_BEEN_DELETED"));
+    new import_obsidian36.Notice(t("SCHEDULING_DATA_HAS_BEEN_DELETED"));
   }
   /**
    * Deletes all card scheduling data from all files in the vault.
@@ -33787,7 +33836,7 @@ var NoteDataFileModifier = class {
         tagsToDelete
       );
     }
-    new import_obsidian35.Notice(t("SCHEDULING_DATA_HAS_BEEN_DELETED"));
+    new import_obsidian36.Notice(t("SCHEDULING_DATA_HAS_BEEN_DELETED"));
   }
   async deleteAllSchedulingDataOfCardsInNote(file, deleteTags, tagsToDelete) {
     await this.removeSchedulingInfoInCards(
@@ -33796,7 +33845,7 @@ var NoteDataFileModifier = class {
       deleteTags,
       tagsToDelete
     );
-    new import_obsidian35.Notice(t("SCHEDULING_DATA_HAS_BEEN_DELETED"));
+    new import_obsidian36.Notice(t("SCHEDULING_DATA_HAS_BEEN_DELETED"));
   }
   /**
    * Deletes all note scheduling data from all files in the vault.
@@ -33808,7 +33857,7 @@ var NoteDataFileModifier = class {
       deleteTags,
       tagsToDelete
     );
-    new import_obsidian35.Notice(t("SCHEDULING_DATA_HAS_BEEN_DELETED"));
+    new import_obsidian36.Notice(t("SCHEDULING_DATA_HAS_BEEN_DELETED"));
   }
 };
 
@@ -35948,7 +35997,7 @@ var RepItemScheduleInfoFsrs = class _RepItemScheduleInfoFsrs extends RepItemSche
 // src/utils/comment-parser.ts
 var CommentParser = class {
   static parseMultiScheduleComment(comment) {
-    const segments = comment.split("!").map((segment) => segment.trim()).filter((segment) => segment.length > 0).map((segment) => this.parseScheduleSegment(segment)).filter((info) => info !== null);
+    const segments = comment.split("!").map((segment) => segment.trim()).filter((segment) => segment.length > 0).map((segment) => this.parseScheduleSegment(segment));
     return segments;
   }
   static parseScheduleSegment(segment) {
@@ -35987,7 +36036,7 @@ var CommentParser = class {
   }
   static parseSM2Schedule(dueDateStr, interval, ease) {
     const dueDate = DateUtil.dateStrToMoment(dueDateStr);
-    if (dueDate === null || formatDate(dueDate.unix(), PREFERRED_DATE_FORMAT) === RepItemScheduleInfoOsr.dummyDueDateForNewCard) {
+    if (dueDate === null || dueDate.format(PREFERRED_DATE_FORMAT) === RepItemScheduleInfoOsr.dummyDueDateForNewCard) {
       return null;
     }
     const delayBeforeReviewTicks = dueDate.valueOf() - globalDateProvider.today.valueOf();
@@ -36718,12 +36767,12 @@ var DataManager = class {
       throw new Error("Next note review handler not initialized!!!");
     const noteSrTFile = this.createSRNoteTFile(note);
     if (SettingsUtil.isPathInFoldersToIgnore(this.settingsManager.settings, note.path)) {
-      new import_obsidian36.Notice(t("NOTE_IN_IGNORED_FOLDER"));
+      new import_obsidian37.Notice(t("NOTE_IN_IGNORED_FOLDER"));
       return;
     }
     const tags = noteSrTFile.getAllTagsFromCache();
     if (!SettingsUtil.isAnyTagANoteReviewTag(this.settingsManager.settings, tags)) {
-      new import_obsidian36.Notice(t("PLEASE_TAG_NOTE"));
+      new import_obsidian37.Notice(t("PLEASE_TAG_NOTE"));
       return;
     }
     await this.osrCore.saveNoteReviewResponse(
@@ -36731,7 +36780,7 @@ var DataManager = class {
       response,
       this.settingsManager.settings
     );
-    new import_obsidian36.Notice(t("RESPONSE_RECEIVED"));
+    new import_obsidian37.Notice(t("RESPONSE_RECEIVED"));
     if (this.settingsManager.settings.autoNextNote) {
       await this.plugin.nextNoteReviewHandler.autoReviewNextNote();
     }
@@ -36855,11 +36904,11 @@ var SettingsManager = class {
 };
 
 // src/note/next-note-review-handler.ts
-var import_obsidian38 = require("obsidian");
+var import_obsidian39 = require("obsidian");
 
 // src/ui/obsidian-ui-components/modals/review-deck-selection-modal.tsx
-var import_obsidian37 = require("obsidian");
-var ReviewDeckSelectionModal = class extends import_obsidian37.FuzzySuggestModal {
+var import_obsidian38 = require("obsidian");
+var ReviewDeckSelectionModal = class extends import_obsidian38.FuzzySuggestModal {
   constructor(app, deckKeys) {
     super(app);
     this.deckKeys = [];
@@ -36897,7 +36946,7 @@ var NextNoteReviewHandler = class {
         const reviewDeckKeys = this._noteReviewQueue.reviewDeckNameList;
         if (reviewDeckKeys.length > 0) this._lastSelectedReviewDeck = reviewDeckKeys[0];
         else {
-          new import_obsidian38.Notice(t("ALL_CAUGHT_UP"));
+          new import_obsidian39.Notice(t("ALL_CAUGHT_UP"));
           return;
         }
       }
@@ -36918,20 +36967,20 @@ var NextNoteReviewHandler = class {
   }
   async reviewNextNote(deckKey) {
     if (!this._noteReviewQueue.reviewDeckNameList.contains(deckKey)) {
-      new import_obsidian38.Notice(t("NO_DECK_EXISTS", { deckName: deckKey }));
+      new import_obsidian39.Notice(t("NO_DECK_EXISTS", { deckName: deckKey }));
       return;
     }
     this._lastSelectedReviewDeck = deckKey;
     const deck = this._noteReviewQueue.reviewDecks.get(deckKey);
     if (!deck) {
-      new import_obsidian38.Notice(t("NO_DECK_EXISTS", { deckName: deckKey }));
+      new import_obsidian39.Notice(t("NO_DECK_EXISTS", { deckName: deckKey }));
       return;
     }
     const notefile = deck.determineNextNote(this.settings.openRandomNote);
     if (notefile) {
       await this.openNote(deckKey, notefile.tfile);
     } else {
-      new import_obsidian38.Notice(t("ALL_CAUGHT_UP"));
+      new import_obsidian39.Notice(t("ALL_CAUGHT_UP"));
     }
   }
   async openNote(deckName, file) {
@@ -37196,7 +37245,7 @@ var ReminderManager = class {
 };
 
 // src/main.ts
-var SRPlugin = class extends import_obsidian39.Plugin {
+var SRPlugin = class extends import_obsidian40.Plugin {
   constructor() {
     super(...arguments);
     this._uiManager = null;
