@@ -489,9 +489,9 @@ Louis Wirth's "Urbanism as a Way of Life" remains arguably the most influential 
 graph TD
     subgraph A [Louis Wirth's Theory: Urbanism as a Way of Life]
         A1[Independent Variables:]
-        A1 --> A2[1. Size Large Population]
-        A1 --> A3[2. Density Physical Proximity]
-        A1 --> A4[3. Heterogeneity Social Diversity]
+        A1 --> A2[1 Size Large Population]
+        A1 --> A3[2 Density Physical Proximity]
+        A1 --> A4[3 Heterogeneity Social Diversity]
     end
 
     subgraph B [Social Consequences: The Urban Experience]
@@ -818,25 +818,25 @@ The Political Economy approach fundamentally transformed urban sociology. It rip
 graph TD
     subgraph A [The Core Thesis]
         A1[The City is a product of the Capitalist Mode of Production]
-        A2[Rejects the "Natural Organism" model of the Chicago School]
+        A2[Rejects the Natural Organism model of the Chicago School]
     end
 
     subgraph B [Key Theorists & Concepts]
-        B1[David Harvey: The City as a "Second Circuit of Capital"]
-        B2[Henri Lefebvre: The "Production of Space" & "Right to the City"]
-        B3[Manuel Castells: "Collective Consumption" & Urban Social Movements]
+        B1[David Harvey: The City as a Second Circuit of Capital]
+        B2[Henri Lefebvre: The Production of Space & Right to the City]
+        B3[Manuel Castells: Collective Consumption & Urban Social Movements]
     end
 
     subgraph C [Global Perspective]
         C1[World System Theory: A global hierarchy of cities]
-        C2[Saskia Sassen: "Global Cities" as command centers]
-        C3[Result: The "Dual City" - polarization of classes]
+        C2[Saskia Sassen: Global Cities as command centers]
+        C3[Result: The Dual City - polarization of classes]
     end
 
     subgraph D [Critical Evaluation]
         D1[Economic Determinism]
         D2[Neglect of Culture & Agency]
-        D3[Critiqued by Post-Modernists (LA School)]
+        D3[Critiqued by Post-Modernists LA School]
     end
 
     A --> B;
@@ -911,13 +911,6 @@ graph TD
 
 ---
 ---
-
-Excellent. We will now proceed with the next Tier 2 theme. This note covers the crucial topic of **Urban Governance and Planning**.
-
-This theme is highly relevant and frequently tested, especially questions related to the **74th Constitutional Amendment**. It connects the theoretical approaches we've studied to the practical and political realities of managing Indian cities.
-
-Here is the comprehensive note, following our "Note 2.0" model.
-
 ---
 
 ## **Theme 5: Urban Governance and Planning**
@@ -985,25 +978,25 @@ graph TD
     subgraph A [The Old Model: Urban Planning]
         A1[Nature: Top-down, technocratic, expert-led]
         A2[Tool: The Master Plan & Zoning]
-        A3[Critique (Jane Jacobs): Rigid, exclusionary, destroys organic city life]
+        A3[Critique Jane Jacobs: Rigid, exclusionary, destroys organic city life]
     end
 
     subgraph B [The New Model: Urban Governance]
-        B1[Nature: Network-based, multi-stakeholder (State, Market, Civil Society)]
+        B1[Nature: Network-based, multi-stakeholder State, Market, Civil Society]
         B2[Focus: Negotiation and collaboration]
     end
 
-    subgraph C [The Indian Context: The 74th Constitutional Amendment (1992)]
+    subgraph C [The Indian Context: The 74th Constitutional Amendment 1992]
         C1[Goal: Democratic Decentralization]
         C2[Key Provisions: Constitutional status for ULBs, Elections, Reservations, 18 Functions]
     end
 
     subgraph D [Critical Evaluation of the 74th Amendment]
         D1[The Gap Between Vision & Reality]
-        D2[The Core Problem: Lack of Devolution of the "3 Fs"]
-        D2 --> D3[Funds (Financial Starvation)]
-        D2 --> D4[Functions (Power retained by State agencies)]
-        D2 --> D5[Functionaries (Lack of staff)]
+        D2[The Core Problem: Lack of Devolution of the 3 Fs]
+        D2 --> D3[Funds Financial Starvation]
+        D2 --> D4[Functions Power retained by State agencies]
+        D2 --> D5[Functionaries Lack of staff]
         D6[Result: Weak and ineffective ULBs]
     end
 
@@ -1080,13 +1073,6 @@ graph TD
 
 ---
 ---
-
-Excellent. We have now completed all the Tier 1 and Tier 2 notes. Our foundation is exceptionally strong, covering the core theoretical, critical, and administrative dimensions of urban sociology.
-
-We will now proceed with the Tier 3 themes. These notes are designed to add conceptual breadth and nuance, demonstrating a well-rounded and sophisticated understanding of the subject.
-
-This note covers the crucial typological distinction between pre-modern and modern cities, a frequent topic that tests your historical and comparative knowledge.
-
 ---
 
 ## **Theme 6: Historical City Types**
@@ -1150,7 +1136,7 @@ The use of historical typologies like the pre-industrial and colonial city is in
 ```mermaid
 graph TD
     subgraph A [Historical Urban Typologies]
-        A1[Ideal Type: The Pre-industrial City (Sjoberg)]
+        A1[Ideal Type: The Pre-industrial City Sjoberg]
         A2[Ideal Type: The Colonial City]
     end
 
@@ -1164,8 +1150,8 @@ graph TD
     subgraph C [The Colonial City]
         C1[Foundation: External Domination & Extractive Economy]
         C2[Key Feature: The Dualistic Structure]
-        C2 --> C3["White Town" / Civil Lines (Spacious, Planned)]
-        C2 --> C4["Black Town" / Native Quarters (Congested, Unplanned)]
+        C2 --> C3[White Town / Civil Lines Spacious, Planned]
+        C2 --> C4[Black Town / Native Quarters Congested, Unplanned]
         C5[Function: Port City for Resource Extraction]
     end
 
@@ -1245,10 +1231,6 @@ graph TD
 ---
 # TIER 3
 
-Excellent. We will now proceed with the remaining Tier 3 themes. This note covers the contemporary critique of modernist urban theories and provides the lens for understanding the fragmented, globalized city of the late 20th and 21st centuries.
-
-This theme is crucial for demonstrating a modern, up-to-date understanding of urban sociology, moving beyond the classical and Marxist frameworks.
-
 ---
 
 ## **Theme 7: Post-Modern Urban Theory**
@@ -1314,7 +1296,7 @@ Post-modern urban theory offers an indispensable lens for understanding the prof
 ```mermaid
 graph TD
     subgraph A [The Core Idea: A Critique of Modernist Urban Theory]
-        A1[Rejects "Grand Narratives" (e.g., Chicago School, Marxism)]
+        A1[Rejects Grand Narratives e.g., Chicago School, Marxism]
         A2[Rejects the vision of an Ordered, Unified City]
     end
 
@@ -1322,20 +1304,20 @@ graph TD
     end
 
     subgraph C [Key Features of the Post-Modern City]
-        C1[Fragmentation & The "Fortress City" (Mike Davis)]
-        C2[Decentralization & "Edge Cities"]
-        C3[Hyperreality & Themed Environments (Baudrillard)]
-        C4[Globalization & The "Glocal"]
+        C1[Fragmentation & The Fortress City Mike Davis]
+        C2[Decentralization & Edge Cities]
+        C3[Hyperreality & Themed Environments Baudrillard]
+        C4[Globalization & The Glocal]
     end
 
     subgraph D [The Symbolic Approach]
-        D1[The City as a "Text"]
-        D2[Mental Maps (Kevin Lynch)]
+        D1[The City as a Text]
+        D2[Mental Maps Kevin Lynch]
     end
 
     subgraph E [Critical Evaluation]
         E1[Over-generalizes from LA]
-        E2[Neglects structural inequality (class)]
+        E2[Neglects structural inequality class]
         E3[Elitist Jargon & Political Pessimism]
     end
 
@@ -1413,12 +1395,6 @@ graph TD
 
 ---
 ---
-
-
-Excellent. We will now complete the Tier 3 notes with our final theme in this category. This note covers the macro-level perspective on India's urban transition, focusing on the broad patterns and impacts of urbanization.
-
-This theme is important for providing the large-scale context within which all the other urban phenomena we've discussed (slums, informality, governance challenges) take place.
-
 ---
 
 ## **Theme 8: Urbanization Patterns in India**
@@ -1487,25 +1463,25 @@ The pattern of urbanization in India is a story of profound contradictions. It i
 graph TD
     subgraph A [The Process: Urbanization in India]
         A1[Definition: Increase in *proportion* of urban population]
-        A2[Key Driver: Rural-to-Urban Migration (often due to rural distress)]
+        A2[Key Driver: Rural-to-Urban Migration often due to rural distress]
     end
 
     subgraph B [Key Patterns & Trends]
-        B1[Accelerating but still low overall level (~35%)]
-        B2[Top-Heavy Structure (Dominance of Million-Plus Cities)]
-        B3[Regional Imbalances (West/South > East/North)]
-        B4["Messy" Growth & Peri-urbanization]
+        B1[Accelerating but still low overall level ~35%]
+        B2[Top-Heavy Structure Dominance of Million-Plus Cities]
+        B3[Regional Imbalances West/South > East/North]
+        B4[Messy Growth & Peri-urbanization]
     end
 
     subgraph C [Impact on Rural Areas]
         C1[Positive: Remittances, Markets]
-        C2[Negative: "Backwash" Effects (Brain Drain)]
+        C2[Negative: Backwash Effects Brain Drain]
         C3[Cultural: Diffusion of Urban Values]
     end
 
     subgraph D [Critical Evaluation]
         D1[Urbanization without sufficient Industrialization]
-        D2[The "Exclusionary" nature of the Indian city]
+        D2[The Exclusionary nature of the Indian city]
         D3[Severe Environmental Challenges]
     end
 
@@ -1579,13 +1555,6 @@ graph TD
 
 ---
 ---
-
-Excellent. We have now completed all the thematic notes for Tiers 1, 2, and 3. Our knowledge base is comprehensive, covering the foundational theories, critical perspectives, urban problems, governance, and historical context.
-
-The final steps are to efficiently cover the Tier 4 topics, create the "Grand Synthesis" note, and compile the final toolkit.
-
-Let's begin with the **Tier 4 Notes**. As before, I will create them in the concise, table-based format for rapid learning and value addition. I will group them all into a single response for efficiency.
-
 ---
 
 # TIER 4
