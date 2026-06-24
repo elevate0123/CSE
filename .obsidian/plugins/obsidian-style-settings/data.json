@@ -86,5 +86,14 @@
   "anuppuccin-theme-settings@@anp-autohide-titlebar": false,
   "anuppuccin-theme-settings@@anp-hide-external-link-icon": false,
   "anuppuccin-theme-settings@@anp-print": true,
-  "anuppuccin-theme-settings@@anp-button-metadata-toggle": true
+  "anuppuccin-theme-settings@@anp-button-metadata-toggle": true,
+  "soft-paper-dark-settings@@sp-rainbow-folders": true,
+  "soft-paper-dark-settings@@sp-status-bar-blue": false,
+  "soft-paper-dark-settings@@sp-hide-scrollbars": false,
+  "soft-paper-dark-settings@@sp-compact-settings": true,
+  "soft-paper-dark-settings@@sp-compact-properties": true,
+  "soft-paper-dark-settings@@sp-compact-panes": true,
+  "soft-paper-dark-settings@@sp-compact-explorer-extra": false,
+  "soft-paper-dark-settings@@sp-compact-explorer": true,
+  "soft-paper-dark-settings@@sp-compact-bases": true
 }
