@@ -909,7 +909,7 @@ The 73rd and 74th Constitutional Amendments did not just grant status to local b
 
 #### **Intellectual Context & Core Argument**
 
-> [**note**] **From Committee Recommendations to Constitutional Mandate**
+> [!note] **From Committee Recommendations to Constitutional Mandate**
 > The three-tier structure for rural governance was first famously recommended by the **Balwantrai Mehta Committee** in 1957. However, for decades, its adoption was voluntary and inconsistent across states. Some states adopted it, others preferred a two-tier model (recommended by the Ashok Mehta Committee), and many had no effective panchayats at all. The 73rd Amendment was revolutionary because it made the three-tier structure a **constitutional mandate**, establishing a uniform pattern nationwide.
 
 **1. The Rural Structure: The Three-Tier System of Panchayati Raj**

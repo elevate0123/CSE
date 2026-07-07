@@ -41,33 +41,53 @@
     ]
   },
   "IGNOU MSO/SY/SY MSOE 04 Urban Sociology.md": {
-    "scroll": 5.247058943206189,
+    "scroll": 1614.3231,
     "cursor": {
       "from": {
-        "line": 2,
-        "ch": 0
+        "line": 1256,
+        "ch": 69
       },
       "to": {
-        "line": 2,
-        "ch": 0
+        "line": 1256,
+        "ch": 69
       }
     },
     "expandedKeys": [
       "item-1-12",
       "item-1-58",
       "item-1-99",
-      "item-1-129"
+      "item-1-129",
+      "item-2-73",
+      "item-2-80",
+      "item-2-86",
+      "item-2-94",
+      "item-2-100",
+      "item-2-108",
+      "item-2-114",
+      "item-2-122",
+      "item-2-130",
+      "item-2-135",
+      "item-2-140",
+      "item-3-7",
+      "item-2-13",
+      "item-2-21",
+      "item-2-28",
+      "item-2-36",
+      "item-2-43",
+      "item-2-51",
+      "item-2-59",
+      "item-2-67"
     ]
   },
   "IGNOU MSO/SY/SY MPA 16 Decentralisation and Local Governance.md": {
-    "scroll": 600.9159583000512,
+    "scroll": 1497.0692608173076,
     "cursor": {
       "from": {
-        "line": 602,
+        "line": 309,
         "ch": 0
       },
       "to": {
-        "line": 602,
+        "line": 309,
         "ch": 0
       }
     },
@@ -77,7 +97,25 @@
       "item-1-84",
       "item-1-110",
       "item-3-0",
-      "item-2-45"
+      "item-2-45",
+      "item-2-39",
+      "item-2-6",
+      "item-2-85",
+      "item-2-92",
+      "item-2-97",
+      "item-2-104",
+      "item-2-111",
+      "item-2-116",
+      "item-2-121",
+      "item-2-14",
+      "item-2-19",
+      "item-2-27",
+      "item-2-32",
+      "item-2-52",
+      "item-2-58",
+      "item-2-65",
+      "item-2-71",
+      "item-2-79"
     ]
   }
 }

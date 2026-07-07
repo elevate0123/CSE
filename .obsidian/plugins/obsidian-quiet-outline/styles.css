@@ -5,7 +5,7 @@
 
 /* RTL language support */
 .quiet-outline .n-tree .n-tree-node-content :is(p, h1, h2, h3, h4, h5) {
-    unicode-bidi: var(--f4d4e7c4);
+    unicode-bidi: var(--v6e593c78);
 }
 
 /* ============ */
@@ -33,7 +33,7 @@
     .quiet-outline .level-5 .n-tree-node-indent:first-child,
     .quiet-outline .level-6 .n-tree-node-indent:first-child
 )::after {
-    border-right: var(--nav-indentation-guide-width) solid var(--v04832a3a);
+    border-right: var(--nav-indentation-guide-width) solid var(--v0a4a10ee);
     /* border-right: 2px solid rgb(253, 139, 31, 0.6); */
 }
 :is(
@@ -42,7 +42,7 @@
     .quiet-outline .level-5 .n-tree-node-indent:nth-child(2),
     .quiet-outline .level-6 .n-tree-node-indent:nth-child(2)
 )::after {
-    border-right: var(--nav-indentation-guide-width) solid var(--v04832a38);
+    border-right: var(--nav-indentation-guide-width) solid var(--v0a4a10ec);
     /* border-right: 2px solid rgb(255, 223, 0, 0.6); */
 }
 :is(
@@ -50,24 +50,24 @@
     .quiet-outline .level-5 .n-tree-node-indent:nth-child(3),
     .quiet-outline .level-6 .n-tree-node-indent:nth-child(3)
 )::after {
-    border-right: var(--nav-indentation-guide-width) solid var(--v04832a36);
+    border-right: var(--nav-indentation-guide-width) solid var(--v0a4a10ea);
     /* border-right: 2px solid rgb(7, 235, 35, 0.6); */
 }
 :is(
     .quiet-outline .level-5 .n-tree-node-indent:nth-child(4),
     .quiet-outline .level-6 .n-tree-node-indent:nth-child(4)
 )::after {
-    border-right: var(--nav-indentation-guide-width) solid var(--v04832a34);
+    border-right: var(--nav-indentation-guide-width) solid var(--v0a4a10e8);
     /* border-right: 2px solid rgb(45, 143, 240, 0.6); */
 }
 .quiet-outline .level-6 .n-tree-node-indent:nth-child(5)::after {
-    border-right: var(--nav-indentation-guide-width) solid var(--v04832a32);
+    border-right: var(--nav-indentation-guide-width) solid var(--v0a4a10e6);
     /* border-right: 2px solid rgb(188, 1, 226, 0.6); */
 }
 
 /* located heading*/
 .n-tree-node.located p {
-    color: var(--v1c14051a);
+    color: var(--v862265ce);
 }
 
 /* adjust indent */
@@ -185,6 +185,15 @@
 
 .quiet-outline-tab-content {
     min-height: 400px;
+}
+
+.quiet-outline-setting-group {
+    border-radius: var(--radius-m);
+    background-color: var(--background-secondary);
+}
+
+.quiet-outline-setting-group .setting-item:not(:first-child) {
+    padding-left: 32px;
 }
 
 .quiet-outline .n-tree {
